@@ -1,6 +1,7 @@
-#include <python3.9/pybind11/pybind11.h>
+#include <pybind11/pybind11.h>
 #include <AppKit.h>
 #include <InterfaceKit.h>
+#include <Window.h>
  
 namespace py = pybind11;
  
@@ -34,7 +35,9 @@ class PyBWindow : public BWindow{
         }
 };
  
-PYBIND11_MODULE(haiku,m) {
+PYBIND11_MODULE(_haiku,m) {
+	//m.attr("B_NOT_RESIZABLE")=B_NOT_RESIZABLE;
+	m.attr("a")=1;
     py::class_<BApplication>(m, "BApplication")
         .def(py::init<const char*>())
         .def("Run", &BApplication::Run);
@@ -63,4 +66,16 @@ PYBIND11_MODULE(haiku,m) {
 
     py::class_<BButton, BView>(m, "BButton")
         .def(py::init<BRect, const char*, const char*, BMessage*>());
+	py::class_<BBox, BView>(m, "BBox")
+        .def(py::init<BRect, const char*>()); //, uint32, uint32,border_style, BMessage*
+	py::class_<BTextControl, BView>(m, "BTextControl")
+        .def(py::init<BRect, const char*, const char*, const char*, BMessage*>())
+		.def("Text", &BTextControl::Text)
+		.def("SetText", &BTextControl::SetText)
+		;
+	py::class_<BStringView, BView>(m, "BStringView")
+        .def(py::init<BRect, const char*, const char*>())
+		.def("Text", &BStringView::Text)
+		.def("SetText", &BStringView::SetText)
+		;
 }
