@@ -1,0 +1,224 @@
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/iostream.h>
+#include <pybind11/operators.h>
+
+#include <interface/Window.h>
+#include <Looper.h>
+#include <StorageDefs.h>
+#include <View.h>
+#include <Button.h>
+#include <LayoutItem.h>
+#include <Layout.h>
+#include <MenuBar.h>
+
+namespace py = pybind11;
+using namespace BPrivate;
+
+class PyBWindow : public BWindow{
+    public:
+        using BWindow::BWindow;
+ 
+        void MessageReceived(BMessage* msg) override {
+            py::gil_scoped_release release;
+            {
+                py::gil_scoped_acquire acquire;
+                PYBIND11_OVERLOAD(
+                    void,
+                    BWindow,
+                    MessageReceived,
+                    msg
+                );
+            }
+        }
+ 
+        bool QuitRequested() override {
+            py::gil_scoped_release release;
+            {
+                py::gil_scoped_acquire acquire;
+                PYBIND11_OVERLOAD(
+                    bool,
+                    BWindow,
+                    QuitRequested,
+                );
+            }
+        }
+};
+
+PYBIND11_MODULE(Window,m)
+{
+py::enum_<window_type>(m, "window_type", "")
+.value("B_UNTYPED_WINDOW", window_type::B_UNTYPED_WINDOW, "")
+.value("B_TITLED_WINDOW", window_type::B_TITLED_WINDOW, "")
+.value("B_MODAL_WINDOW", window_type::B_MODAL_WINDOW, "")
+.value("B_DOCUMENT_WINDOW", window_type::B_DOCUMENT_WINDOW, "")
+.value("B_BORDERED_WINDOW", window_type::B_BORDERED_WINDOW, "")
+.value("B_FLOATING_WINDOW", window_type::B_FLOATING_WINDOW, "")
+.export_values();
+
+py::enum_<window_look>(m, "window_look", "")
+.value("B_BORDERED_WINDOW_LOOK", window_look::B_BORDERED_WINDOW_LOOK, "")
+.value("B_NO_BORDER_WINDOW_LOOK", window_look::B_NO_BORDER_WINDOW_LOOK, "")
+.value("B_TITLED_WINDOW_LOOK", window_look::B_TITLED_WINDOW_LOOK, "")
+.value("B_DOCUMENT_WINDOW_LOOK", window_look::B_DOCUMENT_WINDOW_LOOK, "")
+.value("B_MODAL_WINDOW_LOOK", window_look::B_MODAL_WINDOW_LOOK, "")
+.value("B_FLOATING_WINDOW_LOOK", window_look::B_FLOATING_WINDOW_LOOK, "")
+.export_values();
+
+py::enum_<window_feel>(m, "window_feel", "")
+.value("B_NORMAL_WINDOW_FEEL", window_feel::B_NORMAL_WINDOW_FEEL, "")
+.value("B_MODAL_SUBSET_WINDOW_FEEL", window_feel::B_MODAL_SUBSET_WINDOW_FEEL, "")
+.value("B_MODAL_APP_WINDOW_FEEL", window_feel::B_MODAL_APP_WINDOW_FEEL, "")
+.value("B_MODAL_ALL_WINDOW_FEEL", window_feel::B_MODAL_ALL_WINDOW_FEEL, "")
+.value("B_FLOATING_SUBSET_WINDOW_FEEL", window_feel::B_FLOATING_SUBSET_WINDOW_FEEL, "")
+.value("B_FLOATING_APP_WINDOW_FEEL", window_feel::B_FLOATING_APP_WINDOW_FEEL, "")
+.value("B_FLOATING_ALL_WINDOW_FEEL", window_feel::B_FLOATING_ALL_WINDOW_FEEL, "")
+.export_values();
+
+py::enum_<window_alignment>(m, "window_alignment", "")
+.value("B_BYTE_ALIGNMENT", window_alignment::B_BYTE_ALIGNMENT, "")
+.value("B_PIXEL_ALIGNMENT", window_alignment::B_PIXEL_ALIGNMENT, "")
+.export_values();
+
+m.attr("B_NOT_MOVABLE") = 1;
+m.attr("B_NOT_CLOSABLE") = 32;
+m.attr("B_NOT_ZOOMABLE") = 64;
+m.attr("B_NOT_MINIMIZABLE") = 16384;
+m.attr("B_NOT_RESIZABLE") = 2;
+m.attr("B_NOT_H_RESIZABLE") = 4;
+m.attr("B_NOT_V_RESIZABLE") = 8;
+m.attr("B_AVOID_FRONT") = 128;
+m.attr("B_AVOID_FOCUS") = 8192;
+m.attr("B_WILL_ACCEPT_FIRST_CLICK") = 16;
+m.attr("B_OUTLINE_RESIZE") = 4096;
+m.attr("B_NO_WORKSPACE_ACTIVATION") = 256;
+m.attr("B_NOT_ANCHORED_ON_ACTIVATE") = 131072;
+m.attr("B_ASYNCHRONOUS_CONTROLS") = 524288;
+m.attr("B_QUIT_ON_WINDOW_CLOSE") = 1048576;
+m.attr("B_SAME_POSITION_IN_ALL_WORKSPACES") = 2097152;
+m.attr("B_AUTO_UPDATE_SIZE_LIMITS") = 4194304;
+m.attr("B_CLOSE_ON_ESCAPE") = 8388608;
+m.attr("B_NO_SERVER_SIDE_WINDOW_MODIFIERS") = 512;
+
+m.attr("B_DO_NOT_RESIZE_TO_FIT") = 1;
+m.attr("B_MOVE_IF_PARTIALLY_OFFSCREEN") = 2;
+
+//m.attr("PortLink") = PortLink;
+
+py::class_<BWindow,PyBWindow>(m, "BWindow")
+.def(py::init<BRect, const char *, window_type, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("title"), py::arg("type"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
+.def(py::init<BRect, const char *, window_look, window_feel, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("title"), py::arg("look"), py::arg("feel"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
+.def(py::init<BMessage *>(), "", py::arg("archive"))
+.def_static("Instantiate", &BWindow::Instantiate, "", py::arg("archive"))
+.def("Archive", &BWindow::Archive, "", py::arg("archive"), py::arg("deep")=true)
+.def("Quit", &BWindow::Quit, "")
+.def("Close", &BWindow::Close, "")
+.def("AddChild", py::overload_cast<BView *, BView *>(&BWindow::AddChild), "", py::arg("child"), py::arg("before")=NULL)
+.def("AddChild", py::overload_cast<BLayoutItem *>(&BWindow::AddChild), "", py::arg("child"))
+.def("RemoveChild", &BWindow::RemoveChild, "", py::arg("child"))
+.def("CountChildren", &BWindow::CountChildren, "")
+.def("ChildAt", &BWindow::ChildAt, "", py::arg("index"))
+.def("DispatchMessage", &BWindow::DispatchMessage, "", py::arg("message"), py::arg("handler"))
+.def("MessageReceived", &BWindow::MessageReceived, "", py::arg("message"))
+.def("FrameMoved", &BWindow::FrameMoved, "", py::arg("newPosition"))
+.def("WorkspacesChanged", &BWindow::WorkspacesChanged, "", py::arg("oldWorkspaces"), py::arg("newWorkspaces"))
+.def("WorkspaceActivated", &BWindow::WorkspaceActivated, "", py::arg("workspace"), py::arg("state"))
+.def("FrameResized", &BWindow::FrameResized, "", py::arg("newWidth"), py::arg("newHeight"))
+.def("Minimize", &BWindow::Minimize, "", py::arg("minimize"))
+.def("Zoom", py::overload_cast<BPoint, float, float>(&BWindow::Zoom), "", py::arg("origin"), py::arg("width"), py::arg("height"))
+.def("Zoom", py::overload_cast<>(&BWindow::Zoom), "")
+.def("SetZoomLimits", &BWindow::SetZoomLimits, "", py::arg("maxWidth"), py::arg("maxHeight"))
+.def("ScreenChanged", &BWindow::ScreenChanged, "", py::arg("screenSize"), py::arg("depth"))
+.def("SetPulseRate", &BWindow::SetPulseRate, "", py::arg("rate"))
+.def("PulseRate", &BWindow::PulseRate, "")
+.def("AddShortcut", py::overload_cast<unsigned int, unsigned int, BMessage *>(&BWindow::AddShortcut), "", py::arg("key"), py::arg("modifiers"), py::arg("message"))
+.def("AddShortcut", py::overload_cast<unsigned int, unsigned int, BMessage *, BHandler *>(&BWindow::AddShortcut), "", py::arg("key"), py::arg("modifiers"), py::arg("message"), py::arg("target"))
+.def("HasShortcut", &BWindow::HasShortcut, "", py::arg("key"), py::arg("modifiers"))
+.def("RemoveShortcut", &BWindow::RemoveShortcut, "", py::arg("key"), py::arg("modifiers"))
+.def("SetDefaultButton", &BWindow::SetDefaultButton, "", py::arg("button"))
+.def("DefaultButton", &BWindow::DefaultButton, "")
+.def("MenusBeginning", &BWindow::MenusBeginning, "")
+.def("MenusEnded", &BWindow::MenusEnded, "")
+.def("NeedsUpdate", &BWindow::NeedsUpdate, "")
+.def("UpdateIfNeeded", &BWindow::UpdateIfNeeded, "")
+.def("FindView", py::overload_cast<const char *>(&BWindow::FindView, py::const_), "", py::arg("viewName"))
+.def("FindView", py::overload_cast<BPoint>(&BWindow::FindView, py::const_), "", py::arg(""))
+.def("CurrentFocus", &BWindow::CurrentFocus, "")
+.def("Activate", &BWindow::Activate, "", py::arg("bool")=true)
+.def("WindowActivated", &BWindow::WindowActivated, "", py::arg("focus"))
+.def("ConvertToScreen", py::overload_cast<BPoint *>(&BWindow::ConvertToScreen, py::const_), "", py::arg("point"))
+.def("ConvertToScreen", py::overload_cast<BPoint>(&BWindow::ConvertToScreen, py::const_), "", py::arg("point"))
+.def("ConvertFromScreen", py::overload_cast<BPoint *>(&BWindow::ConvertFromScreen, py::const_), "", py::arg("point"))
+.def("ConvertFromScreen", py::overload_cast<BPoint>(&BWindow::ConvertFromScreen, py::const_), "", py::arg("point"))
+.def("ConvertToScreen", py::overload_cast<BRect *>(&BWindow::ConvertToScreen, py::const_), "", py::arg("rect"))
+.def("ConvertToScreen", py::overload_cast<BRect>(&BWindow::ConvertToScreen, py::const_), "", py::arg("rect"))
+.def("ConvertFromScreen", py::overload_cast<BRect *>(&BWindow::ConvertFromScreen, py::const_), "", py::arg("rect"))
+.def("ConvertFromScreen", py::overload_cast<BRect>(&BWindow::ConvertFromScreen, py::const_), "", py::arg("rect"))
+.def("MoveBy", &BWindow::MoveBy, "", py::arg("dx"), py::arg("dy"))
+.def("MoveTo", py::overload_cast<BPoint>(&BWindow::MoveTo), "", py::arg(""))
+.def("MoveTo", py::overload_cast<float, float>(&BWindow::MoveTo), "", py::arg("x"), py::arg("y"))
+.def("ResizeBy", &BWindow::ResizeBy, "", py::arg("dx"), py::arg("dy"))
+.def("ResizeTo", &BWindow::ResizeTo, "", py::arg("width"), py::arg("height"))
+.def("ResizeToPreferred", &BWindow::ResizeToPreferred, "")
+.def("CenterIn", &BWindow::CenterIn, "", py::arg("rect"))
+.def("CenterOnScreen", py::overload_cast<>(&BWindow::CenterOnScreen), "")
+.def("CenterOnScreen", py::overload_cast<screen_id>(&BWindow::CenterOnScreen), "", py::arg("id"))
+.def("MoveOnScreen", &BWindow::MoveOnScreen, "", py::arg("flags")=0)
+.def("Show", &BWindow::Show, "")
+.def("Hide", &BWindow::Hide, "")
+.def("IsHidden", &BWindow::IsHidden, "")
+.def("IsMinimized", &BWindow::IsMinimized, "")
+.def("Flush", &BWindow::Flush, "")
+.def("Sync", &BWindow::Sync, "")
+.def("SendBehind", &BWindow::SendBehind, "", py::arg("window"))
+.def("DisableUpdates", &BWindow::DisableUpdates, "")
+.def("EnableUpdates", &BWindow::EnableUpdates, "")
+.def("BeginViewTransaction", &BWindow::BeginViewTransaction, "")
+.def("EndViewTransaction", &BWindow::EndViewTransaction, "")
+.def("InViewTransaction", &BWindow::InViewTransaction, "")
+.def("Bounds", &BWindow::Bounds, "")
+.def("Frame", &BWindow::Frame, "")
+.def("DecoratorFrame", &BWindow::DecoratorFrame, "")
+.def("Size", &BWindow::Size, "")
+.def("Title", &BWindow::Title, "")
+.def("SetTitle", &BWindow::SetTitle, "", py::arg("title"))
+.def("IsFront", &BWindow::IsFront, "")
+.def("IsActive", &BWindow::IsActive, "")
+.def("SetKeyMenuBar", &BWindow::SetKeyMenuBar, "", py::arg("bar"))
+.def("KeyMenuBar", &BWindow::KeyMenuBar, "")
+.def("SetSizeLimits", &BWindow::SetSizeLimits, "", py::arg("minWidth"), py::arg("maxWidth"), py::arg("minHeight"), py::arg("maxHeight"))
+.def("GetSizeLimits", &BWindow::GetSizeLimits, "", py::arg("minWidth"), py::arg("maxWidth"), py::arg("minHeight"), py::arg("maxHeight"))
+.def("UpdateSizeLimits", &BWindow::UpdateSizeLimits, "")
+.def("SetDecoratorSettings", &BWindow::SetDecoratorSettings, "", py::arg("settings"))
+.def("GetDecoratorSettings", &BWindow::GetDecoratorSettings, "", py::arg("settings"))
+.def("Workspaces", &BWindow::Workspaces, "")
+.def("SetWorkspaces", &BWindow::SetWorkspaces, "", py::arg(""))
+.def("LastMouseMovedView", &BWindow::LastMouseMovedView, "")
+.def("ResolveSpecifier", &BWindow::ResolveSpecifier, "", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("what"), py::arg("property"))
+.def("GetSupportedSuites", &BWindow::GetSupportedSuites, "", py::arg("data"))
+.def("AddToSubset", &BWindow::AddToSubset, "", py::arg("window"))
+.def("RemoveFromSubset", &BWindow::RemoveFromSubset, "", py::arg("window"))
+.def("Perform", &BWindow::Perform, "", py::arg("code"), py::arg("data"))
+.def("SetType", &BWindow::SetType, "", py::arg("type"))
+.def("Type", &BWindow::Type, "")
+.def("SetLook", &BWindow::SetLook, "", py::arg("look"))
+.def("Look", &BWindow::Look, "")
+.def("SetFeel", &BWindow::SetFeel, "", py::arg("feel"))
+.def("Feel", &BWindow::Feel, "")
+.def("SetFlags", &BWindow::SetFlags, "", py::arg(""))
+.def("Flags", &BWindow::Flags, "")
+.def("IsModal", &BWindow::IsModal, "")
+.def("IsFloating", &BWindow::IsFloating, "")
+.def("SetWindowAlignment", &BWindow::SetWindowAlignment, "", py::arg("mode"), py::arg("h"), py::arg("hOffset")=0, py::arg("width")=0, py::arg("widthOffset")=0, py::arg("v")=0, py::arg("vOffset")=0, py::arg("height")=0, py::arg("heightOffset")=0)
+.def("GetWindowAlignment", &BWindow::GetWindowAlignment, "", py::arg("mode")=NULL, py::arg("h")=NULL, py::arg("hOffset")=NULL, py::arg("width")=NULL, py::arg("widthOffset")=NULL, py::arg("v")=NULL, py::arg("vOffset")=NULL, py::arg("height")=NULL, py::arg("heightOffset")=NULL)
+.def("QuitRequested", &BWindow::QuitRequested, "")
+.def("Run", &BWindow::Run, "")
+.def("SetLayout", &BWindow::SetLayout, "", py::arg("layout"))
+.def("GetLayout", &BWindow::GetLayout, "")
+.def("InvalidateLayout", &BWindow::InvalidateLayout, "", py::arg("descendants")=false)
+.def("Layout", &BWindow::Layout, "", py::arg("force"))
+.def("IsOffscreenWindow", &BWindow::IsOffscreenWindow, "")
+;
+
+
+}
