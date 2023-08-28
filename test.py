@@ -10,7 +10,6 @@ class Window(BWindow):
         self.AddChild(self.panel, None)
  
     def MessageReceived(self, msg):
-        #print(msg)
         if msg.what == self.say_hi.what:
             print("Hello World!")
         else:
@@ -18,10 +17,6 @@ class Window(BWindow):
  
     def QuitRequested(self):
         print("PyQUIT")
-        #be_app_messenger.SendMessage(B_QUIT_REQUESTED)
-        be_app.Lock()
-        be_app.Quit()
-        print('called be_app.Quit()')
         return True
  
 class App(BApplication):
@@ -36,7 +31,6 @@ def main():
     be_app = App()
     be_app.Run()
     print('Ran')
-    return None
  
 if __name__ == "__main__":
     main()

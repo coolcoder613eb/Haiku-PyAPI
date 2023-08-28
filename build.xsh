@@ -1,3 +1,4 @@
+#!/usr/bin/env xonsh
 def do(src,dst):
     g++ -shared -std=c++14 -pipe -fPIC -I/system/lib/python3.9/vendor-packages/pybind11/include/ -I/system/develop/headers/python3.9/ @(src) -lbe -o @(dst)
 
@@ -7,8 +8,13 @@ files={('app','AppKit'):('AppDefs','Application','Clipboard',
 'Key','KeyStore','Looper',
 'Message','MessageFilter','MessageQueue',
 'PropertyInfo','Roster'),
-('interface','InterfaceKit'):('Window','Rect','View',
-'Button')}
+('interface','InterfaceKit'):('Button',
+ 'Control',
+ 'Rect',
+ 'StringView',
+ 'TextControl',
+ 'View',
+ 'Window')}
 for dir in files.keys():
     cd @(dir[0])
     do([file+'.cpp' for x in files[dir]],dir[1]+'.so')
