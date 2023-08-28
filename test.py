@@ -1,14 +1,13 @@
-from bin import BApplication, BWindow, BRect, BMessage, BView, BButton, window_type
- 
+from bin import BApplication, BWindow, BRect, BMessage, BView, BButton, window_type,  B_NOT_RESIZABLE
+
 class Window(BWindow):
     def __init__(self):
-        BWindow.__init__(self, BRect(100,100,400,400), "Hello Haiku!", window_type.B_TITLED_WINDOW, 0)
+        BWindow.__init__(self, BRect(100,100,200,150), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE)
         self.say_hi = BMessage(1)
         self.panel = BView(self.Bounds(), "panel", 8, 20000000)
-        self.button = BButton(BRect(10,10,100,50), "hi", "Say Hello!", self.say_hi)
+        self.button = BButton(self.panel.Bounds(), "hi", "Say Hello!", self.say_hi) #BRect(10,10,100,50)
         self.panel.AddChild(self.button, None)
         self.AddChild(self.panel, None)
-        self.Show()
  
     def MessageReceived(self, msg):
         #print(msg)
@@ -19,16 +18,25 @@ class Window(BWindow):
  
     def QuitRequested(self):
         print("PyQUIT")
+        #be_app_messenger.SendMessage(B_QUIT_REQUESTED)
+        be_app.Lock()
+        be_app.Quit()
+        print('called be_app.Quit()')
         return True
  
 class App(BApplication):
     def __init__(self):
         BApplication.__init__(self, "application/x-python")
+    def ReadyToRun(self):
         self.window = Window()
+        self.window.Show()
  
 def main():
-    a = App()
-    a.Run()
+    global be_app
+    be_app = App()
+    be_app.Run()
+    print('Ran')
+    return None
  
 if __name__ == "__main__":
     main()

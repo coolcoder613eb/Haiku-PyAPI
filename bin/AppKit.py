@@ -1,5 +1,4 @@
 from .app.AppDefs import *
-from .app.Application import *
 from .app.Clipboard import *
 from .app.Cursor import *
 from .app.Handler import *
@@ -7,6 +6,7 @@ from .app.Invoker import *
 from .app.Key import *
 from .app.KeyStore import *
 from .app.Looper import *
+from .app.Application import * # has to be after looper
 from .app.Message import *
 from .app.MessageFilter import *
 from .app.MessageQueue import *

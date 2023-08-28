@@ -7,6 +7,7 @@
 #include <Invoker.h>
 #include <Message.h>	// For convenience
 #include <View.h>
+#include <Bitmap.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -17,7 +18,7 @@ m.attr("B_CONTROL_OFF") = 0;
 m.attr("B_CONTROL_ON") = 1;
 m.attr("B_CONTROL_PARTIALLY_ON") = 2;
 
-m.attr("BIcon") = BIcon;
+//m.attr("BIcon") = BIcon;
 
 py::class_<BControl, BView, BInvoker>(m, "BControl")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode"), py::arg("flags"))

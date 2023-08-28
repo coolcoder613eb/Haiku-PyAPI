@@ -6,13 +6,14 @@
 #include <interface/TextControl.h>
 #include <Control.h>
 #include <TextView.h>
+#include <LayoutItem.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
 PYBIND11_MODULE(TextControl,m)
 {
-m.attr("_BTextInput_") = _BTextInput_;
+
 
 py::class_<BTextControl, BControl>(m, "BTextControl")
 .def(py::init<BRect, const char *, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("initialText"), py::arg("message"), py::arg("resizeMask")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
@@ -61,5 +62,5 @@ py::class_<BTextControl, BControl>(m, "BTextControl")
 .def("CreateTextViewLayoutItem", &BTextControl::CreateTextViewLayoutItem, "")
 ;
 
-
+//m.attr("_BTextInput_") = _BTextInput_;
 }

@@ -18,6 +18,32 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBApplication : public BApplication{
+	public:
+        using BApplication::BApplication;
+        void ReadyToRun() override {
+        	py::gil_scoped_release release;
+            {
+                py::gil_scoped_acquire acquire;
+                PYBIND11_OVERLOAD(void, BApplication, ReadyToRun);
+            }
+        }
+        bool QuitRequested() override {
+            py::gil_scoped_release release;
+            {
+                py::gil_scoped_acquire acquire;
+                PYBIND11_OVERLOAD(
+                    bool,
+                    BApplication,
+                    QuitRequested,
+                );
+            }
+        }
+        
+ 
+        
+};
+
 PYBIND11_MODULE(Application,m)
 {
 /*
@@ -25,11 +51,12 @@ m.attr("PortLink") = PortLink;
 
 m.attr("ServerMemoryAllocator") = ServerMemoryAllocator;
 
-m.attr("be_app") = be_app;
+
 
 m.attr("be_app_messenger") = be_app_messenger;
 */
-py::class_<BApplication>(m, "BApplication")
+//m.attr("be_app") = be_app;
+py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def(py::init<const char *>(), "", py::arg("signature"))
 .def(py::init<const char *, status_t *>(), "", py::arg("signature"), py::arg("error"))
 .def(py::init<BMessage *>(), "", py::arg("data"))
@@ -69,6 +96,8 @@ py::class_<BApplication>(m, "BApplication")
 .def("Perform", &BApplication::Perform, "", py::arg("d"), py::arg("arg"))
 //.def_readwrite("Private", &BApplication::Private, "")
 ;
-
+m.attr("be_app")=be_app;
+//extern BMessenger be_app_messenger;
+//m.attr("be_app_messenger") = be_app_messenger;
 
 }
