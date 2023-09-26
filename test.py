@@ -1,8 +1,8 @@
-from bin import BApplication, BWindow, BRect, BMessage, BView, BButton, window_type,  B_NOT_RESIZABLE
+from Be import BApplication, BWindow, BRect, BMessage, BView, BButton, window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 
 class Window(BWindow):
     def __init__(self):
-        BWindow.__init__(self, BRect(100,100,200,150), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE)
+        BWindow.__init__(self, BRect(100,100,200,150), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE)
         self.say_hi = BMessage(1)
         self.panel = BView(self.Bounds(), "panel", 8, 20000000)
         self.button = BButton(self.panel.Bounds(), "hi", "Say Hello!", self.say_hi) #BRect(10,10,100,50)

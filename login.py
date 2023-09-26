@@ -1,4 +1,4 @@
-from bin import (
+from Be import (
     BApplication,
     BWindow,
     BRect,

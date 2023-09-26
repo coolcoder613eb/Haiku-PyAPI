@@ -2,6 +2,8 @@
 def do(src,dst):
     g++ -shared -std=c++14 -pipe -fPIC -I/system/lib/python3.9/vendor-packages/pybind11/include/ -I/system/develop/headers/python3.9/ @(src) -lbe -o @(dst)
 
+ARCH=$(uname -p).strip()
+
 cd bindings
 files={('app','AppKit'):('AppDefs','Application','Clipboard',
 'Cursor','Handler','Invoker',
@@ -17,8 +19,9 @@ files={('app','AppKit'):('AppDefs','Application','Clipboard',
  'Window')}
 for dir in files.keys():
     cd @(dir[0])
-    do([file+'.cpp' for x in files[dir]],dir[1]+'.so')
-    mv *.so @('../../bin/'+dir[0])
+    do([file+'.cpp' for file in files[dir]],dir[1]+'.so')
+    mv *.so @('../../bin/'+ARCH+'/'+dir[0])
+    cd @('../../bin/'+ARCH+'/'+dir[0])
     for file in files[dir]:
         ln -s @(dir[1]+'.so') @(file+'.so')
     cd ..

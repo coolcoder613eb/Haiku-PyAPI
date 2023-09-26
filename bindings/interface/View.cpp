@@ -109,7 +109,7 @@ m.attr("_VIEW_CENTER_") = _VIEW_CENTER_;
 
 //m.attr("ViewState") = ViewState;
 
-py::class_<BView>(m, "BView")
+py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
 .def(py::init<BRect, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))

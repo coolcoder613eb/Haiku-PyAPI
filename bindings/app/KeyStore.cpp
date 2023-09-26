@@ -53,25 +53,25 @@ py::class_<BKeyStore>(m, "BKeyStore")
 .def("AddKey", py::overload_cast<const char *, const BKey &>(&BKeyStore::AddKey), "", py::arg("keyring"), py::arg("key"))
 .def("RemoveKey", py::overload_cast<const BKey &>(&BKeyStore::RemoveKey), "", py::arg("key"))
 .def("RemoveKey", py::overload_cast<const char *, const BKey &>(&BKeyStore::RemoveKey), "", py::arg("keyring"), py::arg("key"))
-.def("GetNextKey", [](BKeyStore& self,unsigned int cookie) {
+.def("GetNextKey", [](BKeyStore& self,uint32 cookie) {
     BKey*  key;
     status_t r = self.GetNextKey(cookie, *key);
     return std::make_tuple(r,key);
 }
 , "", py::arg("cookie"))
-.def("GetNextKey", [](BKeyStore& self,BKeyType type,BKeyPurpose purpose,unsigned int cookie) {
+.def("GetNextKey", [](BKeyStore& self,BKeyType type,BKeyPurpose purpose,uint32 cookie) {
     BKey*  key;
     status_t r = self.GetNextKey(type, purpose, cookie, *key);
     return std::make_tuple(r,key);
 }
 , "", py::arg("type"), py::arg("purpose"), py::arg("cookie"))
-.def("GetNextKey", [](BKeyStore& self,const char * keyring,unsigned int cookie) {
+.def("GetNextKey", [](BKeyStore& self,const char * keyring,uint32 cookie) {
     BKey*  key;
     status_t r = self.GetNextKey(keyring, cookie, *key);
     return std::make_tuple(r,key);
 }
 , "", py::arg("keyring"), py::arg("cookie"))
-.def("GetNextKey", [](BKeyStore& self,const char * keyring,BKeyType type,BKeyPurpose purpose,unsigned int cookie) {
+.def("GetNextKey", [](BKeyStore& self,const char * keyring,BKeyType type,BKeyPurpose purpose,uint32 cookie) {
     BKey*  key;
     status_t r = self.GetNextKey(keyring, type, purpose, cookie, *key);
     return std::make_tuple(r,key);
@@ -79,7 +79,7 @@ py::class_<BKeyStore>(m, "BKeyStore")
 , "", py::arg("keyring"), py::arg("type"), py::arg("purpose"), py::arg("cookie"))
 .def("AddKeyring", &BKeyStore::AddKeyring, "", py::arg("keyring"))
 .def("RemoveKeyring", &BKeyStore::RemoveKeyring, "", py::arg("keyring"))
-.def("GetNextKeyring", [](BKeyStore& self,unsigned int cookie) {
+.def("GetNextKeyring", [](BKeyStore& self,uint32 cookie) {
     BString  keyring;
     status_t r = self.GetNextKeyring(cookie, keyring);
     return std::make_tuple(r,keyring);
@@ -91,7 +91,7 @@ py::class_<BKeyStore>(m, "BKeyStore")
 .def("RemoveMasterUnlockKey", &BKeyStore::RemoveMasterUnlockKey, "")
 .def("AddKeyringToMaster", &BKeyStore::AddKeyringToMaster, "", py::arg("keyring"))
 .def("RemoveKeyringFromMaster", &BKeyStore::RemoveKeyringFromMaster, "", py::arg("keyring"))
-.def("GetNextMasterKeyring", [](BKeyStore& self,unsigned int cookie) {
+.def("GetNextMasterKeyring", [](BKeyStore& self,uint32 cookie) {
     BString  keyring;
     status_t r = self.GetNextMasterKeyring(cookie, keyring);
     return std::make_tuple(r,keyring);
@@ -100,13 +100,13 @@ py::class_<BKeyStore>(m, "BKeyStore")
 .def("IsKeyringUnlocked", &BKeyStore::IsKeyringUnlocked, "", py::arg("keyring"))
 .def("LockKeyring", &BKeyStore::LockKeyring, "", py::arg("keyring"))
 .def("LockMasterKeyring", &BKeyStore::LockMasterKeyring, "")
-.def("GetNextApplication", [](BKeyStore& self,unsigned int cookie) {
+.def("GetNextApplication", [](BKeyStore& self,uint32 cookie) {
     BString  signature;
     status_t r = self.GetNextApplication(cookie, signature);
     return std::make_tuple(r,signature);
 }
 , "", py::arg("cookie"))
-.def("GetNextApplication", [](BKeyStore& self,const char * keyring,unsigned int cookie) {
+.def("GetNextApplication", [](BKeyStore& self,const char * keyring,uint32 cookie) {
     BString  signature;
     status_t r = self.GetNextApplication(keyring, cookie, signature);
     return std::make_tuple(r,signature);
@@ -114,7 +114,7 @@ py::class_<BKeyStore>(m, "BKeyStore")
 , "", py::arg("keyring"), py::arg("cookie"))
 .def("RemoveApplication", py::overload_cast<const char *>(&BKeyStore::RemoveApplication), "", py::arg("signature"))
 .def("RemoveApplication", py::overload_cast<const char *, const char *>(&BKeyStore::RemoveApplication), "", py::arg("keyring"), py::arg("signature"))
-.def("GeneratePassword", [](BKeyStore& self,size_t length,unsigned int flags) {
+.def("GeneratePassword", [](BKeyStore& self,size_t length,uint32 flags) {
     BPasswordKey*  password;
     status_t r = self.GeneratePassword(*password, length, flags);
     return std::make_tuple(r,password);
