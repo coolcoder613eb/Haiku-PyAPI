@@ -6,6 +6,8 @@
 #include <interface/Font.h>
 #include <SupportDefs.h>
 #include <InterfaceDefs.h>
+#include <Rect.h>
+#include <Shape.h>
 
 namespace py = pybind11;
 
@@ -68,11 +70,7 @@ py::enum_<font_file_format>(m, "font_file_format", "")
 .value("B_POSTSCRIPT_TYPE1_WINDOWS", font_file_format::B_POSTSCRIPT_TYPE1_WINDOWS, "")
 .export_values();
 
-m.attr("be_plain_font") = be_plain_font;
 
-m.attr("be_bold_font") = be_bold_font;
-
-m.attr("be_fixed_font") = be_fixed_font;
 
 py::class_<unicode_block>(m, "unicode_block")
 .def(py::init(), "")
@@ -89,7 +87,7 @@ py::class_<unicode_block_range>(m, "unicode_block_range")
 .def("Count", &unicode_block_range::Count, "")
 .def_readwrite("start", &unicode_block_range::start, "")
 .def_readwrite("end", &unicode_block_range::end, "")
-.def_readwrite("block", &unicode_block_range::block, "")
+//.def_readonly("block", &unicode_block_range::block, "")
 ;
 
 py::class_<edge_info>(m, "edge_info")
@@ -140,7 +138,7 @@ py::class_<BFont>(m, "BFont")
 .def("SetEncoding", &BFont::SetEncoding, "", py::arg("encoding"))
 .def("SetFace", &BFont::SetFace, "", py::arg("face"))
 .def("SetFlags", &BFont::SetFlags, "", py::arg("flags"))
-.def("GetFamilyAndStyle", &BFont::GetFamilyAndStyle, "", py::arg("family"), py::arg("style"))
+//.def("GetFamilyAndStyle", &BFont::GetFamilyAndStyle, "", py::arg("family"), py::arg("style"))
 .def("FamilyAndStyle", &BFont::FamilyAndStyle, "")
 .def("Size", &BFont::Size, "")
 .def("Shear", &BFont::Shear, "")
@@ -160,21 +158,23 @@ py::class_<BFont>(m, "BFont")
 .def("CountTuned", &BFont::CountTuned, "")
 .def("GetTunedInfo", &BFont::GetTunedInfo, "", py::arg("index"), py::arg("info"))
 .def("TruncateString", &BFont::TruncateString, "", py::arg("inOut"), py::arg("mode"), py::arg("width"))
-.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, BString>(&BFont::GetTruncatedStrings), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
-.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, char *>(&BFont::GetTruncatedStrings), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
-.def("StringWidth", py::overload_cast<const char *>(&BFont::StringWidth), "", py::arg("string"))
-.def("StringWidth", py::overload_cast<const char *, int>(&BFont::StringWidth), "", py::arg("string"), py::arg("length"))
-.def("GetStringWidths", &BFont::GetStringWidths, "", py::arg("stringArray"), py::arg("lengthArray"), py::arg("numStrings"), py::arg("widthArray"))
-.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
-.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, float>(&BFont::GetEscapements), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
-.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint>(&BFont::GetEscapements), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
-.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint, BPoint>(&BFont::GetEscapements), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"), py::arg("offsetArray"))
+//.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, BString>(&BFont::GetTruncatedStrings, py::const_), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
+//.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, char *>(&BFont::GetTruncatedStrings, py::const_), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
+.def("StringWidth", py::overload_cast<const char *>(&BFont::StringWidth, py::const_), "", py::arg("string"))
+.def("StringWidth", py::overload_cast<const char *, int>(&BFont::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))
+//.def("GetStringWidths", &BFont::GetStringWidths, "", py::arg("stringArray"), py::arg("lengthArray"), py::arg("numStrings"), py::arg("widthArray"))
+/*
+.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
+.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
+.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
+.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"), py::arg("offsetArray"))
+*/
 .def("GetEdges", &BFont::GetEdges, "", py::arg("charArray"), py::arg("numBytes"), py::arg("edgeArray"))
 .def("GetHeight", &BFont::GetHeight, "", py::arg("height"))
 .def("GetBoundingBoxesAsGlyphs", &BFont::GetBoundingBoxesAsGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("boundingBoxArray"))
 .def("GetBoundingBoxesAsString", &BFont::GetBoundingBoxesAsString, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("delta"), py::arg("boundingBoxArray"))
-.def("GetBoundingBoxesForStrings", &BFont::GetBoundingBoxesForStrings, "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("deltas"), py::arg("boundingBoxArray"))
-.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
+//.def("GetBoundingBoxesForStrings", &BFont::GetBoundingBoxesForStrings, "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("deltas"), py::arg("boundingBoxArray"))
+//.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
 .def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
 .def("operator=", &BFont::operator=, "", py::arg("font"))
 .def("__eq__", &BFont::operator==, "", py::arg("font"))
@@ -184,14 +184,14 @@ py::class_<BFont>(m, "BFont")
 .def("LoadFont", py::overload_cast<const area_id, size_t, size_t>(&BFont::LoadFont), "", py::arg("fontAreaID"), py::arg("size")=0, py::arg("offset")=0)
 .def("UnloadFont", &BFont::UnloadFont, "")
 ;
-
+/*
 m.def("count_font_families", &count_font_families, "", py::arg(""));
 
-m.def("get_font_family", &get_font_family, "", py::arg("index"), py::arg("name"), py::arg("flags")=NULL);
+//m.def("get_font_family", &get_font_family, "", py::arg("index"), py::arg("name"), py::arg("flags")=NULL);
 
 m.def("count_font_styles", &count_font_styles, "", py::arg("name"));
 
-m.def("get_font_style", py::overload_cast<font_family, int, font_style *, unsigned int>(&get_font_style), "", py::arg("family"), py::arg("index"), py::arg("name"), py::arg("flags")=NULL);
+m.def("get_font_style", py::overload_cast<font_family, int, font_style *, unsigned int>(&get_font_style,py::const_), "", py::arg("family"), py::arg("index"), py::arg("name"), py::arg("flags")=NULL);
 
 m.def("get_font_style", py::overload_cast<font_family, int, font_style *, unsigned short int, unsigned int>(&get_font_style), "", py::arg("family"), py::arg("index"), py::arg("name"), py::arg("face"), py::arg("flags")=NULL);
 
@@ -206,5 +206,10 @@ m.def("operator=", &operator=, "", py::arg("block"));
 m.def("__eq__", &operator==, "", py::arg("block"));
 
 m.def("__ne__", &operator!=, "", py::arg("block"));
+*/
+m.attr("be_plain_font") = be_plain_font;
 
+m.attr("be_bold_font") = be_bold_font;
+
+m.attr("be_fixed_font") = be_fixed_font;
 }

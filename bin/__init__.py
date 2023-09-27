@@ -24,7 +24,7 @@ from .interface.View import *
 from .interface.Button import *
 from .interface.Control import *
 from .interface.TextControl import *
-
+from .interface.StringView import *
 
 def int32(bytestr):
 	return struct.unpack('i',bytestr)[0]

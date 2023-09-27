@@ -8,10 +8,9 @@
 
 namespace py = pybind11;
 
-
 PYBIND11_MODULE(StringView,m)
 {
-py::class_<BStringView, BView>(m, "BStringView")
+py::class_<BStringView, BView, std::unique_ptr<BStringView, py::nodelete>>(m, "BStringView")
 .def(py::init<BRect, const char *, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("text"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW)
 .def(py::init<const char *, const char *, unsigned int>(), "", py::arg("name"), py::arg("text"), py::arg("flags")=B_WILL_DRAW)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
@@ -43,7 +42,7 @@ py::class_<BStringView, BView>(m, "BStringView")
 .def("MouseMoved", &BStringView::MouseMoved, "", py::arg("point"), py::arg("transit"), py::arg("dragMessage"))
 .def("ResolveSpecifier", &BStringView::ResolveSpecifier, "", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("form"), py::arg("property"))
 .def("GetSupportedSuites", &BStringView::GetSupportedSuites, "", py::arg("data"))
-.def("SetFont", &BStringView::SetFont, "", py::arg("font"), py::arg("mask")=B_FONT_ALL)
+.def("SetFont", &BStringView::SetFont, "", py::arg("font"), py::arg("mask")=py::int_(0x000001FF))
 ;
 
 
