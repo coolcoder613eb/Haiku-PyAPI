@@ -24,5 +24,5 @@ for dir in files.keys():
     cd @('../../bin/'+ARCH+'/'+dir[0])
     for file in files[dir]:
         ln -s @(dir[1]+'.so') @(file+'.so')
-    cd ..
+    cd ../../../bindings
 cd ..
