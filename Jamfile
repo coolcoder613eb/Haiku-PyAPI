@@ -1,0 +1,99 @@
+# Example usage:
+# jam -j$(nproc) - build using all cpu cores
+# jam clean - remove all build files
+#
+# Documentation for jam can be found at /boot/system/documentation/packages/jam
+# * Jamfile.html provides a good reference for those writing Jamfiles.
+# * Jambase.html documents the built-in rules.
+# * Jam.html documents syntax and the jam command usage.
+
+## Utility rules
+# Maybe these should be built-in to Jambase.
+
+# To create a shared library from some object files...
+rule SharedLibraryFromObjects
+{
+	# Compile as if creating an executable
+	MainFromObjects $(<) : $(>) ;
+	# But build with the -shared flag when linking
+	LINKFLAGS on $(<) = [ on $(<) return $(LINKFLAGS) ] -shared ;
+}
+
+# To create a shared library from some code files...
+rule SharedLibrary
+{
+	# Compile the input files into .o files
+	Objects $(>) ;
+	# Then turn those .o files into a single .so file
+	SharedLibraryFromObjects $(<) : $(>:S=$(SUFOBJ)) ;
+	# Remove .o file after .so is made
+	RmTemps $(<) : $(>:S=$(SUFOBJ)) ;
+}
+
+# To create a soft link, run the following command in the terminal.
+# This replaces the built-in SoftLink action.
+actions SoftLink
+{
+	$(RM) $(<) && $(LN) -sr $(>) $(<)
+}
+
+## Main build file
+
+# Where to search for .cpp files
+SEARCH_SOURCE += bindings/interface bindings/app api ;
+
+# Where to look for header files
+SubDirHdrs /system/lib/python3.9/vendor-packages/pybind11/include/ ;
+SubDirHdrs /system/develop/headers/python3.9/ ;
+
+# Additional C++ flags to use when compiling
+SubDirC++Flags -std=c++14 -pipe -fPIC ;
+
+# Flags to use when linking
+LINKLIBS = -lbe ;
+
+# Where to put the generated build files
+LOCATE_TARGET = bin/x86_64 ; # TODO: hardcoded arch
+
+# The source files that we want to compile:
+local sourceFiles =
+	# AppKit
+	AppDefs.cpp
+	Application.cpp
+	Clipboard.cpp
+	Cursor.cpp
+	Handler.cpp
+	Invoker.cpp
+	Key.cpp
+	KeyStore.cpp
+	Looper.cpp
+	Message.cpp
+	MessageFilter.cpp
+	MessageQueue.cpp
+	MessageRunner.cpp
+	Messenger.cpp
+	Notification.cpp
+	PropertyInfo.cpp
+	Roster.cpp
+
+	# InterfaceKit
+	Button.cpp
+	Control.cpp
+	Rect.cpp
+	StringView.cpp
+	TextControl.cpp
+	View.cpp
+	Window.cpp
+	Font.cpp ;
+
+# The shared library Be.so can be built from the sourceFiles
+SharedLibrary Be.so : $(sourceFiles) ;
+
+# Create all the symlinks to Be.so
+for sourceFile in $(sourceFiles) {
+	# replace sourceFile's suffix (aka file extension) with .so
+	libFile = $(sourceFile:S=.so) ;
+
+	# $(libFile) can be made by symlinking to Be.so
+	SoftLink $(LOCATE_TARGET)/$(libFile) : Be.so ;
+}
