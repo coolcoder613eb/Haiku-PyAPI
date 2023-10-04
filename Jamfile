@@ -40,7 +40,7 @@ actions SoftLink
 ## Main build file
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app api ;
+SEARCH_SOURCE += bindings/interface bindings/app;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python3.9/vendor-packages/pybind11/include/ ; #TODO: hardcoded python version
