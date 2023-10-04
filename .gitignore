@@ -3,3 +3,5 @@ __pycache__
 ._*
 .DS_Store
 .vscode
+/bin/x86_64/*.so
+/bin/x86_64/*.o
