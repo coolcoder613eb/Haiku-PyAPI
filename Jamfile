@@ -43,7 +43,7 @@ actions SoftLink
 SEARCH_SOURCE += bindings/interface bindings/app api ;
 
 # Where to look for header files
-SubDirHdrs /system/lib/python3.9/vendor-packages/pybind11/include/ ;
+SubDirHdrs /system/lib/python3.9/vendor-packages/pybind11/include/ ; #TODO: hardcoded python version
 SubDirHdrs /system/develop/headers/python3.9/ ;
 
 # Additional C++ flags to use when compiling
@@ -77,6 +77,8 @@ local sourceFiles =
 	Roster.cpp
 
 	# InterfaceKit
+	InterfaceDefs.cpp
+	Alert.cpp
 	Button.cpp
 	Control.cpp
 	Rect.cpp
