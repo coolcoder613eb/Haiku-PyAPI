@@ -6,7 +6,7 @@ def do(src,dst):
 ARCH=$(uname -p).strip()
 
 cd bindings
-files={('interface','InterfaceKit'):('Button','Control',
+files={('interface','InterfaceKit'):('InterfaceDefs','Alert','Button','Control',
  'Rect','StringView','TextControl',
  'View','Window','Font'),
  ('app','AppKit'):('AppDefs','Application','Clipboard',

@@ -399,6 +399,6 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 //.def_readwrite("Private", &BView::Private, "")
 ;
 
-m.def("_rule_", &_rule_, "", py::arg("r1"), py::arg("r2"), py::arg("r3"), py::arg("r4")); 
+//m.def("_rule_", &_rule_, "", py::arg("r1"), py::arg("r2"), py::arg("r3"), py::arg("r4")); 
 
 }

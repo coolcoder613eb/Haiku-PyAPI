@@ -6,6 +6,10 @@
 #include <interface/Alert.h>
 #include <vector>
 #include <Window.h>
+#include <Button.h>
+#include <Invoker.h>
+#include <Bitmap.h>
+#include <TextView.h>
 
 namespace py = pybind11;
 

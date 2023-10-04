@@ -7,6 +7,9 @@
 #include <GraphicsDefs.h>
 #include <OS.h>
 #include <String.h>
+#include <Bitmap.h>
+#include <Point.h>
+#include <Rect.h>
 
 namespace py = pybind11;
 
@@ -264,7 +267,7 @@ m.attr("B_DISABLED_MARK_TINT") = B_DISABLED_MARK_TINT;
 
 py::class_<key_info>(m, "key_info")
 .def_readwrite("modifiers", &key_info::modifiers, "")
-.def_readwrite("key_states", &key_info::key_states, "")
+.def_readonly("key_states", &key_info::key_states, "")
 ;
 
 py::class_<key_map>(m, "key_map")
@@ -282,20 +285,20 @@ py::class_<key_map>(m, "key_map")
 .def_readwrite("right_option_key", &key_map::right_option_key, "")
 .def_readwrite("menu_key", &key_map::menu_key, "")
 .def_readwrite("lock_settings", &key_map::lock_settings, "")
-.def_readwrite("control_map", &key_map::control_map, "")
-.def_readwrite("option_caps_shift_map", &key_map::option_caps_shift_map, "")
-.def_readwrite("option_caps_map", &key_map::option_caps_map, "")
-.def_readwrite("option_shift_map", &key_map::option_shift_map, "")
-.def_readwrite("option_map", &key_map::option_map, "")
-.def_readwrite("caps_shift_map", &key_map::caps_shift_map, "")
-.def_readwrite("caps_map", &key_map::caps_map, "")
-.def_readwrite("shift_map", &key_map::shift_map, "")
-.def_readwrite("normal_map", &key_map::normal_map, "")
-.def_readwrite("acute_dead_key", &key_map::acute_dead_key, "")
-.def_readwrite("grave_dead_key", &key_map::grave_dead_key, "")
-.def_readwrite("circumflex_dead_key", &key_map::circumflex_dead_key, "")
-.def_readwrite("dieresis_dead_key", &key_map::dieresis_dead_key, "")
-.def_readwrite("tilde_dead_key", &key_map::tilde_dead_key, "")
+.def_readonly("control_map", &key_map::control_map, "")
+.def_readonly("option_caps_shift_map", &key_map::option_caps_shift_map, "")
+.def_readonly("option_caps_map", &key_map::option_caps_map, "")
+.def_readonly("option_shift_map", &key_map::option_shift_map, "")
+.def_readonly("option_map", &key_map::option_map, "")
+.def_readonly("caps_shift_map", &key_map::caps_shift_map, "")
+.def_readonly("caps_map", &key_map::caps_map, "")
+.def_readonly("shift_map", &key_map::shift_map, "")
+.def_readonly("normal_map", &key_map::normal_map, "")
+//.def_readonly("acute_dead_key", &key_map::acute_dead_key, "")
+.def_readonly("grave_dead_key", &key_map::grave_dead_key, "")
+.def_readonly("circumflex_dead_key", &key_map::circumflex_dead_key, "")
+.def_readonly("dieresis_dead_key", &key_map::dieresis_dead_key, "")
+.def_readonly("tilde_dead_key", &key_map::tilde_dead_key, "")
 .def_readwrite("acute_tables", &key_map::acute_tables, "")
 .def_readwrite("grave_tables", &key_map::grave_tables, "")
 .def_readwrite("circumflex_tables", &key_map::circumflex_tables, "")
@@ -304,7 +307,7 @@ py::class_<key_map>(m, "key_map")
 ;
 
 py::class_<mouse_map>(m, "mouse_map")
-.def_readwrite("button", &mouse_map::button, "")
+.def_readonly("button", &mouse_map::button, "")
 ;
 
 py::class_<scroll_bar_info>(m, "scroll_bar_info")
@@ -324,9 +327,9 @@ m.def("get_scroll_bar_info", &get_scroll_bar_info, "", py::arg("info"));
 
 m.def("set_scroll_bar_info", &set_scroll_bar_info, "", py::arg("info"));
 
-m.def("get_mouse_type", py::overload_cast<int>(&get_mouse_type), "", py::arg("type"));
+//m.def("get_mouse_type", py::overload_cast<int>(&get_mouse_type, py::const_), "", py::arg("type"));
 
-m.def("get_mouse_type", py::overload_cast<const char *, int>(&get_mouse_type), "", py::arg("mouse_name"), py::arg("type"));
+//m.def("get_mouse_type", py::overload_cast<const char *, int>(&get_mouse_type, py::const_), "", py::arg("mouse_name"), py::arg("type"));
 
 m.def("set_mouse_type", &set_mouse_type, "", py::arg("mouse_name"), py::arg("type"));
 
@@ -338,15 +341,15 @@ m.def("get_click_speed", &get_click_speed, "", py::arg("speed"));
 
 m.def("set_click_speed", &set_click_speed, "", py::arg("speed"));
 
-m.def("get_mouse_speed", py::overload_cast<int>(&get_mouse_speed), "", py::arg("speed"));
+//m.def("get_mouse_speed", py::overload_cast<int>(&get_mouse_speed, py::const_), "", py::arg("speed"));
 
-m.def("get_mouse_speed", py::overload_cast<const char *, int>(&get_mouse_speed), "", py::arg("mouse_name"), py::arg("speed"));
+//m.def("get_mouse_speed", py::overload_cast<const char *, int>(&get_mouse_speed, py::const_), "", py::arg("mouse_name"), py::arg("speed"));
 
 m.def("set_mouse_speed", &set_mouse_speed, "", py::arg("mouse_name"), py::arg("speed"));
 
-m.def("get_mouse_acceleration", py::overload_cast<int>(&get_mouse_acceleration), "", py::arg("speed"));
+//m.def("get_mouse_acceleration", py::overload_cast<int>(&get_mouse_acceleration, py::const_), "", py::arg("speed"));
 
-m.def("get_mouse_acceleration", py::overload_cast<const char *, int>(&get_mouse_acceleration), "", py::arg("mouse_name"), py::arg("speed"));
+//m.def("get_mouse_acceleration", py::overload_cast<const char *, int>(&get_mouse_acceleration, py::const_), "", py::arg("mouse_name"), py::arg("speed"));
 
 m.def("set_mouse_acceleration", &set_mouse_acceleration, "", py::arg("mouse_name"), py::arg("speed"));
 
@@ -362,7 +365,7 @@ m.def("modifiers", &modifiers, "");
 
 m.def("get_key_info", &get_key_info, "", py::arg("info"));
 
-m.def("get_key_map", &get_key_map, "", py::arg("_map"), py::arg("_keyBuffer"));
+//m.def("get_key_map", &get_key_map, "", py::arg("_map"), py::arg("_keyBuffer"));
 
 m.def("get_keyboard_id", &get_keyboard_id, "", py::arg("_id"));
 
@@ -404,7 +407,7 @@ m.def("focus_follows_mouse_mode", &focus_follows_mouse_mode, "");
 
 m.def("get_mouse", &get_mouse, "", py::arg("screenWhere"), py::arg("buttons"));
 
-m.def("get_mouse_bitmap", &get_mouse_bitmap, "", py::arg("bitmap"), py::arg("hotspot"));
+//m.def("get_mouse_bitmap", &get_mouse_bitmap, "", py::arg("bitmap"), py::arg("hotspot"));
 
 m.def("set_accept_first_click", &set_accept_first_click, "", py::arg("acceptFirstClick"));
 
