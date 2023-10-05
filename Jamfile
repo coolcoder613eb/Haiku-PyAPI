@@ -37,15 +37,30 @@ actions SoftLink
 	$(RM) $(<) && $(LN) -sr $(>) $(<)
 }
 
+
+rule CreateSymlinks
+{
+# Create all the symlinks to Be.so
+for sourceFile in $(sourceFiles) {
+	# replace sourceFile's suffix (aka file extension) with .so
+	libFile = $(sourceFile:S=.so) ;
+
+	# $(libFile) can be made by symlinking to Be.so
+	SoftLink $(<)/$(libFile) : Be.so ;
+}
+}
+
 ## Main build file
+
+py = 3.10 ;
 
 # Where to search for .cpp files
 SEARCH_SOURCE += bindings/interface bindings/app ;
 
 # Where to look for header files
 # TODO: hardcoded python version
-SubDirHdrs /system/lib/python3.9/vendor-packages/pybind11/include/ ;
-SubDirHdrs /system/develop/headers/python3.9/ ;
+SubDirHdrs /system/lib/python$(py)/vendor-packages/pybind11/include/ ;
+SubDirHdrs /system/develop/headers/python$(py)/ ;
 
 # Additional C++ flags to use when compiling
 SubDirC++Flags -std=c++14 -pipe -fPIC ;
@@ -92,11 +107,6 @@ local sourceFiles =
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;
 
-# Create all the symlinks to Be.so
-for sourceFile in $(sourceFiles) {
-	# replace sourceFile's suffix (aka file extension) with .so
-	libFile = $(sourceFile:S=.so) ;
 
-	# $(libFile) can be made by symlinking to Be.so
-	SoftLink $(LOCATE_TARGET)/$(libFile) : Be.so ;
-}
+
+InstallLib /boot/system/lib/python$(py) : $(LOCATE_TARGET) ;
