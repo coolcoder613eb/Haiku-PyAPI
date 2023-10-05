@@ -27,6 +27,8 @@ rule SharedLibrary
 	# Then turn those .o files into a single .so file
 	SharedLibraryFromObjects $(<) : $(>:S=$(SUFOBJ)) ;
 	# Remove .o file after .so is made
+	# NOTE: commenting this line out allows rebuilds to skip compiling .cpp
+	# files that haven't been changed.
 	RmTemps $(<) : $(>:S=$(SUFOBJ)) ;
 }
 
@@ -37,17 +39,15 @@ actions SoftLink
 	$(RM) $(<) && $(LN) -sr $(>) $(<)
 }
 
-
-rule CreateSymlinks
+# Create multiple symlinks to a single file
+rule Symlink
 {
-# Create all the symlinks to Be.so
-for sourceFile in $(sourceFiles) {
-	# replace sourceFile's suffix (aka file extension) with .so
-	libFile = $(sourceFile:S=.so) ;
+	for targetFile in $(<) {
+		# Put target file into LOCATE_TARGET directory
+		MakeLocate $(targetFile) : $(LOCATE_TARGET) ;
 
-	# $(libFile) can be made by symlinking to Be.so
-	SoftLink $(<)/$(libFile) : Be.so ;
-}
+		SoftLink $(targetFile) : $(>) ;
+	}
 }
 
 ## Main build file
@@ -107,6 +107,9 @@ local sourceFiles =
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;
 
+# The symlinked libraries can be built by linking to Be.so
+Symlink $(sourceFiles:S=.so) : Be.so ;
 
-
-InstallLib /boot/system/lib/python$(py) : $(LOCATE_TARGET) ;
+# As part of `jam install`, copy the following files:
+InstallLib /boot/system/non-packaged/lib/python$(py)/site-packages/haiku-pyapi
+	: $(sourceFiles:S=.so) Be.so ;
