@@ -29,7 +29,7 @@ rule SharedLibrary
 	# Remove .o file after .so is made
 	# NOTE: commenting this line out allows rebuilds to skip compiling .cpp
 	# files that haven't been changed.
-	RmTemps $(<) : $(>:S=$(SUFOBJ)) ;
+	# RmTemps $(<) : $(>:S=$(SUFOBJ)) ;
 }
 
 # To create a soft link, run the following command in the terminal.
@@ -111,5 +111,5 @@ SharedLibrary Be.so : $(sourceFiles) ;
 Symlink $(sourceFiles:S=.so) : Be.so ;
 
 # As part of `jam install`, copy the following files:
-InstallLib /boot/system/non-packaged/lib/python$(py)/site-packages/haiku-pyapi
+InstallLib /boot/system/non-packaged/lib/python$(py)/site-packages/Be
 	: $(sourceFiles:S=.so) Be.so ;
