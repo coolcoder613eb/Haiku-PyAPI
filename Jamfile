@@ -1,6 +1,11 @@
 # Example usage:
 # jam -j$(nproc) - build using all cpu cores
 # jam clean - remove all build files
+# jam -sparameter=value - to pass a parameter
+#
+# Parameters:
+# python_version - version of python to use such. Default value: 3.10
+# py - alias of python_version
 #
 # Documentation for jam can be found at /boot/system/documentation/packages/jam
 # * Jamfile.html provides a good reference for those writing Jamfiles.
@@ -52,15 +57,17 @@ rule Symlink
 
 ## Main build file
 
-py = 3.10 ;
+# Set python_version to default value if user did not specify value
+py ?= 3.10 ;
+python_version ?= $(py) ;
 
 # Where to search for .cpp files
 SEARCH_SOURCE += bindings/interface bindings/app ;
 
 # Where to look for header files
 # TODO: hardcoded python version
-SubDirHdrs /system/lib/python$(py)/vendor-packages/pybind11/include/ ;
-SubDirHdrs /system/develop/headers/python$(py)/ ;
+SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
+SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 
 # Additional C++ flags to use when compiling
 SubDirC++Flags -std=c++14 -pipe -fPIC ;
@@ -69,7 +76,7 @@ SubDirC++Flags -std=c++14 -pipe -fPIC ;
 LINKLIBS = -lbe ;
 
 # Where to put the generated build files
-LOCATE_TARGET = bin/x86_64 ; # TODO: hardcoded arch
+LOCATE_TARGET = bin/x86_64/python$(python_version) ; # TODO: hardcoded arch
 
 # The source files that we want to compile:
 local sourceFiles =
@@ -110,6 +117,10 @@ SharedLibrary Be.so : $(sourceFiles) ;
 # The symlinked libraries can be built by linking to Be.so
 Symlink $(sourceFiles:S=.so) : Be.so ;
 
+# __init__.py can be built by simply copying the file
+MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
+File __init__.py : bindings/__init__.py ;
+
 # As part of `jam install`, copy the following files:
-InstallLib /boot/system/non-packaged/lib/python$(py)/site-packages/Be
-	: $(sourceFiles:S=.so) Be.so ;
+InstallLib /boot/system/non-packaged/lib/python$(python_version)/site-packages/Be
+	: $(sourceFiles:S=.so) Be.so __init__.py ;
