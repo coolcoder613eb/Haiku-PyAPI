@@ -44,6 +44,13 @@ actions SoftLink
 	$(RM) $(<) && $(LN) -sr $(>) $(<)
 }
 
+# This replaces the built-in Install action.
+# This version preserves symlinks when copying.
+actions Install
+{
+	$(CP) -P $(>) $(<)
+}
+
 # Create multiple symlinks to a single file
 rule Symlink
 {
@@ -123,4 +130,4 @@ File __init__.py : bindings/__init__.py ;
 
 # As part of `jam install`, copy the following files:
 InstallLib /boot/system/non-packaged/lib/python$(python_version)/site-packages/Be
-	: $(sourceFiles:S=.so) Be.so __init__.py ;
+	: Be.so $(sourceFiles:S=.so) __init__.py ;
