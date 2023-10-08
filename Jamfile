@@ -72,7 +72,6 @@ python_version ?= $(py) ;
 SEARCH_SOURCE += bindings/interface bindings/app ;
 
 # Where to look for header files
-# TODO: hardcoded python version
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
 SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 
