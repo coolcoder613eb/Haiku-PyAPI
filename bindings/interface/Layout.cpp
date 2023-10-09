@@ -9,6 +9,8 @@
 #include <LayoutItem.h>
 #include <List.h>
 #include <Size.h>
+#include <View.h>
+#include <LayoutContext.h>
 
 namespace py = pybind11;
 

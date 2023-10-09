@@ -15,7 +15,7 @@ using namespace BPrivate;
 
 PYBIND11_MODULE(MenuItem,m)
 {
-m.attr("MenuItemPrivate") = MenuItemPrivate;
+//m.attr("MenuItemPrivate") = MenuItemPrivate;
 
 py::class_<BMenuItem, BArchivable, BInvoker>(m, "BMenuItem")
 .def(py::init<const char *, BMessage *, char, unsigned int>(), "", py::arg("label"), py::arg("message"), py::arg("shortcut")=0, py::arg("modifiers")=0)

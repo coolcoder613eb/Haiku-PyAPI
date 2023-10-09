@@ -7,6 +7,7 @@
 #include <InterfaceDefs.h>
 #include <List.h>
 #include <View.h>
+#include <MenuItem.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -19,18 +20,18 @@ py::enum_<menu_layout>(m, "menu_layout", "")
 .value("B_ITEMS_IN_MATRIX", menu_layout::B_ITEMS_IN_MATRIX, "")
 .export_values();
 
-m.attr("BMenuWindow") = BMenuWindow;
+//m.attr("BMenuWindow") = BMenuWindow;
 
-m.attr("ExtraMenuData") = ExtraMenuData;
+//m.attr("ExtraMenuData") = ExtraMenuData;
 
-m.attr("TriggerList") = TriggerList;
+//m.attr("TriggerList") = TriggerList;
 
-m.attr("MenuPrivate") = MenuPrivate;
+//m.attr("MenuPrivate") = MenuPrivate;
 
 py::class_<menu_info>(m, "menu_info")
 .def_readwrite("font_size", &menu_info::font_size, "")
-.def_readwrite("f_family", &menu_info::f_family, "")
-.def_readwrite("f_style", &menu_info::f_style, "")
+.def_readonly("f_family", &menu_info::f_family, "")
+.def_readonly("f_style", &menu_info::f_style, "")
 .def_readwrite("background_color", &menu_info::background_color, "")
 .def_readwrite("separator", &menu_info::separator, "")
 .def_readwrite("click_to_open", &menu_info::click_to_open, "")
@@ -75,10 +76,10 @@ py::class_<BMenu, BView>(m, "BMenu")
 .def("ItemAt", &BMenu::ItemAt, "", py::arg("index"))
 .def("SubmenuAt", &BMenu::SubmenuAt, "", py::arg("index"))
 .def("CountItems", &BMenu::CountItems, "")
-.def("IndexOf", py::overload_cast<BMenuItem *>(&BMenu::IndexOf), "", py::arg("item"))
-.def("IndexOf", py::overload_cast<BMenu *>(&BMenu::IndexOf), "", py::arg("menu"))
-.def("FindItem", py::overload_cast<unsigned int>(&BMenu::FindItem), "", py::arg("command"))
-.def("FindItem", py::overload_cast<const char *>(&BMenu::FindItem), "", py::arg("name"))
+.def("IndexOf", py::overload_cast<BMenuItem *>(&BMenu::IndexOf, py::const_), "", py::arg("item"))
+.def("IndexOf", py::overload_cast<BMenu *>(&BMenu::IndexOf, py::const_), "", py::arg("menu"))
+.def("FindItem", py::overload_cast<unsigned int>(&BMenu::FindItem, py::const_), "", py::arg("command"))
+.def("FindItem", py::overload_cast<const char *>(&BMenu::FindItem, py::const_), "", py::arg("name"))
 .def("SetTargetForItems", py::overload_cast<BHandler *>(&BMenu::SetTargetForItems), "", py::arg("target"))
 .def("SetTargetForItems", py::overload_cast<BMessenger>(&BMenu::SetTargetForItems), "", py::arg("messenger"))
 .def("SetEnabled", &BMenu::SetEnabled, "", py::arg("enable"))

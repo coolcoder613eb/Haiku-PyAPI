@@ -8,6 +8,8 @@
 #include <Archivable.h>
 #include <Rect.h>
 #include <Size.h>
+#include <View.h>
+#include <Layout.h>
 
 namespace py = pybind11;
 
@@ -15,7 +17,7 @@ namespace py = pybind11;
 PYBIND11_MODULE(LayoutItem,m)
 {
 py::class_<BLayoutItem, BArchivable>(m, "BLayoutItem")
-.def(py::init(), "")
+//.def(py::init(), "")
 .def(py::init<BMessage *>(), "", py::arg("from"))
 .def("Layout", &BLayoutItem::Layout, "")
 .def("RemoveSelf", &BLayoutItem::RemoveSelf, "")
