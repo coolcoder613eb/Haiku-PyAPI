@@ -115,7 +115,8 @@ local sourceFiles =
 	TextControl.cpp
 	View.cpp
 	Window.cpp
-	Font.cpp ;
+	Font.cpp 
+	TextView.cpp ;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;

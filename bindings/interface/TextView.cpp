@@ -7,6 +7,9 @@
 #include <stdint.h>
 #include <Locker.h>
 #include <View.h>
+#include <File.h>
+#include <Clipboard.h>
+#include <Region.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -22,7 +25,7 @@ py::enum_<undo_state>(m, "undo_state", "")
 .value("B_UNDO_DROP", undo_state::B_UNDO_DROP, "")
 .export_values();
 
-m.attr("TextGapBuffer") = TextGapBuffer;
+//m.attr("TextGapBuffer") = TextGapBuffer;
 
 py::class_<text_run>(m, "text_run")
 .def_readwrite("offset", &text_run::offset, "")
@@ -32,7 +35,7 @@ py::class_<text_run>(m, "text_run")
 
 py::class_<text_run_array>(m, "text_run_array")
 .def_readwrite("count", &text_run_array::count, "")
-.def_readwrite("runs", &text_run_array::runs, "")
+.def_readonly("runs", &text_run_array::runs, "")
 ;
 
 py::class_<BTextView, BView>(m, "BTextView")
@@ -82,17 +85,17 @@ py::class_<BTextView, BView>(m, "BTextView")
 .def("Select", &BTextView::Select, "", py::arg("startOffset"), py::arg("endOffset"))
 .def("SelectAll", &BTextView::SelectAll, "")
 .def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
-.def("SetFontAndColor", py::overload_cast<const BFont *, unsigned int, const rgb_color *>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
-.def("SetFontAndColor", py::overload_cast<int, int, const BFont *, unsigned int, const rgb_color *>(&BTextView::SetFontAndColor), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
-.def("GetFontAndColor", py::overload_cast<int, BFont *, rgb_color *>(&BTextView::GetFontAndColor), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
-.def("GetFontAndColor", py::overload_cast<BFont *, unsigned int, rgb_color *, bool *>(&BTextView::GetFontAndColor), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
+//.def("SetFontAndColor", py::overload_cast<const BFont *, unsigned int, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
+//.def("SetFontAndColor", py::overload_cast<int, int, const BFont *, unsigned int, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
+//.def("GetFontAndColor", py::overload_cast<int, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
+//.def("GetFontAndColor", py::overload_cast<BFont *, unsigned int, rgb_color *, bool *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
 .def("SetRunArray", &BTextView::SetRunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("runs"))
 .def("RunArray", &BTextView::RunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("_size")=NULL)
-.def("LineAt", py::overload_cast<int>(&BTextView::LineAt), "", py::arg("offset"))
-.def("LineAt", py::overload_cast<BPoint>(&BTextView::LineAt), "", py::arg("point"))
+.def("LineAt", py::overload_cast<int>(&BTextView::LineAt,py::const_), "", py::arg("offset"))
+.def("LineAt", py::overload_cast<BPoint>(&BTextView::LineAt,py::const_), "", py::arg("point"))
 .def("PointAt", &BTextView::PointAt, "", py::arg("offset"), py::arg("_height")=NULL)
-.def("OffsetAt", py::overload_cast<BPoint>(&BTextView::OffsetAt), "", py::arg("point"))
-.def("OffsetAt", py::overload_cast<int>(&BTextView::OffsetAt), "", py::arg("line"))
+.def("OffsetAt", py::overload_cast<BPoint>(&BTextView::OffsetAt,py::const_), "", py::arg("point"))
+.def("OffsetAt", py::overload_cast<int>(&BTextView::OffsetAt,py::const_), "", py::arg("line"))
 .def("FindWord", &BTextView::FindWord, "", py::arg("offset"), py::arg("_fromOffset"), py::arg("_toOffset"))
 .def("CanEndLine", &BTextView::CanEndLine, "", py::arg("offset"))
 .def("LineWidth", &BTextView::LineWidth, "", py::arg("lineNumber")=0)
