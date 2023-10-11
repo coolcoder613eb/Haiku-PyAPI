@@ -5,6 +5,7 @@
 
 #include <interface/GridLayout.h>
 #include <TwoDimensionalLayout.h>
+#include <View.h>
 
 namespace py = pybind11;
 
