@@ -5,6 +5,9 @@
 
 #include <interface/MenuField.h>
 #include <Menu.h>
+#include <LayoutItem.h>
+#include <MenuItem.h>
+#include <MenuBar.h>
 
 namespace py = pybind11;
 

@@ -118,7 +118,8 @@ local sourceFiles =
 	Font.cpp
 	TextView.cpp
 	Menu.cpp
-	MenuItem.cpp ;
+	MenuItem.cpp
+	MenuField.cpp ;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;
