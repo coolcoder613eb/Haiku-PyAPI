@@ -5,6 +5,7 @@
 #
 # Parameters:
 # python_version - version of python to use such. Default value: 3.10
+# install_location - place to put installed files. Defaults to site-packages
 # py - alias of python_version
 #
 # Documentation for jam can be found at /boot/system/documentation/packages/jam
@@ -64,9 +65,11 @@ rule Symlink
 
 ## Main build file
 
-# Set python_version to default value if user did not specify value
+# Set user configurable variables to default value if user did not specify value
 py ?= 3.10 ;
 python_version ?= $(py) ;
+install_location ?=
+	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
 SEARCH_SOURCE += bindings/interface bindings/app ;
@@ -138,5 +141,5 @@ MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
 File __init__.py : bindings/__init__.py ;
 
 # As part of `jam install`, copy the following files:
-InstallLib /boot/system/non-packaged/lib/python$(python_version)/site-packages/Be
+InstallLib $(install_location)/Be
 	: Be.so $(sourceFiles:S=.so) __init__.py ;
