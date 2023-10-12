@@ -5,6 +5,7 @@
 
 #include <interface/PopUpMenu.h>
 #include <Menu.h>
+#include <MenuItem.h>
 
 namespace py = pybind11;
 

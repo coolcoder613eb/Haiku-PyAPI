@@ -120,7 +120,12 @@ local sourceFiles =
 	Menu.cpp
 	MenuItem.cpp
 	MenuField.cpp
-	GridLayout.cpp ;
+	LayoutItem.cpp
+	Layout.cpp
+	AbstractLayout.cpp
+	TwoDimensionalLayout.cpp
+	GridLayout.cpp
+	PopUpMenu.cpp ;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;

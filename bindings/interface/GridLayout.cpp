@@ -6,14 +6,17 @@
 #include <interface/GridLayout.h>
 #include <TwoDimensionalLayout.h>
 #include <View.h>
+#include <InterfaceDefs.h>
+
 
 namespace py = pybind11;
 
 
 PYBIND11_MODULE(GridLayout,m)
 {
-py::class_<BGridLayout, BTwoDimensionalLayout>(m, "BGridLayout")
-.def(py::init<float, float>(), "", py::arg("horizontal")=B_USE_DEFAULT_SPACING, py::arg("vertical")=B_USE_DEFAULT_SPACING)
+py::class_<BGridLayout, BTwoDimensionalLayout, std::unique_ptr<BGridLayout,py::nodelete>>(m, "BGridLayout")
+// ImportError: arg(): could not convert default argument 'horizontal: ._anon_253' in method '<class 'Be.GridLayout.BGridLayout'>.__init__' into a Python object (type not registered yet?)
+.def(py::init<float, float>(), "", py::arg("horizontal")=py::int_(-1002), py::arg("vertical")=py::int_(-1002))
 .def(py::init<BMessage *>(), "", py::arg("from"))
 .def("CountColumns", &BGridLayout::CountColumns, "")
 .def("CountRows", &BGridLayout::CountRows, "")

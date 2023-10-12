@@ -26,22 +26,34 @@ from .Font import *
 from .StringView import *
 from .InterfaceDefs import *
 from .Alert import *
+from .TextView import *
+from .Menu import *
+from .MenuItem import *
+from .MenuField import *
+from .LayoutItem import *
+from .Layout import *
+from .AbstractLayout import *
+from .TwoDimensionalLayout import *
+from .GridLayout import *
+from .PopUpMenu import *
 
 _BWindow=BWindow
 _BApplication=BApplication
-def MessageReceived(self, msg):
+def MessageReceived(self, msg, parent):
     if msg.what in self.events:
         self.events[msg.what](msg)
+    elif msg in self.events:
+        self.events[msg](msg)
     else:
-        super(type(self)).MessageReceived(msg)
+        parent.MessageReceived(msg)
 
 class BWindow(_BWindow):
     events={}
-    MessageReceived=MessageReceived
+    MessageReceived=lambda msg, parent=_BWindow: MessageReceived(msg,parent)
 
 class BApplication(_BApplication):
     events={}
-    MessageReceived=MessageReceived
+    MessageReceived=lambda msg, parent=_BApplication: MessageReceived(msg,parent)
 
 
 def int32(bytestr):

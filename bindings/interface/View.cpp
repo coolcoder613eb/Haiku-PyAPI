@@ -302,9 +302,10 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawString", py::overload_cast<const char *, int, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
 .def("DrawString", py::overload_cast<const char *, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
 .def("DrawString", py::overload_cast<const char *, int, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
-.def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=B_FONT_ALL)
-.def("GetFont", &BView::GetFont, "", py::arg("font"))
 */
+.def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=py::int_(0x000001FF))
+.def("GetFont", &BView::GetFont, "", py::arg("font"))
+
 .def("TruncateString", &BView::TruncateString, "", py::arg("in_out"), py::arg("mode"), py::arg("width"))
 .def("StringWidth", py::overload_cast<const char *>(&BView::StringWidth, py::const_), "", py::arg("string"))
 .def("StringWidth", py::overload_cast<const char *, int>(&BView::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))
