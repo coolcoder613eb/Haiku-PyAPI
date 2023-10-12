@@ -105,7 +105,7 @@ m.attr("B_MOVE_IF_PARTIALLY_OFFSCREEN") = 2;
 
 //m.attr("PortLink") = PortLink;
 
-py::class_<BWindow,PyBWindow>(m, "BWindow")
+py::class_<BWindow,PyBWindow,std::unique_ptr<BWindow,py::nodelete>>(m, "BWindow")
 .def(py::init<BRect, const char *, window_type, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("title"), py::arg("type"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
 .def(py::init<BRect, const char *, window_look, window_feel, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("title"), py::arg("look"), py::arg("feel"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))

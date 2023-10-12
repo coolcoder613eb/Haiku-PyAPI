@@ -14,7 +14,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(MenuField,m)
 {
-py::class_<BMenuField, BView>(m, "BMenuField")
+py::class_<BMenuField, BView, std::unique_ptr<BMenuField,py::nodelete>>(m, "BMenuField")
 .def(py::init<BRect, const char *, const char *, BMenu *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("menu"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<BRect, const char *, const char *, BMenu *, bool, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("menu"), py::arg("fixed_size"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, const char *, BMenu *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("menu"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)

@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(PopUpMenu,m)
 {
-py::class_<BPopUpMenu, BMenu>(m, "BPopUpMenu")
+py::class_<BPopUpMenu, BMenu, std::unique_ptr<BPopUpMenu,py::nodelete>>(m, "BPopUpMenu")
 .def(py::init<const char *, bool, bool, menu_layout>(), "", py::arg("name"), py::arg("radioMode")=true, py::arg("labelFromMarked")=true, py::arg("layout")=B_ITEMS_IN_COLUMN)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def("Archive", &BPopUpMenu::Archive, "", py::arg("archive"), py::arg("deep")=true)
