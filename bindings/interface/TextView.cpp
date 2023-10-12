@@ -38,7 +38,7 @@ py::class_<text_run_array>(m, "text_run_array")
 .def_readonly("runs", &text_run_array::runs, "")
 ;
 
-py::class_<BTextView, BView>(m, "BTextView")
+py::class_<BTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextView")
 .def(py::init<BRect, const char *, BRect, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("textRect"), py::arg("resizeMask"), py::arg("flags")=B_WILL_DRAW | B_PULSE_NEEDED)
 .def(py::init<BRect, const char *, BRect, const BFont *, const rgb_color *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("textRect"), py::arg("initialFont"), py::arg("initialColor"), py::arg("resizeMask"), py::arg("flags"))
 .def(py::init<const char *, unsigned int>(), "", py::arg("name"), py::arg("flags")=B_WILL_DRAW | B_PULSE_NEEDED)
