@@ -22,8 +22,6 @@ m.attr("B_SOME_APP_LAUNCHED") = py::int_('BRAS');
 m.attr("B_SOME_APP_QUIT") = py::int_('BRAQ');
 m.attr("B_SOME_APP_ACTIVATED") = py::int_('BRAW');
 
-//m.attr("be_roster") = be_roster;
-
 py::class_<app_info>(m, "app_info")
 .def(py::init(), "")
 .def_readwrite("thread", &app_info::thread)
@@ -67,6 +65,8 @@ py::class_<BRoster>(m, "BRoster")
 .def("AddToRecentFolders", &BRoster::AddToRecentFolders, "", py::arg("folder"), py::arg("signature")=NULL)
 //.def_readonly("Private", &BRoster::Private)
 ;
+
+m.attr("be_roster") = be_roster;
 
 
 }
