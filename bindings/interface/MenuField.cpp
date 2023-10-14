@@ -36,7 +36,7 @@ py::class_<BMenuField, BView, std::unique_ptr<BMenuField,py::nodelete>>(m, "BMen
 .def("AllDetached", &BMenuField::AllDetached, "")
 .def("FrameMoved", &BMenuField::FrameMoved, "", py::arg("where"))
 .def("FrameResized", &BMenuField::FrameResized, "", py::arg("width"), py::arg("height"))
-.def("Menu", &BMenuField::Menu, "")
+.def("Menu", &BMenuField::Menu)
 .def("MenuBar", &BMenuField::MenuBar, "")
 .def("MenuItem", &BMenuField::MenuItem, "")
 .def("SetLabel", &BMenuField::SetLabel, "", py::arg("label"))

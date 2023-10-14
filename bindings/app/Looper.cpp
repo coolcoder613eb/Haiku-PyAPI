@@ -20,7 +20,7 @@ PYBIND11_MODULE(Looper,m)
 
 //m.attr("BLooperList") = BLooperList;
 
-py::class_<BLooper>(m, "BLooper")
+py::class_<BLooper,BHandler>(m, "BLooper")
 .def(py::init<const char *, int, int>(), "", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BLooper::Instantiate, "", py::arg("data"))

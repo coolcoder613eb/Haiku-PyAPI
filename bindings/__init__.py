@@ -45,15 +45,16 @@ def MessageReceived(self, msg, parent):
     elif msg in self.events:
         self.events[msg](msg)
     else:
-        parent.MessageReceived(msg)
+        print(parent,parent.MessageReceived)
+        parent.MessageReceived(self, msg)
 
 class BWindow(_BWindow):
     events={}
-    MessageReceived=lambda msg, parent=_BWindow: MessageReceived(msg,parent)
+    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BWindow)
 
 class BApplication(_BApplication):
     events={}
-    MessageReceived=lambda msg, parent=_BApplication: MessageReceived(msg,parent)
+    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BApplication)
 
 
 def int32(bytestr):
