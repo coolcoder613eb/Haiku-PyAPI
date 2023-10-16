@@ -20,8 +20,8 @@ py::class_<BMessageRunner>(m, "BMessageRunner")
 .def("SetInterval", &BMessageRunner::SetInterval, "", py::arg("interval"))
 .def("SetCount", &BMessageRunner::SetCount, "", py::arg("count"))
 .def("GetInfo", &BMessageRunner::GetInfo, "", py::arg("interval"), py::arg("count"))
-.def_static("StartSending", py::overload_cast<BMessenger, const BMessage *, bigtime_t, int>(&BMessageRunner::StartSending), "", py::arg("target"), py::arg("message"), py::arg("interval"), py::arg("count"))
-.def_static("StartSending", py::overload_cast<BMessenger, const BMessage *, bigtime_t, int, BMessenger>(&BMessageRunner::StartSending), "", py::arg("target"), py::arg("message"), py::arg("interval"), py::arg("count"), py::arg("replyTo"))
+.def_static("StartSending", py::overload_cast<BMessenger, const BMessage *, bigtime_t, int32>(&BMessageRunner::StartSending), "", py::arg("target"), py::arg("message"), py::arg("interval"), py::arg("count"))
+.def_static("StartSending", py::overload_cast<BMessenger, const BMessage *, bigtime_t, int32, BMessenger>(&BMessageRunner::StartSending), "", py::arg("target"), py::arg("message"), py::arg("interval"), py::arg("count"), py::arg("replyTo"))
 ;
 
 
