@@ -11,6 +11,12 @@
 
 namespace py = pybind11;
 
+void GetRecentDocumentsWrapper(BRoster& self, BMessage* refList, int32 maxCount,
+		std::vector<const char *> fileTypes, int32 fileTypesCount,
+		const char* signature) {
+	self.GetRecentDocuments(refList, maxCount,
+		fileTypes.data(), fileTypesCount, signature);
+}
 
 PYBIND11_MODULE(Roster,m)
 {
@@ -58,7 +64,7 @@ py::class_<BRoster>(m, "BRoster")
 .def("Launch", py::overload_cast<const entry_ref *, const BList *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("ref"), py::arg("messageList"), py::arg("_appTeam")=NULL)
 //.def("Launch", py::overload_cast<const entry_ref *, int, const char * const *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("ref"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
 .def("GetRecentDocuments", py::overload_cast<BMessage *, int32, const char *, const char *>(&BRoster::GetRecentDocuments, py::const_), "", py::arg("refList"), py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
-//FIXME: .def("GetRecentDocuments", py::overload_cast<BMessage *, int, const char **, int, const char *>(&BRoster::GetRecentDocuments, py::const_), "", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
+.def("GetRecentDocuments", &GetRecentDocumentsWrapper, "", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
 .def("GetRecentFolders", &BRoster::GetRecentFolders, "", py::arg("refList"), py::arg("maxCount"), py::arg("signature")=NULL)
 .def("GetRecentApps", &BRoster::GetRecentApps, "", py::arg("refList"), py::arg("maxCount"))
 .def("AddToRecentDocuments", &BRoster::AddToRecentDocuments, "", py::arg("document"), py::arg("signature")=NULL)
