@@ -24,10 +24,10 @@ py::class_<compound_type>(m, "compound_type")
 .def_readonly("pairs", &compound_type::pairs, "")
 ;
 
-//py::class_<field_pair>(m, "field_pair")
-//.def_readonly("name", &field_pair::name, "")
-//.def_readonly("type", &field_pair::type, "")
-//;
+py::class_<compound_type::field_pair>(m, "field_pair")
+.def_readonly("name", &compound_type::field_pair::name, "")
+.def_readonly("type", &compound_type::field_pair::type, "")
+;
 
 py::class_<property_info>(m, "property_info")
 .def_readwrite("name", &property_info::name, "")

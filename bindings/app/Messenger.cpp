@@ -13,6 +13,10 @@
 namespace py = pybind11;
 
 
+BHandler* TargetWrapper(BMessenger& self, std::vector<BLooper*> looper) {
+	return self.Target(looper.data());
+}
+
 PYBIND11_MODULE(Messenger,m)
 {
 py::class_<BMessenger>(m, "BMessenger")
@@ -21,7 +25,7 @@ py::class_<BMessenger>(m, "BMessenger")
 .def(py::init<const BHandler *, const BLooper *, status_t *>(), "", py::arg("handler"), py::arg("looper")=NULL, py::arg("result")=NULL)
 .def(py::init<const BMessenger &>(), "", py::arg("other"))
 .def("IsTargetLocal", &BMessenger::IsTargetLocal, "")
-//.def("Target", &BMessenger::Target, "", py::arg("looper"))
+.def("Target", &TargetWrapper, "", py::arg("looper"))
 .def("LockTarget", &BMessenger::LockTarget, "")
 .def("LockTargetWithTimeout", &BMessenger::LockTargetWithTimeout, "", py::arg("timeout"))
 .def("SendMessage", py::overload_cast<uint32, BHandler *>(&BMessenger::SendMessage, py::const_), "", py::arg("command"), py::arg("replyTo")=NULL)
@@ -39,7 +43,7 @@ py::class_<BMessenger>(m, "BMessenger")
 //.def_readwrite("Private", &BMessenger::Private, "")
 ;
 
-//m.def("__lt__", &operator<, "", py::arg("a"), py::arg("b"));
+m.def("__lt__", py::overload_cast<const BMessenger &, const BMessenger &>(&operator<), "", py::arg("a"), py::arg("b"));
 
 m.def("__ne__", &operator!=, "", py::arg("a"), py::arg("b"));
 
