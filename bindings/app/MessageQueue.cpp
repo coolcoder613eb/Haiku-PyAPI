@@ -22,7 +22,7 @@ py::class_<BMessageQueue>(m, "BMessageQueue")
 .def("FindMessage", py::overload_cast<uint32, int32>(&BMessageQueue::FindMessage, py::const_), "", py::arg("what"), py::arg("index")=0)
 .def("Lock", &BMessageQueue::Lock, "")
 .def("Unlock", &BMessageQueue::Unlock, "")
-//.def("IsLocked", &BMessageQueue::IsLocked, "")
+.def("IsLocked", static_cast<bool (BMessageQueue::*)() const>(&BMessageQueue::IsLocked), "")
 .def("NextMessage", &BMessageQueue::NextMessage, "")
 .def("IsNextMessage", &BMessageQueue::IsNextMessage, "", py::arg("message"))
 ;
