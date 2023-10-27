@@ -66,7 +66,7 @@ rule Symlink
 ## Main build file
 
 # Set user configurable variables to default value if user did not specify value
-py ?= 3.10 ;
+py ?= 3.12 ;
 python_version ?= $(py) ;
 install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
@@ -75,7 +75,7 @@ install_location ?=
 SEARCH_SOURCE += bindings/interface bindings/app ;
 
 # Where to look for header files
-SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
+SubDirHdrs extern/pybind11/include/ ;
 SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 
 # Additional C++ flags to use when compiling
