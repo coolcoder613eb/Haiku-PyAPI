@@ -36,6 +36,10 @@ from .AbstractLayout import *
 from .TwoDimensionalLayout import *
 from .GridLayout import *
 from .PopUpMenu import *
+from .Box import *
+from .SeparatorItem import *
+from .MenuBar import *
+
 
 _BWindow=BWindow
 _BApplication=BApplication

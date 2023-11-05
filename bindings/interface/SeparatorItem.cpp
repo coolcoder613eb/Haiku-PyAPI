@@ -19,5 +19,4 @@ py::class_<BSeparatorItem, BMenuItem>(m, "BSeparatorItem")
 .def("SetEnabled", &BSeparatorItem::SetEnabled, "", py::arg("enable"))
 ;
 
-
 }
