@@ -11,7 +11,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(SeparatorItem,m)
 {
-py::class_<BSeparatorItem, BMenuItem>(m, "BSeparatorItem")
+py::class_<BSeparatorItem, BMenuItem, std::unique_ptr<BSeparatorItem, py::nodelete>>(m, "BSeparatorItem")
 .def(py::init(), "")
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BSeparatorItem::Instantiate, "", py::arg("data"))

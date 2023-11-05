@@ -11,7 +11,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(Box,m)
 {
-py::class_<BBox, BView>(m, "BBox")
+py::class_<BBox, BView, std::unique_ptr<BBox, py::nodelete>>(m, "BBox")
 .def(py::init<BRect, const char *, unsigned int, unsigned int, border_style>(), "", py::arg("frame"), py::arg("name")=NULL, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP, py::arg("border")=B_FANCY_BORDER)
 .def(py::init<const char *, unsigned int, border_style, BView *>(), "", py::arg("name"), py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP, py::arg("border")=B_FANCY_BORDER, py::arg("child")=NULL)
 .def(py::init<border_style, BView *>(), "", py::arg("border"), py::arg("child"))

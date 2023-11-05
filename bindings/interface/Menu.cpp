@@ -38,7 +38,7 @@ py::class_<menu_info>(m, "menu_info")
 .def_readwrite("triggers_always_shown", &menu_info::triggers_always_shown, "")
 ;
 
-py::class_<BMenu, BView>(m, "BMenu")
+py::class_<BMenu, BView, std::unique_ptr<BMenu, py::nodelete>>(m, "BMenu")
 .def(py::init<const char *, menu_layout>(), "", py::arg("name"), py::arg("layout")=B_ITEMS_IN_COLUMN)
 .def(py::init<const char *, float, float>(), "", py::arg("name"), py::arg("width"), py::arg("height"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))

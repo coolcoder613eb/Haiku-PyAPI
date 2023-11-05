@@ -19,7 +19,7 @@ py::enum_<menu_bar_border>(m, "menu_bar_border", "")
 .value("B_BORDER_EACH_ITEM", menu_bar_border::B_BORDER_EACH_ITEM, "")
 .export_values();
 
-py::class_<BMenuBar, BMenu>(m, "BMenuBar")
+py::class_<BMenuBar, BMenu, std::unique_ptr<BMenuBar, py::nodelete>>(m, "BMenuBar")
 .def(py::init<BRect, const char *, unsigned int, menu_layout, bool>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode")=B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP, py::arg("layout")=B_ITEMS_IN_ROW, py::arg("resizeToFit")=true)
 .def(py::init<const char *, menu_layout, unsigned int>(), "", py::arg("name"), py::arg("layout")=B_ITEMS_IN_ROW, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
