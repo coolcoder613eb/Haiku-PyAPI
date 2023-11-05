@@ -24,6 +24,12 @@
 namespace py = pybind11;
 
 
+status_t GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index,
+		std::vector<char*> nameFound, type_code* typeFound, int32* countFound) {
+	return self.GetInfo(typeRequested, index,
+		nameFound.data(), typeFound, countFound);
+}
+
 PYBIND11_MODULE(Message,m)
 {
 m.attr("B_NO_SPECIFIER") = 0;
@@ -41,12 +47,10 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def(py::init<uint32>(), "", py::arg("what"))
 .def(py::init<const BMessage &>(), "", py::arg("other"))
 .def("operator=", &BMessage::operator=, "", py::arg("other"))
-/*
-.def("GetInfo", py::overload_cast<type_code, int32, char * *, type_code *, int32>(&BMessage::GetInfo), "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
-.def("GetInfo", py::overload_cast<const char *, type_code *, int32>(&BMessage::GetInfo), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
-.def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
-.def("GetInfo", py::overload_cast<const char *, type_code *, int32, bool *>(&BMessage::GetInfo), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
-*/
+.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
+.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
+.def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
+.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
 .def("CountNames", &BMessage::CountNames, "", py::arg("type"))
 .def("IsEmpty", &BMessage::IsEmpty, "")
 .def("IsSystem", &BMessage::IsSystem, "")

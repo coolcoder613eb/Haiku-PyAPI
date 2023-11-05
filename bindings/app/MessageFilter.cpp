@@ -11,6 +11,11 @@
 namespace py = pybind11;
 
 
+filter_result FilterWrapper(BMessageFilter& self,
+		BMessage* message, std::vector<BHandler*> _target) {
+	return self.Filter(message, _target.data());
+}
+
 PYBIND11_MODULE(MessageFilter,m)
 {
 py::enum_<filter_result>(m, "filter_result", "")
@@ -37,7 +42,7 @@ py::class_<BMessageFilter>(m, "BMessageFilter")
 .def(py::init<const BMessageFilter &>(), "", py::arg("filter"))
 .def(py::init<const BMessageFilter *>(), "", py::arg("filter"))
 .def("operator=", &BMessageFilter::operator=, "", py::arg("from"))
-//.def("Filter", &BMessageFilter::Filter, "", py::arg("message"), py::arg("_target"))
+.def("Filter", &FilterWrapper, "", py::arg("message"), py::arg("_target"))
 .def("MessageDelivery", &BMessageFilter::MessageDelivery, "")
 .def("MessageSource", &BMessageFilter::MessageSource, "")
 .def("Command", &BMessageFilter::Command, "")

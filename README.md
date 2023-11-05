@@ -23,9 +23,15 @@ or
 
 ## Compiling
 
-To build for python 3.10 using all cpu cores, run
+First, install the appropriate version of pybind11 for your CPU architecture and version of Python. For example, to install pybind11 for x86 and python3.10, run
+
+`pkgman install pybind11_x86_python310`
+
+The basic build command to build using all CPU cores is
 
 `jam -j$(nproc)`
+
+Extra build parameters can be specified, as discussed below.
 
 ### Build parameters
 

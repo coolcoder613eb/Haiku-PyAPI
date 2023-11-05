@@ -11,8 +11,18 @@
 
 namespace py = pybind11;
 
+status_t LaunchWrapper(BRoster& self, const char* mimeType, int argc,
+		const std::vector<const char *>& args, team_id* appTeam) {
+	return self.Launch(mimeType, argc, args.data(), appTeam);
+}
+
+status_t LaunchWrapper(BRoster& self, const entry_ref* ref, int argc,
+		const std::vector<const char *>& args, team_id* appTeam) {
+	return self.Launch(ref, argc, args.data(), appTeam);
+}
+
 void GetRecentDocumentsWrapper(BRoster& self, BMessage* refList, int32 maxCount,
-		std::vector<const char *> fileTypes, int32 fileTypesCount,
+		std::vector<const char*>& fileTypes, int32 fileTypesCount,
 		const char* signature) {
 	self.GetRecentDocuments(refList, maxCount,
 		fileTypes.data(), fileTypesCount, signature);
@@ -59,10 +69,10 @@ py::class_<BRoster>(m, "BRoster")
 .def("ActivateApp", &BRoster::ActivateApp, "", py::arg("team"))
 .def("Launch", py::overload_cast<const char *, BMessage *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("mimeType"), py::arg("initialMessage")=NULL, py::arg("_appTeam")=NULL)
 .def("Launch", py::overload_cast<const char *, BList *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("mimeType"), py::arg("messageList"), py::arg("_appTeam")=NULL)
-//.def("Launch", py::overload_cast<const char *, int, const char * const *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("mimeType"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
+.def("Launch", static_cast<status_t (*)(BRoster &, const char *, int, const std::vector<const char *>&, team_id *)>(&LaunchWrapper), "", py::arg("mimeType"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
 .def("Launch", py::overload_cast<const entry_ref *, const BMessage *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("ref"), py::arg("initialMessage")=NULL, py::arg("_appTeam")=NULL)
 .def("Launch", py::overload_cast<const entry_ref *, const BList *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("ref"), py::arg("messageList"), py::arg("_appTeam")=NULL)
-//.def("Launch", py::overload_cast<const entry_ref *, int, const char * const *, team_id *>(&BRoster::Launch, py::const_), "", py::arg("ref"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
+.def("Launch", static_cast<status_t (*)(BRoster &, const entry_ref *, int, const std::vector<const char *>&, team_id *)>(&LaunchWrapper), "", py::arg("ref"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
 .def("GetRecentDocuments", py::overload_cast<BMessage *, int32, const char *, const char *>(&BRoster::GetRecentDocuments, py::const_), "", py::arg("refList"), py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
 .def("GetRecentDocuments", &GetRecentDocumentsWrapper, "", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
 .def("GetRecentFolders", &BRoster::GetRecentFolders, "", py::arg("refList"), py::arg("maxCount"), py::arg("signature")=NULL)
