@@ -9,7 +9,8 @@ This lets you build apps for Haiku using the Haiku API directly from Python.
 The API is not stable and subject to change. The bindings for the app kit
 are mostly complete, but a couple of functions are missing. The interface
 kit has the essentials (buttons, text boxes, etc.), but many items are
-missing. The other kits have not been ported yet.
+missing. The other kits have not been ported yet. Expect a lot of
+use-after-frees, double frees, and memory leaks.
 
 ## Installing
 
