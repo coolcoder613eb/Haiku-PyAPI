@@ -131,7 +131,8 @@ local sourceFiles =
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp
-	MenuBar.cpp ;
+	MenuBar.cpp
+	StatusBar.cpp ;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;

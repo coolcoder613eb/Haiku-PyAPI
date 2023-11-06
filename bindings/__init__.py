@@ -39,7 +39,7 @@ from .PopUpMenu import *
 from .Box import *
 from .SeparatorItem import *
 from .MenuBar import *
-
+from .StatusBar import *
 
 _BWindow=BWindow
 _BApplication=BApplication
