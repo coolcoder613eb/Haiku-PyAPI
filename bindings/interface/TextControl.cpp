@@ -15,7 +15,7 @@ PYBIND11_MODULE(TextControl,m)
 {
 
 
-py::class_<BTextControl, BControl>(m, "BTextControl")
+py::class_<BTextControl, BControl, std::unique_ptr<BTextControl, py::nodelete>>(m, "BTextControl")
 .def(py::init<BRect, const char *, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("initialText"), py::arg("message"), py::arg("resizeMask")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("initialText"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, const char *, BMessage *>(), "", py::arg("label"), py::arg("initialText"), py::arg("message"))
