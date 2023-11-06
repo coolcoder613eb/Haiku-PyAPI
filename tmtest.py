@@ -25,8 +25,7 @@ class Window(BWindow):
 				if k is None:
 						menu.AddItem(BSeparatorItem())
 				else:
-						msg = BMessage(k)
-						menu.AddItem(BMenuItem(name, msg,name[1],0))
+						menu.AddItem(BMenuItem(name, BMessage(k),name[1],0))
 			self.bar.AddItem(menu)
 		if self.bar.FindItem("bubu"):
 			print("yay")
@@ -41,8 +40,7 @@ class Window(BWindow):
 		
 	def QuitRequested(self):
 		print ("So long and thanks for all the fish")
-		be_app.PostMessage(BMessage(AppDefs.B_QUIT_REQUESTED))
-		return 1
+		return BWindow.QuitRequested(self)
 		
 class App(BApplication):
     def __init__(self):
