@@ -22,6 +22,8 @@ or
 
 `pkgman install haiku_pyapi_python39`
 
+If you need the latest widgets and bugfixes, then you should compile from source, see below.
+
 ## Compiling
 
 First, install the appropriate version of pybind11 for your CPU architecture and version of Python. For example, to install pybind11 for x86 and python3.10, run
