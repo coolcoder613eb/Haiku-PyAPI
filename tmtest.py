@@ -1,4 +1,4 @@
-from Be import BApplication, BWindow,BBox, BRect,BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
+from Be import BApplication, BWindow,BBox, BCheckBox,BRect,BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 from Be import InterfaceDefs
 from Be import AppDefs
 
@@ -20,6 +20,8 @@ class Window(BWindow):
 		self.statbar.SetMaxValue(100.0)
 		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTView', "prova:",None,BMessage(1),0x0202|0x0404)
 		self.tachetest.SetDivider(55.0)
+		self.startimer= BCheckBox(BRect(10,30,290,50),'Testbox','Test Checkbox',BMessage(612))
+		self.panel.AddChild(self.startimer,None)
 		self.panel.AddChild(self.tachetest,None)
 		self.panel.AddChild(self.statbar,None)
 		self.panel.AddChild(self.bar,None)
