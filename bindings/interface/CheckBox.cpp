@@ -4,6 +4,7 @@
 #include <pybind11/operators.h>
 
 #include <interface/CheckBox.h>
+#include <interface/Bitmap.h>
 #include <Control.h>
 
 namespace py = pybind11;
@@ -11,7 +12,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(CheckBox,m)
 {
-py::class_<BCheckBox, BControl>(m, "BCheckBox")
+py::class_<BCheckBox, BControl, std::unique_ptr<BCheckBox, py::nodelete>>(m, "BCheckBox")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, BMessage *>(), "", py::arg("label"), py::arg("message")=NULL)

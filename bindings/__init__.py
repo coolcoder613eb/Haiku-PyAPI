@@ -40,6 +40,7 @@ from .Box import *
 from .SeparatorItem import *
 from .MenuBar import *
 from .StatusBar import *
+from .CheckBox import *
 
 _BWindow=BWindow
 _BApplication=BApplication
