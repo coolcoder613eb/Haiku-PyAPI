@@ -133,7 +133,9 @@ local sourceFiles =
 	SeparatorItem.cpp
 	MenuBar.cpp
 	StatusBar.cpp
-	CheckBox.cpp ;
+	CheckBox.cpp 
+	Point.cpp
+	ColorControl.cpp ;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;

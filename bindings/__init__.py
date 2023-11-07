@@ -41,6 +41,8 @@ from .SeparatorItem import *
 from .MenuBar import *
 from .StatusBar import *
 from .CheckBox import *
+from .Point import *
+from .ColorControl import *
 
 _BWindow=BWindow
 _BApplication=BApplication
