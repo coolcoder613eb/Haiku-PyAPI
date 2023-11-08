@@ -17,8 +17,6 @@ PYBIND11_MODULE(Handler,m)
 {
 m.attr("B_OBSERVER_OBSERVE_ALL") = B_OBSERVER_OBSERVE_ALL;
 
-//m.attr("ObserverList") = ObserverList;
-
 py::class_<BHandler>(m, "BHandler")
 .def(py::init<const char *>(), "", py::arg("name")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("data"))

@@ -13,6 +13,15 @@
 namespace py = pybind11;
 
 
+py::tuple TargetWrapper(BInvoker& self) {
+	BHandler* handler;
+	BLooper* looper;
+
+	handler = self.Target(&looper);
+
+	return py::make_tuple(handler, looper);
+}
+
 PYBIND11_MODULE(Invoker,m)
 {
 py::class_<BInvoker>(m, "BInvoker")
@@ -25,7 +34,7 @@ py::class_<BInvoker>(m, "BInvoker")
 .def("SetTarget", py::overload_cast<const BHandler *, const BLooper *>(&BInvoker::SetTarget), "", py::arg("handler"), py::arg("looper")=NULL)
 .def("SetTarget", py::overload_cast<BMessenger>(&BInvoker::SetTarget), "", py::arg("messenger"))
 .def("IsTargetLocal", &BInvoker::IsTargetLocal, "")
-//.def("Target", &BInvoker::Target, "", py::arg("_looper")=NULL)
+.def("Target", &TargetWrapper, "Returns a tuple containing the handler and looper the Invoker is pointing to.")
 .def("Messenger", &BInvoker::Messenger, "")
 .def("SetHandlerForReply", &BInvoker::SetHandlerForReply, "", py::arg("handler"))
 .def("HandlerForReply", &BInvoker::HandlerForReply, "")

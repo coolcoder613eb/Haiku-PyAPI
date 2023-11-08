@@ -30,6 +30,30 @@ status_t GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index,
 		nameFound.data(), typeFound, countFound);
 }
 
+status_t GetCurrentSpecifierWrapper(BMessage& self, int32* index,
+		BMessage* specifier, int32* _what, std::string* property) {
+	const char* p;
+	status_t status = self.GetCurrentSpecifier(index, specifier, _what, &p);
+	*property = p;
+	return status;
+}
+
+status_t FindStringWrapper(BMessage& self, const char* name,
+		std::string* string) {
+	const char* s;
+	status_t status = self.FindString(name, &s);
+	*string = s;
+	return status;
+}
+
+status_t FindStringWrapper(BMessage& self, const char* name,
+		int32 index, std::string* string) {
+	const char* s;
+	status_t status = self.FindString(name, index, &s);
+	*string = s;
+	return status;
+}
+
 PYBIND11_MODULE(Message,m)
 {
 m.attr("B_NO_SPECIFIER") = 0;
@@ -65,18 +89,17 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("WasDropped", &BMessage::WasDropped, "")
 .def("DropPoint", &BMessage::DropPoint, "", py::arg("offset")=NULL)
 
-//
 .def("SendReply", py::overload_cast<uint32, BHandler *>(&BMessage::SendReply), "", py::arg("command"), py::arg("replyTo")=NULL)
 .def("SendReply", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
 .def("SendReply", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
 .def("SendReply", py::overload_cast<uint32, BMessage *>(&BMessage::SendReply), "", py::arg("command"), py::arg("replyToReply"))
 .def("SendReply", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyToReply"), py::arg("sendTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
-//
+
 .def("FlattenedSize", &BMessage::FlattenedSize, "")
-//
+
 .def("Flatten", py::overload_cast<char *, ssize_t>(&BMessage::Flatten, py::const_), "", py::arg("buffer"), py::arg("size"))
 .def("Flatten", py::overload_cast<BDataIO *, ssize_t *>(&BMessage::Flatten, py::const_), "", py::arg("stream"), py::arg("size")=NULL)
-//
+
 .def("Unflatten", py::overload_cast<const char *>(&BMessage::Unflatten), "", py::arg("flatBuffer"))
 .def("Unflatten", py::overload_cast<BDataIO *>(&BMessage::Unflatten), "", py::arg("stream"))
 
@@ -87,7 +110,7 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("AddSpecifier", py::overload_cast<const BMessage *>(&BMessage::AddSpecifier), "", py::arg("specifier"))
 
 .def("SetCurrentSpecifier", &BMessage::SetCurrentSpecifier, "", py::arg("index"))
-//.def("GetCurrentSpecifier", &BMessage::GetCurrentSpecifier, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
+.def("GetCurrentSpecifier", &GetCurrentSpecifierWrapper, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
 .def("HasSpecifiers", &BMessage::HasSpecifiers, "")
 .def("PopSpecifier", &BMessage::PopSpecifier, "")
 .def("AddAlignment", &BMessage::AddAlignment, "", py::arg("name"), py::arg("alignment"))
@@ -126,7 +149,6 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("RemoveName", &BMessage::RemoveName, "", py::arg("name"))
 .def("MakeEmpty", &BMessage::MakeEmpty, "")
 
-//
 .def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("alignment"))
 .def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("alignment"))
 .def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("rect"))
@@ -135,30 +157,28 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("point"))
 .def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("size"))
 .def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("index"), py::arg("size"))
-//.def("FindString", py::overload_cast<const char *, const char * *>(&BMessage::FindString), "", py::arg("name"), py::arg("string"))
-//.def("FindString", py::overload_cast<const char *, int32, const char * *>(&BMessage::FindString), "", py::arg("name"), py::arg("index"), py::arg("string"))
-//.def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString), "", py::arg("name"), py::arg("string"))
-//.def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString), "", py::arg("name"), py::arg("index"), py::arg("string"))
-//
+.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
+.def("FindString", py::overload_cast<BMessage &, const char *, int32, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("index"), py::arg("string"))
+.def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("string"))
+.def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("string"))
+
 .def("FindStrings", &BMessage::FindStrings, "", py::arg("name"), py::arg("list"))
-/*
-.def("FindInt8", py::overload_cast<const char *, signed char>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt16", py::overload_cast<const char *, int16>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt16", py::overload_cast<const char *, int32, int16>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt16", py::overload_cast<const char *, uint16>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt32", py::overload_cast<const char *, int32>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt32", py::overload_cast<const char *, int32, int32>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt32", py::overload_cast<const char *, uint32>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt64", py::overload_cast<const char *, int3264_t>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt64", py::overload_cast<const char *, int32, int3264_t>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::FindUInt64), "", py::arg("name"), py::arg("value"))
-.def("FindUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::FindUInt64), "", py::arg("name"), py::arg("index"), py::arg("value"))
-*/
+.def("FindInt8", py::overload_cast<const char *, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindInt8", py::overload_cast<const char *, int32, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindUInt8", py::overload_cast<const char *, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindUInt8", py::overload_cast<const char *, int32, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt16", py::overload_cast<const char *, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindInt16", py::overload_cast<const char *, int32, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindUInt16", py::overload_cast<const char *, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindUInt16", py::overload_cast<const char *, int32, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt32", py::overload_cast<const char *, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindInt32", py::overload_cast<const char *, int32, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindUInt32", py::overload_cast<const char *, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindUInt32", py::overload_cast<const char *, int32, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt64", py::overload_cast<const char *, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindInt64", py::overload_cast<const char *, int32, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindUInt64", py::overload_cast<const char *, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("value"))
+.def("FindUInt64", py::overload_cast<const char *, int32, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 
 .def("FindBool", py::overload_cast<const char *, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("value"))
 .def("FindBool", py::overload_cast<const char *, int32, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
@@ -273,7 +293,6 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("HasNodeRef", &BMessage::HasNodeRef, "", py::arg("name"), py::arg("n")=0)
 .def("HasMessage", &BMessage::HasMessage, "", py::arg("name"), py::arg("n")=0)
 
-//
 .def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("object"))
 .def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("n"), py::arg("object"))
 .def("HasData", &BMessage::HasData, "", py::arg("name"), py::arg(""), py::arg("n")=0)
@@ -317,15 +336,15 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("GetPointer", py::overload_cast<const char *, const void *>(&BMessage::GetPointer, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
 .def("GetString", py::overload_cast<const char *, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
 .def("GetString", py::overload_cast<const char *, int32, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-//.def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-//.def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("defaultValue"))
+.def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("defaultValue"))
 .def("GetRect", py::overload_cast<const char *, int32, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetRect", py::overload_cast<const char *, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("defaultValue"))
 .def("GetPoint", py::overload_cast<const char *, int32, const BPoint &>(&BMessage::GetPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetPoint", py::overload_cast<const char *, const BPoint &>(&BMessage::GetPoint, py::const_), "", py::arg("name"), py::arg("defaultValue"))
 .def("GetSize", py::overload_cast<const char *, int32, const BSize &>(&BMessage::GetSize, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetSize", py::overload_cast<const char *, const BSize &>(&BMessage::GetSize, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-//
+
 .def("SetBool", &BMessage::SetBool, "", py::arg("name"), py::arg("value"))
 .def("SetInt8", &BMessage::SetInt8, "", py::arg("name"), py::arg("value"))
 .def("SetUInt8", &BMessage::SetUInt8, "", py::arg("name"), py::arg("value"))
@@ -342,16 +361,13 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("SetString", py::overload_cast<const char *, const BString &>(&BMessage::SetString), "", py::arg("name"), py::arg("string"))
 .def("SetFloat", &BMessage::SetFloat, "", py::arg("name"), py::arg("value"))
 .def("SetDouble", &BMessage::SetDouble, "", py::arg("name"), py::arg("value"))
-//.def("SetAlignment", &BMessage::SetAlignment, "", py::arg("name"), py::arg("value"))
+.def("SetAlignment", &BMessage::SetAlignment, "", py::arg("name"), py::arg("value"))
 .def("SetPoint", &BMessage::SetPoint, "", py::arg("name"), py::arg("value"))
 .def("SetRect", &BMessage::SetRect, "", py::arg("name"), py::arg("value"))
 .def("SetSize", &BMessage::SetSize, "", py::arg("name"), py::arg("value"))
 .def("SetData", &BMessage::SetData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
 
 .def_readwrite("what", &BMessage::what, "")
-//.def_readwrite("Private", &BMessage::Private, "")
-//.def_readonly("message_header", &BMessage::message_header, "")
-//.def_readonly("field_header", &BMessage::field_header, "")
 ;
 
 

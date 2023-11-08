@@ -40,7 +40,6 @@ py::class_<BMessenger>(m, "BMessenger")
 .def("IsValid", &BMessenger::IsValid, "")
 .def("Team", &BMessenger::Team, "")
 .def("HashValue", &BMessenger::HashValue, "")
-//.def_readwrite("Private", &BMessenger::Private, "")
 ;
 
 m.def("__lt__", py::overload_cast<const BMessenger &, const BMessenger &>(&operator<), "", py::arg("a"), py::arg("b"));

@@ -15,8 +15,6 @@ PYBIND11_MODULE(Clipboard,m)
 {
 m.attr("B_CLIPBOARD_CHANGED") = "CLCH";
 
-//m.attr("be_clipboard") = be_clipboard;
-
 py::class_<BClipboard>(m, "BClipboard")
 .def(py::init<const char *, bool>(), "", py::arg("name"), py::arg("transient")=false)
 .def("Name", &BClipboard::Name, "")
@@ -35,5 +33,6 @@ py::class_<BClipboard>(m, "BClipboard")
 .def("Data", &BClipboard::Data, "")
 ;
 
+m.attr("be_clipboard") = be_clipboard;
 
 }

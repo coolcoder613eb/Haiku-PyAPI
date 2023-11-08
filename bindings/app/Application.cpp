@@ -39,23 +39,14 @@ class PyBApplication : public BApplication{
                 );
             }
         }
-        
- 
-        
 };
+
+void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
+	self.ArgvReceived(argc, argv.data());
+}
 
 PYBIND11_MODULE(Application,m)
 {
-/*
-m.attr("PortLink") = PortLink;
-
-m.attr("ServerMemoryAllocator") = ServerMemoryAllocator;
-
-
-
-m.attr("be_app_messenger") = be_app_messenger;
-*/
-//m.attr("be_app") = be_app;
 py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def(py::init<const char *>(), "", py::arg("signature"))
 .def(py::init<const char *, status_t *>(), "", py::arg("signature"), py::arg("error"))
@@ -69,7 +60,7 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def("Pulse", &BApplication::Pulse, "")
 .def("ReadyToRun", &BApplication::ReadyToRun, "")
 .def("MessageReceived", &BApplication::MessageReceived, "", py::arg("message"))
-//.def("ArgvReceived", &BApplication::ArgvReceived, "", py::arg("argc"), py::arg("argv"))
+.def("ArgvReceived", &ArgvReceivedWrapper, "", py::arg("argc"), py::arg("argv"))
 .def("AppActivated", &BApplication::AppActivated, "", py::arg("active"))
 .def("RefsReceived", &BApplication::RefsReceived, "", py::arg("message"))
 .def("AboutRequested", &BApplication::AboutRequested, "")
@@ -94,10 +85,9 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def("UnregisterLooper", &BApplication::UnregisterLooper, "", py::arg("looper"))
 .def("GetSupportedSuites", &BApplication::GetSupportedSuites, "", py::arg("data"))
 .def("Perform", &BApplication::Perform, "", py::arg("d"), py::arg("arg"))
-//.def_readwrite("Private", &BApplication::Private, "")
 ;
-m.attr("be_app")=be_app;
-//extern BMessenger be_app_messenger;
-//m.attr("be_app_messenger") = be_app_messenger;
+
+m.attr("be_app") = be_app;
+m.attr("be_app_messenger") = be_app_messenger;
 
 }

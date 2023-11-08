@@ -79,7 +79,6 @@ py::class_<BRoster>(m, "BRoster")
 .def("GetRecentApps", &BRoster::GetRecentApps, "", py::arg("refList"), py::arg("maxCount"))
 .def("AddToRecentDocuments", &BRoster::AddToRecentDocuments, "", py::arg("document"), py::arg("signature")=NULL)
 .def("AddToRecentFolders", &BRoster::AddToRecentFolders, "", py::arg("folder"), py::arg("signature")=NULL)
-//.def_readonly("Private", &BRoster::Private)
 ;
 
 m.attr("be_roster") = be_roster;
