@@ -27,7 +27,7 @@ py::class_<BColorControl, BControl,std::unique_ptr<BColorControl, py::nodelete>>
 .def_static("Instantiate", &BColorControl::Instantiate, "", py::arg("data"))
 .def("Archive", &BColorControl::Archive, "", py::arg("data"), py::arg("deep")=true)
 .def("SetLayout", py::overload_cast<BLayout *>(&BColorControl::SetLayout), "", py::arg("layout"))
-.def("SetValue", py::overload_cast<int>(&BColorControl::SetValue), "", py::arg("color_value"))
+.def("SetValue", py::overload_cast<int32>(&BColorControl::SetValue), "", py::arg("color_value"))
 .def("SetValue", py::overload_cast<rgb_color>(&BColorControl::SetValue), "", py::arg("color"))
 .def("ValueAsColor", &BColorControl::ValueAsColor, "")
 .def("SetEnabled", &BColorControl::SetEnabled, "", py::arg("state"))
