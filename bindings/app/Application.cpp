@@ -88,6 +88,6 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 ;
 
 m.attr("be_app") = be_app;
-m.attr("be_app_messenger") = be_app_messenger;
+//m.attr("be_app_messenger") = be_app_messenger;
 
 }
