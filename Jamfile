@@ -135,7 +135,9 @@ local sourceFiles =
 	StatusBar.cpp
 	CheckBox.cpp 
 	Point.cpp
-	ColorControl.cpp ;
+	ColorControl.cpp 
+	RadioButton.cpp
+	;
 
 # The shared library Be.so can be built from the sourceFiles
 SharedLibrary Be.so : $(sourceFiles) ;

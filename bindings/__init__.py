@@ -43,6 +43,7 @@ from .StatusBar import *
 from .CheckBox import *
 from .Point import *
 from .ColorControl import *
+from .RadioButton import *
 
 _BWindow=BWindow
 _BApplication=BApplication

@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(RadioButton,m)
 {
-py::class_<BRadioButton, BControl>(m, "BRadioButton")
+py::class_<BRadioButton, BControl,std::unique_ptr<BRadioButton, py::nodelete>>(m, "BRadioButton")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<const char *, BMessage *>(), "", py::arg("label"), py::arg("message"))

@@ -1,4 +1,4 @@
-from Be import BApplication, BWindow, BAlert, BPoint, BBox, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
+from Be import BApplication, BWindow, BAlert, BPoint, BBox, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
 from Be import InterfaceDefs
@@ -27,6 +27,12 @@ class Window(BWindow):
 		self.startimer= BCheckBox(BRect(10,30,290,50),'Testbox','Test Checkbox',BMessage(612))
 		self.point=BPoint()
 		self.cc= BColorControl(BPoint(8, 128), color_control_layout.B_CELLS_32x8, 8.0,'colors', BMessage(self.CLRCTL), 0)
+		self.sixradio = BRadioButton(BRect(8,220,24,236),'hotradio', 'hot', BMessage(6))
+		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
+		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
+		self.panel.AddChild(self.sixradio,None)
+		self.panel.AddChild(self.sevenradio,None)
+		self.panel.AddChild(self.nineradio,None)
 		self.panel.AddChild(self.cc,None)
 		self.panel.AddChild(self.startimer,None)
 		self.panel.AddChild(self.tachetest,None)
