@@ -12,7 +12,6 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(Point,m)
 {
-//m.attr("B_ORIGIN") = B_ORIGIN;
 
 py::class_<BPoint>(m, "BPoint")
 .def(py::init(), "")
@@ -43,5 +42,6 @@ py::class_<BPoint>(m, "BPoint")
 ;
 
 //m.def("operator=", &operator=, "", py::arg("other"));
+m.attr("B_ORIGIN") = B_ORIGIN;
 
 }
