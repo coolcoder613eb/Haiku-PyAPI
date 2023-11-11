@@ -41,6 +41,11 @@ from .SeparatorItem import *
 from .MenuBar import *
 from .StatusBar import *
 from .CheckBox import *
+from .Point import *
+from .ColorControl import *
+from .RadioButton import *
+#from .ListView import *
+#from .ScrollView import *
 
 _BWindow=BWindow
 _BApplication=BApplication
