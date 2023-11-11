@@ -11,7 +11,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(ScrollView,m)
 {
-py::class_<BScrollView, BView>(m, "BScrollView")
+py::class_<BScrollView, BView,std::unique_ptr<BScrollView, py::nodelete>>(m, "BScrollView")
 .def(py::init<const char *, BView *, unsigned int, unsigned int, bool, bool, border_style>(), "", py::arg("name"), py::arg("target"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=0, py::arg("horizontal")=false, py::arg("vertical")=false, py::arg("border")=B_FANCY_BORDER)
 .def(py::init<const char *, BView *, unsigned int, bool, bool, border_style>(), "", py::arg("name"), py::arg("target"), py::arg("flags"), py::arg("horizontal"), py::arg("vertical"), py::arg("border")=B_FANCY_BORDER)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
