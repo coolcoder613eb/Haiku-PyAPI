@@ -72,7 +72,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support ;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
@@ -135,10 +135,16 @@ local sourceFiles =
 	StatusBar.cpp
 	CheckBox.cpp
 	Point.cpp
-	ColorControl.cpp 
+	ColorControl.cpp
 	RadioButton.cpp
-	#ListView.cpp
+	ListView.cpp
 	ScrollView.cpp
+	ListItem.cpp
+	#StringItem.cpp
+	
+	#SupportKit
+	SupportDefs.cpp
+	Archivable.cpp
 	;
 
 # The shared library Be.so can be built from the sourceFiles

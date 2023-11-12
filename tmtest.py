@@ -1,11 +1,46 @@
-from Be import BApplication, BWindow, BAlert, BPoint, BBox, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BListView, BScrollView
+from Be import BApplication, BWindow, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
+#from Be import BListItem #BStringItem
+from Be import BListItem
 from Be.ListView import list_view_type
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
 from Be import InterfaceDefs
 from Be.InterfaceDefs import border_style
 from Be import AppDefs
+
+
+
+class NewsItem(BListItem):
+	nocolor = (0, 0, 0, 0)
+
+	def __init__(self, name,color):
+		self.name = name
+		self.color=color
+		BListItem.__init__(self)
+		print(BListItem)
+
+	def DrawItem(self, owner, frame, complete):
+		if self.IsSelected() or complete:
+			color = (200,200,200,255)
+			owner.SetHighColor(color)
+			owner.SetLowColor(color)
+			owner.FillRect(frame)
+			self.color=self.nocolor
+		owner.SetHighColor(self.color)
+		#if self.color == (200,0,0,0):
+		#	self.font = be_bold_font
+		#	owner.SetFont(self.font)
+		#else:	
+		#	self.font = be_plain_font
+		#	owner.SetFont(self.font)
+		frame.PrintToStream()
+		owner.MovePenTo(frame[0],frame[3]-2)
+		owner.DrawString(self.name)
+		owner.SetLowColor((255,255,255,255))
+
+	def Text(self):
+		return self.name
+
 
 class ScrollView:
 	HiWhat = 32 #Doppioclick
@@ -45,6 +80,18 @@ class Window(BWindow):
 		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
 		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
+		#item = BStringItem("Gabibbo",0, True)#"Gabibbo",(200,0,0,0))
+		item = BListItem(0,True)
+		item2 = BListItem()
+		newsitem = NewsItem("Nuova",(255,0,0,0))
+		print(type(item))
+		print(type(self.list.lv))
+		print(self.list.lv.Items())
+		print(self.list.lv.CountItems())
+		self.list.lv.AddItem(item)
+		self.list.lv.AddItem(newsitem)
+		print(self.list.lv.Items())
+		print(self.list.lv.IndexOf(newsitem))
 		self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
