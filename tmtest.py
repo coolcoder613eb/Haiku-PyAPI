@@ -46,7 +46,7 @@ class ScrollView:
 	HiWhat = 32 #Doppioclick
 	def __init__(self, rect, name):
 		self.lv = BListView(rect, name, list_view_type.B_SINGLE_SELECTION_LIST)
-		self.sv = BScrollView('ScrollView', self.lv, 0x1234, 1, 1, border_style.B_FANCY_BORDER)
+		self.sv = BScrollView('ScrollView', self.lv)#, 0x0202,0,False,False, border_style.B_FANCY_BORDER)#|0x1030
 
 	def topview(self):
 		return self.sv
@@ -82,16 +82,18 @@ class Window(BWindow):
 		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
 		#item = BStringItem("Gabibbo",0, True)#"Gabibbo",(200,0,0,0))
 		item = BListItem(0,True)
-		item2 = BListItem()
-		newsitem = NewsItem("Nuova",(255,0,0,0))
-		print(type(item))
-		print(type(self.list.lv))
-		print(self.list.lv.Items())
-		print(self.list.lv.CountItems())
+		#item2 = BListItem()
+		#newsitem = NewsItem("Nuova",(255,0,0,0))
+		#print(type(item))
+		#print(type(self.list.lv))
+		#print(self.list.lv.Items())
+		#print(self.list.lv.CountItems())
 		self.list.lv.AddItem(item)
-		self.list.lv.AddItem(newsitem)
-		print(self.list.lv.Items())
-		print(self.list.lv.IndexOf(newsitem))
+		#self.list.lv.AddItem(newsitem)
+		#print(self.list.lv.Items())
+		#print(self.list.lv.IndexOf(newsitem))
+		#self.list.sv.Hide()
+		#self.list.sv.Show()
 		self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
