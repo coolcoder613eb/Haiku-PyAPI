@@ -1,6 +1,6 @@
 from Be import BApplication, BWindow, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 #from Be import BListItem #BStringItem
-from Be import BListItem
+from Be import BListItem, BPicture
 from Be.ListView import list_view_type
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
@@ -80,20 +80,20 @@ class Window(BWindow):
 		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
 		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
-		#item = BStringItem("Gabibbo",0, True)#"Gabibbo",(200,0,0,0))
+		lollo=BPicture()
+		self.list.sv.Hide()
 		item = BListItem(0,True)
-		#item2 = BListItem()
-		#newsitem = NewsItem("Nuova",(255,0,0,0))
-		#print(type(item))
-		#print(type(self.list.lv))
-		#print(self.list.lv.Items())
-		#print(self.list.lv.CountItems())
+		item2 = BListItem()
+		newsitem = NewsItem("Nuova",(255,0,0,0))
+		print(type(item))
+		print(type(self.list.lv))
+		print(self.list.lv.Items())
+		print(self.list.lv.CountItems())
 		self.list.lv.AddItem(item)
-		#self.list.lv.AddItem(newsitem)
-		#print(self.list.lv.Items())
-		#print(self.list.lv.IndexOf(newsitem))
-		#self.list.sv.Hide()
-		#self.list.sv.Show()
+		self.list.lv.AddItem(newsitem)
+		print(self.list.lv.Items())
+		print(self.list.lv.IndexOf(newsitem))
+		#self.list.sv.Show() there's a problem displaying the BListItems (related to looper as said on Bethon or whatever...) So for test reasons I'll keep it hidden
 		self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)

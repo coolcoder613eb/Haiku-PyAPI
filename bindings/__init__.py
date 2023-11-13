@@ -49,6 +49,8 @@ from .ScrollView import *
 from .SupportDefs import *
 from .Archivable import *
 from .ListItem import *
+#from .Bitmap import *
+from .Picture import *
 #from .StringItem import *
 
 

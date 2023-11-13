@@ -140,6 +140,8 @@ local sourceFiles =
 	ListView.cpp
 	ScrollView.cpp
 	ListItem.cpp
+	#Bitmap.cpp
+	Picture.cpp
 	#StringItem.cpp
 	
 	#SupportKit
