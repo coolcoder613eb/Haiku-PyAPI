@@ -22,11 +22,11 @@ class NewsItem(BListItem):
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
 			color = (200,200,200,255)
-			owner.SetHighColor(color)
-			owner.SetLowColor(color)
-			owner.FillRect(frame)
+			#owner.SetHighColor(color)
+			#owner.SetLowColor(color)
+			#owner.FillRect(frame)
 			self.color=self.nocolor
-		owner.SetHighColor(self.color)
+		#owner.SetHighColor(self.color)
 		#if self.color == (200,0,0,0):
 		#	self.font = be_bold_font
 		#	owner.SetFont(self.font)
@@ -34,9 +34,9 @@ class NewsItem(BListItem):
 		#	self.font = be_plain_font
 		#	owner.SetFont(self.font)
 		frame.PrintToStream()
-		owner.MovePenTo(frame[0],frame[3]-2)
-		owner.DrawString(self.name)
-		owner.SetLowColor((255,255,255,255))
+		#owner.MovePenTo(frame[0],frame[3]-2)
+		#owner.DrawString(self.name)
+		#owner.SetLowColor((255,255,255,255))
 
 	def Text(self):
 		return self.name
@@ -82,18 +82,22 @@ class Window(BWindow):
 		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
 		lollo=BPicture()
 		self.list.sv.Hide()
-		item = BListItem(0,True)
-		item2 = BListItem()
+		global newsitem
+			# TODO: newsitem (defined below) seems to be freed by Python as soon
+			# as Python is finished with the __init__ function. But we still
+			# need to have it around afterwards. The goal of this hack is to
+			# make it that Python never frees NewsItem. The actual fix would
+			# involve something like Haiku-PyAPI telling Python that it has a
+			# reference to NewsItem and so cannot free it until Haiku-PyAPI
+			# is finished with it
 		newsitem = NewsItem("Nuova",(255,0,0,0))
-		print(type(item))
 		print(type(self.list.lv))
 		print(self.list.lv.Items())
 		print(self.list.lv.CountItems())
-		self.list.lv.AddItem(item)
 		self.list.lv.AddItem(newsitem)
 		print(self.list.lv.Items())
 		print(self.list.lv.IndexOf(newsitem))
-		#self.list.sv.Show() there's a problem displaying the BListItems (related to looper as said on Bethon or whatever...) So for test reasons I'll keep it hidden
+		self.list.sv.Show()
 		self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
