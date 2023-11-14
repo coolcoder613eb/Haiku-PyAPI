@@ -20,28 +20,20 @@ class PyBWindow : public BWindow{
         using BWindow::BWindow;
  
         void MessageReceived(BMessage* msg) override {
-            py::gil_scoped_release release;
-            {
-                py::gil_scoped_acquire acquire;
-                PYBIND11_OVERLOAD(
-                    void,
-                    BWindow,
-                    MessageReceived,
-                    msg
-                );
-            }
+            PYBIND11_OVERLOAD(
+                void,
+                BWindow,
+                MessageReceived,
+                msg
+            );
         }
  
         bool QuitRequested() override {
-            py::gil_scoped_release release;
-            {
-                py::gil_scoped_acquire acquire;
-                PYBIND11_OVERLOAD(
-                    bool,
-                    BWindow,
-                    QuitRequested,
-                );
-            }
+            PYBIND11_OVERLOAD(
+                bool,
+                BWindow,
+                QuitRequested,
+            );
         }
 };
 

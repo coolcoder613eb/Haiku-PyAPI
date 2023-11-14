@@ -22,24 +22,21 @@ class PyBApplication : public BApplication{
 	public:
         using BApplication::BApplication;
         void ReadyToRun() override {
-        	py::gil_scoped_release release;
-            {
-                py::gil_scoped_acquire acquire;
-                PYBIND11_OVERLOAD(void, BApplication, ReadyToRun);
-            }
+            PYBIND11_OVERLOAD(void, BApplication, ReadyToRun);
         }
         bool QuitRequested() override {
-            py::gil_scoped_release release;
-            {
-                py::gil_scoped_acquire acquire;
-                PYBIND11_OVERLOAD(
-                    bool,
-                    BApplication,
-                    QuitRequested,
-                );
-            }
+            PYBIND11_OVERLOAD(bool, BApplication, QuitRequested);
         }
 };
+
+void RunWrapper(BApplication& self) {
+	// Why release the gil (global interpreter lock) here? Because its a long-
+	// running function (it usually runs for the lifetime of the application).
+	// See https://pybind11.readthedocs.io/en/stable/advanced/misc.html#global-interpreter-lock-gil
+	// for more details.
+	py::gil_scoped_release release;
+	self.Run();
+}
 
 void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
 	self.ArgvReceived(argc, argv.data());
@@ -54,7 +51,7 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def_static("Instantiate", &BApplication::Instantiate, "", py::arg("data"))
 .def("Archive", &BApplication::Archive, "", py::arg("data"), py::arg("deep")=true)
 .def("InitCheck", &BApplication::InitCheck, "")
-.def("Run", &BApplication::Run, "")
+.def("Run", &RunWrapper, "")
 .def("Quit", &BApplication::Quit, "")
 .def("QuitRequested", &BApplication::QuitRequested, "")
 .def("Pulse", &BApplication::Pulse, "")
