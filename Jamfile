@@ -141,8 +141,10 @@ local sourceFiles =
 	ScrollView.cpp
 	ListItem.cpp
 	#Bitmap.cpp
+	#Slider.cpp
 	Picture.cpp
-	#StringItem.cpp
+	StringItem.cpp
+	TabView.cpp
 	
 	#SupportKit
 	SupportDefs.cpp

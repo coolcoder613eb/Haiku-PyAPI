@@ -50,8 +50,11 @@ from .SupportDefs import *
 from .Archivable import *
 from .ListItem import *
 #from .Bitmap import *
+#from .Slider import *
 from .Picture import *
-#from .StringItem import *
+from .StringItem import *
+from .TabView import *
+
 
 
 

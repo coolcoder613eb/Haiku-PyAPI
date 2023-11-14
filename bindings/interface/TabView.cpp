@@ -17,7 +17,7 @@ py::enum_<tab_position>(m, "tab_position", "")
 .value("B_TAB_ANY", tab_position::B_TAB_ANY, "")
 .export_values();
 
-py::class_<BTab, BArchivable>(m, "BTab")
+py::class_<BTab, BArchivable,std::unique_ptr<BTab, py::nodelete>>(m, "BTab")
 .def(py::init<BView *>(), "", py::arg("contentsView")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BTab::Instantiate, "", py::arg("archive"))
@@ -37,10 +37,10 @@ py::class_<BTab, BArchivable>(m, "BTab")
 .def("DrawFocusMark", &BTab::DrawFocusMark, "", py::arg("owner"), py::arg("frame"))
 .def("DrawLabel", &BTab::DrawLabel, "", py::arg("owner"), py::arg("frame"))
 .def("DrawTab", &BTab::DrawTab, "", py::arg("owner"), py::arg("frame"), py::arg("position"), py::arg("full")=true)
-.def_readwrite("Private", &BTab::Private, "")
+//.def_readwrite("Private", &BTab::Private, "")
 ;
 
-py::class_<BTabView, BView>(m, "BTabView")
+py::class_<BTabView, BView,std::unique_ptr<BTabView, py::nodelete>>(m, "BTabView")
 .def(py::init<const char *, button_width, unsigned int>(), "", py::arg("name"), py::arg("width")=B_WIDTH_FROM_WIDEST, py::arg("flags")=B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<BRect, const char *, button_width, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("width")=B_WIDTH_AS_USUAL, py::arg("resizeMask")=B_FOLLOW_ALL, py::arg("flags")=B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))

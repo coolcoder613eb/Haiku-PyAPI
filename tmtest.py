@@ -1,6 +1,6 @@
-from Be import BApplication, BWindow, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
+from Be import BApplication, BWindow, BListItem, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 #from Be import BListItem #BStringItem
-from Be import BListItem, BPicture
+from Be import BTabView, BTab, BFont
 from Be.ListView import list_view_type
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
@@ -8,7 +8,23 @@ from Be import InterfaceDefs
 from Be.InterfaceDefs import border_style
 from Be import AppDefs
 
-
+class StrangeItem(BStringItem):
+	nocolor = (0, 0, 0, 0)
+	def __init__(self, testo,colore):
+		self.testo = testo
+		self.color = colore
+		BStringItem.__init__(self,testo)
+	def DrawItem(self,owner,frame,complete):
+		if self.IsSelected() or complete:
+			color = (50,50,50,255)
+			owner.SetHighColor(color)
+			owner.SetLowColor(color)
+			owner.FillRect(frame)
+			self.color=self.nocolor
+		owner.SetHighColor(self.color)
+		owner.MovePenTo(0,frame.Height()-2)
+		owner.DrawString(self.testo)
+		owner.SetLowColor((255,255,255,255))
 
 class NewsItem(BListItem):
 	nocolor = (0, 0, 0, 0)
@@ -17,7 +33,6 @@ class NewsItem(BListItem):
 		self.name = name
 		self.color=color
 		BListItem.__init__(self)
-		print(BListItem)
 
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
@@ -64,6 +79,9 @@ class Window(BWindow):
 	def __init__(self):
 		BWindow.__init__(self, BRect(100,100,600,750), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE)
 		bounds=self.Bounds()
+		self.bckgnd = BView(self.Bounds(), "background", 8, 20000000)
+		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
+		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.box = BBox(BRect(10,26,90,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.bar = BMenuBar(self.box.Bounds(), 'Bar')
@@ -91,10 +109,12 @@ class Window(BWindow):
 			# reference to NewsItem and so cannot free it until Haiku-PyAPI
 			# is finished with it
 		newsitem = NewsItem("Nuova",(255,0,0,0))
+		strano = StrangeItem("Prova",(0,200,0,0))
 		print(type(self.list.lv))
 		print(self.list.lv.Items())
 		print(self.list.lv.CountItems())
 		self.list.lv.AddItem(newsitem)
+		self.list.lv.AddItem(strano)
 		print(self.list.lv.Items())
 		print(self.list.lv.IndexOf(newsitem))
 		self.list.sv.Show()
@@ -107,6 +127,25 @@ class Window(BWindow):
 		self.panel.AddChild(self.tachetest,None)
 		self.panel.AddChild(self.statbar,None)
 		self.panel.AddChild(self.bar,None)
+		self.tabslabels=[]
+		self.tabsviews=[]
+		self.tabsviews.append(self.panel)
+		#testotab=[]
+		#for char in "Principale":
+		#	testotab.append(char)
+		#outarray=[]
+		#BFont.GetStringWidths(testotab,len(testotab),1,outarray)#StringWidth(chr(ord("P")))
+		#print(outarray)
+		tabrect=BRect(3.0, 3.0, 30.0, self.maintabview.TabHeight()-3.0)
+		bviewtab=BStringView(tabrect,"scheda1","Princpiale")
+		scheda=BTab(bviewtab)#self.maintabview)
+		scheda.SetLabel("Principale")
+		self.tabslabels.append(scheda)
+		
+		print(self.tabslabels[0])
+		print(self.tabsviews[0])
+		self.maintabview.AddTab(self.panel,scheda)#self.tabsviews[0],self.tabslabels[0])
+		self.bckgnd.AddChild(self.maintabview,None)
 		for menu, items in self.Menus:
 			menu = BMenu(menu)
 			for k, name in items:
@@ -115,7 +154,7 @@ class Window(BWindow):
 				else:
 						menu.AddItem(BMenuItem(name, BMessage(k),name[1],0))
 			self.bar.AddItem(menu)
-		self.AddChild(self.panel,None)
+		self.AddChild(self.bckgnd,None)
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
