@@ -4,7 +4,9 @@
 #include <pybind11/operators.h>
 
 #include <interface/StringItem.h>
+#include <Font.h>
 #include <ListItem.h>
+#include <View.h>
 
 namespace py = pybind11;
 
