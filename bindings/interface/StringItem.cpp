@@ -10,10 +10,18 @@
 
 namespace py = pybind11;
 
+class PyStringItem : public BStringItem{
+	public:
+        using BStringItem::BStringItem;
+        void DrawItem(BView* owner, BRect frame, bool complete = false) override {
+            PYBIND11_OVERLOAD(void, BStringItem, DrawItem, owner, frame, complete);
+        }
+        // TODO: there may be more methods that we should allow overloading
+};
 
 PYBIND11_MODULE(StringItem,m)
 {
-py::class_<BStringItem, BListItem>(m, "BStringItem")
+py::class_<BStringItem, PyStringItem, BListItem>(m, "BStringItem")
 .def(py::init<const char *, unsigned int, bool>(), "", py::arg("text"), py::arg("outlineLevel")=0, py::arg("expanded")=true)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BStringItem::Instantiate, "", py::arg("archive"))
