@@ -23,6 +23,7 @@
 #include <Shape.h>
 #include <LayoutContext.h>
 #include <Region.h>
+#include <Point.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -172,8 +173,16 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("LeftTop", &BView::LeftTop, "")
 .def("GetClippingRegion", &BView::GetClippingRegion, "", py::arg("region"))
 .def("ConstrainClippingRegion", &BView::ConstrainClippingRegion, "", py::arg("region"))
-//.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-//.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+/*
+.def("ClipToPicture",py::overload_cast<BPicture *,BPoint,bool>(&BView::ClipToPicture), "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+*/
+
+//from here
+.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+//to here
+
 .def("ClipToRect", &BView::ClipToRect, "", py::arg("rect"))
 .def("ClipToInverseRect", &BView::ClipToInverseRect, "", py::arg("rect"))
 .def("ClipToShape", &BView::ClipToShape, "", py::arg("shape"))

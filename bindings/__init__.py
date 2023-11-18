@@ -19,6 +19,7 @@ from .Roster import *
 from .Window import *
 from .Rect import *
 from .GraphicsDefs import *
+from .Point import *
 from .View import *
 from .Control import *
 from .Button import *
@@ -42,7 +43,7 @@ from .SeparatorItem import *
 from .MenuBar import *
 from .StatusBar import *
 from .CheckBox import *
-from .Point import *
+
 from .ColorControl import *
 from .RadioButton import *
 from .ListView import *
