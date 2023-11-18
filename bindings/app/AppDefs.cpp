@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <vector>
 
 #include <Cursor.h>
 #include <app/AppDefs.h>
@@ -10,8 +11,24 @@
 
 namespace py = pybind11;
 
+// calculates the size of an old-style cursor array
+int cursor_array_size(const unsigned char cursor[]) {
+	int width = cursor[0]; // width in pixels
+	int height = cursor[0]; // height in pixels
+	int depth = cursor[1]; // number of bits per pixel
+
+	// number of bytes in each section of the data structure
+	int header_size = 4;
+	int image_mask_size = width * height * depth / 8;
+	int transparency_mask_size = width * height * depth / 8;
+	
+	return header_size + image_mask_size + transparency_mask_size;
+}
+
 PYBIND11_MODULE(AppDefs,m)
 {
+py::module_::import("Be.Cursor");
+
 m.attr("B_ABOUT_REQUESTED") = py::int_('_ABR');
 m.attr("B_WINDOW_ACTIVATED") = py::int_('_ACT');
 m.attr("B_APP_ACTIVATED") = py::int_('_ACT');
@@ -113,10 +130,15 @@ m.attr("B_OBSERVER_NOTICE_CHANGE") = py::int_('NTCH');
 m.attr("B_CONTROL_INVOKED") = py::int_('CIVK');
 m.attr("B_CONTROL_MODIFIED") = py::int_('CMOD');
 
-//m.attr("B_HAND_CURSOR") = B_HAND_CURSOR;
-//m.attr("B_I_BEAM_CURSOR") = B_I_BEAM_CURSOR;
-//m.attr("B_CURSOR_SYSTEM_DEFAULT") = B_CURSOR_SYSTEM_DEFAULT;
-//m.attr("B_CURSOR_I_BEAM") = B_CURSOR_I_BEAM;
+// old-style cursors
+m.attr("B_HAND_CURSOR") = std::vector<unsigned char>(
+	B_HAND_CURSOR, B_HAND_CURSOR + cursor_array_size(B_HAND_CURSOR));
+m.attr("B_I_BEAM_CURSOR") = std::vector<unsigned char>(
+	B_I_BEAM_CURSOR, B_I_BEAM_CURSOR + cursor_array_size(B_I_BEAM_CURSOR));
+
+// new-style cursors
+m.attr("B_CURSOR_SYSTEM_DEFAULT") = B_CURSOR_SYSTEM_DEFAULT;
+m.attr("B_CURSOR_I_BEAM") = B_CURSOR_I_BEAM;
 
 }
 

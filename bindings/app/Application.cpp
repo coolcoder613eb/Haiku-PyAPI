@@ -44,6 +44,8 @@ void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv
 
 PYBIND11_MODULE(Application,m)
 {
+py::module_::import("Be.Messenger");
+
 py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def(py::init<const char *>(), "", py::arg("signature"))
 .def(py::init<const char *, status_t *>(), "", py::arg("signature"), py::arg("error"))
@@ -85,6 +87,6 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 ;
 
 m.attr("be_app") = be_app;
-//m.attr("be_app_messenger") = be_app_messenger;
+m.attr("be_app_messenger") = be_app_messenger;
 
 }
