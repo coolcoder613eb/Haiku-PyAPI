@@ -21,17 +21,17 @@ class StrangeItem(BStringItem):
 		return self.color
 	def DrawItem(self,owner,frame,complete):
 		print("dissegno StrangeItem")
-		if self.IsSelected() or complete:
-			color = (50,50,50,255)
-			owner.SetHighColor(50,50,50,255)
-			owner.SetLowColor(50,50,50,255)
-			#owner.FillRect(frame)
-			self.color=self.nocolor
+#		if self.IsSelected() or complete:
+#			color = (50,50,50,255)
+#			owner.SetHighColor(50,50,50,255)
+#			owner.SetLowColor(50,50,50,255)
+#			#owner.FillRect(frame)
+#			self.color=self.nocolor
 		owner.SetHighColor(0, 200, 0, 0)
-		#owner.MovePenTo(0,frame.Height()-2)
-		#owner.DrawString(self.testo)
-		owner.SetLowColor(255,255,255,255)
-		BStringItem.DrawItem(self,owner,frame,complete)
+		owner.MovePenTo(0,frame.Height()-2)
+		owner.DrawString(self.testo)
+#		owner.SetLowColor(255,255,255,255)
+		#BStringItem.DrawItem(self,owner,frame,complete)
 
 class NewsItem(BListItem):
 	nocolor = (0, 0, 0, 0)

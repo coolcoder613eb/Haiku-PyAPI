@@ -273,9 +273,13 @@ m.def("bitmaps_support_space", &bitmaps_support_space, "", py::arg("space"), py:
 
 m.def("get_pixel_size_for", &get_pixel_size_for, "", py::arg("space"), py::arg("_pixelChunk"), py::arg("_rowAlignment"), py::arg("_pixelsPerChunk"));
 
-//m.attr("B_SOLID_LOW") = const B_SOLID_LOW;
-//m.attr("B_MIXED_COLORS") = const B_MIXED_COLORS;
+//m.attr("B_SOLID_LOW") = B_SOLID_LOW;
+//m.attr("B_MIXED_COLORS") = B_MIXED_COLORS;
 //m.attr("B_SOLID_HIGH") = B_SOLID_HIGH;
+
+m.attr("B_VIEWS_SUPPORT_DRAW_BITMAP") = 1;
+m.attr("B_BITMAPS_SUPPORT_ATTACHED_VIEWS") = 2;
+m.attr("B_BITMAPS_SUPPORT_OVERLAY") = 4;
 m.attr("B_TRANSPARENT_COLOR") = B_TRANSPARENT_COLOR;
 m.attr("B_TRANSPARENT_32_BIT") = B_TRANSPARENT_32_BIT;
 m.attr("B_MAIN_SCREEN_ID") = B_MAIN_SCREEN_ID;
