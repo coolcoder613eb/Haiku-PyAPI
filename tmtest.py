@@ -44,25 +44,21 @@ class NewsItem(BListItem):
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
 			color = (200,200,200,255)
-			owner.SetHighColor(200,200,200,255)
+			owner.SetHighColor(150,0,0,0)
 			owner.SetLowColor(200,200,200,255)
-			paternale=Pattern()
-			paternale.data=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
-			#paternale = [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
-			BView.FillRect(frame,paternale.toPattern())
-			#owner.FillRect(frame)
+			owner.FillRect(frame)
 			self.color=self.nocolor
-#		#owner.SetHighColor(self.color)
-#		#if self.color == (200,0,0,0):
-#		#	self.font = be_bold_font
-#		#	owner.SetFont(self.font)
-#		#else:	
-#		#	self.font = be_plain_font
-#		#	owner.SetFont(self.font)
+		#owner.SetHighColor(self.color)
+		#if self.color == (200,0,0,0):
+		#	self.font = be_bold_font
+		#	owner.SetFont(self.font)
+		#else:	
+		#	self.font = be_plain_font
+		#	owner.SetFont(self.font)
 		frame.PrintToStream()
-		owner.MovePenTo(0,frame.Height()-2)
+		owner.MovePenTo(5,frame.Height()-2)
 		owner.DrawString("->"+self.name,None)
-#		#owner.SetLowColor((255,255,255,255))
+		owner.SetLowColor(255,255,255,255)
 		#BListItem.DrawItem(self,owner,frame,complete)
 
 	def Text(self):
@@ -134,9 +130,10 @@ class Window(BWindow):
 		self.elementolista=BStringItem("Questo è un BStringItem")
 		#global strano
 		strano = StrangeItem("Questo è un StrangeItem",(0,200,0,0))
-		print(type(self.list.lv))
-		print(self.list.lv.Items())
-		print(self.list.lv.CountItems())
+		print("strano gcolor è:",strano.gcolor)
+		#print(type(self.list.lv))
+		#print(self.list.lv.Items())
+		#print(self.list.lv.CountItems())
 		self.list.lv.AddItem(newsitem)
 		self.list.lv.AddItem(self.elementolista)
 		self.list.lv.AddItem(strano)
