@@ -18,6 +18,7 @@ from .PropertyInfo import *
 from .Roster import *
 from .Window import *
 from .Rect import *
+from .GraphicsDefs import *
 from .View import *
 from .Control import *
 from .Button import *
@@ -54,7 +55,7 @@ from .ListItem import *
 from .Picture import *
 from .StringItem import *
 from .TabView import *
-
+from .ScrollBar import *
 
 
 
