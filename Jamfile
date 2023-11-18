@@ -145,6 +145,8 @@ local sourceFiles =
 	Picture.cpp
 	StringItem.cpp
 	TabView.cpp
+	ScrollBar.cpp
+	GraphicsDefs.cpp
 	
 	#SupportKit
 	SupportDefs.cpp
