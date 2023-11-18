@@ -175,6 +175,7 @@ m.attr("B_TRANSPARENT_8_BIT") = B_TRANSPARENT_8_BIT;
 
 py::class_<pattern>(m, "pattern")
 //.def_readwrite("data", &pattern::data, "")
+.def_readonly("data", &pattern::data, "")
 ;
 
 /*
