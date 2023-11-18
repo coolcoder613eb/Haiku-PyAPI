@@ -173,16 +173,8 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("LeftTop", &BView::LeftTop, "")
 .def("GetClippingRegion", &BView::GetClippingRegion, "", py::arg("region"))
 .def("ConstrainClippingRegion", &BView::ConstrainClippingRegion, "", py::arg("region"))
-/*
-.def("ClipToPicture",py::overload_cast<BPicture *,BPoint,bool>(&BView::ClipToPicture), "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-*/
-
-//from here
 .def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
 .def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-//to here
-
 .def("ClipToRect", &BView::ClipToRect, "", py::arg("rect"))
 .def("ClipToInverseRect", &BView::ClipToInverseRect, "", py::arg("rect"))
 .def("ClipToShape", &BView::ClipToShape, "", py::arg("shape"))
@@ -265,7 +257,7 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FillTriangle", py::overload_cast<BPoint, BPoint, BPoint, const BGradient &>(&BView::FillTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("gradient"))
 .def("FillTriangle", py::overload_cast<BPoint, BPoint, BPoint, BRect, const BGradient &>(&BView::FillTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("bounds"), py::arg("gradient"))
 //.def("StrokeRect", &BView::StrokeRect, "", py::arg("rect"), py::arg("pattern")=B_SOLID_HIGH)
-//.def("FillRect", py::overload_cast<BRect, ::pattern>(&BView::FillRect), "", py::arg("rect"), py::arg("pattern")=B_SOLID_HIGH)
+.def("FillRect", py::overload_cast<BRect, ::pattern>(&BView::FillRect), "", py::arg("rect"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillRect", py::overload_cast<BRect, const BGradient &>(&BView::FillRect), "", py::arg("rect"), py::arg("gradient"))
 //.def("FillRegion", py::overload_cast<BRegion *, ::pattern>(&BView::FillRegion), "", py::arg("rectegion"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillRegion", py::overload_cast<BRegion *, const BGradient &>(&BView::FillRegion), "", py::arg("rectegion"), py::arg("gradient"))
@@ -292,7 +284,7 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 //.def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
-/*
+//from here check if they work as BBitmap is not implemented
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
@@ -305,7 +297,7 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawBitmap", py::overload_cast<const BBitmap *>(&BView::DrawBitmap), "", py::arg("aBitmap"))
 .def("DrawTiledBitmapAsync", &BView::DrawTiledBitmapAsync, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
 .def("DrawTiledBitmap", &BView::DrawTiledBitmap, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
-*/
+//to here
 .def("DrawChar", py::overload_cast<char>(&BView::DrawChar), "", py::arg("aChar"))
 .def("DrawChar", py::overload_cast<char, BPoint>(&BView::DrawChar), "", py::arg("aChar"), py::arg("location"))
 .def("DrawString", py::overload_cast<const char *, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("delta")=NULL)

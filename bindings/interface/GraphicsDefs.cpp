@@ -7,7 +7,7 @@
 #include <SupportDefs.h>
 
 namespace py = pybind11;
-
+/*
 struct Pattern {
     std::vector<uint8_t> data;
     pattern toPattern() const {
@@ -21,7 +21,7 @@ struct Pattern {
         std::memcpy(&result, data.data(), sizeof(pattern));
         return result;
     }
-};
+};*/
 
 PYBIND11_MODULE(GraphicsDefs,m)
 {
@@ -172,11 +172,12 @@ m.attr("B_TRANSPARENT_MAGIC_RGBA32") = B_TRANSPARENT_MAGIC_RGBA32;
 m.attr("B_TRANSPARENT_MAGIC_RGBA32_BIG") = B_TRANSPARENT_MAGIC_RGBA32_BIG;
 m.attr("B_TRANSPARENT_8_BIT") = B_TRANSPARENT_8_BIT;
 
-/*
+
 py::class_<pattern>(m, "pattern")
-.def_readwrite("data", &pattern::data, "")
+//.def_readwrite("data", &pattern::data, "")
 ;
-*/
+
+/*
 py::class_<Pattern>(m, "Pattern")
 .def(py::init<>())
 .def_property("data", [](const Pattern &p) -> std::vector<uint8_t> {
@@ -191,6 +192,7 @@ py::class_<Pattern>(m, "Pattern")
         })
 .def("toPattern", &Pattern::toPattern);
 ;
+*/
 //m.attr("B_SOLID_HIGH") = B_SOLID_HIGH;
 /*
 std::vector<uint8_t> solid_high_vector(B_SOLID_HIGH.data, B_SOLID_HIGH.data + sizeof(B_SOLID_HIGH.data));
@@ -273,9 +275,9 @@ m.def("bitmaps_support_space", &bitmaps_support_space, "", py::arg("space"), py:
 
 m.def("get_pixel_size_for", &get_pixel_size_for, "", py::arg("space"), py::arg("_pixelChunk"), py::arg("_rowAlignment"), py::arg("_pixelsPerChunk"));
 
-//m.attr("B_SOLID_LOW") = B_SOLID_LOW;
-//m.attr("B_MIXED_COLORS") = B_MIXED_COLORS;
-//m.attr("B_SOLID_HIGH") = B_SOLID_HIGH;
+m.attr("B_SOLID_LOW") = B_SOLID_LOW;
+m.attr("B_MIXED_COLORS") = B_MIXED_COLORS;
+m.attr("B_SOLID_HIGH") = B_SOLID_HIGH;
 
 m.attr("B_VIEWS_SUPPORT_DRAW_BITMAP") = 1;
 m.attr("B_BITMAPS_SUPPORT_ATTACHED_VIEWS") = 2;
