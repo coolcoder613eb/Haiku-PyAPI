@@ -85,6 +85,7 @@ py::class_<BTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextV
 .def("Select", &BTextView::Select, "", py::arg("startOffset"), py::arg("endOffset"))
 .def("SelectAll", &BTextView::SelectAll, "")
 .def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
+.def("SetFontAndColor", static_cast<void (BTextView::*)(const BFont*, uint32, const rgb_color*)>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=511, py::arg("color")=NULL) //nullptr)
 //.def("SetFontAndColor", py::overload_cast<const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", py::overload_cast<int32, int32, const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("GetFontAndColor", py::overload_cast<int32, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
