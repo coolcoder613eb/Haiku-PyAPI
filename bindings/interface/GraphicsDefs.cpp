@@ -7,6 +7,7 @@
 #include <SupportDefs.h>
 
 namespace py = pybind11;
+
 /*
 struct Pattern {
     std::vector<uint8_t> data;
@@ -172,12 +173,6 @@ m.attr("B_TRANSPARENT_MAGIC_RGBA32") = B_TRANSPARENT_MAGIC_RGBA32;
 m.attr("B_TRANSPARENT_MAGIC_RGBA32_BIG") = B_TRANSPARENT_MAGIC_RGBA32_BIG;
 m.attr("B_TRANSPARENT_8_BIT") = B_TRANSPARENT_8_BIT;
 
-
-py::class_<pattern>(m, "pattern")
-//.def_readwrite("data", &pattern::data, "")
-.def_readonly("data", &pattern::data, "")
-;
-
 /*
 py::class_<Pattern>(m, "Pattern")
 .def(py::init<>())
@@ -192,29 +187,13 @@ py::class_<Pattern>(m, "Pattern")
             p.data = vec;
         })
 .def("toPattern", &Pattern::toPattern);
+;*/
+
+py::class_<pattern>(m, "pattern")
+//.def_readwrite("data", &pattern::data, "")
+.def_readonly("data", &pattern::data, "")
 ;
-*/
-//m.attr("B_SOLID_HIGH") = B_SOLID_HIGH;
-/*
-std::vector<uint8_t> solid_high_vector(B_SOLID_HIGH.data, B_SOLID_HIGH.data + sizeof(B_SOLID_HIGH.data));
-m.attr("B_SOLID_HIGH") = solid_high_vector;
-*/
-//const pattern B_SOLID_HIGH = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
-//m.attr("B_SOLID_HIGH") = pattern{{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
-/*
-const pattern solido = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
-m.attr("B_SOLID_HIGH") = solido;
-*/
-//m.attr("B_MIXED_COLORS") = B_MIXED_COLORS;
-/*
-std::vector<uint8_t> mixed_colors_vector(B_MIXED_COLORS.data, B_MIXED_COLORS.data + sizeof(B_MIXED_COLORS.data));
-m.attr("B_MIXED_COLORS") = mixed_colors_vector;
-*/
-//m.attr("B_SOLID_LOW") = B_SOLID_LOW;
-/*
-std::vector<uint8_t> solid_low_vector(B_SOLID_LOW.data, B_SOLID_LOW.data + sizeof(B_SOLID_LOW.data));
-m.attr("B_SOLID_LOW") = solid_low_vector;
-*/
+
 py::class_<rgb_color>(m, "rgb_color")
 .def("set_to", &rgb_color::set_to, "", py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=255)
 .def("Brightness", &rgb_color::Brightness, "")
@@ -230,8 +209,11 @@ py::class_<rgb_color>(m, "rgb_color")
 py::class_<color_map>(m, "color_map")
 .def_readwrite("id", &color_map::id, "")
 //.def_readwrite("color_list", &color_map::color_list, "")
+.def_readonly("color_list", &color_map::color_list, "")
 //.def_readwrite("inversion_map", &color_map::inversion_map, "")
+.def_readonly("inversion_map", &color_map::inversion_map, "")
 //.def_readwrite("index_map", &color_map::index_map, "")
+.def_readonly("index_map", &color_map::index_map, "")
 ;
 
 py::class_<overlay_rect_limits>(m, "overlay_rect_limits")
