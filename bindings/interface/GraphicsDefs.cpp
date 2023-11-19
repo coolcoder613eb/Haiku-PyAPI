@@ -8,22 +8,6 @@
 
 namespace py = pybind11;
 
-/*
-struct Pattern {
-    std::vector<uint8_t> data;
-    pattern toPattern() const {
-        // Assicurati che il vettore abbia la dimensione corretta
-        if (data.size() != 8) {
-            throw std::runtime_error("Invalid vector size");
-        }
-
-        // Crea una struttura pattern e copia i dati
-        pattern result;
-        std::memcpy(&result, data.data(), sizeof(pattern));
-        return result;
-    }
-};*/
-
 PYBIND11_MODULE(GraphicsDefs,m)
 {
 py::enum_<color_space>(m, "color_space", "")
@@ -172,22 +156,6 @@ m.attr("B_TRANSPARENT_MAGIC_RGBA15_BIG") = B_TRANSPARENT_MAGIC_RGBA15_BIG;
 m.attr("B_TRANSPARENT_MAGIC_RGBA32") = B_TRANSPARENT_MAGIC_RGBA32;
 m.attr("B_TRANSPARENT_MAGIC_RGBA32_BIG") = B_TRANSPARENT_MAGIC_RGBA32_BIG;
 m.attr("B_TRANSPARENT_8_BIT") = B_TRANSPARENT_8_BIT;
-
-/*
-py::class_<Pattern>(m, "Pattern")
-.def(py::init<>())
-.def_property("data", [](const Pattern &p) -> std::vector<uint8_t> {
-            return p.data;
-        }, [](Pattern &p, const std::vector<uint8_t>& vec) {
-            // Assicurati che il vettore abbia la dimensione corretta
-            if (vec.size() != 8) {
-                throw std::runtime_error("Invalid vector size");
-            }
-            // Copia i dati dal vettore Python a Pattern
-            p.data = vec;
-        })
-.def("toPattern", &Pattern::toPattern);
-;*/
 
 py::class_<pattern>(m, "pattern")
 //.def_readwrite("data", &pattern::data, "")

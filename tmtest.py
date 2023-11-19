@@ -86,7 +86,7 @@ class Window(BWindow):
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
 		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
-		self.box2 = BBox(BRect(10,26,90,51),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
 		#self.box.SetHighColor(0, 200, 0, 0)
 		#paternale=Pattern()
@@ -97,7 +97,7 @@ class Window(BWindow):
 		self.box.AddChild(self.testo,None)
 		self.statbar = BStatusBar(BRect(10,70,bounds.Width()/3-15,144), 'progress','0%', '100%')
 		self.statbar.SetMaxValue(100.0)
-		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTView', "prova:",None,BMessage(1),0x0202|0x0404)
+		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTCtrl', "prova:",None,BMessage(1),0x0202|0x0404)
 		self.tachetest.SetDivider(55.0)
 		self.startimer= BCheckBox(BRect(10,30,290,50),'Testbox','Test Checkbox',BMessage(612))
 		self.point=BPoint()
@@ -105,13 +105,15 @@ class Window(BWindow):
 		self.sixradio = BRadioButton(BRect(8,220,24,236),'hotradio', 'hot', BMessage(6))
 		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
-		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
-		colore=self.list.lv.HighColor()
-		print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
-		colore.set_to(10,200,100,255)
-		print("colore modificato è:",colore.red,colore.green,colore.blue,colore.alpha)
-		self.list.lv.SetHighColor(colore)
-		self.list.lv.SetLowColor(colore)
+
+		# Handling colors##################
+		#colore=self.list.lv.HighColor()
+		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
+		#colore.set_to(10,200,100,255)
+		#print("colore modificato è:",colore.red,colore.green,colore.blue,colore.alpha)
+		#self.list.lv.SetHighColor(colore)
+		#self.list.lv.SetLowColor(colore)
+		####################################
 		bup=BPicture()
 		#arrgh=[]
 		#arrgh.append(BView.MovePenTo(BPoint(3.0,16.0)))
@@ -119,7 +121,10 @@ class Window(BWindow):
 		#bup.Play(arrgh,len(arrgh),None)
 		bdown=BPicture()
 		butupdown=BPictureButton(BRect(bounds.Width()-32,180,bounds.Width()-16,196),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
-		self.list.sv.Hide()
+		
+		
+		self.list = ScrollView(BRect(8 , 300, bounds.Width() - 18 , bounds.Height() - 42 ), 'ScrollView')
+		#self.list.sv.Hide()
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
 			# as Python is finished with the __init__ function. But we still
@@ -174,11 +179,27 @@ class Window(BWindow):
 		self.tabslabels.append(scheda)
 		self.tabslabels.append(scheda2)
 		
-		self.maintabview.AddTab(self.tabsviews[0],self.tabslabels[0])#self.tabsviews[0],self.tabslabels[0])
+		self.maintabview.AddTab(self.tabsviews[0],self.tabslabels[0])
 		self.maintabview.AddTab(self.tabsviews[1],self.tabslabels[1])
+
 		self.bckgnd.AddChild(self.maintabview,None)
 		scheda.SetLabel("Principale")
 		scheda2.SetLabel("Scrittura")
+
+		from Be.Font import be_plain_font
+		from Be.Font import be_bold_font
+		#from Be.View import set_font_mask		
+		self.typtap=BTextView(BRect(10,45,self.panel2.Bounds().Width()-20,self.panel2.Bounds().Height()-20-self.maintabview.TabHeight()), 'TxTView', BRect(5,5,self.panel2.Bounds().Width()-35,self.panel2.Bounds().Height()-30-self.maintabview.TabHeight()), 0x1234, 20000000)
+		self.typtap.SetStylable(1)
+		self.panel2.AddChild(self.typtap,None)
+		colore=self.panel.HighColor()
+		print(colore.red,colore.green,colore.blue,colore.alpha)
+		colore.red=180
+		self.typtap.SetFontAndColor(be_plain_font,511,colore)#B_FONT_ALL = 511
+		stuff = '\n\t\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\t\t\t\tZardshard and coolcoder613'
+		#n = stuff.find('Bulletin Gator')
+		#m = stuff.find('This')
+		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
 		self.panel.AddChild(self.list.topview(),None)
 		
