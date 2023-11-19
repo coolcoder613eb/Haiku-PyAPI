@@ -143,6 +143,7 @@ local sourceFiles =
 	#Bitmap.cpp
 	#Slider.cpp
 	Picture.cpp
+	PictureButton.cpp
 	StringItem.cpp
 	TabView.cpp
 	ScrollBar.cpp

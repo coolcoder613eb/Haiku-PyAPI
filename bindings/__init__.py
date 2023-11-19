@@ -54,6 +54,7 @@ from .ListItem import *
 #from .Bitmap import *
 #from .Slider import *
 from .Picture import *
+from .PictureButton import *
 from .StringItem import *
 from .TabView import *
 from .ScrollBar import *

@@ -1,6 +1,7 @@
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-#from Be import BListItem #BStringItem
-from Be.GraphicsDefs import *#rgb_color
+from Be import BPictureButton
+from Be.PictureButton import picture_button_behavior
+from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
@@ -19,35 +20,29 @@ class StrangeItem(BStringItem):
 		return self.testo
 	def Color(self):
 		return self.color
-	def DrawItem(self,owner,frame,complete):
-		print("dissegno StrangeItem")
-#		if self.IsSelected() or complete:
-#			color = (50,50,50,255)
-#			owner.SetHighColor(50,50,50,255)
-#			owner.SetLowColor(50,50,50,255)
-#			#owner.FillRect(frame)
-#			self.color=self.nocolor
-		owner.SetHighColor(0, 200, 0, 0)
-		owner.MovePenTo(0,frame.Height()-2)
-		owner.DrawString(self.testo)
-#		owner.SetLowColor(255,255,255,255)
-		#BStringItem.DrawItem(self,owner,frame,complete)
 
 class NewsItem(BListItem):
 	nocolor = (0, 0, 0, 0)
 
 	def __init__(self, name,color):
 		self.name = name
+		print("inizializzato con color:"+str(color))
 		self.color=color
 		BListItem.__init__(self)
 
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
 			color = (200,200,200,255)
-			owner.SetHighColor(150,0,0,0)
+			#print("HighColor era:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
+			#print("LowColor era:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
+			owner.SetHighColor(180,0,0,255)
 			owner.SetLowColor(200,200,200,255)
+			#print("HighColor ora è:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
+			#print("LowColor ora è:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
 			owner.FillRect(frame)
-			self.color=self.nocolor
+			owner.SetHighColor(0,0,0,255)
+			owner.SetLowColor(255,255,255,255)
+			#self.color=self.nocolor
 		#owner.SetHighColor(self.color)
 		#if self.color == (200,0,0,0):
 		#	self.font = be_bold_font
@@ -55,11 +50,9 @@ class NewsItem(BListItem):
 		#else:	
 		#	self.font = be_plain_font
 		#	owner.SetFont(self.font)
-		frame.PrintToStream()
+		#frame.PrintToStream()
 		owner.MovePenTo(5,frame.Height()-2)
-		owner.DrawString("->"+self.name,None)
-		owner.SetLowColor(255,255,255,255)
-		#BListItem.DrawItem(self,owner,frame,complete)
+		owner.DrawString("▶ "+self.name,None)
 
 	def Text(self):
 		return self.name
@@ -116,7 +109,13 @@ class Window(BWindow):
 		print("colore modificato è:",colore.red,colore.green,colore.blue,colore.alpha)
 		self.list.lv.SetHighColor(colore)
 		self.list.lv.SetLowColor(colore)
-		lollo=BPicture()
+		bup=BPicture()
+		arrgh=[]
+		arrgh.append(BView.MovePenTo(BPoint(3.0,16.0)))
+		arrgh.append(BView.DrawString("On",None))
+		bup.Play(arrgh,len(arrgh),None)
+		bdown=BPicture()
+		butupdown=BPictureButton(BRect(bounds.Width()-32,220,bounds.Width()-16,236),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
 		self.list.sv.Hide()
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
@@ -144,6 +143,7 @@ class Window(BWindow):
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
 		self.panel.AddChild(self.nineradio,None)
+		self.panel.AddChild(butupdown,None)
 		self.panel.AddChild(self.cc,None)
 		self.panel.AddChild(self.startimer,None)
 		self.panel.AddChild(self.tachetest,None)
