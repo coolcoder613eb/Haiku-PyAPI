@@ -1,5 +1,5 @@
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton
+from Be import BPictureButton, BTextView
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -84,12 +84,15 @@ class Window(BWindow):
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
 		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
-		self.box = BBox(BRect(10,26,90,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
+		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.box2 = BBox(BRect(10,26,90,51),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.panel2.AddChild(self.box2,None)
 		#self.box.SetHighColor(0, 200, 0, 0)
 		#paternale=Pattern()
 		#paternale.data=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
 		#self.box.FillRect(self.box.Bounds(),paternale.toPattern())
-		self.bar = BMenuBar(self.box.Bounds(), 'Bar')
+		self.bar = BMenuBar(self.panel.Bounds(), 'Bar')
 		self.testo = BStringView(BRect(5,5,75,20), 'Test','prova')
 		self.box.AddChild(self.testo,None)
 		self.statbar = BStatusBar(BRect(10,70,bounds.Width()/3-15,144), 'progress','0%', '100%')
@@ -110,12 +113,12 @@ class Window(BWindow):
 		self.list.lv.SetHighColor(colore)
 		self.list.lv.SetLowColor(colore)
 		bup=BPicture()
-		arrgh=[]
-		arrgh.append(BView.MovePenTo(BPoint(3.0,16.0)))
-		arrgh.append(BView.DrawString("On",None))
-		bup.Play(arrgh,len(arrgh),None)
+		#arrgh=[]
+		#arrgh.append(BView.MovePenTo(BPoint(3.0,16.0)))
+		#arrgh.append(BView.DrawString("On",None))
+		#bup.Play(arrgh,len(arrgh),None)
 		bdown=BPicture()
-		butupdown=BPictureButton(BRect(bounds.Width()-32,220,bounds.Width()-16,236),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
+		butupdown=BPictureButton(BRect(bounds.Width()-32,180,bounds.Width()-16,196),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
 		self.list.sv.Hide()
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
@@ -128,7 +131,7 @@ class Window(BWindow):
 		newsitem = NewsItem("Nuova",(255,0,0,0))
 		self.elementolista=BStringItem("Questo è un BStringItem")
 		#global strano
-		strano = StrangeItem("Questo è un StrangeItem",(0,200,0,0))
+		strano = StrangeItem("Questo è uno StrangeItem",(0,200,0,0))
 		print("strano gcolor è:",strano.gcolor)
 		#print(type(self.list.lv))
 		#print(self.list.lv.Items())
@@ -140,6 +143,7 @@ class Window(BWindow):
 		print(self.list.lv.IndexOf(self.elementolista))
 		self.list.sv.Show()
 		#self.panel.AddChild(self.list.topview(),None)
+		self.panel.AddChild(self.box,None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
 		self.panel.AddChild(self.nineradio,None)
@@ -160,20 +164,21 @@ class Window(BWindow):
 		self.tabslabels=[]
 		self.tabsviews=[]
 		self.tabsviews.append(self.panel)
-		#testotab=[]
-		#for char in "Principale":
-		#	testotab.append(char)
-		#outarray=[]
-		#BFont.GetStringWidths(testotab,len(testotab),1,outarray)#StringWidth(chr(ord("P")))
-		#print(outarray)
+		self.tabsviews.append(self.panel2)
+		
+		
 		tabrect=BRect(3.0, 3.0, 30.0, self.maintabview.TabHeight()-3.0)
-		#bviewtab=BStringView(tabrect,"scheda1","Princpiale")
-		scheda=BTab(None)#bviewtab)#self.maintabview)
-		scheda.SetLabel("Principale")
+		scheda=BTab(None)
+		#scheda.SetLabel("Principale") <--- works after maintabview.AddTab
+		scheda2=BTab(None)
 		self.tabslabels.append(scheda)
-		self.maintabview.AddTab(self.tabsviews[0],scheda)#self.tabsviews[0],self.tabslabels[0])
+		self.tabslabels.append(scheda2)
+		
+		self.maintabview.AddTab(self.tabsviews[0],self.tabslabels[0])#self.tabsviews[0],self.tabslabels[0])
+		self.maintabview.AddTab(self.tabsviews[1],self.tabslabels[1])
 		self.bckgnd.AddChild(self.maintabview,None)
 		scheda.SetLabel("Principale")
+		scheda2.SetLabel("Scrittura")
 		self.AddChild(self.bckgnd,None)
 		self.panel.AddChild(self.list.topview(),None)
 		
