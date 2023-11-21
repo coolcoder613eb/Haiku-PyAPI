@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(StatusBar,m)
 {
-py::class_<BStatusBar, BView>(m, "BStatusBar")
+py::class_<BStatusBar, BView, std::unique_ptr<BStatusBar, py::nodelete>>(m, "BStatusBar")
 .def(py::init<BRect, const char *, const char *, const char *>(), "", py::arg("frame"), py::arg("name"), py::arg("label")=NULL, py::arg("trailingLabel")=NULL)
 .def(py::init<const char *, const char *, const char *>(), "", py::arg("name"), py::arg("label")=NULL, py::arg("trailingLabel")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
