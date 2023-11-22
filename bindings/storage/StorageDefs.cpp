@@ -9,10 +9,10 @@
 #include <limits.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
-using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+//using namespace BPrivate;
+//using namespace BPrivate::Storage;
+//using namespace BPrivate::Storage::Mime;
+//using namespace BPackageKit;
 
 
 PYBIND11_MODULE(StorageDefs,m)
