@@ -49,7 +49,7 @@ py::class_<BNode>(m, "BNode")
 .def("ReadAttr", &BNode::ReadAttr, "",py::arg("name"),py::arg("type"),py::arg("offset"),py::arg("buffer"),py::arg("length"))
 .def("RemoveAttr", &BNode::RemoveAttr, "",py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "",py::arg("oldName"),py::arg("newName"))
-.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "",py::arg("name"),py::arg("info"))
+//.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "",py::arg("name"),py::arg("info")) //should I define attr_info or get from kernel/fs_attr.h? For now I cannot use this command
 .def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
 .def("RewindAttrs", &BNode::RewindAttrs, "")
 .def("WriteAttrString", &BNode::WriteAttrString, "",py::arg("name"),py::arg("data"))
