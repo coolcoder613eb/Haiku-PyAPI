@@ -12,9 +12,9 @@
 
 
 namespace py = pybind11;
-using namespace BPrivate;
-using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
+//using namespace BPrivate;
+//using namespace BPrivate::Storage;
+//using namespace BPrivate::Storage::Mime;
 
 
 PYBIND11_MODULE(Node,m)
