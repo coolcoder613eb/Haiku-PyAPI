@@ -59,7 +59,6 @@ from .StringItem import *
 from .TabView import *
 from .ScrollBar import *
 
-from .Statable import *
 from .Entry import *
 
 _BWindow=BWindow
