@@ -65,7 +65,7 @@ py::class_<BNode>(m, "BNode")
 	} else {
 		throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
 	}
-}, py::arg("buffer"))//, py::return_value_policy::reference_internal
+}, py::arg("buffer")="")//, py::return_value_policy::reference_internal
 .def("RewindAttrs", &BNode::RewindAttrs, "")
 .def("WriteAttrString", &BNode::WriteAttrString, "",py::arg("name"),py::arg("data"))
 .def("ReadAttrString", &BNode::ReadAttrString, "",py::arg("name"),py::arg("result"))

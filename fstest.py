@@ -24,7 +24,7 @@ def attr(node):
 		#if True:
 		try:
 			atri=str("")
-			a = node.GetNextAttrName(str(""))
+			a = node.GetNextAttrName()
 			#info=attr_info()
 			#size = node.GetAttrInfo(a,info)
 			#print(a,atri,size)
