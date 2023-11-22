@@ -9,6 +9,10 @@ from Be import InterfaceDefs
 from Be.InterfaceDefs import border_style
 from Be import AppDefs
 
+from Be import BEntry
+from Be.Entry import entry_ref
+from Be.Entry import get_ref_for_path
+
 class StrangeItem(BStringItem):
 	nocolor = (0, 0, 0, 0)
 	gcolor = (0, 200, 0, 0)
@@ -106,6 +110,7 @@ class Window(BWindow):
 		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
 
+
 		# Handling colors##################
 		#colore=self.list.lv.HighColor()
 		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
@@ -202,6 +207,13 @@ class Window(BWindow):
 		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
 		self.panel.AddChild(self.list.topview(),None)
+		###### Example handling refs / BEntry #####
+		a=entry_ref()
+		get_ref_for_path("/boot/home",a)
+		b=BEntry("/boot/home")
+		b.Exists()
+		#to complete
+		###########################################
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
