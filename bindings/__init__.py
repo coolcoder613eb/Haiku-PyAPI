@@ -62,6 +62,7 @@ from .ScrollBar import *
 from .StorageDefs import *
 from .Entry import *
 from .Node import *
+from .Directory import *
 
 _BWindow=BWindow
 _BApplication=BApplication

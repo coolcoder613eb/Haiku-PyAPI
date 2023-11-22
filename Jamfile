@@ -157,6 +157,7 @@ local sourceFiles =
 	StorageDefs.cpp
 	Entry.cpp
 	Node.cpp
+	Directory.cpp
 	;
 
 # The shared library Be.so can be built from the sourceFiles
