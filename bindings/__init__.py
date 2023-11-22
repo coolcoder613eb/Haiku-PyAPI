@@ -59,7 +59,9 @@ from .StringItem import *
 from .TabView import *
 from .ScrollBar import *
 
+from .StorageDefs import *
 from .Entry import *
+from .Node import *
 
 _BWindow=BWindow
 _BApplication=BApplication
