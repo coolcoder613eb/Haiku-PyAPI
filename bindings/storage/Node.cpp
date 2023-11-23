@@ -16,6 +16,12 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(Node,m)
 {
+/*py::class_<attr_info>(m, "attr_info")
+.def_readwrite("type", &attr_info::type, "")
+.def_readwrite("size", &attr_info::size, "")
+.export_values();
+*/
+
 py::class_<node_ref>(m, "node_ref")
 .def(py::init(), "")
 .def(py::init<dev_t, ino_t>(), "", py::arg("device"), py::arg("node"))
@@ -49,8 +55,17 @@ py::class_<BNode>(m, "BNode")
 .def("ReadAttr", &BNode::ReadAttr, "",py::arg("name"),py::arg("type"),py::arg("offset"),py::arg("buffer"),py::arg("length"))
 .def("RemoveAttr", &BNode::RemoveAttr, "",py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "",py::arg("oldName"),py::arg("newName"))
-//.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "",py::arg("name"),py::arg("info")) //should I define attr_info or get from kernel/fs_attr.h? For now I cannot use this command
-.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
+.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "",py::arg("name"),py::arg("info")) //should I define attr_info or get from kernel/fs_attr.h? For now I cannot use this command
+//.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
+//.def("GetNextAttrName", py::overload_cast<char *>(&BNode::GetNextAttrName), "",py::arg("buffer"))
+.def("GetNextAttrName", [](BNode& self, char* buffer){
+	status_t result = self.GetNextAttrName(buffer);
+	if (result == 0) {
+		return std::string(buffer);
+	} else {
+		throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
+	}
+}, py::arg("buffer"))//, py::return_value_policy::reference_internal
 .def("RewindAttrs", &BNode::RewindAttrs, "")
 .def("WriteAttrString", &BNode::WriteAttrString, "",py::arg("name"),py::arg("data"))
 .def("ReadAttrString", &BNode::ReadAttrString, "",py::arg("name"),py::arg("result"))
