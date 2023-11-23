@@ -72,7 +72,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel ;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
@@ -152,6 +152,9 @@ local sourceFiles =
 	#SupportKit
 	SupportDefs.cpp
 	Archivable.cpp
+
+	#Kernel
+	fs_attr.cpp
 	
 	#StorageKit
 	StorageDefs.cpp

@@ -59,6 +59,8 @@ from .StringItem import *
 from .TabView import *
 from .ScrollBar import *
 
+from .fs_attr import *
+
 from .StorageDefs import *
 from .Entry import *
 from .Node import *
