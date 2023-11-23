@@ -14,6 +14,18 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+void QuitWrapper(BLooper& self) {
+	// When quit is called from the BWindow's thread, it never returns. The
+	// thread is destroyed inside of this function. That means we need to
+	// release the global interpreter lock since this thread will no longer be
+	// running Python code.
+
+	py::gil_scoped_release release;
+	self.Quit();
+	// If the code reaches this point, the global interpreter lock is
+	// reacquired, otherwise, it isn't. Exactly the behaviour we want.
+}
+
 PYBIND11_MODULE(Looper,m)
 {
 py::class_<BLooper,BHandler>(m, "BLooper")
@@ -46,7 +58,7 @@ py::class_<BLooper,BHandler>(m, "BLooper")
 .def("SetPreferredHandler", &BLooper::SetPreferredHandler, "", py::arg("handler"))
 .def("Run", &BLooper::Run, "")
 .def("Loop", &BLooper::Loop, "")
-.def("Quit", &BLooper::Quit, "")
+.def("Quit", &QuitWrapper, "")
 .def("QuitRequested", &BLooper::QuitRequested, "")
 .def("Lock", &BLooper::Lock, "")
 .def("Unlock", &BLooper::Unlock, "")
