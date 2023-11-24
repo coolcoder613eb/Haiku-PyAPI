@@ -37,6 +37,12 @@ class PyBWindow : public BWindow{
         }
 };
 
+void QuitWrapper(BWindow& self) {
+	// For an explanation, see QuitWrapper in Looper.cpp
+	py::gil_scoped_release release;
+	self.Quit();
+}
+
 PYBIND11_MODULE(Window,m)
 {
 py::enum_<window_type>(m, "window_type", "")
@@ -103,7 +109,7 @@ py::class_<BWindow,PyBWindow,std::unique_ptr<BWindow,py::nodelete>>(m, "BWindow"
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BWindow::Instantiate, "", py::arg("archive"))
 .def("Archive", &BWindow::Archive, "", py::arg("archive"), py::arg("deep")=true)
-.def("Quit", &BWindow::Quit, "")
+.def("Quit", &QuitWrapper, "")
 .def("Close", &BWindow::Close, "")
 .def("AddChild", py::overload_cast<BView *, BView *>(&BWindow::AddChild), "", py::arg("child"), py::arg("before")=NULL)
 .def("AddChild", py::overload_cast<BLayoutItem *>(&BWindow::AddChild), "", py::arg("child"))

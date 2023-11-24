@@ -38,6 +38,12 @@ void RunWrapper(BApplication& self) {
 	self.Run();
 }
 
+void QuitWrapper(BApplication& self) {
+	// For an explanation, see QuitWrapper in Looper.cpp
+	py::gil_scoped_release release;
+	self.Quit();
+}
+
 void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
 	self.ArgvReceived(argc, argv.data());
 }
@@ -54,7 +60,7 @@ py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
 .def("Archive", &BApplication::Archive, "", py::arg("data"), py::arg("deep")=true)
 .def("InitCheck", &BApplication::InitCheck, "")
 .def("Run", &RunWrapper, "")
-.def("Quit", &BApplication::Quit, "")
+.def("Quit", &QuitWrapper, "")
 .def("QuitRequested", &BApplication::QuitRequested, "")
 .def("Pulse", &BApplication::Pulse, "")
 .def("ReadyToRun", &BApplication::ReadyToRun, "")
