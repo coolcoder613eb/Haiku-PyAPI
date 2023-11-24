@@ -1,12 +1,6 @@
-import os
+import os, struct
 from Be import BNode
 from Be.fs_attr import attr_info
-#from structuple import Structuple
-
-#class Battr_info(Structuple):
-#	_members = ('type', 'size')
-#	def typegen(self):
-#		return (None, None)
 
 class card:
 	def __init__(self,path):
@@ -21,29 +15,32 @@ class card:
 def attr(node):
 	al = []
 	while 1:
-		#if True:
 		try:
 			atri=str("")
 			a = node.GetNextAttrName()
-			#info=attr_info()
-			#size = node.GetAttrInfo(a,info)
-			#print(a,atri,size)
-			#b+=1
-			#if b==5:
-			#	break
 		except:
-			#print("no next attr name")
-			a = None
+			a = None #no more attributes
 		if a is None:
 			node.RewindAttrs()
 			break
 		else:
-			#info = Battr_info(node.GetAttrInfo(a)) 
-			#info = node.GetAttrInfo(a)
-			al.append((a))#, info,  node.ReadAttr(atri, 0, 0, 1024)))
+			# you can do this way:
+			#tmp = attr_info()
+			#nfo = node.GetAttrInfo(a,tmp)
+			#al.append((a,(tmp.type,tmp.size)))
+			# or this way:
+			nfo = node.GetAttrInfo(a)
+			type_string = get_type_string(nfo.type)
+			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, 0, 0, None, 1024)))
+			
 	return al
 
-f=os.path.abspath("fstest.py")
+
+def get_type_string(value):
+	type_string = struct.pack('>I', value).decode('utf-8')
+	return type_string
+
+f=os.path.abspath("WPLaura.pdf")#Haiku-friûl.png")#fstest.py")
 carta=card(f)
 #print(f)
 nf = BNode(f)
