@@ -50,14 +50,23 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Sync", &BNode::Sync, "")
 .def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length){
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)-> std::pair<ssize_t, void*>{
 	if (buffer == NULL){
-		void* tmp;
+		void* tmp = malloc(length);;
 		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		return tmp;//std::string(buffer);
+		if (result > 0) {
+			return {result,tmp};//std::string(buffer);
+		} else {
+			free(tmp);
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+		}
 	} else {
 		ssize_t result = self.ReadAttr(name, type, offset, buffer, length);
-		return buffer;
+		if (result > 0) {
+			return {result,buffer};
+		} else {
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+		}
 	}
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
