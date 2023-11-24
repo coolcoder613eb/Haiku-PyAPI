@@ -49,11 +49,35 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Unlock", &BNode::Unlock, "")
 .def("Sync", &BNode::Sync, "")
 .def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+//.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length){
+	if (buffer == NULL){
+		void* tmp;
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		return tmp;//std::string(buffer);
+	} else {
+		ssize_t result = self.ReadAttr(name, type, offset, buffer, length);
+		return buffer;
+	}
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
-.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "", py::arg("name"), py::arg("info"))
+//.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "", py::arg("name"), py::arg("info"))
+/*.def("GetAttrInfo", [](BNode& self, const char* attr) -> std::pair<status_t, attr_info> {
+    attr_info info;
+    status_t result = self.GetAttrInfo(attr, &info);
+    return {result, info};
+}, "", py::arg("name"))
+*/
+.def("GetAttrInfo", [](BNode& self, const char* attr, struct attr_info* info){
+	status_t result = self.GetAttrInfo(attr, info);
+	if (result == 0) {
+		return *info;
+	} else {
+		throw std::runtime_error("Errore durante la chiamata a GetAttrInfo");
+	}
+}, py::arg("attr"), py::arg("info")=attr_info())
 //.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
 //.def("GetNextAttrName", py::overload_cast<char *>(&BNode::GetNextAttrName), "",py::arg("buffer"))
 .def("GetNextAttrName", [](BNode& self, char* buffer){
