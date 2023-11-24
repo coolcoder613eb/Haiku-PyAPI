@@ -3,14 +3,21 @@
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
 
+#include <kernel/fs_attr.h>
+#include <support/String.h>
 #include <Node.h>
+#include <Statable.h>
+#include <Entry.h>
+#include <Directory.h>
+
 
 namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
 
-void define_Node(py::module_& m)
+
+PYBIND11_MODULE(Node,m)
 {
 py::class_<node_ref>(m, "node_ref")
 .def(py::init(), "")
@@ -24,7 +31,7 @@ py::class_<node_ref>(m, "node_ref")
 .def_readwrite("node", &node_ref::node, "")
 ;
 
-py::class_<BNode, BStatable>(m, "BNode")
+py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def(py::init(), "")
 .def(py::init<const entry_ref *>(), "", py::arg("ref"))
 .def(py::init<const BEntry *>(), "", py::arg("entry"))
@@ -45,8 +52,18 @@ py::class_<BNode, BStatable>(m, "BNode")
 .def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
-.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
-.def("GetNextAttrName", &BNode::GetNextAttrName, "", py::arg("buffer"))
+//.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
+.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "", py::arg("name"), py::arg("info"))
+//.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
+//.def("GetNextAttrName", py::overload_cast<char *>(&BNode::GetNextAttrName), "",py::arg("buffer"))
+.def("GetNextAttrName", [](BNode& self, char* buffer){
+	status_t result = self.GetNextAttrName(buffer);
+	if (result == 0) {
+		return std::string(buffer);
+	} else {
+		throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
+	}
+}, py::arg("buffer")="")//, py::return_value_policy::reference_internal
 .def("RewindAttrs", &BNode::RewindAttrs, "")
 .def("WriteAttrString", &BNode::WriteAttrString, "", py::arg("name"), py::arg("data"))
 .def("ReadAttrString", &BNode::ReadAttrString, "", py::arg("name"), py::arg("result"))
@@ -55,6 +72,5 @@ py::class_<BNode, BStatable>(m, "BNode")
 .def("__ne__", &BNode::operator!=, "", py::arg("node"))
 .def("Dup", &BNode::Dup, "")
 ;
-
 
 }

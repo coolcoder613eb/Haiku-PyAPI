@@ -72,7 +72,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel ;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
@@ -143,12 +143,24 @@ local sourceFiles =
 	#Bitmap.cpp
 	#Slider.cpp
 	Picture.cpp
+	PictureButton.cpp
 	StringItem.cpp
 	TabView.cpp
+	ScrollBar.cpp
+	GraphicsDefs.cpp
 	
 	#SupportKit
 	SupportDefs.cpp
 	Archivable.cpp
+
+	#Kernel
+	fs_attr.cpp
+	
+	#StorageKit
+	StorageDefs.cpp
+	Entry.cpp
+	Node.cpp
+	Directory.cpp
 	;
 
 # The shared library Be.so can be built from the sourceFiles

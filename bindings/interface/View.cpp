@@ -9,6 +9,7 @@
 #include <Font.h>
 #include <Handler.h>
 #include <InterfaceDefs.h>
+#include <GraphicsDefs.h>
 #include <Rect.h>
 #include <Gradient.h>
 #include <Bitmap.h>
@@ -22,6 +23,7 @@
 #include <Shape.h>
 #include <LayoutContext.h>
 #include <Region.h>
+#include <Point.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -171,8 +173,8 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("LeftTop", &BView::LeftTop, "")
 .def("GetClippingRegion", &BView::GetClippingRegion, "", py::arg("region"))
 .def("ConstrainClippingRegion", &BView::ConstrainClippingRegion, "", py::arg("region"))
-//.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-//.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
 .def("ClipToRect", &BView::ClipToRect, "", py::arg("rect"))
 .def("ClipToInverseRect", &BView::ClipToInverseRect, "", py::arg("rect"))
 .def("ClipToShape", &BView::ClipToShape, "", py::arg("shape"))
@@ -231,21 +233,20 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("MovePenTo", py::overload_cast<float, float>(&BView::MovePenTo), "", py::arg("x"), py::arg("y"))
 .def("MovePenBy", &BView::MovePenBy, "", py::arg("x"), py::arg("y"))
 .def("PenLocation", &BView::PenLocation, "")
-//.def("StrokeLine", py::overload_cast<BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("toPoint"), py::arg("pattern")=B_SOLID_HIGH)
-//.def("StrokeLine", py::overload_cast<BPoint, BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("start"), py::arg("end"), py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokeLine", py::overload_cast<BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("toPoint"), py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokeLine", py::overload_cast<BPoint, BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("start"), py::arg("end"), py::arg("pattern")=B_SOLID_HIGH)
 .def("BeginLineArray", &BView::BeginLineArray, "", py::arg("count"))
 .def("AddLine", &BView::AddLine, "", py::arg("start"), py::arg("end"), py::arg("color"))
 .def("EndLineArray", &BView::EndLineArray, "")
-/*
 .def("StrokePolygon", py::overload_cast<const BPolygon *, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("polygon"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
-.def("StrokePolygon", py::overload_cast<const BPoint *, int, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
-.def("StrokePolygon", py::overload_cast<const BPoint *, int, BRect, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokePolygon", py::overload_cast<const BPoint *, int32, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokePolygon", py::overload_cast<const BPoint *, int32, BRect, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
 .def("FillPolygon", py::overload_cast<const BPolygon *, ::pattern>(&BView::FillPolygon), "", py::arg("polygon"), py::arg("pattern")=B_SOLID_HIGH)
-.def("FillPolygon", py::overload_cast<const BPoint *, int, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("pattern")=B_SOLID_HIGH)
-.def("FillPolygon", py::overload_cast<const BPoint *, int, BRect, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("pattern")=B_SOLID_HIGH)
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, BRect, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillPolygon", py::overload_cast<const BPolygon *, const BGradient &>(&BView::FillPolygon), "", py::arg("polygon"), py::arg("gradient"))
-.def("FillPolygon", py::overload_cast<const BPoint *, int, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("gradient"))
-.def("FillPolygon", py::overload_cast<const BPoint *, int, BRect, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("gradient"))
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("gradient"))
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, BRect, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("gradient"))
 .def("StrokeTriangle", py::overload_cast<BPoint, BPoint, BPoint, BRect, ::pattern>(&BView::StrokeTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
 .def("StrokeTriangle", py::overload_cast<BPoint, BPoint, BPoint, ::pattern>(&BView::StrokeTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillTriangle", py::overload_cast<BPoint, BPoint, BPoint, ::pattern>(&BView::FillTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("pattern")=B_SOLID_HIGH)
@@ -279,9 +280,9 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("StrokeShape", &BView::StrokeShape, "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
-*/
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
 /*
+//from here check if they work as BBitmap is not implemented
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
@@ -294,15 +295,16 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawBitmap", py::overload_cast<const BBitmap *>(&BView::DrawBitmap), "", py::arg("aBitmap"))
 .def("DrawTiledBitmapAsync", &BView::DrawTiledBitmapAsync, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
 .def("DrawTiledBitmap", &BView::DrawTiledBitmap, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
+//to here
+*/
 .def("DrawChar", py::overload_cast<char>(&BView::DrawChar), "", py::arg("aChar"))
 .def("DrawChar", py::overload_cast<char, BPoint>(&BView::DrawChar), "", py::arg("aChar"), py::arg("location"))
 .def("DrawString", py::overload_cast<const char *, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("delta")=NULL)
 .def("DrawString", py::overload_cast<const char *, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("location"), py::arg("delta")=NULL)
-.def("DrawString", py::overload_cast<const char *, int, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("delta")=NULL)
-.def("DrawString", py::overload_cast<const char *, int, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
-.def("DrawString", py::overload_cast<const char *, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
-.def("DrawString", py::overload_cast<const char *, int, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
-*/
+.def("DrawString", py::overload_cast<const char *, int32, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("delta")=NULL)
+.def("DrawString", py::overload_cast<const char *, int32, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
+.def("DrawString", py::overload_cast<const char *, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
+.def("DrawString", py::overload_cast<const char *, int32, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
 .def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=py::int_(0x000001FF))
 .def("GetFont", &BView::GetFont, "", py::arg("font"))
 

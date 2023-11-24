@@ -1,6 +1,7 @@
-from Be import BApplication, BWindow, BListItem, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-#from Be import BListItem #BStringItem
-from Be import BTabView, BTab, BFont
+from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
+from Be import BPictureButton, BTextView
+from Be.PictureButton import picture_button_behavior
+from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
 from Be.Alert import alert_type
 from Be.ColorControl import color_control_layout
@@ -8,39 +9,44 @@ from Be import InterfaceDefs
 from Be.InterfaceDefs import border_style
 from Be import AppDefs
 
+from Be import BEntry
+from Be.Entry import entry_ref
+from Be.Entry import get_ref_for_path
+
 class StrangeItem(BStringItem):
 	nocolor = (0, 0, 0, 0)
+	gcolor = (0, 200, 0, 0)
 	def __init__(self, testo,colore):
 		self.testo = testo
 		self.color = colore
 		BStringItem.__init__(self,testo)
-	def DrawItem(self,owner,frame,complete):
-		if self.IsSelected() or complete:
-			color = (50,50,50,255)
-			owner.SetHighColor(color)
-			owner.SetLowColor(color)
-			owner.FillRect(frame)
-			self.color=self.nocolor
-		owner.SetHighColor(self.color)
-		owner.MovePenTo(0,frame.Height()-2)
-		owner.DrawString(self.testo)
-		owner.SetLowColor((255,255,255,255))
+	def Text(self):
+		return self.testo
+	def Color(self):
+		return self.color
 
 class NewsItem(BListItem):
 	nocolor = (0, 0, 0, 0)
 
 	def __init__(self, name,color):
 		self.name = name
+		print("inizializzato con color:"+str(color))
 		self.color=color
 		BListItem.__init__(self)
 
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
 			color = (200,200,200,255)
-			#owner.SetHighColor(color)
-			#owner.SetLowColor(color)
-			#owner.FillRect(frame)
-			self.color=self.nocolor
+			#print("HighColor era:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
+			#print("LowColor era:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
+			owner.SetHighColor(180,0,0,255)
+			owner.SetLowColor(200,200,200,255)
+			#print("HighColor ora è:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
+			#print("LowColor ora è:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
+			owner.FillRect(frame)
+			owner.SetHighColor(0,0,0,255)
+			owner.SetLowColor(255,255,255,255)
+			#self.color=self.nocolor
 		#owner.SetHighColor(self.color)
 		#if self.color == (200,0,0,0):
 		#	self.font = be_bold_font
@@ -48,10 +54,9 @@ class NewsItem(BListItem):
 		#else:	
 		#	self.font = be_plain_font
 		#	owner.SetFont(self.font)
-		frame.PrintToStream()
-		#owner.MovePenTo(frame[0],frame[3]-2)
-		#owner.DrawString(self.name)
-		#owner.SetLowColor((255,255,255,255))
+		#frame.PrintToStream()
+		owner.MovePenTo(5,frame.Height()-2)
+		owner.DrawString("▶ "+self.name,None)
 
 	def Text(self):
 		return self.name
@@ -83,13 +88,20 @@ class Window(BWindow):
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
 		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
-		self.box = BBox(BRect(10,26,90,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
-		self.bar = BMenuBar(self.box.Bounds(), 'Bar')
+		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
+		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.panel2.AddChild(self.box2,None)
+		#self.box.SetHighColor(0, 200, 0, 0)
+		#paternale=Pattern()
+		#paternale.data=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
+		#self.box.FillRect(self.box.Bounds(),paternale.toPattern())
+		self.bar = BMenuBar(self.panel.Bounds(), 'Bar')
 		self.testo = BStringView(BRect(5,5,75,20), 'Test','prova')
 		self.box.AddChild(self.testo,None)
 		self.statbar = BStatusBar(BRect(10,70,bounds.Width()/3-15,144), 'progress','0%', '100%')
 		self.statbar.SetMaxValue(100.0)
-		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTView', "prova:",None,BMessage(1),0x0202|0x0404)
+		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTCtrl', "prova:",None,BMessage(1),0x0202|0x0404)
 		self.tachetest.SetDivider(55.0)
 		self.startimer= BCheckBox(BRect(10,30,290,50),'Testbox','Test Checkbox',BMessage(612))
 		self.point=BPoint()
@@ -97,9 +109,27 @@ class Window(BWindow):
 		self.sixradio = BRadioButton(BRect(8,220,24,236),'hotradio', 'hot', BMessage(6))
 		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
-		self.list = ScrollView(BRect(18 , 300, bounds.Width() - 18 , bounds.Height() - 40 ), 'ScrollView')
-		lollo=BPicture()
-		self.list.sv.Hide()
+
+
+		# Handling colors##################
+		#colore=self.list.lv.HighColor()
+		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
+		#colore.set_to(10,200,100,255)
+		#print("colore modificato è:",colore.red,colore.green,colore.blue,colore.alpha)
+		#self.list.lv.SetHighColor(colore)
+		#self.list.lv.SetLowColor(colore)
+		####################################
+		bup=BPicture()
+		#arrgh=[]
+		#arrgh.append(BView.MovePenTo(BPoint(3.0,16.0)))
+		#arrgh.append(BView.DrawString("On",None))
+		#bup.Play(arrgh,len(arrgh),None)
+		bdown=BPicture()
+		butupdown=BPictureButton(BRect(bounds.Width()-32,180,bounds.Width()-16,196),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
+		
+		
+		self.list = ScrollView(BRect(8 , 300, bounds.Width() - 18 , bounds.Height() - 42 ), 'ScrollView')
+		#self.list.sv.Hide()
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
 			# as Python is finished with the __init__ function. But we still
@@ -109,43 +139,30 @@ class Window(BWindow):
 			# reference to NewsItem and so cannot free it until Haiku-PyAPI
 			# is finished with it
 		newsitem = NewsItem("Nuova",(255,0,0,0))
-		strano = StrangeItem("Prova",(0,200,0,0))
-		print(type(self.list.lv))
-		print(self.list.lv.Items())
-		print(self.list.lv.CountItems())
+		self.elementolista=BStringItem("Questo è un BStringItem")
+		#global strano
+		strano = StrangeItem("Questo è uno StrangeItem",(0,200,0,0))
+		print("strano gcolor è:",strano.gcolor)
+		#print(type(self.list.lv))
+		#print(self.list.lv.Items())
+		#print(self.list.lv.CountItems())
 		self.list.lv.AddItem(newsitem)
+		self.list.lv.AddItem(self.elementolista)
 		self.list.lv.AddItem(strano)
 		print(self.list.lv.Items())
-		print(self.list.lv.IndexOf(newsitem))
+		print(self.list.lv.IndexOf(self.elementolista))
 		self.list.sv.Show()
-		self.panel.AddChild(self.list.topview(),None)
+		#self.panel.AddChild(self.list.topview(),None)
+		self.panel.AddChild(self.box,None)
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
 		self.panel.AddChild(self.nineradio,None)
+		self.panel.AddChild(butupdown,None)
 		self.panel.AddChild(self.cc,None)
 		self.panel.AddChild(self.startimer,None)
 		self.panel.AddChild(self.tachetest,None)
 		self.panel.AddChild(self.statbar,None)
 		self.panel.AddChild(self.bar,None)
-		self.tabslabels=[]
-		self.tabsviews=[]
-		self.tabsviews.append(self.panel)
-		#testotab=[]
-		#for char in "Principale":
-		#	testotab.append(char)
-		#outarray=[]
-		#BFont.GetStringWidths(testotab,len(testotab),1,outarray)#StringWidth(chr(ord("P")))
-		#print(outarray)
-		tabrect=BRect(3.0, 3.0, 30.0, self.maintabview.TabHeight()-3.0)
-		bviewtab=BStringView(tabrect,"scheda1","Princpiale")
-		scheda=BTab(bviewtab)#self.maintabview)
-		scheda.SetLabel("Principale")
-		self.tabslabels.append(scheda)
-		
-		print(self.tabslabels[0])
-		print(self.tabsviews[0])
-		self.maintabview.AddTab(self.panel,scheda)#self.tabsviews[0],self.tabslabels[0])
-		self.bckgnd.AddChild(self.maintabview,None)
 		for menu, items in self.Menus:
 			menu = BMenu(menu)
 			for k, name in items:
@@ -154,7 +171,49 @@ class Window(BWindow):
 				else:
 						menu.AddItem(BMenuItem(name, BMessage(k),name[1],0))
 			self.bar.AddItem(menu)
+		self.tabslabels=[]
+		self.tabsviews=[]
+		self.tabsviews.append(self.panel)
+		self.tabsviews.append(self.panel2)
+		
+		
+		tabrect=BRect(3.0, 3.0, 30.0, self.maintabview.TabHeight()-3.0)
+		scheda=BTab(None)
+		#scheda.SetLabel("Principale") <--- works after maintabview.AddTab
+		scheda2=BTab(None)
+		self.tabslabels.append(scheda)
+		self.tabslabels.append(scheda2)
+		
+		self.maintabview.AddTab(self.tabsviews[0],self.tabslabels[0])
+		self.maintabview.AddTab(self.tabsviews[1],self.tabslabels[1])
+
+		self.bckgnd.AddChild(self.maintabview,None)
+		scheda.SetLabel("Principale")
+		scheda2.SetLabel("Scrittura")
+
+		from Be.Font import be_plain_font
+		from Be.Font import be_bold_font
+		#from Be.View import set_font_mask		
+		self.typtap=BTextView(BRect(10,45,self.panel2.Bounds().Width()-20,self.panel2.Bounds().Height()-20-self.maintabview.TabHeight()), 'TxTView', BRect(5,5,self.panel2.Bounds().Width()-35,self.panel2.Bounds().Height()-30-self.maintabview.TabHeight()), 0x1234, 20000000)
+		self.typtap.SetStylable(1)
+		self.panel2.AddChild(self.typtap,None)
+		colore=self.panel.HighColor()
+		print(colore.red,colore.green,colore.blue,colore.alpha)
+		colore.red=180
+		self.typtap.SetFontAndColor(be_plain_font,511,colore)#B_FONT_ALL = 511
+		stuff = '\n\t\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\t\t\t\tZardshard and coolcoder613'
+		#n = stuff.find('Bulletin Gator')
+		#m = stuff.find('This')
+		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
+		self.panel.AddChild(self.list.topview(),None)
+		###### Example handling refs / BEntry #####
+		a=entry_ref()
+		get_ref_for_path("/boot/home",a)
+		b=BEntry("/boot/home")
+		b.Exists()
+		#to complete
+		###########################################
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:

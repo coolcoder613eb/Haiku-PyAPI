@@ -4,6 +4,9 @@
 #include <pybind11/operators.h>
 
 #include <StorageDefs.h>
+#include <fcntl.h>
+#include <sys/param.h>
+#include <limits.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -11,7 +14,8 @@ using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
 using namespace BPackageKit;
 
-void define_StorageDefs(py::module_& m)
+
+PYBIND11_MODULE(StorageDefs,m)
 {
 py::enum_<node_flavor>(m, "node_flavor", "")
 .value("B_FILE_NODE", node_flavor::B_FILE_NODE, "")
@@ -19,6 +23,5 @@ py::enum_<node_flavor>(m, "node_flavor", "")
 .value("B_DIRECTORY_NODE", node_flavor::B_DIRECTORY_NODE, "")
 .value("B_ANY_NODE", node_flavor::B_ANY_NODE, "")
 .export_values();
-
 
 }

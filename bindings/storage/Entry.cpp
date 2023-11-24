@@ -5,10 +5,16 @@
 
 #include <Entry.h>
 
+#include <SupportDefs.h>
+#include <Statable.h>
+
+#include <Directory.h>
+#include <Path.h>
+
 namespace py = pybind11;
 
 
-void define_Entry(py::module_& m)
+PYBIND11_MODULE(Entry,m)
 {
 py::class_<entry_ref>(m, "entry_ref")
 .def(py::init(), "")
@@ -23,7 +29,7 @@ py::class_<entry_ref>(m, "entry_ref")
 .def_readwrite("name", &entry_ref::name, "")
 ;
 
-py::class_<BEntry, BStatable>(m, "BEntry")
+py::class_<BEntry>(m, "BEntry") //Commented out BStatable verify if needed
 .def(py::init(), "")
 .def(py::init<const BDirectory *, const char *, bool>(), "", py::arg("dir"), py::arg("path"), py::arg("traverse")=false)
 .def(py::init<const entry_ref *, bool>(), "", py::arg("ref"), py::arg("traverse")=false)
@@ -37,10 +43,10 @@ py::class_<BEntry, BStatable>(m, "BEntry")
 .def("SetTo", py::overload_cast<const entry_ref *, bool>(&BEntry::SetTo), "", py::arg("ref"), py::arg("traverse")=false)
 .def("SetTo", py::overload_cast<const char *, bool>(&BEntry::SetTo), "", py::arg("path"), py::arg("traverse")=false)
 .def("Unset", &BEntry::Unset, "")
-.def("GetRef", &BEntry::GetRef, "", py::arg("ref"))
-.def("GetPath", &BEntry::GetPath, "", py::arg("path"))
-.def("GetParent", py::overload_cast<BEntry *>(&BEntry::GetParent), "", py::arg("entry"))
-.def("GetParent", py::overload_cast<BDirectory *>(&BEntry::GetParent), "", py::arg("dir"))
+.def("GetRef", &BEntry::GetRef, "",py::arg("ref"))
+.def("GetPath", &BEntry::GetPath, "",py::arg("path"))
+.def("GetParent", py::overload_cast<BEntry *>(&BEntry::GetParent, py::const_), "",py::arg("entry")) //added py::const_
+.def("GetParent", py::overload_cast<BDirectory *>(&BEntry::GetParent, py::const_), "",py::arg("dir")) //added py::const_
 .def("GetName", &BEntry::GetName, "", py::arg("buffer"))
 .def("Rename", &BEntry::Rename, "", py::arg("path"), py::arg("clobber")=false)
 .def("MoveTo", &BEntry::MoveTo, "", py::arg("dir"), py::arg("path")=NULL, py::arg("clobber")=false)
