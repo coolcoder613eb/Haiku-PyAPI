@@ -5,6 +5,7 @@
 
 #include <kernel/fs_attr.h>
 #include <support/String.h>
+#include <support/TypeConstants.h>
 #include <Node.h>
 #include <Statable.h>
 #include <Entry.h>
@@ -15,7 +16,6 @@ namespace py = pybind11;
 //using namespace BPrivate;
 //using namespace BPrivate::Storage;
 //using namespace BPrivate::Storage::Mime;
-
 
 PYBIND11_MODULE(Node,m)
 {
@@ -50,7 +50,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Sync", &BNode::Sync, "")
 .def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)-> std::pair<ssize_t, void*>{
+/*.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)-> std::pair<ssize_t, void*>{
 	if (buffer == NULL){
 		void* tmp = malloc(length);;
 		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
@@ -69,6 +69,55 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		}
 	}
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+*/
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, PyObject* data, size_t length){
+	if (data == NULL){
+		void* tmp = malloc(length);;
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		if (result > 0) {
+			PyObject* ret;
+			switch (type){
+				case B_INT32_TYPE: {
+					// Turn the void* into an int* and put it into the PyObject
+					ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(tmp));
+                    free(tmp);
+                    break;
+        		// and so on for each type_code...
+    			}
+    		return ret;
+			}
+			
+			//return result;//tmp;//std::string(buffer);
+		} else {
+			free(tmp);
+			return Py_None;
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+		}
+	} else {
+		ssize_t result = self.ReadAttr(name, type, offset, data, length);
+		if (result > 0) {
+			switch (type){
+				case B_INT32_TYPE: {
+					PyObject* pyInt = PyLong_FromLong(*reinterpret_cast<int32_t*>(data));
+					Py_XINCREF(pyInt);  // Incrementa il riferimento all'oggetto Python
+					data = pyInt;  // Assegna direttamente il risultato di PyLong_FromLong a data
+					// Turn the void* into an int* and put it into the PyObject
+					// *data = PyLong_FromLong(*reinterpret_cast<int32_t*>(data));//*(int32*)tmp;
+					// free(tmp);
+             		break;
+				}
+        		// and so on for each type_code...
+    		}
+			//return PyLong_FromLong(result); //tmp;//std::string(buffer);
+		} else {
+			
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+
+		}
+		return PyLong_FromLong(result);
+	}
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))

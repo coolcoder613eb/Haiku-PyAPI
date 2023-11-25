@@ -1,4 +1,4 @@
-import os, struct
+import os, struct, ctypes
 from Be import BNode
 from Be.fs_attr import attr_info
 
@@ -31,8 +31,11 @@ def attr(node):
 			# or this way:
 			nfo = node.GetAttrInfo(a)
 			type_string = get_type_string(nfo.type)
-			print(get_type_int(type_string),nfo.type)
-			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, 0, 0, None, 1024)))
+			#print(get_type_int(type_string),nfo.type)
+			my_obj = ctypes.py_object()
+			#print(type(my_obj),my_obj)
+			print(type_string, nfo.size)
+			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, 0, 0, my_obj, 1024)))
 			
 	return al
 
