@@ -152,6 +152,7 @@ local sourceFiles =
 	#SupportKit
 	SupportDefs.cpp
 	Archivable.cpp
+	TypeConstants.cpp
 
 	#Kernel
 	fs_attr.cpp

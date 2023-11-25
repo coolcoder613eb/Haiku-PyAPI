@@ -31,12 +31,19 @@ def attr(node):
 			# or this way:
 			nfo = node.GetAttrInfo(a)
 			type_string = get_type_string(nfo.type)
+			print(get_type_int(type_string),nfo.type)
 			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, 0, 0, None, 1024)))
 			
 	return al
 
+def get_type_int(stringa):
+	value=0
+	for i in range(4):
+		value |= ord(stringa[i]) << (8*(3-i))
+	return value
 
 def get_type_string(value):
+	#type_string = ''.join([chr((value >> (8*i)) & 0xFF) for i in range(4)]) #<--- this works better if the binary representation of the integer contains bytes that are not valid for UTF-8 encoding
 	type_string = struct.pack('>I', value).decode('utf-8')
 	return type_string
 

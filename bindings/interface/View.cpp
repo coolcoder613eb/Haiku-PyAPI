@@ -148,8 +148,10 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("EndRectTracking", &BView::EndRectTracking, "")
 .def("GetMouse", &BView::GetMouse, "", py::arg("location"), py::arg("buttons"), py::arg("checkMessageQueue")=true)
 .def("DragMessage", py::overload_cast<BMessage *, BRect, BHandler *>(&BView::DragMessage), "", py::arg("message"), py::arg("dragRect"), py::arg("replyTo")=NULL)
+// check as soon as BBitmap works
 .def("DragMessage", py::overload_cast<BMessage *, BBitmap *, BPoint, BHandler *>(&BView::DragMessage), "", py::arg("message"), py::arg("bitmap"), py::arg("offset"), py::arg("replyTo")=NULL)
 .def("DragMessage", py::overload_cast<BMessage *, BBitmap *, drawing_mode, BPoint, BHandler *>(&BView::DragMessage), "", py::arg("message"), py::arg("bitmap"), py::arg("dragMode"), py::arg("offset"), py::arg("replyTo")=NULL)
+// ends here
 .def("FindView", &BView::FindView, "", py::arg("name"))
 .def("Parent", &BView::Parent, "")
 .def("Bounds", &BView::Bounds, "")
@@ -199,8 +201,10 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 //.def("SetViewBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int, unsigned int>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("srcRect"), py::arg("dstRect"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
 //.def("SetViewBitmap", py::overload_cast<const BBitmap *, unsigned int, unsigned int>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
 .def("ClearViewBitmap", &BView::ClearViewBitmap, "")
+// check as soon as BBitmap module works
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, BRect, BRect, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("srcRect"), py::arg("dstRect"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
+// ends here
 .def("ClearViewOverlay", &BView::ClearViewOverlay, "")
 .def("SetHighColor", py::overload_cast<rgb_color>(&BView::SetHighColor), "", py::arg("color"))
 .def("SetHighColor", py::overload_cast<uchar, uchar, uchar, uchar>(&BView::SetHighColor), "", py::arg("red"), py::arg("green"), py::arg("blue"), py::arg("alpha")=255)
