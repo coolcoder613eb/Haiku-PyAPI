@@ -35,7 +35,8 @@ def attr(node):
 			my_obj = ctypes.py_object()
 			#print(type(my_obj),my_obj)
 			print(type_string, nfo.size)
-			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, 0, 0, my_obj, 1024)))
+			print(node.ReadAttr(a, nfo.type, 0, None,1024))
+			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,1024)))#my_obj,
 			
 	return al
 
