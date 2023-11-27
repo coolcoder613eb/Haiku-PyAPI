@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/chrono.h>
 
 #include <kernel/fs_attr.h>
 #include <support/String.h>
@@ -62,11 +63,16 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		}
 		py::object ret;
 		switch (type) {
+			//test Int64 for reinterpretation in int32*
+			case B_INT64_TYPE:
 			case B_INT32_TYPE:
+			case B_INT16_TYPE:
+			case B_INT8_TYPE:
 				ret = py::int_(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp))));
 				break;
 			case B_STRING_TYPE:
 				ret = py::str(static_cast<const char*>(tmp));
+				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
 				break;
 			case B_BOOL_TYPE:
 				/*int32* inttmpPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)));
@@ -78,12 +84,33 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				break;*/
 				ret = py::bool_(PyBool_FromLong(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)))));
 				break;
+			case B_FLOAT_TYPE:
+				ret = py::float_(*reinterpret_cast<float*>(tmp));
+				break;
+			case B_DOUBLE_TYPE:
+				ret = py::float_(*reinterpret_cast<double*>(tmp));
+				break;
+			case B_TIME_TYPE:{
+				bigtime_t timeValue = *reinterpret_cast<bigtime_t*>(tmp);
+				std::chrono::system_clock::time_point timePoint =
+				std::chrono::system_clock::time_point(std::chrono::seconds(timeValue));
+				// Calcola il tempo trascorso dalla mezzanotte del 1 gennaio 1970 in secondi
+				auto seconds_since_epoch = std::chrono::duration_cast<std::chrono::seconds>(timePoint.time_since_epoch()).count();
+				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(seconds_since_epoch);
+    			break;
+				/*
+				bigtime_t timeValue=*reinterpret_cast<bigtime_t*>(tmp);
+				std::chrono::system_clock::time_point timePoint = std::chrono::system_clock::from_time_t(timeValue / 1000000);
+				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(std::chrono::system_clock::to_time_t(timePoint));
+				break;*/
+			}
 			default:
 				ret = py::none();
 				break;
-		free(tmp);
 		}
+		free(tmp);
 		return ret;
+		//return py::reinterpret_steal<py::object>(ret);
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
 /*
 .def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->py::object{
