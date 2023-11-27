@@ -13,27 +13,6 @@
 
 
 namespace py = pybind11;
-/*
-PyObject* ReadAttrWrapper(BNode& self, const char* name, type_code type, off_t offset, PyObject* data, size_t length) {
-    void* buffer;
-    ssize_t ret = self.ReadAttr(name, type, offset, buffer, length);
-    PyObject* rit
-    switch (type){
-        case B_INT32_TYPE:
-             // Turn the void* into an int* and put it into the PyObject
-             //*data = *(int*)buffer;
-             rit = PyLong_FromVoidPtr(buffer);
-             free(buffer);
-             break;
-        // and so on for each type_code...
-        default:
-            rit = PyLong_FromSsize_t(ret);
-            return rit;
-            break;
-    }
-    return rit;
-    
-}*/
 
 
 PYBIND11_MODULE(Node,m)
@@ -72,12 +51,38 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 //.def("ReadAttr", py::overload_cast<const char*, type_code, off_t, void*, size_t>(&ReadAttrWrapper), "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 .def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->py::object{
-		void* tmp = malloc(length);;
-//		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		void* tmp = malloc(length);
+		if (tmp == nullptr){
+			throw std::runtime_error("Error allocating memory");
+		}
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		if (result < 0) {
+			free(tmp);
+			throw std::runtime_error("Error calling ReadAttr");
+		}
+		py::object ret;
+		switch (type) {
+			case B_INT32_TYPE:
+				ret = py::int_(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp))));
+				break;
+			case B_STRING_TYPE:
+				ret = py::str(static_cast<const char*>(tmp));
+				break;
+			default:
+				ret = py::none();
+				break;
+		free(tmp);
+		}
+		return ret;
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
+/*
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->py::object{
+		void* tmp = malloc(length);
 		self.ReadAttr(name, type, offset, tmp, length);
 		PyObject* ret;
 		long intVal;
 		char* strPtr = strdup("");
+		bool boolPtr;
 		switch (type){
 				case B_INT32_TYPE:
 					ret = PyLong_FromVoidPtr(tmp);
@@ -88,17 +93,9 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 					// Converte l'oggetto PyObject* in un puntatore a int*
 					int32* intPtr;
 					intPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(ret));
-					/*if (intPtr == nullptr) {
-						Py_DECREF(ret);
-						free(tmp);
-						throw std::runtime_error("Errore durante la conversione dell'oggetto PyLong a int*");
-					}*/
-					//intVal = PyLong_AsLong(ret);
 					intVal = py::int_(*intPtr);
 					free(intPtr);
 					//intVal = PyLong_AsLong(ret);
-					// Ora intPtr punta all'area di memoria a cui puntava tmp
-					// Puoi utilizzare intPtr come desideri
 					Py_DECREF(ret); // Decrementa il riferimento all'oggetto PyObject* (non più necessario)
 			        // Restituisci il puntatore a intPtr invece dell'oggetto PyObject*
 					break;
@@ -116,6 +113,12 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 					}
 					Py_DECREF(ret); // Decrementa il riferimento all'oggetto PyObject*
 					break;
+				case B_BOOL_TYPE:
+					ret = PyLong_FromVoidPtr(tmp);
+					int32* intPtr;
+					intPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(ret));
+					boolPtr = PyBool_FromLong(*intPtr);
+					
 				default:
 					//ret = PyLong_FromSsize_t(result);//*reinterpret_cast<int32_t*>(result));
 					//intPtr = 0;
@@ -126,173 +129,13 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 			return py::str(strPtr);
 		} else if (type == B_INT32_TYPE){
 			return py::int_(intVal);
+		} else if (type == B_BOOL_TYPE){
+			return py::bool_(boolPtr);
 		}
 		return py::none();
 		
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))
-//#####################################################################################################################
-/*
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->int32*{
-		void* tmp = malloc(length);;
-//		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		self.ReadAttr(name, type, offset, tmp, length);
-		PyObject* ret;
-		int32* intPtr = 0;
-		switch (type){
-				case B_INT32_TYPE:
-					ret = PyLong_FromVoidPtr(tmp);
-					if (ret == nullptr) {
-						free(tmp);
-						throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-					}
-					// Converte l'oggetto PyObject* in un puntatore a int*
-					intPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(ret));
-					if (intPtr == nullptr) {
-						Py_DECREF(ret);
-						free(tmp);
-						throw std::runtime_error("Errore durante la conversione dell'oggetto PyLong a int*");
-					}
-					// Ora intPtr punta all'area di memoria a cui puntava tmp
-					// Puoi utilizzare intPtr come desideri
-					Py_DECREF(ret); // Decrementa il riferimento all'oggetto PyObject* (non più necessario)
-			        // Restituisci il puntatore a intPtr invece dell'oggetto PyObject*
-        			//return intPtr;
-        			break;
-				default:
-					//ret = PyLong_FromSsize_t(result);//*reinterpret_cast<int32_t*>(result));
-					//intPtr = 0;
-					free(tmp);
-					break;
-			}
-		return intPtr;
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))*/
 
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->char*{
-		void* tmp = malloc(length);;
-//		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		self.ReadAttr(name, type, offset, tmp, length);
-		PyObject* ret;
-		char* strPtr = strdup("");
-		switch (type){
-				case B_STRING_TYPE:
-					ret = PyUnicode_FromString(static_cast<const char*>(tmp));
-					free(tmp); // Libera la memoria allocata con malloc
-					if (ret == nullptr) {
-						throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-					}
-            // Converte l'oggetto PyObject* in un puntatore a char*
-					strPtr = strdup(PyUnicode_AsUTF8(ret));
-					if (strPtr == nullptr) {
-						Py_DECREF(ret);
-						throw std::runtime_error("Errore durante la conversione dell'oggetto PyUnicode a char*");
-					}
-					Py_DECREF(ret); // Decrementa il riferimento all'oggetto PyObject*
-        			break;
-				default:
-					//ret = PyLong_FromSsize_t(result);//*reinterpret_cast<int32_t*>(result));
-					//intPtr = 0;
-					free(tmp);
-					break;
-			}
-		return strPtr;
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))
-*/
-//############################################################################################################
-/*.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)-> std::pair<ssize_t, void*>{
-	if (buffer == NULL){
-		void* tmp = malloc(length);;
-		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		if (result > 0) {
-			return {result,tmp};//std::string(buffer);
-		} else {
-			free(tmp);
-			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-		}
-	} else {
-		ssize_t result = self.ReadAttr(name, type, offset, buffer, length);
-		if (result > 0) {
-			return {result,buffer};
-		} else {
-			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-		}
-	}
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-*/
-/*.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length){
-//as buffer being an output variable we use instead the return value of the function diverging from Haiku-Book references
-		void* tmp = malloc(length);
-		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		if (result > 0) {
-			PyObject* ret;
-			switch (type){
-				case B_INT32_TYPE: {
-					//ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(tmp));
-					free(tmp);
-					
-					break;
-				}
-				/*default: {
-					ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(0));
-					break;
-				}*/
-				/* ############################################
-				return ret;
-			}
-			//std::string(buffer);
-		} else {
-			free(tmp);
-			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-		}
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))*/
-/*
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, PyObject* data, size_t length){
-	if (data == NULL){
-		void* tmp = malloc(length);;
-		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
-		if (result > 0) {
-			PyObject* ret;
-			switch (type){
-				case B_INT32_TYPE: {
-					// Turn the void* into an int* and put it into the PyObject
-					ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(tmp));
-                    free(tmp);
-                    break;
-        		// and so on for each type_code...
-    			}
-    		return ret;
-			}
-			
-			//return result;//tmp;//std::string(buffer);
-		} else {
-			free(tmp);
-			return Py_None;
-			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-		}
-	} else {
-		ssize_t result = self.ReadAttr(name, type, offset, data, length);
-		if (result > 0) {
-			switch (type){
-				case B_INT32_TYPE: {
-					PyObject* pyInt = PyLong_FromLong(*reinterpret_cast<int32_t*>(data));
-					Py_XINCREF(pyInt);  // Incrementa il riferimento all'oggetto Python
-					data = pyInt;  // Assegna direttamente il risultato di PyLong_FromLong a data
-					// Turn the void* into an int* and put it into the PyObject
-					// *data = PyLong_FromLong(*reinterpret_cast<int32_t*>(data));//*(int32*)tmp;
-					// free(tmp);
-             		break;
-				}
-        		// and so on for each type_code...
-    		}
-			//return PyLong_FromLong(result); //tmp;//std::string(buffer);
-		} else {
-			
-			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
-
-		}
-		return PyLong_FromLong(result);
-	}
-}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-*/
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
