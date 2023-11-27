@@ -71,6 +71,8 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				ret = py::int_(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp))));
 				break;
 			case B_STRING_TYPE:
+			case B_MIME_STRING_TYPE:
+			case B_ASCII_TYPE:
 				ret = py::str(static_cast<const char*>(tmp));
 				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
 				break;
