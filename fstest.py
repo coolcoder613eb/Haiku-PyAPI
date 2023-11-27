@@ -35,9 +35,8 @@ def attr(node):
 			my_obj = ctypes.py_object()
 			#print(type(my_obj),my_obj)
 			print(type_string, nfo.size)
-			print(node.ReadAttr(a, nfo.type, 0, None,1024))
-			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,1024)))#my_obj,
-			
+			print(node.ReadAttr(a, nfo.type, 0, None,nfo.size))
+			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,nfo.size)))#my_obj,
 	return al
 
 def get_type_int(stringa):
@@ -51,7 +50,8 @@ def get_type_string(value):
 	type_string = struct.pack('>I', value).decode('utf-8')
 	return type_string
 
-f=os.path.abspath("WPLaura.pdf")#Haiku-friûl.png")#fstest.py")
+f=os.path.abspath("WPLaura.pdf")
+#f=os.path.abspath("/boot/system/Tracker")#Haiku-friûl.png")#fstest.py")
 carta=card(f)
 #print(f)
 nf = BNode(f)
