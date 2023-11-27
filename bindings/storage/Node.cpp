@@ -68,6 +68,16 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 			case B_STRING_TYPE:
 				ret = py::str(static_cast<const char*>(tmp));
 				break;
+			case B_BOOL_TYPE:
+				/*int32* inttmpPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)));
+				if (inttmpPtr == nullptr) {
+					free(tmp);
+					throw std::runtime_error("Error converting PyLong object to int32*");
+				}
+				ret = py::bool_(*inttmpPtr != 0);
+				break;*/
+				ret = py::bool_(PyBool_FromLong(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)))));
+				break;
 			default:
 				ret = py::none();
 				break;
