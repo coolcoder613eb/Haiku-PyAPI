@@ -76,7 +76,6 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 //		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
 		self.ReadAttr(name, type, offset, tmp, length);
 		PyObject* ret;
-		//int32* intPtr = 0;
 		long intVal;
 		char* strPtr = strdup("");
 		switch (type){
@@ -87,13 +86,17 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 						throw std::runtime_error("Errore durante la chiamata a ReadAttr");
 					}
 					// Converte l'oggetto PyObject* in un puntatore a int*
-					//intPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(ret));
+					int32* intPtr;
+					intPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(ret));
 					/*if (intPtr == nullptr) {
 						Py_DECREF(ret);
 						free(tmp);
 						throw std::runtime_error("Errore durante la conversione dell'oggetto PyLong a int*");
 					}*/
-					intVal = PyLong_AsLong(ret);
+					//intVal = PyLong_AsLong(ret);
+					intVal = py::int_(*intPtr);
+					free(intPtr);
+					//intVal = PyLong_AsLong(ret);
 					// Ora intPtr punta all'area di memoria a cui puntava tmp
 					// Puoi utilizzare intPtr come desideri
 					Py_DECREF(ret); // Decrementa il riferimento all'oggetto PyObject* (non più necessario)
