@@ -49,7 +49,27 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Unlock", &BNode::Unlock, "")
 .def("Sync", &BNode::Sync, "")
 .def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+//PyBytes_FromObject
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->PyObject*{ //void* buffer
+		void* tmp = malloc(length);;
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		if (result > 0) {
+			PyObject* ret;
+			switch (type){
+				case B_INT32_TYPE:
+					ret = PyLong_FromVoidPtr(tmp);//*reinterpret_cast<int32_t*>(
+					break;
+				default:
+					ret = PyLong_FromSsize_t(result);//*reinterpret_cast<int32_t*>(result));
+					break;
+			}
+			return ret;
+		} else {
+			free(tmp);
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+		}
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 /*.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)-> std::pair<ssize_t, void*>{
 	if (buffer == NULL){
 		void* tmp = malloc(length);;
@@ -70,6 +90,33 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 	}
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 */
+/*.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length){
+//as buffer being an output variable we use instead the return value of the function diverging from Haiku-Book references
+		void* tmp = malloc(length);
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		if (result > 0) {
+			PyObject* ret;
+			switch (type){
+				case B_INT32_TYPE: {
+					//ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(tmp));
+					free(tmp);
+					
+					break;
+				}
+				/*default: {
+					ret = PyLong_FromLong(*reinterpret_cast<int32_t*>(0));
+					break;
+				}*/
+				/* ############################################
+				return ret;
+			}
+			//std::string(buffer);
+		} else {
+			free(tmp);
+			throw std::runtime_error("Errore durante la chiamata a ReadAttr");
+		}
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))*/
+/*
 .def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, PyObject* data, size_t length){
 	if (data == NULL){
 		void* tmp = malloc(length);;
@@ -117,7 +164,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		return PyLong_FromLong(result);
 	}
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
-
+*/
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
