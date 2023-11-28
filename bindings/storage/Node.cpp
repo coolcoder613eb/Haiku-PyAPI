@@ -177,7 +177,8 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))*/
 
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
-.def("RenameAttr", py::overload_cast<const char *,const char *>(&BNode::RenameAttr), "", py::arg("oldName"), py::arg("newName"))
+//.def("RenameAttr", py::overload_cast<const char *,const char *>(&BNode::RenameAttr), "", py::arg("oldName"), py::arg("newName"))
+.def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
 //.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "", py::arg("name"), py::arg("info"))
 /*.def("GetAttrInfo", [](BNode& self, const char* attr) -> std::pair<status_t, attr_info> {

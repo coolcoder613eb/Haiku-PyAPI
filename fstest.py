@@ -39,9 +39,11 @@ def attr(node):
 			print(a)
 			if a == "Media:Width":
 				print("passo di qui")
-				node.RenameAttr("Media:Width", "media:width")
+				node.RenameAttr("Media:Width", "media:width")# <- not working
 				print(a)
+				
 			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,nfo.size)))#my_obj,
+			#node.RemoveAttr("Media:Width") <- works
 	return al
 
 def get_type_int(stringa):
