@@ -93,9 +93,10 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				ret = py::float_(*reinterpret_cast<double*>(tmp));
 				break;
 			case B_TIME_TYPE:{
-				bigtime_t timeValue = *reinterpret_cast<bigtime_t*>(tmp);
+				//bigtime_t timeValue = *reinterpret_cast<bigtime_t*>(tmp);
+				time_t timeValue = *reinterpret_cast<time_t*>(tmp);
 				std::chrono::system_clock::time_point timePoint =
-				std::chrono::system_clock::time_point(std::chrono::seconds(timeValue));
+				std::chrono::system_clock::time_point(std::chrono::seconds(timeValue)); //this was microseconds
 				// Calcola il tempo trascorso dalla mezzanotte del 1 gennaio 1970 in secondi
 				auto seconds_since_epoch = std::chrono::duration_cast<std::chrono::seconds>(timePoint.time_since_epoch()).count();
 				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(seconds_since_epoch);
@@ -176,7 +177,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))*/
 
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
-.def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
+.def("RenameAttr", py::overload_cast<const char *,const char *>(&BNode::RenameAttr), "", py::arg("oldName"), py::arg("newName"))
 //.def("GetAttrInfo", &BNode::GetAttrInfo, "", py::arg("name"), py::arg("info"))
 //.def("GetAttrInfo", py::overload_cast<const char *, struct attr_info *>(&BNode::GetAttrInfo, py::const_), "", py::arg("name"), py::arg("info"))
 /*.def("GetAttrInfo", [](BNode& self, const char* attr) -> std::pair<status_t, attr_info> {

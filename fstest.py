@@ -1,5 +1,5 @@
-import os, struct, ctypes
-from Be import BNode
+import os, sys, struct, ctypes
+from Be import BNode#,BString
 from Be.fs_attr import attr_info
 
 class card:
@@ -36,6 +36,11 @@ def attr(node):
 			#print(type(my_obj),my_obj)
 			print(type_string, nfo.size)
 			print(node.ReadAttr(a, nfo.type, 0, None,nfo.size))
+			print(a)
+			if a == "Media:Width":
+				print("passo di qui")
+				node.RenameAttr("Media:Width", "media:width")
+				print(a)
 			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,nfo.size)))#my_obj,
 	return al
 
@@ -50,7 +55,8 @@ def get_type_string(value):
 	type_string = struct.pack('>I', value).decode('utf-8')
 	return type_string
 
-f=os.path.abspath("WPLaura.pdf")
+f=os.path.abspath(sys.argv[1])
+#f=os.path.abspath("WPLaura.pdf")
 #f=os.path.abspath("/boot/system/Tracker")#Haiku-friûl.png")#fstest.py")
 carta=card(f)
 #print(f)
