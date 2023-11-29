@@ -34,13 +34,11 @@ def attr(node):
 			#print(get_type_int(type_string),nfo.type)
 			my_obj = ctypes.py_object()
 			#print(type(my_obj),my_obj)
-			print(type_string, nfo.size)
-			print(node.ReadAttr(a, nfo.type, 0, None,nfo.size))
-			print(a)
+			print("Attr_name:",a,"Type:",type_string,"Size:", nfo.size,"Value:",node.ReadAttr(a, nfo.type, 0, None,nfo.size))
 			if a == "Media:Width":
-				print("passo di qui")
+				print("Attempt to change AttribName")
 				node.RenameAttr("Media:Width", "media:width")# <- not working
-				print(a)
+				print("Name after RenameAttr:",a)
 				
 			al.append((a,("Type:",type_string,"Size:",nfo.size),node.ReadAttr(a, nfo.type, 0, None,nfo.size)))#my_obj,
 			#node.RemoveAttr("Media:Width") <- works
