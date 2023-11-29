@@ -12,7 +12,7 @@ PYBIND11_MODULE(SupportDefs, m)
 {
 m.attr("B_EMPTY_STRING") = py::cast(B_EMPTY_STRING);
 
-m.def("get_stack_frame", &get_stack_frame, "", py::arg(""));
+m.def("get_stack_frame", &get_stack_frame, "");//, py::arg(""));
 
 m.def("atomic_set", py::overload_cast<int32*, int32>(&atomic_set), "", py::arg("value"), py::arg("newValue"));
 
