@@ -4,21 +4,17 @@
 #include <pybind11/operators.h>
 
 #include <support/Archivable.h>
+//#include <image.h>
+//#include <Message.h>
+//#include <SupportDefs.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::Archiving;
 
-void define_Archivable(py::module_& m)
+
+PYBIND11_MODULE(Archivable, m)
 {
-m.attr("BArchiveManager") = py::cast(BArchiveManager);
-
-m.attr("BUnarchiveManager") = py::cast(BUnarchiveManager);
-
-m.attr("BArchiveManager") = py::cast(BArchiveManager);
-
-m.attr("BUnarchiveManager") = py::cast(BUnarchiveManager);
-
 py::class_<BArchivable>(m, "BArchivable")
 .def(py::init<BMessage *>(), "", py::arg("from"))
 .def(py::init(), "")
@@ -32,55 +28,61 @@ py::class_<BArchivable>(m, "BArchivable")
 py::class_<BArchiver>(m, "BArchiver")
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def("AddArchivable", &BArchiver::AddArchivable, "", py::arg("name"), py::arg("archivable"), py::arg("deep")=true)
-.def("GetTokenForArchivable", py::overload_cast<BArchivable *, int>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("_token"))
-.def("GetTokenForArchivable", py::overload_cast<BArchivable *, bool, int>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("deep"), py::arg("_token"))
+//.def("GetTokenForArchivable", py::overload_cast<BArchivable *, int32>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("_token"))
+//.def("GetTokenForArchivable", py::overload_cast<BArchivable *, bool, int32>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("deep"), py::arg("_token"))
 .def("IsArchived", &BArchiver::IsArchived, "", py::arg("archivable"))
 .def("Finish", &BArchiver::Finish, "", py::arg("err")=B_OK)
 .def("ArchiveMessage", &BArchiver::ArchiveMessage, "")
 ;
 
+/* my attempt to import ownership_policy
+py::enum_<BUnarchiver::ownership_policy>(m, "ownership_policy")
+.value("B_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_ASSUME_OWNERSHIP, "")
+.value("B_DONT_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_DONT_ASSUME_OWNERSHIP, "")
+.export_values();
+*/
 py::class_<BUnarchiver>(m, "BUnarchiver")
 .def(py::init<const BMessage *>(), "", py::arg("archive"))
-.def("GetObject", [](BUnarchiver& self,int token) {
+/*
+.def("ownership_policy", py::enum_<BUnarchiver::ownership_policy>(m,"ownership_policy")
+	.value("B_ASSUME_OWNERSHIP",BUnarchiver::ownership_policy::B_ASSUME_OWNERSHIP)
+	.value("B_DONT_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_DONT_ASSUME_OWNERSHIP)
+)
+*/
+/*.def("GetObject", [](BUnarchiver& self,int token) {
     T *  object;
     inline status_t r = self.GetObject(token, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("token"))
-.def("GetObject", [](BUnarchiver& self,int token,ownership_policy owning) {
+}, "", py::arg("token"))*/
+/*.def("GetObject", [](BUnarchiver& self,int token,ownership_policy owning) {
     T *  object;
     status_t r = self.GetObject(token, owning, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("token"), py::arg("owning"))
-.def("FindObject", [](BUnarchiver& self,const char * name) {
+}, "", py::arg("token"), py::arg("owning"))*/
+/*.def("FindObject", [](BUnarchiver& self,const char * name) {
     T *  object;
     inline status_t r = self.FindObject(name, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("name"))
-.def("FindObject", [](BUnarchiver& self,const char * name,ownership_policy owning) {
+}, "", py::arg("name"))*/
+/*.def("FindObject", [](BUnarchiver& self,const char * name,ownership_policy owning) {
     T *  object;
     inline status_t r = self.FindObject(name, owning, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("name"), py::arg("owning"))
-.def("FindObject", [](BUnarchiver& self,const char * name,int index) {
+}, "", py::arg("name"), py::arg("owning"))*/
+/*.def("FindObject", [](BUnarchiver& self,const char * name,int index) {
     T *  object;
     inline status_t r = self.FindObject(name, index, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("name"), py::arg("index"))
-.def("FindObject", [](BUnarchiver& self,const char * name,int index,ownership_policy owning) {
+}, "", py::arg("name"), py::arg("index"))*/
+/*.def("FindObject", [](BUnarchiver& self,const char * name,int index,ownership_policy owning) {
     T *  object;
     status_t r = self.FindObject(name, index, owning, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("name"), py::arg("index"), py::arg("owning"))
-.def("EnsureUnarchived", py::overload_cast<const char *, int>(&BUnarchiver::EnsureUnarchived), "", py::arg("name"), py::arg("index")=0)
-.def("EnsureUnarchived", py::overload_cast<int>(&BUnarchiver::EnsureUnarchived), "", py::arg("token"))
-.def("IsInstantiated", py::overload_cast<int>(&BUnarchiver::IsInstantiated), "", py::arg("token"))
-.def("IsInstantiated", py::overload_cast<const char *, int>(&BUnarchiver::IsInstantiated), "", py::arg("name"), py::arg("index")=0)
+}, "", py::arg("name"), py::arg("index"), py::arg("owning"))*/
+.def("EnsureUnarchived", py::overload_cast<const char *, int32>(&BUnarchiver::EnsureUnarchived), "", py::arg("name"), py::arg("index")=0)
+.def("EnsureUnarchived", py::overload_cast<int32>(&BUnarchiver::EnsureUnarchived), "", py::arg("token"))
+.def("IsInstantiated", py::overload_cast<int32>(&BUnarchiver::IsInstantiated), "", py::arg("token"))
+.def("IsInstantiated", py::overload_cast<const char *, int32>(&BUnarchiver::IsInstantiated), "", py::arg("name"), py::arg("index")=0)
 .def("Finish", &BUnarchiver::Finish, "", py::arg("err")=B_OK)
 .def("ArchiveMessage", &BUnarchiver::ArchiveMessage, "")
 .def("AssumeOwnership", &BUnarchiver::AssumeOwnership, "", py::arg("archivable"))
@@ -92,45 +94,57 @@ py::class_<BUnarchiver>(m, "BUnarchiver")
     return std::make_tuple(r,archive);
 }
 , "")
-.def_static("InstantiateObject", [](BUnarchiver& self,BMessage * archive) {
+/*.def_static("InstantiateObject", [](BUnarchiver& self,BMessage * archive) {
     T *  object;
     static status_t r = self.InstantiateObject(archive, object);
     return std::make_tuple(r,object);
-}
-, "", py::arg("archive"))
+}, "", py::arg("archive"))*/
 ;
+
+/* these do not generate errors on compile-time
 
 m.def("instantiate_object", py::overload_cast<BMessage *, image_id *>(&instantiate_object), "", py::arg("from"), py::arg("id"));
 
 m.def("instantiate_object", py::overload_cast<BMessage *>(&instantiate_object), "", py::arg("from"));
 
 m.def("validate_instantiation", &validate_instantiation, "", py::arg("from"), py::arg("className"));
+*/
 
-m.def("find_instantiation_func", py::overload_cast<const char *, const char *>(&find_instantiation_func), "", py::arg("className"), py::arg("signature"));
+//m.def("find_instantiation_func", py::overload_cast<const char *, const char *>(&find_instantiation_func), "", py::arg("className"), py::arg("signature"));
 
-m.def("find_instantiation_func", py::overload_cast<const char *>(&find_instantiation_func), "", py::arg("className"));
+//m.def("find_instantiation_func", py::overload_cast<const char *>(&find_instantiation_func), "", py::arg("className"));
 
-m.def("find_instantiation_func", py::overload_cast<BMessage *>(&find_instantiation_func), "", py::arg("archive"));
-
+//m.def("find_instantiation_func", py::overload_cast<BMessage *>(&find_instantiation_func), "", py::arg("archive"));
+/*
 m.def(">", [](const char * name,int index,ownership_policy owning) {
     BArchivable *  archivable;
     status_t BUnarchiver::FindObject<BArchivable r = >(name, index, owning, archivable);
     return std::make_tuple(r,archivable);
 }
 , "", py::arg("name"), py::arg("index"), py::arg("owning"));
-
+*/
+/*
 m.def(">", [](int token,ownership_policy owning) {
     BArchivable *  object;
     status_t BUnarchiver::GetObject<BArchivable r = >(token, owning, object);
     return std::make_tuple(r,object);
 }
 , "", py::arg("token"), py::arg("owning"));
-
+*/
+/*
 m.def(">", [](BMessage * from) {
     BArchivable *  object;
     status_t BUnarchiver::InstantiateObject<BArchivable r = >(from, object);
     return std::make_tuple(r,object);
 }
 , "", py::arg("from"));
+*/
 
+//m.attr("BArchiveManager") = py::cast(BArchiveManager);
+
+//m.attr("BUnarchiveManager") = py::cast(BUnarchiveManager);
+
+//m.attr("BArchiveManager") = py::cast(BArchiveManager);
+
+//m.attr("BUnarchiveManager") = py::cast(BUnarchiveManager);
 }
