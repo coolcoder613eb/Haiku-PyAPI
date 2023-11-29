@@ -6,16 +6,21 @@
 #include <interface/PictureButton.h>
 #include <Control.h>
 #include <Picture.h>
+#include <Bitmap.h>
 
 namespace py = pybind11;
 
 
 PYBIND11_MODULE(PictureButton,m)
 {
-m.attr("B_ONE_STATE_BUTTON") = 0;
-m.attr("B_TWO_STATE_BUTTON") = 1;
+//m.attr("B_ONE_STATE_BUTTON") = 0;
+//m.attr("B_TWO_STATE_BUTTON") = 1;
+py::enum_<picture_button_behavior>(m, "picture_button_behavior", "")
+.value("B_ONE_STATE_BUTTON", picture_button_behavior::B_ONE_STATE_BUTTON, "")
+.value("B_TWO_STATE_BUTTON", picture_button_behavior::B_TWO_STATE_BUTTON, "")
+.export_values();
 
-py::class_<BPictureButton, BControl>(m, "BPictureButton")
+py::class_<BPictureButton, BControl,std::unique_ptr<BPictureButton, py::nodelete>>(m, "BPictureButton")
 .def(py::init<BRect, const char *, BPicture *, BPicture *, BMessage *, unsigned int, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("off"), py::arg("on"), py::arg("message"), py::arg("behavior")=B_ONE_STATE_BUTTON, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flgs")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BPictureButton::Instantiate, "", py::arg("archive"))
