@@ -107,8 +107,14 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(std::chrono::system_clock::to_time_t(timePoint));
 				break;*/
 			}
+			case B_RAW_TYPE:{
+				ret = py::bytes(reinterpret_cast<const char*>(tmp), length);
+				break;
+			}
 			default:
-				ret = py::none();
+				ret = py::bytes(reinterpret_cast<const char*>(tmp), length);
+				//ret = py::bytes(static_cast<const char*>(tmp));
+				//py::none();
 				break;
 		}
 		free(tmp);
