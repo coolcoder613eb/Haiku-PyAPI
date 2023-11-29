@@ -2,14 +2,13 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 #include <support/TypeConstants.h>
-
+/*
 namespace py = pybind11;
 
-
-void define_TypeConstants(py::module_& m)
+PYBIND11_MODULE(TypeConstants, m) 
 {
 m.attr("B_AFFINE_TRANSFORM_TYPE") = py::cast(B_AFFINE_TRANSFORM_TYPE);
 m.attr("B_ALIGNMENT_TYPE") = py::cast(B_ALIGNMENT_TYPE);
@@ -89,9 +88,7 @@ m.attr("B_URL_FILE") = py::cast(B_URL_FILE);
 
 
 }
-=======
-#include <TypeConstants.h>
-#include <BeBuild.h>
+*/
 
 namespace py = pybind11;
 
@@ -147,7 +144,27 @@ PYBIND11_MODULE(TypeConstants, m) {
     m.attr("B_NETWORK_ADDRESS_TYPE") = 'NWAD';
     m.attr("B_MIME_STRING_TYPE") = 'MIMS';
     m.attr("B_ASCII_TYPE") = 'TEXT';
-    
-}
+    m.attr("B_URL_HTTP") = py::cast(B_URL_HTTP);
 
->>>>>>> tmtfx-testing
+m.attr("B_URL_HTTPS") = py::cast(B_URL_HTTPS);
+
+m.attr("B_URL_FTP") = py::cast(B_URL_FTP);
+
+m.attr("B_URL_GOPHER") = py::cast(B_URL_GOPHER);
+
+m.attr("B_URL_MAILTO") = py::cast(B_URL_MAILTO);
+
+m.attr("B_URL_NEWS") = py::cast(B_URL_NEWS);
+
+m.attr("B_URL_NNTP") = py::cast(B_URL_NNTP);
+
+m.attr("B_URL_TELNET") = py::cast(B_URL_TELNET);
+
+m.attr("B_URL_RLOGIN") = py::cast(B_URL_RLOGIN);
+
+m.attr("B_URL_TN3270") = py::cast(B_URL_TN3270);
+
+m.attr("B_URL_WAIS") = py::cast(B_URL_WAIS);
+
+m.attr("B_URL_FILE") = py::cast(B_URL_FILE);
+}
