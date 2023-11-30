@@ -285,14 +285,14 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
-/*
+
 //from here check if they work as BBitmap is not implemented
-.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("where"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"))
-.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("where"))
@@ -300,7 +300,6 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawTiledBitmapAsync", &BView::DrawTiledBitmapAsync, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
 .def("DrawTiledBitmap", &BView::DrawTiledBitmap, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
 //to here
-*/
 .def("DrawChar", py::overload_cast<char>(&BView::DrawChar), "", py::arg("aChar"))
 .def("DrawChar", py::overload_cast<char, BPoint>(&BView::DrawChar), "", py::arg("aChar"), py::arg("location"))
 .def("DrawString", py::overload_cast<const char *, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("delta")=NULL)
