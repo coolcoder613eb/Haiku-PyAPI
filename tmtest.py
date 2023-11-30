@@ -1,5 +1,5 @@
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton, BTextView
+from Be import BPictureButton, BTextView, BButton
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -12,6 +12,21 @@ from Be import AppDefs
 from Be import BEntry
 from Be.Entry import entry_ref
 from Be.Entry import get_ref_for_path
+
+class PBut(BButton):
+	def __init__(self,frame,name,caption,msg,immagine,immaginedown):
+		self.immagine=immagine
+		self.imgdown=immaginedown
+		self.frame=frame
+		BButton.__init__(self, frame, name, caption, msg)
+
+	def Draw(self,rect):
+		BButton.Draw(self, rect)
+		inset = (4, 4, self.frame.Width()-4, self.frame.Heigth()-4)
+		if self.Value():
+			self.DrawBitmap(self.immagine, inset)
+		else:
+			self.DrawBitmap(self.imgdown, inset)
 
 class StrangeItem(BStringItem):
 	nocolor = (0, 0, 0, 0)
@@ -106,10 +121,15 @@ class Window(BWindow):
 		self.startimer= BCheckBox(BRect(10,30,290,50),'Testbox','Test Checkbox',BMessage(612))
 		self.point=BPoint()
 		self.cc= BColorControl(BPoint(8, 128), color_control_layout.B_CELLS_32x8, 8.0,'colors', BMessage(self.CLRCTL), 0)
-		self.sixradio = BRadioButton(BRect(8,220,24,236),'hotradio', 'hot', BMessage(6))
-		self.sevenradio = BRadioButton(BRect(8,236,24,252),'tepidradio', 'tepid', BMessage(7))
-		self.nineradio = BRadioButton(BRect(8,252,24,268),'coolradio', 'cool', BMessage(9))
-
+		self.sixradio = BRadioButton(BRect(8,220,28,240),'hotradio', 'hot', BMessage(6))
+		self.sevenradio = BRadioButton(BRect(8,240,28,260),'tepidradio', 'tepid', BMessage(7))
+		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
+		
+		#link=sys.path[0]+"/help/minusmine.bmp"
+		#img=BTranslationUtils.GetBitmap(link)
+		#link2=sys.path[0]+"/help/minusmined.bmp"
+		#img2=BTranslationUtils.GetBitmap(link2)
+		#self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(AppDefs.B_QUIT_REQUESTED),img2,img)
 
 		# Handling colors##################
 		#colore=self.list.lv.HighColor()
@@ -129,7 +149,6 @@ class Window(BWindow):
 		
 		
 		self.list = ScrollView(BRect(8 , 300, bounds.Width() - 18 , bounds.Height() - 42 ), 'ScrollView')
-		#self.list.sv.Hide()
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
 			# as Python is finished with the __init__ function. But we still
