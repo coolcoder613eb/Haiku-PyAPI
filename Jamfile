@@ -140,7 +140,7 @@ local sourceFiles =
 	ListView.cpp
 	ScrollView.cpp
 	ListItem.cpp
-	#Bitmap.cpp
+	Bitmap.cpp
 	#Slider.cpp
 	Picture.cpp
 	PictureButton.cpp

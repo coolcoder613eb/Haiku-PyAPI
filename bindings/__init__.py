@@ -52,7 +52,7 @@ from .SupportDefs import *
 from .TypeConstants import *
 from .Archivable import *
 from .ListItem import *
-#from .Bitmap import *
+from .Bitmap import *
 #from .Slider import *
 from .Picture import *
 from .PictureButton import *
