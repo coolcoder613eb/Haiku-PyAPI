@@ -34,7 +34,7 @@ py::class_<BScreen>(m, "BScreen")
 .def("InvertIndex", &BScreen::InvertIndex, "", py::arg("index"))
 .def("ColorMap", &BScreen::ColorMap, "")
 //.def("GetBitmap", &BScreen::GetBitmap, "", py::arg("_bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
-.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> py::object {
+.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> BBitmap* {
             // Chiamare la funzione originale
             BBitmap* buffer;
             status_t result = self.GetBitmap(&buffer,drawCursor,frame);
@@ -45,10 +45,11 @@ py::class_<BScreen>(m, "BScreen")
             }
 
             // Creare un oggetto PyCapsule per incapsulare il puntatore BBitmap
-            py::capsule capsule(buffer, [](void* p) { delete reinterpret_cast<BBitmap*>(p); });
+            //py::capsule capsule(buffer, [](void* p) { delete reinterpret_cast<BBitmap*>(p); });
 
             // Restituire l'oggetto PyCapsule
-            return py::reinterpret_steal<py::object>(capsule);
+            //return py::reinterpret_steal<py::object>(capsule);
+            return buffer;
         }, py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("ReadBitmap", &BScreen::ReadBitmap, "", py::arg("bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("DesktopColor", py::overload_cast<>(&BScreen::DesktopColor), "")
