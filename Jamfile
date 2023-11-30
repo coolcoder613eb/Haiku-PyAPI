@@ -148,6 +148,7 @@ local sourceFiles =
 	TabView.cpp
 	ScrollBar.cpp
 	GraphicsDefs.cpp
+	Screen.cpp
 	
 	#SupportKit
 	SupportDefs.cpp
