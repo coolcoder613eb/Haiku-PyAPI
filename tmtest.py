@@ -13,6 +13,22 @@ from Be import BEntry
 from Be.Entry import entry_ref
 from Be.Entry import get_ref_for_path
 
+class PView(BView):
+	def __init__(self,frame,name,immagine):
+		self.immagine=immagine
+		self.frame=frame
+		BView.__init__(self,self.frame,name,8, 20000000)
+		
+	def UpdateImg(self,immagine):
+		self.immagine=immagine
+		rect=BRect(0,0,self.frame.Width(),self.frame.Height())
+		self.DrawBitmap(self.immagine,rect)
+
+	def Draw(self,rect):
+		BView.Draw(self,rect)
+		rect=BRect(0,0,self.frame.Width(),self.frame.Height())
+		self.DrawBitmap(self.immagine,rect)
+		
 class PBut(BButton):
 	def __init__(self,frame,name,caption,msg,immagine,immaginedown):
 		self.immagine=immagine
@@ -106,7 +122,6 @@ class Window(BWindow):
 		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
-		self.panel3 = BView(self.Bounds(), "panel3", 8, 20000000)
 		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
@@ -129,6 +144,8 @@ class Window(BWindow):
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
 		scrn = BScreen(self)
 		img1 = scrn.GetBitmap(True,BRect(0,0,200,200))
+		self.panel3 = PView(self.Bounds(), "panel3",img1)
+		
 		print(img1)
 		print(img1.BitsLength())
 		print(img1.Bits())
@@ -222,7 +239,9 @@ class Window(BWindow):
 		scheda2.SetLabel("Scrittura")
 		scheda3.SetLabel("Draw Bitmap")
 		
-		self.panel3.DrawBitmap(img1)
+		#self.panel3.DrawBitmap(img1)
+		self.panel3.UpdateImg(img1)
+		
 		from Be.Font import be_plain_font
 		from Be.Font import be_bold_font
 		#from Be.View import set_font_mask		
