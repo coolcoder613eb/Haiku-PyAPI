@@ -29,7 +29,10 @@ def attr(node):
 			#nfo = node.GetAttrInfo(a,tmp)
 			#al.append((a,(tmp.type,tmp.size)))
 			# or this way:
-			nfo = node.GetAttrInfo(a)
+			pnfo = node.GetAttrInfo(a)
+			if not pnfo[1]:
+				nfo = node.GetAttrInfo(a)[0]
+				
 			type_string = get_type_string(nfo.type)
 			#print(get_type_int(type_string),nfo.type)
 			my_obj = ctypes.py_object()
