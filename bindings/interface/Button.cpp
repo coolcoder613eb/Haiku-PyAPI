@@ -9,10 +9,18 @@
 
 namespace py = pybind11;
 
+class PyBButton : public BButton{
+	public:
+        using BButton::BButton;
+        void Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BButton, Draw, updateRect);
+        }
+};
+
 
 PYBIND11_MODULE(Button,m)
 {
-py::class_<BButton,BControl,BView,std::unique_ptr<BButton, py::nodelete>>(m, "BButton")
+py::class_<BButton,PyBButton,BControl,BView,std::unique_ptr<BButton, py::nodelete>>(m, "BButton")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
 .def(py::init<const char *, BMessage *>(), "", py::arg("label"), py::arg("message")=NULL)

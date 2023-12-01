@@ -37,7 +37,7 @@ class PBut(BButton):
 		BButton.__init__(self, frame, name, caption, msg)
 
 	def Draw(self,rect):
-		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Heigth()-4)
+		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Height()-4)
 		if self.Value():
 			print("disegno su")
 			self.DrawBitmap(self.immagine, inset)
@@ -63,19 +63,14 @@ class NewsItem(BListItem):
 
 	def __init__(self, name,color):
 		self.name = name
-		print("inizializzato con color:"+str(color))
 		self.color=color
 		BListItem.__init__(self)
 
 	def DrawItem(self, owner, frame, complete):
 		if self.IsSelected() or complete:
 			color = (200,200,200,255)
-			#print("HighColor era:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
-			#print("LowColor era:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
 			owner.SetHighColor(180,0,0,255)
 			owner.SetLowColor(200,200,200,255)
-			#print("HighColor ora è:",str(owner.HighColor().red),str(owner.HighColor().green),str(owner.HighColor().blue),str(owner.HighColor().alpha))
-			#print("LowColor ora è:",str(owner.LowColor().red),str(owner.LowColor().green),str(owner.LowColor().blue),str(owner.LowColor().alpha))
 			owner.FillRect(frame)
 			owner.SetHighColor(0,0,0,255)
 			owner.SetLowColor(255,255,255,255)
@@ -119,7 +114,6 @@ class Window(BWindow):
 		bounds=self.Bounds()
 		self.bckgnd = BView(self.Bounds(), "background", 8, 20000000)
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
-		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
 		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
@@ -146,9 +140,12 @@ class Window(BWindow):
 		img1 = scrn.GetBitmap(True,BRect(0,0,200,200))
 		self.panel3 = PView(self.Bounds(), "panel3",img1)
 		
-		print(img1)
-		print(img1.BitsLength())
 		print(img1.Bits())
+		print(img1.Flags())
+		print(img1.BitsLength())
+		img2=BBitmap(img1.Bounds(),color_space.B_RGBA32)
+		img2.ImportBits(img1)
+		
 		#link=sys.path[0]+"/help/minusmine.bmp"
 		#img=BTranslationUtils.GetBitmap(link)
 		#link2=sys.path[0]+"/help/minusmined.bmp"
