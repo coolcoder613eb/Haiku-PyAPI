@@ -28,6 +28,15 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBView : public BView{
+	public:
+        using BView::BView;
+        void Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BView, Draw, updateRect);
+        }
+};
+
+
 PYBIND11_MODULE(View,m)
 {
 m.attr("B_PRIMARY_MOUSE_BUTTON") = "B_MOUSE_BUTTON ( 1 )";
@@ -111,7 +120,7 @@ m.attr("_VIEW_CENTER_") = _VIEW_CENTER_;
 
 //m.attr("ViewState") = ViewState;
 
-py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
+py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
 .def(py::init<BRect, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))

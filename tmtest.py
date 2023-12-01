@@ -13,6 +13,18 @@ from Be import BEntry
 from Be.Entry import entry_ref
 from Be.Entry import get_ref_for_path
 
+
+class PBox(BBox):
+	def __init__(self,frame,name,immagine):
+		self.immagine = immagine
+		self.frame = frame
+		BBox.__init__(self,frame,name,0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		
+	def Draw(self,rect):
+		BBox.Draw(self, rect)
+		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Height()-4)
+		self.DrawBitmap(self.immagine, inset)
+		
 class PView(BView):
 	def __init__(self,frame,name,immagine):
 		self.immagine=immagine
@@ -20,12 +32,14 @@ class PView(BView):
 		BView.__init__(self,self.frame,name,8, 20000000)
 		
 	def UpdateImg(self,immagine):
+		self.Draw(self.frame)
 		self.immagine=immagine
 		rect=BRect(0,0,self.frame.Width(),self.frame.Height())
 		self.DrawBitmap(self.immagine,rect)
 
 	def Draw(self,rect):
 		BView.Draw(self,rect)
+		print("Disegno PView")
 		rect=BRect(0,0,self.frame.Width(),self.frame.Height())
 		self.DrawBitmap(self.immagine,rect)
 		
@@ -117,6 +131,7 @@ class Window(BWindow):
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
+		self.panel3 = BView(self.Bounds(), "panel2", 8, 20000000)
 		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
@@ -139,20 +154,21 @@ class Window(BWindow):
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
 		scrn = BScreen(self)
 		img1 = scrn.GetBitmap(True,BRect(0,0,200,200))
-		self.panel3 = PView(self.Bounds(), "panel3",img1)
+		
 		
 		print(img1.Bits())
 		print(img1.Flags())
 		print(img1.BitsLength())
-		img2=BBitmap(img1.Bounds(),color_space.B_RGBA32)
-		img2.ImportBits(img1)
-		
+		img2=BBitmap(self.panel2.Bounds(),color_space.B_RGBA32)
+		#img2.ImportBits(img1)
+		img2 = scrn.GetBitmap(True,self.panel3.Bounds())
+		#self.panel3 = PView(self.Bounds(), "panel3",img2)
 		#link=sys.path[0]+"/help/minusmine.bmp"
 		#img=BTranslationUtils.GetBitmap(link)
 		#link2=sys.path[0]+"/help/minusmined.bmp"
 		#img2=BTranslationUtils.GetBitmap(link2)
-		self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img1)#img2,img)AppDefs.B_QUIT_REQUESTED
-		
+		self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img2)#img2,img)AppDefs.B_QUIT_REQUESTED
+		self.PicBox = PBox(self.panel3.Bounds(),"PictureBox",img2)
 		# Handling colors##################
 		#colore=self.list.lv.HighColor()
 		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
@@ -238,7 +254,8 @@ class Window(BWindow):
 		scheda3.SetLabel("Draw Bitmap")
 		
 		#self.panel3.DrawBitmap(img1)
-		self.panel3.UpdateImg(img1)
+		#self.panel3.UpdateImg(img1)
+		#self.panel3.Draw(self.panel3.Bounds())
 		
 		from Be.Font import be_plain_font
 		from Be.Font import be_bold_font
@@ -247,7 +264,8 @@ class Window(BWindow):
 		self.typtap.SetStylable(1)
 		self.panel2.AddChild(self.typtap,None)
 		colore=self.panel.HighColor()
-		print(colore.red,colore.green,colore.blue,colore.alpha)
+		#print(colore.red,colore.green,colore.blue,colore.alpha)
+		self.panel3.AddChild(self.PicBox,None)
 		colore.red=180
 		self.typtap.SetFontAndColor(be_plain_font,511,colore)#B_FONT_ALL = 511
 		stuff = '\n\t\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\t\t\t\tZardshard and coolcoder613'
