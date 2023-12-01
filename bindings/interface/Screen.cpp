@@ -36,7 +36,8 @@ py::class_<BScreen>(m, "BScreen")
 //.def("GetBitmap", &BScreen::GetBitmap, "", py::arg("_bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> BBitmap* {
             // Chiamare la funzione originale
-            BBitmap* buffer;
+            //BBitmap* buffer;
+            BBitmap* buffer = new BBitmap(*frame,B_RGBA32);
             status_t result = self.GetBitmap(&buffer,drawCursor,frame);
 
             // Gestire gli errori
@@ -50,6 +51,7 @@ py::class_<BScreen>(m, "BScreen")
             // Restituire l'oggetto PyCapsule
             //return py::reinterpret_steal<py::object>(capsule);
             return buffer;
+            //return py::capsule(buffer,""BBitmap", &deleteBBitmap);
         }, py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("ReadBitmap", &BScreen::ReadBitmap, "", py::arg("bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("DesktopColor", py::overload_cast<>(&BScreen::DesktopColor), "")
