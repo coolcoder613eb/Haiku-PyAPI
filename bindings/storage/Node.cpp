@@ -49,6 +49,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Sync", &BNode::Sync, "")
 .def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+/*
 .def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->py::object{
 		void* tmp = malloc(length);
 		if (tmp == nullptr){
@@ -75,13 +76,6 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
 				break;
 			case B_BOOL_TYPE:
-				/*int32* inttmpPtr = reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)));
-				if (inttmpPtr == nullptr) {
-					free(tmp);
-					throw std::runtime_error("Error converting PyLong object to int32*");
-				}
-				ret = py::bool_(*inttmpPtr != 0);
-				break;*/
 				ret = py::bool_(PyBool_FromLong(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)))));
 				break;
 			case B_FLOAT_TYPE:
@@ -99,11 +93,11 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				auto seconds_since_epoch = std::chrono::duration_cast<std::chrono::seconds>(timePoint.time_since_epoch()).count();
 				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(seconds_since_epoch);
     			break;
-				/*
-				bigtime_t timeValue=*reinterpret_cast<bigtime_t*>(tmp);
-				std::chrono::system_clock::time_point timePoint = std::chrono::system_clock::from_time_t(timeValue / 1000000);
-				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(std::chrono::system_clock::to_time_t(timePoint));
-				break;*/
+				
+				//bigtime_t timeValue=*reinterpret_cast<bigtime_t*>(tmp);
+				//std::chrono::system_clock::time_point timePoint = std::chrono::system_clock::from_time_t(timeValue / 1000000);
+				//ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(std::chrono::system_clock::to_time_t(timePoint));
+				//break;
 			}
 			case B_RAW_TYPE:{
 				ret = py::bytes(reinterpret_cast<const char*>(tmp), length);
@@ -119,7 +113,70 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		return ret;
 		//return py::reinterpret_steal<py::object>(ret);
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
-
+*/
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->std::pair<py::object,ssize_t>{
+		void* tmp = malloc(length);
+		if (tmp == nullptr){
+			throw std::runtime_error("Error allocating memory");
+		}
+		ssize_t result = self.ReadAttr(name, type, offset, tmp, length);
+		//if (result < 0) {
+		//	free(tmp);
+		//	throw std::runtime_error("Error calling ReadAttr");
+		//}
+		py::object ret;
+		switch (type) {
+			//test Int64 for reinterpretation in int32*
+			case B_INT64_TYPE:
+			case B_INT32_TYPE:
+			case B_INT16_TYPE:
+			case B_INT8_TYPE:
+				ret = py::int_(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp))));
+				break;
+			case B_STRING_TYPE:
+			case B_MIME_STRING_TYPE:
+			case B_ASCII_TYPE:
+				ret = py::str(static_cast<const char*>(tmp));
+				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
+				break;
+			case B_BOOL_TYPE:
+				ret = py::bool_(PyBool_FromLong(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)))));
+				break;
+			case B_FLOAT_TYPE:
+				ret = py::float_(*reinterpret_cast<float*>(tmp));
+				break;
+			case B_DOUBLE_TYPE:
+				ret = py::float_(*reinterpret_cast<double*>(tmp));
+				break;
+			case B_TIME_TYPE:{
+				//bigtime_t timeValue = *reinterpret_cast<bigtime_t*>(tmp);
+				time_t timeValue = *reinterpret_cast<time_t*>(tmp);
+				std::chrono::system_clock::time_point timePoint =
+				std::chrono::system_clock::time_point(std::chrono::seconds(timeValue)); //this was microseconds
+				// Calcola il tempo trascorso dalla mezzanotte del 1 gennaio 1970 in secondi
+				auto seconds_since_epoch = std::chrono::duration_cast<std::chrono::seconds>(timePoint.time_since_epoch()).count();
+				ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(seconds_since_epoch);
+    			break;
+				
+				//bigtime_t timeValue=*reinterpret_cast<bigtime_t*>(tmp);
+				//std::chrono::system_clock::time_point timePoint = std::chrono::system_clock::from_time_t(timeValue / 1000000);
+				//ret = py::module::import("datetime").attr("datetime").attr("fromtimestamp")(std::chrono::system_clock::to_time_t(timePoint));
+				//break;
+			}
+			case B_RAW_TYPE:{
+				ret = py::bytes(reinterpret_cast<const char*>(tmp), length);
+				break;
+			}
+			default:
+				ret = py::bytes(reinterpret_cast<const char*>(tmp), length);
+				//ret = py::bytes(static_cast<const char*>(tmp));
+				//py::none();
+				break;
+		}
+		free(tmp);
+		return std::make_pair(ret,result);
+		//return py::reinterpret_steal<py::object>(ret);
+}, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
 //.def("RenameAttr", py::overload_cast<const char *,const char *>(&BNode::RenameAttr), "", py::arg("oldName"), py::arg("newName"))
 .def("RenameAttr", &BNode::RenameAttr, "", py::arg("oldName"), py::arg("newName"))
@@ -131,6 +188,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
     return {result, info};
 }, "", py::arg("name"))
 */
+/*
 .def("GetAttrInfo", [](BNode& self, const char* attr, struct attr_info* info){
 	status_t result = self.GetAttrInfo(attr, info);
 	if (result == 0) {
@@ -138,6 +196,16 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 	} else {
 		throw std::runtime_error("Errore durante la chiamata a GetAttrInfo");
 	}
+}, py::arg("attr"), py::arg("info")=attr_info())
+*/
+.def("GetAttrInfo", [](BNode& self, const char* attr, struct attr_info* info)->std::pair<attr_info*, status_t>{
+	status_t result = self.GetAttrInfo(attr, info);
+	//if (result == 0) {
+	//	return *info;
+	//} else {
+	//	throw std::runtime_error("Errore durante la chiamata a GetAttrInfo");
+	//}
+	return std::make_pair(info,result);
 }, py::arg("attr"), py::arg("info")=attr_info())
 //.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
 //.def("GetNextAttrName", py::overload_cast<char *>(&BNode::GetNextAttrName), "",py::arg("buffer"))

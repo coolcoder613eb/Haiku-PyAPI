@@ -153,7 +153,9 @@ class Window(BWindow):
 		self.sevenradio = BRadioButton(BRect(8,240,28,260),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
 		scrn = BScreen(self)
-		img1 = scrn.GetBitmap(True,BRect(0,0,200,200))
+		outimg = scrn.GetBitmap(True,BRect(0,0,200,200))
+		if not outimg[1]:
+			img1 = outimg[0]
 		
 		
 		print(img1.Bits())
@@ -161,7 +163,7 @@ class Window(BWindow):
 		print(img1.BitsLength())
 		img2=BBitmap(self.panel2.Bounds(),color_space.B_RGBA32)
 		#img2.ImportBits(img1)
-		img2 = scrn.GetBitmap(True,self.panel3.Bounds())
+		img2 = scrn.GetBitmap(True,self.panel3.Bounds())[0]
 		#self.panel3 = PView(self.Bounds(), "panel3",img2)
 		#link=sys.path[0]+"/help/minusmine.bmp"
 		#img=BTranslationUtils.GetBitmap(link)
