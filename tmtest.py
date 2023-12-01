@@ -1,5 +1,5 @@
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton, BTextView, BButton
+from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -21,12 +21,14 @@ class PBut(BButton):
 		BButton.__init__(self, frame, name, caption, msg)
 
 	def Draw(self,rect):
-		BButton.Draw(self, rect)
-		inset = (4, 4, self.frame.Width()-4, self.frame.Heigth()-4)
+		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Heigth()-4)
 		if self.Value():
+			print("disegno su")
 			self.DrawBitmap(self.immagine, inset)
 		else:
+			print("disegno GIù")
 			self.DrawBitmap(self.imgdown, inset)
+		BButton.Draw(self, rect)
 
 class StrangeItem(BStringItem):
 	nocolor = (0, 0, 0, 0)
@@ -104,6 +106,7 @@ class Window(BWindow):
 		print(bounds.LeftTop())
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
+		self.panel3 = BView(self.Bounds(), "panel3", 8, 20000000)
 		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
@@ -124,13 +127,17 @@ class Window(BWindow):
 		self.sixradio = BRadioButton(BRect(8,220,28,240),'hotradio', 'hot', BMessage(6))
 		self.sevenradio = BRadioButton(BRect(8,240,28,260),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
-		
+		scrn = BScreen(self)
+		img1 = scrn.GetBitmap(True,BRect(0,0,200,200))
+		print(img1)
+		print(img1.BitsLength())
+		print(img1.Bits())
 		#link=sys.path[0]+"/help/minusmine.bmp"
 		#img=BTranslationUtils.GetBitmap(link)
 		#link2=sys.path[0]+"/help/minusmined.bmp"
 		#img2=BTranslationUtils.GetBitmap(link2)
-		#self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(AppDefs.B_QUIT_REQUESTED),img2,img)
-
+		self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img1)#img2,img)AppDefs.B_QUIT_REQUESTED
+		
 		# Handling colors##################
 		#colore=self.list.lv.HighColor()
 		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
@@ -176,6 +183,7 @@ class Window(BWindow):
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
 		self.panel.AddChild(self.nineradio,None)
+		self.panel.AddChild(self.fadBtn,None)
 		self.panel.AddChild(butupdown,None)
 		self.panel.AddChild(self.cc,None)
 		self.panel.AddChild(self.startimer,None)
@@ -194,22 +202,27 @@ class Window(BWindow):
 		self.tabsviews=[]
 		self.tabsviews.append(self.panel)
 		self.tabsviews.append(self.panel2)
-		
+		self.tabsviews.append(self.panel3)
 		
 		tabrect=BRect(3.0, 3.0, 30.0, self.maintabview.TabHeight()-3.0)
 		scheda=BTab(None)
 		#scheda.SetLabel("Principale") <--- works after maintabview.AddTab
 		scheda2=BTab(None)
+		scheda3=BTab(None)
 		self.tabslabels.append(scheda)
 		self.tabslabels.append(scheda2)
+		self.tabslabels.append(scheda3)
 		
 		self.maintabview.AddTab(self.tabsviews[0],self.tabslabels[0])
 		self.maintabview.AddTab(self.tabsviews[1],self.tabslabels[1])
+		self.maintabview.AddTab(self.tabsviews[2],self.tabslabels[2])
 
 		self.bckgnd.AddChild(self.maintabview,None)
 		scheda.SetLabel("Principale")
 		scheda2.SetLabel("Scrittura")
-
+		scheda3.SetLabel("Draw Bitmap")
+		
+		self.panel3.DrawBitmap(img1)
 		from Be.Font import be_plain_font
 		from Be.Font import be_bold_font
 		#from Be.View import set_font_mask		

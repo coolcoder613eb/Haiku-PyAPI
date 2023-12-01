@@ -40,7 +40,20 @@ py::class_<BBitmap, BArchivable>(m, "BBitmap")
 .def("LockBits", &BBitmap::LockBits, "", py::arg("state")=NULL)
 .def("UnlockBits", &BBitmap::UnlockBits, "")
 .def("Area", &BBitmap::Area, "")
-.def("Bits", &BBitmap::Bits, "")
+//.def("Bits", &BBitmap::Bits, "")
+//.def("Bits", py::overload_cast<>(&BBitmap::Bits, py::const_),"")
+
+.def("Bits", [](BBitmap& self)->py::bytes{
+		size_t dataSize = self.BitsLength();
+		const uint8_t* data = static_cast<const uint8_t*>(self.Bits());
+		//int32* lung = self.BitsLength();
+		//void* tmp = malloc(lung);
+		//if (tmp == nullptr){
+		//	throw std::runtime_error("Error allocating memory");
+		//}
+		return py::bytes(reinterpret_cast<const char*>(data), dataSize);
+	}
+)
 .def("BitsLength", &BBitmap::BitsLength, "")
 .def("BytesPerRow", &BBitmap::BytesPerRow, "")
 .def("ColorSpace", &BBitmap::ColorSpace, "")
