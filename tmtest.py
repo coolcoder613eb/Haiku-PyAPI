@@ -37,6 +37,7 @@ class PBut(BButton):
 		BButton.__init__(self, frame, name, caption, msg)
 
 	def Draw(self,rect):
+		BButton.Draw(self, rect)
 		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Height()-4)
 		if self.Value():
 			print("disegno su")
@@ -44,7 +45,7 @@ class PBut(BButton):
 		else:
 			print("disegno GIù")
 			self.DrawBitmap(self.imgdown, inset)
-		BButton.Draw(self, rect)
+		
 
 class StrangeItem(BStringItem):
 	nocolor = (0, 0, 0, 0)
