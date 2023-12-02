@@ -54,10 +54,8 @@ class PBut(BButton):
 		BButton.Draw(self, rect)
 		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Height()-4)
 		if self.Value():
-			print("disegno su")
 			self.DrawBitmap(self.immagine, inset)
 		else:
-			print("disegno GIù")
 			self.DrawBitmap(self.imgdown, inset)
 		
 

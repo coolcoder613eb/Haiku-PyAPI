@@ -12,8 +12,120 @@
 #include <Font.h>
 
 namespace py = pybind11;
-//py::list convertBListItemsToPythonList(BListItem** items);
-//py::list convertBListItemsToPythonList(const BListItem* const* items);
+
+class PyBListView : public BListView{
+	public:
+        using BListView::BListView;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BListView, Archive, data, deep);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BListView, WindowActivated, active);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BListView, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BListView, DetachedFromWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BListView, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BListView, AllDetached);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BListView, MessageReceived, message);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BListView, KeyDown, bytes, numBytes);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BListView, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BListView, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BListView, MouseMoved, where, code, dragMessage);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BListView, ResizeToPreferred);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BListView, GetPreferredSize, _width, _height);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BListView, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BListView, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BListView, PreferredSize);
+        }
+        void				MakeFocus(bool state = true) override {
+            PYBIND11_OVERLOAD(void, BListView, MakeFocus, state);
+        }
+        void				SetFont(const BFont* font, uint32 mask = B_FONT_ALL) override {
+            PYBIND11_OVERLOAD(void, BListView, SetFont, font, mask);
+        }
+        void				ScrollTo(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BListView, ScrollTo, where);
+        }
+        bool				AddItem(BListItem* item) override {
+            PYBIND11_OVERLOAD(bool, BListView, AddItem, item);
+        }
+        bool				AddItem(BListItem* item, int32 atIndex) override {
+            PYBIND11_OVERLOAD(bool, BListView, AddItem, item, atIndex);
+        }
+        bool				AddList(BList* newItems) override {
+            PYBIND11_OVERLOAD(bool, BListView, AddList, newItems);
+        }
+        bool				AddList(BList* newItems, int32 atIndex) override {
+            PYBIND11_OVERLOAD(bool, BListView, AddList, newItems, atIndex);
+        }
+        bool				RemoveItem(BListItem* item) override {
+            PYBIND11_OVERLOAD(bool, BListView, RemoveItem, item);
+        }
+        BListItem*			RemoveItem(int32 index) override {
+            PYBIND11_OVERLOAD(BListItem*, BListView, RemoveItem, index);
+        }
+        bool				RemoveItems(int32 index, int32 count) override {
+            PYBIND11_OVERLOAD(bool, BListView, RemoveItems, index, count);
+        }
+        void				SetSelectionMessage(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BListView, SetSelectionMessage, message);
+        }
+        void				SetInvocationMessage(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BListView, SetInvocationMessage, message);
+        }
+        void				SetListType(list_view_type type) override {
+            PYBIND11_OVERLOAD(void, BListView, SetListType, type);
+        }
+        void				MakeEmpty() override {
+            PYBIND11_OVERLOAD(void, BListView, MakeEmpty);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+            PYBIND11_OVERLOAD(status_t, BListView, Invoke, message);
+        }
+        void				SelectionChanged() override {
+            PYBIND11_OVERLOAD(void, BListView, SelectionChanged);
+        }
+        bool				InitiateDrag(BPoint where, int32 index, bool wasSelected) override {
+            PYBIND11_OVERLOAD(bool, BListView, InitiateDrag, where, index, wasSelected);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BListView, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BListView, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code code, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BListView, Perform, code, arg);
+        }
+};
+
 py::list convertBListItemsToPythonList(const BListItem* const* items, long count) {
     py::list result;
 
