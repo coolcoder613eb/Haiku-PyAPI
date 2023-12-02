@@ -18,11 +18,22 @@ namespace py = pybind11;
 class PyBListItem : public BListItem {
 public:
     using BListItem::BListItem;
-
-    void DrawItem(BView* owner, BRect itemRect, bool drawEverything) override {
+    status_t			Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BListItem, Archive, archive, deep);
+        }
+    void				SetEnabled(bool enabled) override {
+            PYBIND11_OVERLOAD(void, BListItem, SetEnabled, enabled);
+        }
+    void 				DrawItem(BView* owner, BRect itemRect, bool drawEverything) override {
         PYBIND11_OVERLOAD_PURE(void, BListItem, DrawItem, owner, itemRect, drawEverything);
     }
-
+    void				Update(BView* owner, const BFont* font) override {
+            PYBIND11_OVERLOAD(void, BListItem, Update, owner, font);
+        }
+    status_t			Perform(perform_code code, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BListItem, Perform, code, arg);
+        }
+    
 private:
     BListItem* item_;
 };
