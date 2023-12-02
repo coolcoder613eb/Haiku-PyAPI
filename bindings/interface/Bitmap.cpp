@@ -10,6 +10,22 @@
 #include <View.h>
 
 namespace py = pybind11;
+/*
+class PyBitmap : public BBitmap{
+	public:
+        using BBitmap::BBitmap;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BBitmap, Archive, data, deep);
+        }
+        void		AddChild(BView* view) override {
+        	PYBIND11_OVERLOAD(void, BBitmap, AddChild, view);
+        }
+        bool		RemoveChild(BView* view) override {
+        	PYBIND11_OVERLOAD(bool, BBitmap, RemoveChild, view);
+        }
+};
+*/
+
 using namespace BPrivate;
 
 PYBIND11_MODULE(Bitmap,m)
