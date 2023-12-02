@@ -12,6 +12,78 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBControl : public BControl{
+	public:
+        using BControl::BControl;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BControl, Archive, data, deep);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BControl, WindowActivated, active);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BControl, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BControl, DetachedFromWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BControl, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BControl, AllDetached);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BControl, MessageReceived, message);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BControl, MakeFocus, focus);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BControl, KeyDown, bytes, numBytes);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BControl, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BControl, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BControl, MouseMoved, where, code, dragMessage);
+        }
+        void				SetLabel(const char* string) override {
+            PYBIND11_OVERLOAD(void, BControl, SetLabel, string);
+        }
+        void				SetValue(int32 value) override {
+            PYBIND11_OVERLOAD(void, BControl, SetValue, value);
+        }
+        void				SetEnabled(bool enabled) override {
+            PYBIND11_OVERLOAD(void, BControl, SetEnabled, enabled);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BControl, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BControl, ResizeToPreferred);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+            PYBIND11_OVERLOAD(status_t, BControl, Invoke, message);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BControl, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* message) override {
+            PYBIND11_OVERLOAD(status_t, BControl, GetSupportedSuites, message);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BControl, Perform, d, arg);
+        }
+        status_t			SetIcon(const BBitmap* bitmap, uint32 flags = 0) override {
+            PYBIND11_OVERLOAD(status_t, BControl, SetIcon, bitmap, flags);
+        }
+};
+
+
 PYBIND11_MODULE(Control,m)
 {
 m.attr("B_CONTROL_OFF") = 0;
@@ -20,7 +92,7 @@ m.attr("B_CONTROL_PARTIALLY_ON") = 2;
 
 //m.attr("BIcon") = BIcon;
 
-py::class_<BControl, BView, BInvoker>(m, "BControl")
+py::class_<BControl, PyBControl, BView, BInvoker>(m, "BControl")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("data"))
