@@ -13,6 +13,28 @@
 
 namespace py = pybind11;
 
+class PyBAlert : public BAlert{
+	public:
+        using BAlert::BAlert;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BAlert, Archive, data, deep);
+        }
+        void		MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BAlert, MessageReceived, message);
+        }
+        void		FrameResized(float newWidth, float newHeight) override {
+        	PYBIND11_OVERLOAD(void, BAlert, FrameResized, newWidth, newHeight);
+        }
+        BHandler*	ResolveSpecifier(BMessage* message, int32 index,
+									BMessage* specifier, int32 form,
+									const char* property) override {
+			PYBIND11_OVERLOAD(BHandler*, BAlert, ResolveSpecifier, message, index, specifier, form, property);
+		}
+		status_t	GetSupportedSuites(BMessage* data) override {
+			PYBIND11_OVERLOAD(status_t, BAlert, GetSupportedSuites, data);
+		}
+};
+
 
 PYBIND11_MODULE(Alert,m)
 {
