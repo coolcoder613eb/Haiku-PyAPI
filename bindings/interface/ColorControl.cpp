@@ -103,7 +103,7 @@ py::enum_<color_control_layout>(m, "color_control_layout", "")
 .value("B_CELLS_64x4", color_control_layout::B_CELLS_64x4, "")
 .export_values();
 
-py::class_<BColorControl, BControl,std::unique_ptr<BColorControl, py::nodelete>>(m, "BColorControl")
+py::class_<BColorControl, PyBColorControl, BControl,std::unique_ptr<BColorControl, py::nodelete>>(m, "BColorControl")
 .def(py::init<BPoint, color_control_layout, float, const char *, BMessage *, bool>(), "", py::arg("start"), py::arg("layout"), py::arg("cellSize"), py::arg("name"), py::arg("message")=NULL, py::arg("useOffscreen")=false)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BColorControl::Instantiate, "", py::arg("data"))
