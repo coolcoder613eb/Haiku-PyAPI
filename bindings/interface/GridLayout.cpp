@@ -11,10 +11,38 @@
 
 namespace py = pybind11;
 
+class PyBGridLayout : public BGridLayout{
+	public:
+        using BGridLayout::BGridLayout;
+        BLayoutItem*		AddView(BView* child) override {
+            PYBIND11_OVERLOAD(BLayoutItem*, BGridLayout, AddView, child);
+        }
+        BLayoutItem*		AddView(int32 index, BView* child) override {
+            PYBIND11_OVERLOAD(BLayoutItem*, BGridLayout, AddView, index, child);
+        }
+        BLayoutItem*		AddView(BView* child, int32 column, int32 row, int32 columnCount = 1, int32 rowCount = 1) override {
+            PYBIND11_OVERLOAD(BLayoutItem*, BGridLayout, AddView, child, column, row, columnCount, rowCount);
+        }
+        bool				AddItem(BLayoutItem* item) override {
+            PYBIND11_OVERLOAD(bool, BGridLayout, AddItem, item);
+        }
+        bool				AddItem(int32 index, BLayoutItem* item) override {
+            PYBIND11_OVERLOAD(bool, BGridLayout, AddItem, index, item);
+        }
+        bool				AddItem(BLayoutItem* item, int32 column, int32 row, int32 columnCount = 1, int32 rowCount = 1) override {
+            PYBIND11_OVERLOAD(bool, BGridLayout, AddItem, item, column, row, columnCount, rowCount);
+        }
+        status_t			Archive(BMessage* into, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BGridLayout, Archive, into, deep);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BGridLayout, Perform, d, arg);
+        }
+};
 
 PYBIND11_MODULE(GridLayout,m)
 {
-py::class_<BGridLayout, BTwoDimensionalLayout, std::unique_ptr<BGridLayout,py::nodelete>>(m, "BGridLayout")
+py::class_<BGridLayout, PyBGridLayout, BTwoDimensionalLayout, std::unique_ptr<BGridLayout,py::nodelete>>(m, "BGridLayout")
 // ImportError: arg(): could not convert default argument 'horizontal: ._anon_253' in method '<class 'Be.GridLayout.BGridLayout'>.__init__' into a Python object (type not registered yet?)
 .def(py::init<float, float>(), "", py::arg("horizontal")=py::int_(-1002), py::arg("vertical")=py::int_(-1002))
 .def(py::init<BMessage *>(), "", py::arg("from"))
