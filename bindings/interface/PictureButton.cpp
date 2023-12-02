@@ -10,6 +10,94 @@
 
 namespace py = pybind11;
 
+class PyBPictureButton : public BPictureButton{
+	public:
+        using BPictureButton::BPictureButton;
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BPictureButton, Archive, archive, deep);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BPictureButton, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BPictureButton, DetachedFromWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BPictureButton, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BPictureButton, AllDetached);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BPictureButton, ResizeToPreferred);
+        }
+        void				GetPreferredSize(float* _width,float* _height) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, GetPreferredSize, _width, _height);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, FrameResized, newWidth, newHeight);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, WindowActivated, active);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, MakeFocus, focus);
+        }
+        void				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, Draw, updateRect);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, MessageReceived, message);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, KeyDown, bytes, numBytes);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BPictureButton, MouseMoved, where, code, dragMessage);
+        }
+        void				SetEnabledOn(BPicture* picture) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetEnabledOn, picture);
+        }
+        void				SetEnabledOff(BPicture* picture) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetEnabledOff, picture);
+        }
+        void				SetDisabledOn(BPicture* picture) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetDisabledOn, picture);
+        }
+        void				SetDisabledOff(BPicture* picture) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetDisabledOff, picture);
+        }
+        void				SetBehavior(uint32 behavior) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetBehavior, behavior);
+        }
+        void				SetValue(int32 value) override {
+            PYBIND11_OVERLOAD(void, BPictureButton, SetValue, value);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+            PYBIND11_OVERLOAD(status_t, BPictureButton, Invoke, message);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BPictureButton, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BPictureButton, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code code, void* data) override {
+            PYBIND11_OVERLOAD(status_t, BPictureButton, Perform, code, data);
+        }
+        status_t			SetIcon(const BBitmap* icon, uint32 flags = 0) override {
+            PYBIND11_OVERLOAD(status_t, BPictureButton, SetIcon, icon, flags);
+        }
+};
 
 PYBIND11_MODULE(PictureButton,m)
 {
@@ -20,7 +108,7 @@ py::enum_<picture_button_behavior>(m, "picture_button_behavior", "")
 .value("B_TWO_STATE_BUTTON", picture_button_behavior::B_TWO_STATE_BUTTON, "")
 .export_values();
 
-py::class_<BPictureButton, BControl,std::unique_ptr<BPictureButton, py::nodelete>>(m, "BPictureButton")
+py::class_<BPictureButton, PyBPictureButton, BControl,std::unique_ptr<BPictureButton, py::nodelete>>(m, "BPictureButton")
 .def(py::init<BRect, const char *, BPicture *, BPicture *, BMessage *, unsigned int, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("off"), py::arg("on"), py::arg("message"), py::arg("behavior")=B_ONE_STATE_BUTTON, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flgs")=B_WILL_DRAW | B_NAVIGABLE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BPictureButton::Instantiate, "", py::arg("archive"))
