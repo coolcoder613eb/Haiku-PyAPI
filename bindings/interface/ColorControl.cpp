@@ -10,6 +10,88 @@
 
 namespace py = pybind11;
 
+class PyBColorControl : public BColorControl{
+	public:
+        using BColorControl::BColorControl;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BColorControl, Archive, data, deep);
+        }
+        void				SetLayout(BLayout* layout) override {
+            PYBIND11_OVERLOAD(void, BColorControl, SetLayout, layout);
+        }
+        void				SetValue(int32 color_value) override {
+            PYBIND11_OVERLOAD(void, BColorControl, SetValue, color_value);
+        }
+        void				SetEnabled(bool state) override {
+            PYBIND11_OVERLOAD(void, BColorControl, SetEnabled, state);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BColorControl, AttachedToWindow);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BColorControl, MessageReceived, message);
+        }
+        void				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BColorControl, Draw, updateRect);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BColorControl, MouseDown, where);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BColorControl, KeyDown, bytes, numBytes);
+        }
+        void				SetCellSize(float size) override {
+            PYBIND11_OVERLOAD(void, BColorControl, SetCellSize, size);
+        }
+        void				SetLayout(color_control_layout layout) override {
+            PYBIND11_OVERLOAD(void, BColorControl, SetLayout, layout);
+        }
+        void				WindowActivated(bool state) override {
+            PYBIND11_OVERLOAD(void, BColorControl, WindowActivated, state);
+        }
+        void				MouseUp(BPoint point) override {
+            PYBIND11_OVERLOAD(void, BColorControl, MouseUp, point);
+        }
+        void				MouseMoved(BPoint point, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BColorControl, MouseMoved, point, code, dragMessage);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BColorControl, DetachedFromWindow);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BColorControl, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BColorControl, ResizeToPreferred);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+            PYBIND11_OVERLOAD(status_t, BColorControl, Invoke, message);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BColorControl, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BColorControl, FrameResized, newWidth, newHeight);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BColorControl, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BColorControl, GetSupportedSuites, data);
+        }
+        void				MakeFocus(bool focused = true) override {
+            PYBIND11_OVERLOAD(void, BColorControl, MakeFocus, focused);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BColorControl, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BColorControl, AllDetached);
+        }
+        status_t			SetIcon(const BBitmap* icon, uint32 flags = 0) override {
+            PYBIND11_OVERLOAD(status_t, BColorControl, SetIcon, icon, flags);
+        }
+};
 
 PYBIND11_MODULE(ColorControl,m)
 {
