@@ -156,7 +156,7 @@ py::enum_<list_view_type>(m, "list_view_type", "")
 .value("B_MULTIPLE_SELECTION_LIST", list_view_type::B_MULTIPLE_SELECTION_LIST, "")
 .export_values();
 
-py::class_<BListView, BView, BInvoker,std::unique_ptr<BListView, py::nodelete>>(m, "BListView")
+py::class_<BListView, PyBListView, BView, BInvoker,std::unique_ptr<BListView, py::nodelete>>(m, "BListView")
 .def(py::init<BRect, const char *, list_view_type, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("type")=B_SINGLE_SELECTION_LIST, py::arg("resizeMask")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<const char *, list_view_type, unsigned int>(), "", py::arg("name"), py::arg("type")=B_SINGLE_SELECTION_LIST, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<list_view_type>(), "", py::arg("type")=B_SINGLE_SELECTION_LIST)

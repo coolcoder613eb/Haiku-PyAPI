@@ -12,6 +12,89 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBMenu : public BMenu{
+	public:
+        using BMenu::BMenu;
+        status_t	Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BMenu, Archive, archive, deep);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BMenu, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BMenu, DetachedFromWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BMenu, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BMenu, AllDetached);
+        }
+        void 		Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BMenu, Draw, updateRect);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BMenu, MessageReceived, message);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BMenu, KeyDown, bytes, numBytes);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BMenu, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BMenu, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BMenu, PreferredSize);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BMenu, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BMenu, ResizeToPreferred);
+        }
+        void				DoLayout() override {
+            PYBIND11_OVERLOAD(void, BMenu, DoLayout);
+        }
+        void				FrameMoved(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BMenu, FrameMoved, where);
+        }
+        void				FrameResized(float width, float height) override {
+            PYBIND11_OVERLOAD(void, BMenu, FrameResized, width, height);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BMenu, MakeFocus, focus);
+        }
+        status_t			SetTargetForItems(BHandler* target) override {
+            PYBIND11_OVERLOAD(status_t, BMenu, SetTargetForItems, target);
+        }
+        status_t			SetTargetForItems(BMessenger messenger) override {
+            PYBIND11_OVERLOAD(status_t, BMenu, SetTargetForItems, messenger);
+        }
+        void				SetEnabled(bool enable) override {
+            PYBIND11_OVERLOAD(void, BMenu, SetEnabled, enable);
+        }
+        void				SetRadioMode(bool on) override {
+            PYBIND11_OVERLOAD(void, BMenu, SetRadioMode, on);
+        }
+        void				SetTriggersEnabled(bool enable) override {
+            PYBIND11_OVERLOAD(void, BMenu, SetTriggersEnabled, enable);
+        }
+        void				SetMaxContentWidth(float maxWidth) override {
+            PYBIND11_OVERLOAD(void, BMenu, SetMaxContentWidth, maxWidth);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BMenu, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BMenu, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BMenu, Perform, d, arg);
+        }
+};
+
 PYBIND11_MODULE(Menu,m)
 {
 py::enum_<menu_layout>(m, "menu_layout", "")
@@ -38,7 +121,7 @@ py::class_<menu_info>(m, "menu_info")
 .def_readwrite("triggers_always_shown", &menu_info::triggers_always_shown, "")
 ;
 
-py::class_<BMenu, BView, std::unique_ptr<BMenu, py::nodelete>>(m, "BMenu")
+py::class_<BMenu, PyBMenu, BView, std::unique_ptr<BMenu, py::nodelete>>(m, "BMenu")
 .def(py::init<const char *, menu_layout>(), "", py::arg("name"), py::arg("layout")=B_ITEMS_IN_COLUMN)
 .def(py::init<const char *, float, float>(), "", py::arg("name"), py::arg("width"), py::arg("height"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))
