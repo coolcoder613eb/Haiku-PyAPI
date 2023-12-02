@@ -15,11 +15,16 @@ class card:
 def attr(node):
 	al = []
 	while 1:
-		try:
-			atri=str("")
-			a = node.GetNextAttrName()
-		except:
-			a = None #no more attributes
+		#try:
+			#atri=str("")
+			#a = node.GetNextAttrName()
+		#except:
+		#	a = None #no more attributes
+		an = node.GetNextAttrName()
+		if not an[1]:
+			a = an[0]
+		else:
+			a = None
 		if a is None:
 			node.RewindAttrs()
 			break
@@ -27,7 +32,6 @@ def attr(node):
 			# you can do this way:
 			#tmp = attr_info()
 			#nfo = node.GetAttrInfo(a,tmp)
-			#al.append((a,(tmp.type,tmp.size)))
 			# or this way:
 			pnfo = node.GetAttrInfo(a)
 			if not pnfo[1]:

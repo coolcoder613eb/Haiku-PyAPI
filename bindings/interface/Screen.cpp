@@ -34,13 +34,13 @@ py::class_<BScreen>(m, "BScreen")
 .def("InvertIndex", &BScreen::InvertIndex, "", py::arg("index"))
 .def("ColorMap", &BScreen::ColorMap, "")
 //.def("GetBitmap", &BScreen::GetBitmap, "", py::arg("_bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
-.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> std::pair<BBitmap*,status_t> {
+.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> std::tuple<BBitmap*,status_t> {
             BBitmap* buffer = new BBitmap(*frame,B_RGBA32);
             status_t result = self.GetBitmap(&buffer,drawCursor,frame);
             //if (result != B_OK) {
             //    throw std::runtime_error("Errore durante la chiamata a GetBitmap");
             //}
-            return std::make_pair(buffer,result);
+            return std::make_tuple(buffer,result);
         }, py::arg("drawCursor")=true, py::arg("frame")=NULL)
 /*
 .def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> BBitmap* {
@@ -64,7 +64,7 @@ py::class_<BScreen>(m, "BScreen")
 .def("SetDesktopColor", py::overload_cast<rgb_color, unsigned int32, bool>(&BScreen::SetDesktopColor), "", py::arg("color"), py::arg("workspace"), py::arg("stick")=true)
 .def("ProposeMode", &BScreen::ProposeMode, "", py::arg("target"), py::arg("low"), py::arg("high"))
 //.def("GetModeList", &BScreen::GetModeList, "", py::arg("_modeList"), py::arg("_count"))
-.def("GetModeList", [](BScreen& self, uint32 _count) -> std::pair<std::vector<display_mode>, status_t>{
+.def("GetModeList", [](BScreen& self, uint32 _count) -> std::tuple<std::vector<display_mode>, status_t>{
             // Chiamare la funzione originale
             // uint32 _count; <- removed as passed by argument
             display_mode* _modeList;
@@ -81,7 +81,7 @@ py::class_<BScreen>(m, "BScreen")
             // Liberare la memoria allocata da GetModeList
             free(_modeList);
 
-            return std::make_pair(resultVector,result);
+            return std::make_tuple(resultVector,result);
         }
 )
 /*
