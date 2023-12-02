@@ -154,21 +154,23 @@ class Window(BWindow):
 		outimg = scrn.GetBitmap(True,BRect(0,0,200,200))
 		if not outimg[1]:
 			img1 = outimg[0]
-		
-		
-		print(img1.Bits())
-		print(img1.Flags())
-		print(img1.BitsLength())
+			print(img1.Bits())
+			print(img1.Flags())
+			print(img1.BitsLength())
 		img2=BBitmap(self.panel2.Bounds(),color_space.B_RGBA32)
 		#img2.ImportBits(img1)
-		img2 = scrn.GetBitmap(True,self.panel3.Bounds())[0]
+		img2, reto = scrn.GetBitmap(True,self.panel3.Bounds())
+		if not reto:
+			self.PicBox = PBox(self.panel3.Bounds(),"PictureBox",img2)
+			self.panel3.AddChild(self.PicBox,None)
 		#self.panel3 = PView(self.Bounds(), "panel3",img2)
 		#link=sys.path[0]+"/help/minusmine.bmp"
 		#img=BTranslationUtils.GetBitmap(link)
 		#link2=sys.path[0]+"/help/minusmined.bmp"
 		#img2=BTranslationUtils.GetBitmap(link2)
-		self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img2)#img2,img)AppDefs.B_QUIT_REQUESTED
-		self.PicBox = PBox(self.panel3.Bounds(),"PictureBox",img2)
+		if outimg[1]+reto == 0:
+			self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img2)#img2,img)AppDefs.B_QUIT_REQUESTED
+			self.panel.AddChild(self.fadBtn,None)
 		# Handling colors##################
 		#colore=self.list.lv.HighColor()
 		#print("colore è:",colore.red,colore.green,colore.blue,colore.alpha)
@@ -214,7 +216,6 @@ class Window(BWindow):
 		self.panel.AddChild(self.sixradio,None)
 		self.panel.AddChild(self.sevenradio,None)
 		self.panel.AddChild(self.nineradio,None)
-		self.panel.AddChild(self.fadBtn,None)
 		self.panel.AddChild(butupdown,None)
 		self.panel.AddChild(self.cc,None)
 		self.panel.AddChild(self.startimer,None)
@@ -265,7 +266,7 @@ class Window(BWindow):
 		self.panel2.AddChild(self.typtap,None)
 		colore=self.panel.HighColor()
 		#print(colore.red,colore.green,colore.blue,colore.alpha)
-		self.panel3.AddChild(self.PicBox,None)
+		
 		colore.red=180
 		self.typtap.SetFontAndColor(be_plain_font,511,colore)#B_FONT_ALL = 511
 		stuff = '\n\t\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\t\t\t\tZardshard and coolcoder613'
