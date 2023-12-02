@@ -114,7 +114,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		//return py::reinterpret_steal<py::object>(ret);
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
 */
-.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->std::pair<py::object,ssize_t>{
+.def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->std::tuple<py::object,ssize_t>{
 		void* tmp = malloc(length);
 		if (tmp == nullptr){
 			throw std::runtime_error("Error allocating memory");
@@ -174,7 +174,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				break;
 		}
 		free(tmp);
-		return std::make_pair(ret,result);
+		return std::make_tuple(ret,result);
 		//return py::reinterpret_steal<py::object>(ret);
 }, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer")=NULL, py::arg("length"))		
 .def("RemoveAttr", &BNode::RemoveAttr, "", py::arg("name"))
@@ -198,25 +198,29 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 	}
 }, py::arg("attr"), py::arg("info")=attr_info())
 */
-.def("GetAttrInfo", [](BNode& self, const char* attr, struct attr_info* info)->std::pair<attr_info*, status_t>{
+.def("GetAttrInfo", [](BNode& self, const char* attr, struct attr_info* info){
 	status_t result = self.GetAttrInfo(attr, info);
-	//if (result == 0) {
-	//	return *info;
-	//} else {
-	//	throw std::runtime_error("Errore durante la chiamata a GetAttrInfo");
-	//}
-	return std::make_pair(info,result);
+	return std::make_tuple(*info, result);
 }, py::arg("attr"), py::arg("info")=attr_info())
 //.def("GetNextAttrName", &BNode::GetNextAttrName, "",py::arg("buffer"))
 //.def("GetNextAttrName", py::overload_cast<char *>(&BNode::GetNextAttrName), "",py::arg("buffer"))
-.def("GetNextAttrName", [](BNode& self, char* buffer){
+/*.def("GetNextAttrName", [](BNode& self, char* buffer){
 	status_t result = self.GetNextAttrName(buffer);
 	if (result == 0) {
 		return std::string(buffer);
 	} else {
 		throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
 	}
-}, py::arg("buffer")="")//, py::return_value_policy::reference_internal
+}, py::arg("buffer")="")//, py::return_value_policy::reference_internal*/
+.def("GetNextAttrName", [](BNode& self, char* buffer){
+	status_t result = self.GetNextAttrName(buffer);
+	//if (result == 0) {
+	//	return std::string(buffer);
+	//} else {
+	//	throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
+	//}
+	return std::make_tuple(std::string(buffer),result);
+}, py::arg("buffer")="")
 .def("RewindAttrs", &BNode::RewindAttrs, "")
 .def("WriteAttrString", &BNode::WriteAttrString, "", py::arg("name"), py::arg("data"))
 .def("ReadAttrString", &BNode::ReadAttrString, "", py::arg("name"), py::arg("result"))
