@@ -5,16 +5,13 @@
 
 #include <interface/Shape.h>
 #include <Archivable.h>
+#include <Point.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
 PYBIND11_MODULE(Shape,m)
 {
-m.attr("ServerLink") = ServerLink;
-
-m.attr("PicturePlayer") = PicturePlayer;
-
 py::class_<BShapeIterator>(m, "BShapeIterator")
 .def(py::init(), "")
 .def("IterateMoveTo", &BShapeIterator::IterateMoveTo, "", py::arg("point"))
@@ -48,11 +45,14 @@ py::class_<BShape, BArchivable>(m, "BShape")
 .def("AddShape", &BShape::AddShape, "", py::arg("other"))
 .def("MoveTo", &BShape::MoveTo, "", py::arg("point"))
 .def("LineTo", &BShape::LineTo, "", py::arg("linePoint"))
-.def("BezierTo", py::overload_cast<BPoint>(&BShape::BezierTo), "", py::arg("controlPoints"))
+.def("BezierTo", py::overload_cast<BPoint[3]>(&BShape::BezierTo), "", py::arg("controlPoints"))
 .def("BezierTo", py::overload_cast<const BPoint &, const BPoint &, const BPoint &>(&BShape::BezierTo), "", py::arg("control1"), py::arg("control2"), py::arg("endPoint"))
 .def("ArcTo", &BShape::ArcTo, "", py::arg("rx"), py::arg("ry"), py::arg("angle"), py::arg("largeArc"), py::arg("counterClockWise"), py::arg("point"))
 .def("Close", &BShape::Close, "")
 ;
 
+//m.attr("ServerLink") = ServerLink;
+
+//m.attr("PicturePlayer") = PicturePlayer;
 
 }
