@@ -31,8 +31,141 @@ using namespace BPrivate;
 class PyBView : public BView{
 	public:
         using BView::BView;
-        void Draw(BRect updateRect) override {
+        
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BView, Archive, archive, deep);
+        }
+        status_t			AllUnarchived(const BMessage* archive) override {
+            PYBIND11_OVERLOAD(status_t, BView, AllUnarchived, archive);
+        }
+        status_t			AllArchived(BMessage* archive) const override {
+            PYBIND11_OVERLOAD(status_t, BView, AllArchived, archive);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BView, AttachedToWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BView, MessageReceived, message);
+        }
+        void 				Draw(BRect updateRect) override {
             PYBIND11_OVERLOAD(void, BView, Draw, updateRect);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+            PYBIND11_OVERLOAD(void, BView, MouseMoved, where, code, dragMessage);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BView, WindowActivated, active);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BView, KeyDown, bytes, numBytes);
+        }
+        void				KeyUp(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BView, KeyUp, bytes, numBytes);
+        }
+        void				Pulse() override {
+            PYBIND11_OVERLOAD(void, BView, Pulse);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BView, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BView, FrameResized, newWidth, newHeight);
+        }
+        void				TargetedByScrollView(BScrollView* scrollView) override {
+            PYBIND11_OVERLOAD(void, BView, TargetedByScrollView, scrollView);
+        }
+        void				ConstrainClippingRegion(BRegion* region) override {
+            PYBIND11_OVERLOAD(void, BView, ConstrainClippingRegion, region);
+        }
+        void				SetDrawingMode(drawing_mode mode) override {
+            PYBIND11_OVERLOAD(void, BView, SetDrawingMode, mode);
+        }
+        void				SetPenSize(float size) override {
+            PYBIND11_OVERLOAD(void, BView, SetPenSize, size);
+        }
+        void				SetViewColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetViewColor, color);
+        }
+        void				SetHighColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetHighColor, color);
+        }
+        void				SetLowColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetLowColor, color);
+        }
+        void				SetFont(const BFont* font, uint32 mask = B_FONT_ALL) override {
+            PYBIND11_OVERLOAD(void, BView, SetFont, font, mask);
+        }
+        void				SetFlags(uint32 flags) override {
+            PYBIND11_OVERLOAD(void, BView, SetFlags, flags);
+        }
+        void				SetResizingMode(uint32 mode) override {
+            PYBIND11_OVERLOAD(void, BView, SetResizingMode, mode);
+        }
+        void				ScrollTo(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, ScrollTo, where);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BView, MakeFocus, focus);
+        }
+        void				Show() override {
+            PYBIND11_OVERLOAD(void, BView, Show);
+        }
+        void				Hide() override {
+            PYBIND11_OVERLOAD(void, BView, Hide);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BView, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BView, ResizeToPreferred);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BView, ResolveSpecifier, message, index, specifier, form, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BView, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code code, void* data) override {
+            PYBIND11_OVERLOAD(status_t, BView, Perform, code, data);
+        }
+        void				DrawAfterChildren(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BView, DrawAfterChildren, updateRect);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, PreferredSize);
+        }
+        BAlignment			LayoutAlignment() override {
+            PYBIND11_OVERLOAD(BAlignment, BView, LayoutAlignment);
+        }
+        bool				HasHeightForWidth() override {
+            PYBIND11_OVERLOAD(bool, BView, HasHeightForWidth);
+        }
+        void				GetHeightForWidth(float width, float* min, float* max, float* preferred) override {
+            PYBIND11_OVERLOAD(void, BView, GetHeightForWidth, width, min, max, preferred);
+        }
+        void				SetLayout(BLayout* layout) override {
+            PYBIND11_OVERLOAD(void, BView, SetLayout, layout);
         }
 };
 
@@ -328,7 +461,6 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawString", py::overload_cast<const char *, int32, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
 .def("DrawString", py::overload_cast<const char *, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
 .def("DrawString", py::overload_cast<const char *, int32, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
-//.def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=py::int_(0x000001FF))
 .def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=B_FONT_ALL)
 .def("GetFont", &BView::GetFont, "", py::arg("font"))
 .def("TruncateString", &BView::TruncateString, "", py::arg("in_out"), py::arg("mode"), py::arg("width"))
