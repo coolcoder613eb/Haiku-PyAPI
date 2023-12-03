@@ -8,10 +8,83 @@
 
 namespace py = pybind11;
 
+class PyBScrollBar : public BScrollBar{
+	public:
+        using BScrollBar::BScrollBar;
+        status_t		Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BScrollBar, Archive, archive, deep);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BScrollBar, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BScrollBar, AllDetached);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BScrollBar, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BScrollBar, DetachedFromWindow);
+        }
+        void				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, Draw, updateRect);
+        }
+        void				FrameMoved(BPoint new_position) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, FrameMoved, new_position);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, FrameResized, newWidth, newWidth);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, MessageReceived, message);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, MouseMoved, where, code, dragMessage);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, WindowActivated, active);
+        }
+        void				ValueChanged(float newValue) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, ValueChanged, newValue);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BScrollBar, ResizeToPreferred);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BScrollBar, MakeFocus, focus);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollBar, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollBar, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollBar, PreferredSize);
+        }
+        status_t			GetSupportedSuites(BMessage* message) override {
+            PYBIND11_OVERLOAD(status_t, BScrollBar, GetSupportedSuites, message);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BScrollBar, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BScrollBar, Perform, d, arg);
+        }
+};
 
 PYBIND11_MODULE(ScrollBar,m)
 {
-py::class_<BScrollBar, BView>(m, "BScrollBar")
+py::class_<BScrollBar, PyBScrollBar, BView>(m, "BScrollBar")
 .def(py::init<BRect, const char *, BView *, float, float, orientation>(), "", py::arg("frame"), py::arg("name"), py::arg("target"), py::arg("min"), py::arg("max"), py::arg("direction"))
 .def(py::init<const char *, BView *, float, float, orientation>(), "", py::arg("name"), py::arg("target"), py::arg("min"), py::arg("max"), py::arg("orientation"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))
