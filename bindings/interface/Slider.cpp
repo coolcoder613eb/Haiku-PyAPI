@@ -4,7 +4,9 @@
 #include <pybind11/operators.h>
 
 #include <interface/Slider.h>
+#include <View.h>
 #include <Control.h>
+#include <Bitmap.h>
 
 namespace py = pybind11;
 
