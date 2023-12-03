@@ -56,8 +56,13 @@ m.attr("B_SUSPEND_VIEW_FOCUS") = 2;
 m.attr("B_NO_POINTER_HISTORY") = 4;
 m.attr("B_FULL_POINTER_HISTORY") = 8;
 
-m.attr("B_TRACK_WHOLE_RECT") = 0;
-m.attr("B_TRACK_RECT_CORNER") = 1;
+
+py::enum_<rect_tracking_style> (m, "rect_tracking_style", "")
+.value("B_TRACK_WHOLE_RECT", rect_tracking_style::B_TRACK_WHOLE_RECT, "")
+.value("B_TRACK_RECT_CORNER", rect_tracking_style::B_TRACK_RECT_CORNER, "")
+.export_values();
+//m.attr("B_TRACK_WHOLE_RECT") = 0;
+//m.attr("B_TRACK_RECT_CORNER") = 1;
 py::enum_<set_font_mask> (m, "set_font_mask", "")
 .value("B_FONT_FAMILY_AND_STYLE", set_font_mask::B_FONT_FAMILY_AND_STYLE, "")
 .value("B_FONT_SIZE", set_font_mask::B_FONT_SIZE, "")
@@ -166,7 +171,7 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FrameMoved", &BView::FrameMoved, "", py::arg("newPosition"))
 .def("FrameResized", &BView::FrameResized, "", py::arg("newWidth"), py::arg("newHeight"))
 .def("TargetedByScrollView", &BView::TargetedByScrollView, "", py::arg("scrollView"))
-//.def("BeginRectTracking", &BView::BeginRectTracking, "", py::arg("startRect"), py::arg("style")=B_TRACK_WHOLE_RECT)
+.def("BeginRectTracking", &BView::BeginRectTracking, "", py::arg("startRect"), py::arg("style")=B_TRACK_WHOLE_RECT)
 .def("EndRectTracking", &BView::EndRectTracking, "")
 .def("GetMouse", &BView::GetMouse, "", py::arg("location"), py::arg("buttons"), py::arg("checkMessageQueue")=true)
 .def("DragMessage", py::overload_cast<BMessage *, BRect, BHandler *>(&BView::DragMessage), "", py::arg("message"), py::arg("dragRect"), py::arg("replyTo")=NULL)
@@ -307,8 +312,6 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
-
-//from here check if they work as BBitmap is not implemented
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
@@ -321,7 +324,6 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawBitmap", py::overload_cast<const BBitmap *>(&BView::DrawBitmap), "", py::arg("aBitmap"))
 .def("DrawTiledBitmapAsync", &BView::DrawTiledBitmapAsync, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
 .def("DrawTiledBitmap", &BView::DrawTiledBitmap, "", py::arg("aBitmap"), py::arg("viewRect"), py::arg("phase")=B_ORIGIN)
-//to here
 .def("DrawChar", py::overload_cast<char>(&BView::DrawChar), "", py::arg("aChar"))
 .def("DrawChar", py::overload_cast<char, BPoint>(&BView::DrawChar), "", py::arg("aChar"), py::arg("location"))
 .def("DrawString", py::overload_cast<const char *, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("delta")=NULL)
