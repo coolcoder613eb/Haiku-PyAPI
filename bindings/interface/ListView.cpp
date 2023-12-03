@@ -183,8 +183,7 @@ py::class_<BListView, PyBListView, BView, BInvoker,std::unique_ptr<BListView, py
 .def("MaxSize", &BListView::MaxSize, "")
 .def("PreferredSize", &BListView::PreferredSize, "")
 .def("MakeFocus", &BListView::MakeFocus, "", py::arg("state")=true)
-.def("SetFont", &BListView::SetFont, "", py::arg("font"), py::arg("mask")=511)
-//B_FONT_ALL) Hardcoded 511 if not on import it gives ImportError: arg(): could not convert default argument 'mask: set_font_mask'
+.def("SetFont", &BListView::SetFont, "", py::arg("font"), py::arg("mask")=B_FONT_ALL)
 .def("ScrollTo", py::overload_cast<BPoint>(&BListView::ScrollTo), "", py::arg("where"))
 .def("ScrollTo", py::overload_cast<float, float>(&BListView::ScrollTo), "", py::arg("x"), py::arg("y"))
 .def("AddItem", py::overload_cast<BListItem *>(&BListView::AddItem), "", py::arg("item"))
