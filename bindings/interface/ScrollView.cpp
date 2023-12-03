@@ -8,10 +8,90 @@
 
 namespace py = pybind11;
 
+class PyBScrollView : public BScrollView{
+	public:
+        using BScrollView::BScrollView;
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BScrollView, Archive, archive, deep);
+        }
+        status_t			AllUnarchived(const BMessage* archive) override {
+            PYBIND11_OVERLOAD(status_t, BScrollView, AllUnarchived, archive);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BScrollView, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BScrollView, AllDetached);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BScrollView, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BScrollView, DetachedFromWindow);
+        }
+        void				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BScrollView, Draw, updateRect);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BScrollView, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BScrollView, FrameResized, newWidth, newHeight);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BScrollView, MessageReceived, message);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BScrollView, MouseDown, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+            PYBIND11_OVERLOAD(void, BScrollView, MouseMoved, where, code, dragMessage);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BScrollView, MouseUp, where);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BScrollView, WindowActivated, active);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BScrollView, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BScrollView, ResizeToPreferred);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BScrollView, MakeFocus, focus);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollView, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollView, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BScrollView, PreferredSize);
+        }
+        void				SetBorder(border_style border) override {
+            PYBIND11_OVERLOAD(void, BScrollView, SetBorder, border);
+        }
+        status_t			SetBorderHighlighted(bool highlight) override {
+            PYBIND11_OVERLOAD(status_t, BScrollView, SetBorderHighlighted, highlight);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BScrollView, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* message) override {
+            PYBIND11_OVERLOAD(status_t, BScrollView, GetSupportedSuites, message);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BScrollView, Perform, d, arg);
+        }
+};
+
 
 PYBIND11_MODULE(ScrollView,m)
 {
-py::class_<BScrollView, BView,std::unique_ptr<BScrollView, py::nodelete>>(m, "BScrollView")
+py::class_<BScrollView, PyBScrollView, BView,std::unique_ptr<BScrollView, py::nodelete>>(m, "BScrollView")
 .def(py::init<const char *, BView *, unsigned int, unsigned int, bool, bool, border_style>(), "", py::arg("name"), py::arg("target"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=0, py::arg("horizontal")=false, py::arg("vertical")=false, py::arg("border")=B_FANCY_BORDER)
 .def(py::init<const char *, BView *, unsigned int, bool, bool, border_style>(), "", py::arg("name"), py::arg("target"), py::arg("flags"), py::arg("horizontal"), py::arg("vertical"), py::arg("border")=B_FANCY_BORDER)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
