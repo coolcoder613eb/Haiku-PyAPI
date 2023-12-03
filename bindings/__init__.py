@@ -41,6 +41,7 @@ from .GridLayout import *
 from .PopUpMenu import *
 from .Box import *
 from .SeparatorItem import *
+from .Alignment import *
 from .SeparatorView import *
 from .MenuBar import *
 from .StatusBar import *
@@ -61,6 +62,7 @@ from .PictureButton import *
 from .StringItem import *
 from .TabView import *
 from .ScrollBar import *
+#from .Shape import *
 
 from .fs_attr import *
 
