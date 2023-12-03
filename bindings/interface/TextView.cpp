@@ -10,8 +10,6 @@
 #include <File.h>
 #include <Clipboard.h>
 #include <Region.h>
-#include <Font.h>
-#include <GraphicsDefs.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
