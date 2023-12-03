@@ -73,7 +73,9 @@ class PyBSlider : public BSlider{
         int32				ValueForPoint(BPoint point) const override {
         	PYBIND11_OVERLOAD(int32, BSlider, ValueForPoint, point);
         }
-        //void				SetPosition(float)
+        void				SetPosition(float position) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetPosition, position);
+        }
         void				SetEnabled(bool on) override {
         	PYBIND11_OVERLOAD(void, BSlider, SetEnabled, on);
         }
@@ -155,9 +157,9 @@ class PyBSlider : public BSlider{
         void				UseFillColor(bool useFill, const rgb_color* color = NULL) override {
         	PYBIND11_OVERLOAD(void, BSlider, UseFillColor, useFill, color);
         }
-        //void				SetOrientation(orientation) override {
-        //	PYBIND11_OVERLOAD(void, BSlider, SetOrientation);
-        //}
+        void				SetOrientation(orientation orient) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetOrientation, orient);
+        }
         void				SetBarThickness(float thickness) override {
         	PYBIND11_OVERLOAD(void, BSlider, SetBarThickness, thickness);
         }
