@@ -10,9 +10,29 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBShapeIterator : public BShapeIterator{
+	public:
+        using BShapeIterator::BShapeIterator;
+        status_t		IterateMoveTo(BPoint* point) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateMoveTo, point);
+        }
+        status_t		IterateLineTo(int32 lineCount, BPoint* linePoints) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateLineTo, lineCount, linePoints);
+        }
+        status_t		IterateBezierTo(int32 bezierCount, BPoint* bezierPoints) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateBezierTo, bezierCount, bezierPoints);
+        }
+        status_t		IterateClose() override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateClose);
+        }
+        status_t		IterateArcTo(float& rx, float& ry, float& angle, bool largeArc, bool counterClockWise, BPoint& point) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateArcTo, rx, ry, angle, largeArc, counterClockWise, point);
+        }
+};
+
 PYBIND11_MODULE(Shape,m)
 {
-py::class_<BShapeIterator>(m, "BShapeIterator")
+py::class_<BShapeIterator, PyBShapeIterator>(m, "BShapeIterator")
 .def(py::init(), "")
 .def("IterateMoveTo", &BShapeIterator::IterateMoveTo, "", py::arg("point"))
 .def("IterateLineTo", &BShapeIterator::IterateLineTo, "", py::arg("lineCount"), py::arg("linePoints"))
