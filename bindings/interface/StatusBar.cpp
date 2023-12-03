@@ -9,10 +9,104 @@
 
 namespace py = pybind11;
 
+class PyBStatusBar : public BStatusBar{
+	public:
+        using BStatusBar::BStatusBar;
+        status_t		Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BStatusBar, Archive, archive, deep);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BStatusBar, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BStatusBar, DetachedFromWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BStatusBar, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BStatusBar, AllDetached);
+        }
+        void				WindowActivated(bool state) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, WindowActivated, state);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, MakeFocus, focus);
+        }
+        void			GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, GetPreferredSize, _width, _height);
+        }
+        BSize			MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BStatusBar, MinSize);
+        }
+        BSize			MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BStatusBar, MaxSize);
+        }
+        BSize			PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BStatusBar, PreferredSize);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BStatusBar, ResizeToPreferred);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, FrameResized, newWidth, newHeight);
+        }
+        void				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, Draw, updateRect);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, MessageReceived, message);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 transit, const BMessage* dragMessage) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, MouseMoved, where, transit, dragMessage);
+        }
+        void				SetBarColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetBarColor, color);
+        }
+        void				SetBarHeight(float height) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetBarHeight, height);
+        }
+        void				SetText(const char* string) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetText, string);
+        }
+        void				SetTrailingText(const char* string) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetTrailingText, string);
+        }
+        void				SetMaxValue(float max) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetMaxValue, max);
+        }
+        void				Update(float delta, const char* text = NULL, const char* trailingText = NULL) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, Update, delta, text, trailingText);
+        }
+        void				Reset(const char* label = NULL, const char* trailingLabel = NULL) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, Reset, label, trailingLabel);
+        }
+        void				SetTo(float value, const char* text = NULL, const char* trailingText = NULL) override {
+            PYBIND11_OVERLOAD(void, BStatusBar, SetTo, value, text, trailingText);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BStatusBar, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BStatusBar, GetSupportedSuites, data);
+        }
+        status_t		Perform(perform_code code, void* data) override {
+            PYBIND11_OVERLOAD(status_t, BStatusBar, Perform, code, data);
+        }
+};
 
 PYBIND11_MODULE(StatusBar,m)
 {
-py::class_<BStatusBar, BView, std::unique_ptr<BStatusBar, py::nodelete>>(m, "BStatusBar")
+py::class_<BStatusBar, PyBStatusBar, BView, std::unique_ptr<BStatusBar, py::nodelete>>(m, "BStatusBar")
 .def(py::init<BRect, const char *, const char *, const char *>(), "", py::arg("frame"), py::arg("name"), py::arg("label")=NULL, py::arg("trailingLabel")=NULL)
 .def(py::init<const char *, const char *, const char *>(), "", py::arg("name"), py::arg("label")=NULL, py::arg("trailingLabel")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
