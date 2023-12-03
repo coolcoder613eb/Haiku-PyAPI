@@ -21,13 +21,14 @@ from .Rect import *
 from .GraphicsDefs import *
 from .Screen import *
 from .Point import *
+from .InterfaceDefs import *
 from .View import *
 from .Control import *
 from .Button import *
 from .TextControl import *
 from .Font import *
 from .StringView import *
-from .InterfaceDefs import *
+
 from .Alert import *
 from .TextView import *
 from .Menu import *
