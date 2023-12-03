@@ -131,6 +131,7 @@ local sourceFiles =
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp
+	Alignment.cpp
 	SeparatorView.cpp
 	MenuBar.cpp
 	StatusBar.cpp
@@ -150,6 +151,7 @@ local sourceFiles =
 	ScrollBar.cpp
 	GraphicsDefs.cpp
 	Screen.cpp
+	#Shape.cpp
 	
 	#SupportKit
 	SupportDefs.cpp
