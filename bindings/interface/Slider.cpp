@@ -10,6 +10,179 @@
 
 namespace py = pybind11;
 
+class PyBSlider : public BSlider{
+	public:
+        using BSlider::BSlider;
+        status_t		Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BSlider, Archive, archive, deep);
+        }
+        status_t			Perform(perform_code code, void* data) override {
+        	PYBIND11_OVERLOAD(status_t, BSlider, Perform, code, data);
+        }
+        void				WindowActivated(bool state) override {
+        	PYBIND11_OVERLOAD(void, BSlider, WindowActivated, state);
+        }
+        void				AttachedToWindow() override {
+        	PYBIND11_OVERLOAD(void, BSlider, AttachedToWindow);
+        }
+        void				AllAttached() override {
+        	PYBIND11_OVERLOAD(void, BSlider, AllAttached);
+        }
+        void				AllDetached() override {
+        	PYBIND11_OVERLOAD(void, BSlider, AllDetached);
+        }
+        void				DetachedFromWindow() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DetachedFromWindow);
+        }
+        void				MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BSlider, MessageReceived, message);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+        	PYBIND11_OVERLOAD(void, BSlider, FrameMoved, newPosition);
+        }
+        void				FrameResized(float width, float height) override {
+        	PYBIND11_OVERLOAD(void, BSlider, FrameResized, width, height);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+        	PYBIND11_OVERLOAD(void, BSlider, KeyDown, bytes, numBytes);
+        }
+        void				KeyUp(const char* bytes, int32 numBytes) override {
+        	PYBIND11_OVERLOAD(void, BSlider, KeyUp, bytes, numBytes);
+        }
+        void				MouseDown(BPoint point) override {
+        	PYBIND11_OVERLOAD(void, BSlider, MouseDown, point);
+        }
+        void				MouseUp(BPoint point) override {
+        	PYBIND11_OVERLOAD(void, BSlider, MouseUp, point);
+        }
+        void				MouseMoved(BPoint point, uint32 transit, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BSlider, MouseMoved, point, transit, dragMessage);
+        }
+        void				Pulse() override {
+        	PYBIND11_OVERLOAD(void, BSlider, Pulse);
+        }
+        void				SetLabel(const char* label) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetLabel, label);
+        }
+        void				SetLimitLabels(const char* minLabel, const char* maxLabel) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetLimitLabels, minLabel, maxLabel);
+        }
+        void				SetValue(int32 value) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetValue, value);
+        }
+        int32				ValueForPoint(BPoint point) const override {
+        	PYBIND11_OVERLOAD(int32, BSlider, ValueForPoint, point);
+        }
+        //void				SetPosition(float)
+        void				SetEnabled(bool on) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetEnabled, on);
+        }
+        void				Draw(BRect updateRect) override {
+        	PYBIND11_OVERLOAD(void, BSlider, Draw, updateRect);
+        }
+        void				DrawSlider() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawSlider);
+        }
+        void				DrawBar() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawBar);
+        }
+        void				DrawHashMarks() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawHashMarks);
+        }
+        void				DrawThumb() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawThumb);
+        }
+        void				DrawFocusMark() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawFocusMark);
+        }
+        void				DrawText() override {
+        	PYBIND11_OVERLOAD(void, BSlider, DrawText);
+        }
+        const char*			UpdateText() const override {
+        	PYBIND11_OVERLOAD(const char*, BSlider, UpdateText);
+        }
+        BRect				BarFrame() const override {
+        	PYBIND11_OVERLOAD(BRect, BSlider, BarFrame);
+        }
+        BRect				HashMarksFrame() const override {
+        	PYBIND11_OVERLOAD(BRect, BSlider, HashMarksFrame);
+        }
+        BRect				ThumbFrame() const override {
+        	PYBIND11_OVERLOAD(BRect, BSlider, ThumbFrame);
+        }
+        void				SetFlags(uint32 flags) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetFlags, flags);
+        }
+        void				SetResizingMode(uint32 mode) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetResizingMode, mode);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+        	PYBIND11_OVERLOAD(void, BSlider, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+        	PYBIND11_OVERLOAD(void, BSlider, ResizeToPreferred);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+        	PYBIND11_OVERLOAD(status_t, BSlider, Invoke, message);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BSlider, ResolveSpecifier, message, index, specifier, form, property);
+        }        
+        status_t			GetSupportedSuites(BMessage* data) override {
+        	PYBIND11_OVERLOAD(status_t, BSlider, GetSupportedSuites, data);
+        }
+        void				SetModificationMessage(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetModificationMessage, message);
+        }
+        void				SetSnoozeAmount(int32 microSeconds) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetSnoozeAmount, microSeconds);
+        }
+        void				SetKeyIncrementValue(int32 value) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetKeyIncrementValue, value);
+        }
+        void				SetHashMarkCount(int32 count) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetHashMarkCount, count);
+        }
+        void				SetHashMarks(hash_mark_location where) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetHashMarks, where);
+        }
+        void				SetStyle(thumb_style style) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetStyle, style);
+        }
+        void				SetBarColor(rgb_color color) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetBarColor, color);
+        }
+        void				UseFillColor(bool useFill, const rgb_color* color = NULL) override {
+        	PYBIND11_OVERLOAD(void, BSlider, UseFillColor, useFill, color);
+        }
+        //void				SetOrientation(orientation) override {
+        //	PYBIND11_OVERLOAD(void, BSlider, SetOrientation);
+        //}
+        void				SetBarThickness(float thickness) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetBarThickness, thickness);
+        }
+        void				SetFont(const BFont* font, uint32 properties = B_FONT_ALL) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetFont, font, properties);
+        }
+        void				SetLimits(int32 minimum, int32 maximum) override {
+        	PYBIND11_OVERLOAD(void, BSlider, SetLimits, minimum, maximum);
+        }
+        float				MaxUpdateTextWidth() override {
+        	PYBIND11_OVERLOAD(float, BSlider, MaxUpdateTextWidth);
+        }
+        BSize				MinSize() override {
+        	PYBIND11_OVERLOAD(BSize, BSlider, MinSize);
+        }
+        BSize				MaxSize() override {
+        	PYBIND11_OVERLOAD(BSize, BSlider, MaxSize);
+        }
+        BSize				PreferredSize() override {
+        	PYBIND11_OVERLOAD(BSize, BSlider, PreferredSize);
+        }
+        status_t			SetIcon(const BBitmap* icon, uint32 flags = 0) override {
+        	PYBIND11_OVERLOAD(status_t, BSlider, SetIcon, icon, flags);
+        }
+};
 
 PYBIND11_MODULE(Slider,m)
 {
@@ -27,7 +200,7 @@ py::enum_<thumb_style>(m, "thumb_style", "")
 .value("B_TRIANGLE_THUMB", thumb_style::B_TRIANGLE_THUMB, "")
 .export_values();
 
-py::class_<BSlider, BControl>(m, "BSlider")
+py::class_<BSlider, PyBSlider, BControl>(m, "BSlider")
 .def(py::init<BRect, const char *, const char *, BMessage *, int, int, thumb_style, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
 .def(py::init<BRect, const char *, const char *, BMessage *, int, int, orientation, thumb_style, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("posture"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
 .def(py::init<const char *, const char *, BMessage *, int, int, orientation, thumb_style, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("posture"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
