@@ -131,6 +131,7 @@ local sourceFiles =
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp
+	SeparatorView.cpp
 	MenuBar.cpp
 	StatusBar.cpp
 	CheckBox.cpp
