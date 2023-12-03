@@ -63,6 +63,7 @@ from .StringItem import *
 from .TabView import *
 from .ScrollBar import *
 from .Shape import *
+from .Size import *
 
 from .fs_attr import *
 

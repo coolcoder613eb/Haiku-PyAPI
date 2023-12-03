@@ -152,6 +152,7 @@ local sourceFiles =
 	GraphicsDefs.cpp
 	Screen.cpp
 	Shape.cpp
+	Size.cpp
 	
 	#SupportKit
 	SupportDefs.cpp
