@@ -130,7 +130,7 @@ class Window(BWindow):
 		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
 		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
 		self.panel3 = BView(self.Bounds(), "panel2", 8, 20000000)
-		self.box = BBox(BRect(200,26,280,51),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
+		self.box = BBox(BRect(200,30,280,55),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
 		#self.box.SetHighColor(0, 200, 0, 0)
@@ -138,9 +138,9 @@ class Window(BWindow):
 		#paternale.data=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
 		#self.box.FillRect(self.box.Bounds(),paternale.toPattern())
 		self.bar = BMenuBar(self.panel.Bounds(), 'Bar')
-		self.testo = BStringView(BRect(5,5,75,20), 'Test','prova')
+		self.testo = BStringView(BRect(6,8,75,22), 'Test','prova')
 		self.box.AddChild(self.testo,None)
-		self.statbar = BStatusBar(BRect(10,70,bounds.Width()/3-15,144), 'progress','0%', '100%')
+		self.statbar = BStatusBar(BRect(10,70,bounds.Width()/2-15,144), 'progress','Progress: ', '')
 		self.statbar.SetMaxValue(100.0)
 		self.tachetest=BTextControl(BRect(57,bounds.Height()-30,bounds.Width()-57,bounds.Height()-12),'TxTCtrl', "prova:",None,BMessage(1),0x0202|0x0404)
 		self.tachetest.SetDivider(55.0)
@@ -151,15 +151,14 @@ class Window(BWindow):
 		self.sevenradio = BRadioButton(BRect(8,240,28,260),'tepidradio', 'tepid', BMessage(7))
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
 		scrn = BScreen(self)
-		outimg = scrn.GetBitmap(True,BRect(0,0,200,200))
-		if not outimg[1]:
-			img1 = outimg[0]
-			print(img1.Bits())
+		img1,retu = scrn.GetBitmap(True,BRect(0,0,200,200))
+		if not retu:
+			#print(img1.Bits())
 			print(img1.Flags())
 			print(img1.BitsLength())
 		img2=BBitmap(self.panel2.Bounds(),color_space.B_RGBA32)
 		#img2.ImportBits(img1)
-		img2, reto = scrn.GetBitmap(True,self.panel3.Bounds())
+		img2,reto = scrn.GetBitmap(True,self.panel3.Bounds())
 		if not reto:
 			self.PicBox = PBox(self.panel3.Bounds(),"PictureBox",img2)
 			self.panel3.AddChild(self.PicBox,None)
@@ -168,7 +167,7 @@ class Window(BWindow):
 		#img=BTranslationUtils.GetBitmap(link)
 		#link2=sys.path[0]+"/help/minusmined.bmp"
 		#img2=BTranslationUtils.GetBitmap(link2)
-		if outimg[1]+reto == 0:
+		if retu+reto == 0:
 			self.fadBtn = PBut(BRect(50, 220, 86, 256), "Quit","⎆", BMessage(2),img1,img2)#img2,img)AppDefs.B_QUIT_REQUESTED
 			self.panel.AddChild(self.fadBtn,None)
 		# Handling colors##################
@@ -186,8 +185,7 @@ class Window(BWindow):
 		#bup.Play(arrgh,len(arrgh),None)
 		bdown=BPicture()
 		butupdown=BPictureButton(BRect(bounds.Width()-32,180,bounds.Width()-16,196),"TwoStateButt",bup,bdown,BMessage(333),picture_button_behavior.B_TWO_STATE_BUTTON)
-		
-		
+
 		self.list = ScrollView(BRect(8 , 300, bounds.Width() - 18 , bounds.Height() - 42 ), 'ScrollView')
 		global newsitem
 			# TODO: newsitem (defined below) seems to be freed by Python as soon
