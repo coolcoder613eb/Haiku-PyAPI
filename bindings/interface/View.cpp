@@ -58,7 +58,19 @@ m.attr("B_FULL_POINTER_HISTORY") = 8;
 
 m.attr("B_TRACK_WHOLE_RECT") = 0;
 m.attr("B_TRACK_RECT_CORNER") = 1;
-
+py::enum_<set_font_mask> (m, "set_font_mask", "")
+.value("B_FONT_FAMILY_AND_STYLE", set_font_mask::B_FONT_FAMILY_AND_STYLE, "")
+.value("B_FONT_SIZE", set_font_mask::B_FONT_SIZE, "")
+.value("B_FONT_SHEAR", set_font_mask::B_FONT_SHEAR, "")
+.value("B_FONT_ROTATION", set_font_mask::B_FONT_ROTATION, "")
+.value("B_FONT_SPACING", set_font_mask::B_FONT_SPACING, "")
+.value("B_FONT_ENCODING", set_font_mask::B_FONT_ENCODING, "")
+.value("B_FONT_FACE", set_font_mask::B_FONT_FACE, "")
+.value("B_FONT_FLAGS", set_font_mask::B_FONT_FLAGS, "")
+.value("B_FONT_FALSE_BOLD_WIDTH", set_font_mask::B_FONT_FALSE_BOLD_WIDTH, "")
+.value("B_FONT_ALL", set_font_mask::B_FONT_ALL, "")
+.export_values();
+/*
 m.attr("B_FONT_FAMILY_AND_STYLE") = 1;
 m.attr("B_FONT_SIZE") = 2;
 m.attr("B_FONT_SHEAR") = 4;
@@ -69,6 +81,7 @@ m.attr("B_FONT_FACE") = 64;
 m.attr("B_FONT_FLAGS") = 128;
 m.attr("B_FONT_FALSE_BOLD_WIDTH") = 256;
 m.attr("B_FONT_ALL") = 511;
+*/
 
 py::enum_<coordinate_space>(m, "coordinate_space", "")
 .value("B_CURRENT_STATE_COORDINATES", coordinate_space::B_CURRENT_STATE_COORDINATES, "")
