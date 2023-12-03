@@ -10,6 +10,8 @@
 #include <File.h>
 #include <Clipboard.h>
 #include <Region.h>
+#include <Font.h>
+#include <GraphicsDefs.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -85,9 +87,9 @@ py::class_<BTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextV
 .def("Select", &BTextView::Select, "", py::arg("startOffset"), py::arg("endOffset"))
 .def("SelectAll", &BTextView::SelectAll, "")
 .def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
-.def("SetFontAndColor", static_cast<void (BTextView::*)(const BFont*, uint32, const rgb_color*)>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=511, py::arg("color")=NULL) //hadcoded B_FONT_ALL 511
+.def("SetFontAndColor", static_cast<void (BTextView::*)(const BFont*, uint32, const rgb_color*)>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", py::overload_cast<const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
-.def("SetFontAndColor", static_cast<void (BTextView::*)(int32, int32, const BFont *, uint32, const rgb_color *)>(&BTextView::SetFontAndColor), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=511, py::arg("color")=NULL)
+.def("SetFontAndColor", static_cast<void (BTextView::*)(int32, int32, const BFont *, uint32, const rgb_color *)>(&BTextView::SetFontAndColor), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", py::overload_cast<int32, int32, const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 .def("GetFontAndColor", py::overload_cast<int32, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
 .def("GetFontAndColor", py::overload_cast<BFont *, uint32 *, rgb_color *, bool *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
