@@ -14,6 +14,47 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBLooper : public BLooper{
+	public:
+        using BLooper::BLooper;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BLooper, Archive, data, deep);
+        }
+        void		DispatchMessage(BMessage* message, BHandler* handler) override {
+        	PYBIND11_OVERLOAD(void, BLooper, DispatchMessage, message, handler);
+        }
+        void		MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BLooper, MessageReceived, message);
+        }
+        thread_id	Run()  override {
+        	PYBIND11_OVERLOAD(thread_id, BLooper, Run);
+        }
+        void		Quit() override {
+        	PYBIND11_OVERLOAD(void, BLooper, Quit);
+        }
+        bool		QuitRequested() override {
+        	PYBIND11_OVERLOAD(bool, BLooper, QuitRequested);
+        }
+        BHandler*	ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BLooper, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t	GetSupportedSuites(BMessage* data) override {
+        	PYBIND11_OVERLOAD(status_t, BLooper, GetSupportedSuites, data);
+        }
+        void		AddCommonFilter(BMessageFilter* filter) override {
+        	PYBIND11_OVERLOAD(void, BLooper, AddCommonFilter, filter);
+        }
+        bool		RemoveCommonFilter(BMessageFilter* filter) override {
+        	PYBIND11_OVERLOAD(bool, BLooper, RemoveCommonFilter, filter);
+        }
+        void		SetCommonFilterList(BList* filters) override {
+        	PYBIND11_OVERLOAD(void, BLooper, SetCommonFilterList, filters);
+        }
+        status_t	Perform(perform_code d, void* arg) override {
+        	PYBIND11_OVERLOAD(status_t, BLooper, Perform, d, arg);
+        }
+};
+
 void QuitWrapper(BLooper& self) {
 	// When quit is called from the BWindow's thread, it never returns. The
 	// thread is destroyed inside of this function. That means we need to
@@ -28,7 +69,7 @@ void QuitWrapper(BLooper& self) {
 
 PYBIND11_MODULE(Looper,m)
 {
-py::class_<BLooper,BHandler>(m, "BLooper")
+py::class_<BLooper, PyBLooper, BHandler>(m, "BLooper")
 .def(py::init<const char *, int, int>(), "", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BLooper::Instantiate, "", py::arg("data"))
