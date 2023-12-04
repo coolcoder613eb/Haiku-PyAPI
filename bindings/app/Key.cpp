@@ -11,6 +11,20 @@
 
 namespace py = pybind11;
 
+class PyBKey : public BKey{
+	public:
+        using BKey::BKey;
+        //BKeyType			Type() const { return B_KEY_TYPE_GENERIC; }
+        status_t			Flatten(BMessage& message) const override {
+        	PYBIND11_OVERLOAD(status_t, BKey, Flatten, message);
+        }
+        status_t			Unflatten(const BMessage& message) override {
+        	PYBIND11_OVERLOAD(status_t, BKey, Unflatten, message);
+        }
+        void				PrintToStream() override {
+        	PYBIND11_OVERLOAD(void, BKey, PrintToStream);
+        }
+};
 
 PYBIND11_MODULE(Key,m)
 {
@@ -30,7 +44,7 @@ py::enum_<BKeyType>(m, "BKeyType", "")
 .value("B_KEY_TYPE_CERTIFICATE", BKeyType::B_KEY_TYPE_CERTIFICATE, "")
 .export_values();
 
-py::class_<BKey>(m, "BKey")
+py::class_<BKey,PyBKey>(m, "BKey")
 .def(py::init(), "")
 .def(py::init<BKeyPurpose, const char *, const char *, unsigned char*, size_t>(), "", py::arg("purpose"), py::arg("identifier"), py::arg("secondaryIdentifier")=NULL, py::arg("data")=NULL, py::arg("length")=0)
 .def(py::init(), "")
