@@ -11,6 +11,13 @@
 
 namespace py = pybind11;
 
+class PyBCursor : public BCursor{
+	public:
+        using BCursor::BCursor;
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BCursor, Archive, archive, deep);
+        }
+};
 
 PYBIND11_MODULE(Cursor,m)
 {
@@ -46,7 +53,7 @@ py::enum_<BCursorID>(m, "BCursorID", "")
 .value("B_CURSOR_ID_ZOOM_OUT", BCursorID::B_CURSOR_ID_ZOOM_OUT, "")
 .export_values();
 
-py::class_<BCursor>(m, "BCursor")
+py::class_<BCursor, PyBCursor>(m, "BCursor")
 .def(py::init<const void *>(), "", py::arg("cursorData"))
 .def(py::init<const BCursor &>(), "", py::arg("other"))
 .def(py::init<BCursorID>(), "", py::arg("id"))
