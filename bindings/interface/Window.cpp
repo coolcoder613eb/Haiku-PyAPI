@@ -42,7 +42,7 @@ class PyBWindow : public BWindow{
         	PYBIND11_OVERLOAD(void, BWindow, Quit);
         }
         void			DispatchMessage(BMessage* message, BHandler* handler) override {
-        	PYBIND11_OVERLOAD(void, BWindow, Quit);
+        	PYBIND11_OVERLOAD(void, BWindow, DispatchMessage, message, handler);
         }
         void			FrameMoved(BPoint newPosition) override {
         	PYBIND11_OVERLOAD(void, BWindow, FrameMoved, newPosition);
