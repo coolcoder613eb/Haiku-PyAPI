@@ -35,6 +35,66 @@ class PyBWindow : public BWindow{
                 QuitRequested,
             );
         }
+        status_t		Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BWindow, Archive, archive, deep);
+        }
+        void			Quit() override {
+        	PYBIND11_OVERLOAD(void, BWindow, Quit);
+        }
+        void			DispatchMessage(BMessage* message, BHandler* handler) override {
+        	PYBIND11_OVERLOAD(void, BWindow, Quit);
+        }
+        void			FrameMoved(BPoint newPosition) override {
+        	PYBIND11_OVERLOAD(void, BWindow, FrameMoved, newPosition);
+        }
+        void			WorkspacesChanged(uint32 oldWorkspaces, uint32 newWorkspaces) override {
+        	PYBIND11_OVERLOAD(void, BWindow, WorkspacesChanged, oldWorkspaces, newWorkspaces);
+        }
+        void			WorkspaceActivated(int32 workspace, bool state) override {
+        	PYBIND11_OVERLOAD(void, BWindow, WorkspaceActivated, workspace, state);
+        }
+        void			FrameResized(float newWidth, float newHeight) override {
+        	PYBIND11_OVERLOAD(void, BWindow, FrameResized, newWidth, newHeight);
+        }
+        void			Minimize(bool minimize) override {
+        	PYBIND11_OVERLOAD(void, BWindow, Minimize, minimize);
+        }
+        void			Zoom(BPoint origin, float width, float height) override {
+        	PYBIND11_OVERLOAD(void, BWindow, Zoom, origin, width, height);
+        }
+        void			ScreenChanged(BRect screenSize, color_space depth) override {
+        	PYBIND11_OVERLOAD(void, BWindow, ScreenChanged, screenSize, depth);
+        }
+        void			MenusBeginning() override {
+        	PYBIND11_OVERLOAD(void, BWindow, MenusBeginning);
+        }
+        void			MenusEnded() override {
+        	PYBIND11_OVERLOAD(void, BWindow, MenusEnded);
+        }
+        void			WindowActivated(bool focus) override {
+        	PYBIND11_OVERLOAD(void, BWindow, WindowActivated, focus);
+        }
+        void			Show() override {
+        	PYBIND11_OVERLOAD(void, BWindow, Show);
+        }
+        void			Hide() override {
+        	PYBIND11_OVERLOAD(void, BWindow, Hide);
+        }
+        BHandler*		ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BWindow, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t		GetSupportedSuites(BMessage* data) override {
+        	PYBIND11_OVERLOAD(status_t, BWindow, GetSupportedSuites, data);
+        }
+        status_t		Perform(perform_code code, void* data) override {
+        	PYBIND11_OVERLOAD(status_t, BWindow, Perform, code, data);
+        }
+        thread_id		Run() override {
+        	PYBIND11_OVERLOAD(thread_id, BWindow, Run);
+        }
+        void			SetLayout(BLayout* layout) override {
+        	PYBIND11_OVERLOAD(void, BWindow, SetLayout, layout);
+        }
 };
 
 void QuitWrapper(BWindow& self) {
