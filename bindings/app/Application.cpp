@@ -27,6 +27,46 @@ class PyBApplication : public BApplication{
         bool QuitRequested() override {
             PYBIND11_OVERLOAD(bool, BApplication, QuitRequested);
         }
+        status_t			Archive(BMessage* data, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BApplication, Archive, data, deep);
+        }
+        thread_id			Run() override {
+            PYBIND11_OVERLOAD(thread_id, BApplication, Run);
+        }
+        void				Quit() override {
+            PYBIND11_OVERLOAD(void, BApplication, Quit);
+        }
+        void				Pulse() override {
+            PYBIND11_OVERLOAD(void, BApplication, Pulse);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BApplication, MessageReceived, message);
+        }
+        //void				ArgvReceived(int32 argc, char** argv) override {
+        	//ArgvReceivedWrapper(argc, argv);
+            //PYBIND11_OVERLOAD(void, BApplication, ArgvReceived, argc, argv); //look at this
+        //}
+        void				AppActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BApplication, AppActivated, active);
+        }
+        void				RefsReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BApplication, RefsReceived, message);
+        }
+        void				AboutRequested() override {
+            PYBIND11_OVERLOAD(void, BApplication, AboutRequested);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BApplication, ResolveSpecifier, message, index, specifier, form, property);
+        }
+        void				DispatchMessage(BMessage* message, BHandler* handler) override {
+            PYBIND11_OVERLOAD(void, BApplication, DispatchMessage, message, handler);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BApplication, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BApplication, Perform, d, arg);
+        }
 };
 
 void RunWrapper(BApplication& self) {
