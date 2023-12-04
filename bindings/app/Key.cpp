@@ -14,7 +14,9 @@ namespace py = pybind11;
 class PyBKey : public BKey{
 	public:
         using BKey::BKey;
-        //BKeyType			Type() const { return B_KEY_TYPE_GENERIC; }
+        BKeyType			Type() const override {
+        	PYBIND11_OVERLOAD(BKeyType, BKey, Type);
+        }
         status_t			Flatten(BMessage& message) const override {
         	PYBIND11_OVERLOAD(status_t, BKey, Flatten, message);
         }
