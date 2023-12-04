@@ -13,11 +13,47 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+
+class PyBHandler : public BHandler{
+	public:
+        using BHandler::BHandler;
+        status_t			Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BHandler, Archive, data, deep);
+        }
+        void			MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BHandler, MessageReceived, message);
+        }
+        void			SetNextHandler(BHandler* handler) override {
+        	PYBIND11_OVERLOAD(void, BHandler, SetNextHandler, handler);
+        }
+        void			AddFilter(BMessageFilter* filter) override {
+        	PYBIND11_OVERLOAD(void, BHandler, AddFilter, filter);
+        }
+        bool			RemoveFilter(BMessageFilter* filter) override {
+        	PYBIND11_OVERLOAD(bool, BHandler, RemoveFilter, filter);
+        }
+        void			SetFilterList(BList* filters) override {
+        	PYBIND11_OVERLOAD(void, BHandler, SetFilterList, filters);
+        }
+        BHandler*		ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BHandler, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t		GetSupportedSuites(BMessage* data) override {
+        	PYBIND11_OVERLOAD(status_t, BHandler, GetSupportedSuites, data);
+        }
+        status_t		Perform(perform_code d, void* arg) override {
+        	PYBIND11_OVERLOAD(status_t, BHandler, Perform, d, arg);
+        }
+        void 			SendNotices(uint32 what, const BMessage* notice = NULL) override {
+        	PYBIND11_OVERLOAD(void, BHandler, SendNotices, what, notice);
+        }
+};
+
 PYBIND11_MODULE(Handler,m)
 {
 m.attr("B_OBSERVER_OBSERVE_ALL") = B_OBSERVER_OBSERVE_ALL;
 
-py::class_<BHandler>(m, "BHandler")
+py::class_<BHandler, PyBHandler>(m, "BHandler")
 .def(py::init<const char *>(), "", py::arg("name")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BHandler::Instantiate, "", py::arg("data"))
