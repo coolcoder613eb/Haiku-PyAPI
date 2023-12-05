@@ -7,8 +7,12 @@
 
 namespace py = pybind11;
 
+bool CallPythonFunction(void* item, py::function& func) {
+    py::object result = func(item);
+    return py::cast<bool>(result);
+}
 
-void define_List(py::module_& m)
+PYBIND11_MODULE(List, m)
 {
 py::class_<BList>(m, "BList")
 .def(py::init<int>(), "", py::arg("count")=20)
@@ -33,15 +37,24 @@ py::class_<BList>(m, "BList")
 .def("ItemAtFast", &BList::ItemAtFast, "", py::arg("index"))
 .def("LastItem", &BList::LastItem, "")
 .def("Items", &BList::Items, "")
-.def("HasItem", py::overload_cast<void *>(&BList::HasItem), "", py::arg("item"))
-.def("HasItem", py::overload_cast<const void *>(&BList::HasItem), "", py::arg("item"))
-.def("IndexOf", py::overload_cast<void *>(&BList::IndexOf), "", py::arg("item"))
-.def("IndexOf", py::overload_cast<const void *>(&BList::IndexOf), "", py::arg("item"))
+.def("HasItem", py::overload_cast<void *>(&BList::HasItem, py::const_), "", py::arg("item"))
+.def("HasItem", py::overload_cast<const void *>(&BList::HasItem, py::const_), "", py::arg("item"))
+.def("IndexOf", py::overload_cast<void *>(&BList::IndexOf, py::const_), "", py::arg("item"))
+.def("IndexOf", py::overload_cast<const void *>(&BList::IndexOf, py::const_), "", py::arg("item"))
 .def("CountItems", &BList::CountItems, "")
 .def("IsEmpty", &BList::IsEmpty, "")
-.def("DoForEach", py::overload_cast<bool(*func)(void*item)>(&BList::DoForEach), "", py::arg(""))
-.def("DoForEach", py::overload_cast<bool(*func)(void*item,void*arg2), void *>(&BList::DoForEach), "", py::arg(""), py::arg("arg2"))
+//.def("DoForEach", py::overload_cast<bool(*func)(void*item)>(&BList::DoForEach), "", py::arg(""))
+.def("DoForEach", [](BList& self,py::function& func, void* item) -> void {
+	self.DoForEach(static_cast<bool (*)(void*, void*)>(+[](void* item, void* userData) -> bool {
+            return CallPythonFunction(item, *static_cast<py::function*>(userData));
+        }), item);
+}, "", py::arg("func"), py::arg("item"))
+
+//.def("DoForEach", py::overload_cast<bool(*func)(void*item,void*arg2), void *>(&BList::DoForEach), "", py::arg(""), py::arg("arg2"))
+.def("DoForEach", [](BList& self, py::function& func, void* arg2) -> void {
+            self.DoForEach(static_cast<bool (*)(void*, void*)>(+[](void* item, void* userData) -> bool {
+                return CallPythonFunction(item, *static_cast<py::function*>(userData));
+            }), arg2);
+        }, "", py::arg("func"), py::arg("arg2"))
 ;
-
-
 }
