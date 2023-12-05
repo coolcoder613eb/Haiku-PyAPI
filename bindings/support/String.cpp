@@ -4,11 +4,15 @@
 #include <pybind11/operators.h>
 
 #include <support/String.h>
+#include <stdarg.h>
+#include <string.h>
+#include <SupportDefs.h>
+#include <StringList.h>
 
 namespace py = pybind11;
 
 
-void define_String(py::module_& m)
+PYBIND11_MODULE(String, m)
 {
 py::class_<BString>(m, "BString")
 .def(py::init(), "")
@@ -21,17 +25,17 @@ py::class_<BString>(m, "BString")
 .def("CountChars", &BString::CountChars, "")
 .def("CountBytes", &BString::CountBytes, "", py::arg("fromCharOffset"), py::arg("charCount"))
 .def("IsEmpty", &BString::IsEmpty, "")
-.def("HashValue", py::overload_cast<>(&BString::HashValue), "")
-.def_static("HashValue", py::overload_cast<const char *>(&BString::HashValue), "", py::arg("string"))
+.def("HashValue", py::overload_cast<>(&BString::HashValue, py::const_), "")
+.def_static("HashValueString", py::overload_cast<const char *>(&BString::HashValue), "", py::arg("string"))// BEWARE! Name changed due to: overloading a method with both static and instance methods is not supported
 .def("operator=", py::overload_cast<const BString &>(&BString::operator=), "", py::arg("string"))
 .def("operator=", py::overload_cast<const char *>(&BString::operator=), "", py::arg("string"))
 .def("operator=", py::overload_cast<char>(&BString::operator=), "", py::arg("c"))
-.def("operator=", [](BString& self) {
+/*.def("operator=", [](BString& self) {
     BString &  string;
     BString & r = self.operator=(string);
     return std::make_tuple(r,string);
 }
-, "")
+, "")*/
 .def("SetTo", py::overload_cast<const char *>(&BString::SetTo), "", py::arg("string"))
 .def("SetTo", py::overload_cast<const char *, int>(&BString::SetTo), "", py::arg("string"), py::arg("maxLength"))
 .def("SetTo", py::overload_cast<const BString &>(&BString::SetTo), "", py::arg("string"))
@@ -57,24 +61,24 @@ py::class_<BString>(m, "BString")
     return std::make_tuple(r,from);
 }
 , "", py::arg("charCount"))
-.def("SetToFormat", &BString::SetToFormat, "", py::arg("format"))
-.def("SetToFormatVarArgs", &BString::SetToFormatVarArgs, "", py::arg("format"), py::arg("args"))
-.def("ScanWithFormat", &BString::ScanWithFormat, "", py::arg("format"))
-.def("ScanWithFormatVarArgs", &BString::ScanWithFormatVarArgs, "", py::arg("format"), py::arg("args"))
+//.def("SetToFormat", &BString::SetToFormat, "", py::arg("format"))
+//.def("SetToFormatVarArgs", &BString::SetToFormatVarArgs, "", py::arg("format"), py::arg("args"))
+//.def("ScanWithFormat", &BString::ScanWithFormat, "", py::arg("format"))
+//.def("ScanWithFormatVarArgs", &BString::ScanWithFormatVarArgs, "", py::arg("format"), py::arg("args"))
 .def("CopyInto", [](BString& self,int fromOffset,int length) {
     BString  into;
     BString & r = self.CopyInto(into, fromOffset, length);
     return std::make_tuple(r,into);
 }
 , "", py::arg("fromOffset"), py::arg("length"))
-.def("CopyInto", py::overload_cast<char *, int, int>(&BString::CopyInto), "", py::arg("into"), py::arg("fromOffset"), py::arg("length"))
+.def("CopyInto", py::overload_cast<char *, int, int>(&BString::CopyInto, py::const_), "", py::arg("into"), py::arg("fromOffset"), py::arg("length"))
 .def("CopyCharsInto", [](BString& self,int fromCharOffset,int charCount) {
     BString  into;
     BString & r = self.CopyCharsInto(into, fromCharOffset, charCount);
     return std::make_tuple(r,into);
 }
 , "", py::arg("fromCharOffset"), py::arg("charCount"))
-.def("CopyCharsInto", py::overload_cast<char *, int, int, int>(&BString::CopyCharsInto), "", py::arg("into"), py::arg("intoLength"), py::arg("fromCharOffset"), py::arg("charCount"))
+.def("CopyCharsInto", py::overload_cast<char *, int32*, int32, int32>(&BString::CopyCharsInto, py::const_), "", py::arg("into"), py::arg("intoLength"), py::arg("fromCharOffset"), py::arg("charCount"))
 .def("Split", [](BString& self,const char * separator,bool noEmptyStrings) {
     BStringList  _list;
     bool r = self.Split(separator, noEmptyStrings, _list);
@@ -136,67 +140,67 @@ py::class_<BString>(m, "BString")
     return std::make_tuple(r,into);
 }
 , "", py::arg("fromCharOffset"), py::arg("charCount"))
-.def("MoveCharsInto", py::overload_cast<char *, int, int, int>(&BString::MoveCharsInto), "", py::arg("into"), py::arg("intoLength"), py::arg("fromCharOffset"), py::arg("charCount"))
-.def("__lt__", py::overload_cast<const BString &>(&BString::operator<), "", py::arg("string"))
-.def("__le__", py::overload_cast<const BString &>(&BString::operator<=), "", py::arg("string"))
-.def("__eq__", py::overload_cast<const BString &>(&BString::operator==), "", py::arg("string"))
-.def("__ge__", py::overload_cast<const BString &>(&BString::operator>=), "", py::arg("string"))
-.def("__gt__", py::overload_cast<const BString &>(&BString::operator>), "", py::arg("string"))
-.def("__ne__", py::overload_cast<const BString &>(&BString::operator!=), "", py::arg("string"))
-.def("__lt__", py::overload_cast<const char *>(&BString::operator<), "", py::arg("string"))
-.def("__le__", py::overload_cast<const char *>(&BString::operator<=), "", py::arg("string"))
-.def("__eq__", py::overload_cast<const char *>(&BString::operator==), "", py::arg("string"))
-.def("__ge__", py::overload_cast<const char *>(&BString::operator>=), "", py::arg("string"))
-.def("__gt__", py::overload_cast<const char *>(&BString::operator>), "", py::arg("string"))
-.def("__ne__", py::overload_cast<const char *>(&BString::operator!=), "", py::arg("string"))
-.def("operatorconstchar*", &BString::operatorconstchar*, "")
-.def("Compare", py::overload_cast<const BString &>(&BString::Compare), "", py::arg("string"))
-.def("Compare", py::overload_cast<const char *>(&BString::Compare), "", py::arg("string"))
-.def("Compare", py::overload_cast<const BString &, int>(&BString::Compare), "", py::arg("string"), py::arg("length"))
-.def("Compare", py::overload_cast<const char *, int>(&BString::Compare), "", py::arg("string"), py::arg("length"))
+.def("MoveCharsInto", py::overload_cast<char *, int32*, int32, int32>(&BString::MoveCharsInto), "", py::arg("into"), py::arg("intoLength"), py::arg("fromCharOffset"), py::arg("charCount"))
+.def("__lt__", py::overload_cast<const BString &>(&BString::operator<, py::const_), "", py::arg("string"))
+.def("__le__", py::overload_cast<const BString &>(&BString::operator<=, py::const_), "", py::arg("string"))
+.def("__eq__", py::overload_cast<const BString &>(&BString::operator==, py::const_), "", py::arg("string"))
+.def("__ge__", py::overload_cast<const BString &>(&BString::operator>=, py::const_), "", py::arg("string"))
+.def("__gt__", py::overload_cast<const BString &>(&BString::operator>, py::const_), "", py::arg("string"))
+.def("__ne__", py::overload_cast<const BString &>(&BString::operator!=, py::const_), "", py::arg("string"))
+.def("__lt__", py::overload_cast<const char *>(&BString::operator<, py::const_), "", py::arg("string"))
+.def("__le__", py::overload_cast<const char *>(&BString::operator<=, py::const_), "", py::arg("string"))
+.def("__eq__", py::overload_cast<const char *>(&BString::operator==, py::const_), "", py::arg("string"))
+.def("__ge__", py::overload_cast<const char *>(&BString::operator>=, py::const_), "", py::arg("string"))
+.def("__gt__", py::overload_cast<const char *>(&BString::operator>, py::const_), "", py::arg("string"))
+.def("__ne__", py::overload_cast<const char *>(&BString::operator!=, py::const_), "", py::arg("string"))
+//.def("operatorconstchar*", &BString::operatorconstchar*, "")
+.def("Compare", py::overload_cast<const BString &>(&BString::Compare, py::const_), "", py::arg("string"))
+.def("Compare", py::overload_cast<const char *>(&BString::Compare, py::const_), "", py::arg("string"))
+.def("Compare", py::overload_cast<const BString &, int>(&BString::Compare, py::const_), "", py::arg("string"), py::arg("length"))
+.def("Compare", py::overload_cast<const char *, int>(&BString::Compare, py::const_), "", py::arg("string"), py::arg("length"))
 .def("CompareAt", &BString::CompareAt, "", py::arg("offset"), py::arg("string"), py::arg("length"))
-.def("CompareChars", py::overload_cast<const BString &, int>(&BString::CompareChars), "", py::arg("string"), py::arg("charCount"))
-.def("CompareChars", py::overload_cast<const char *, int>(&BString::CompareChars), "", py::arg("string"), py::arg("charCount"))
-.def("ICompare", py::overload_cast<const BString &>(&BString::ICompare), "", py::arg("string"))
-.def("ICompare", py::overload_cast<const char *>(&BString::ICompare), "", py::arg("string"))
-.def("ICompare", py::overload_cast<const BString &, int>(&BString::ICompare), "", py::arg("string"), py::arg("length"))
-.def("ICompare", py::overload_cast<const char *, int>(&BString::ICompare), "", py::arg("string"), py::arg("length"))
-.def("FindFirst", py::overload_cast<const BString &>(&BString::FindFirst), "", py::arg("string"))
-.def("FindFirst", py::overload_cast<const char *>(&BString::FindFirst), "", py::arg("string"))
-.def("FindFirst", py::overload_cast<const BString &, int>(&BString::FindFirst), "", py::arg("string"), py::arg("fromOffset"))
-.def("FindFirst", py::overload_cast<const char *, int>(&BString::FindFirst), "", py::arg("string"), py::arg("fromOffset"))
-.def("FindFirst", py::overload_cast<char>(&BString::FindFirst), "", py::arg("c"))
-.def("FindFirst", py::overload_cast<char, int>(&BString::FindFirst), "", py::arg("c"), py::arg("fromOffset"))
-.def("FindFirstChars", py::overload_cast<const BString &, int>(&BString::FindFirstChars), "", py::arg("string"), py::arg("fromCharOffset"))
-.def("FindFirstChars", py::overload_cast<const char *, int>(&BString::FindFirstChars), "", py::arg("string"), py::arg("fromCharOffset"))
-.def("FindLast", py::overload_cast<const BString &>(&BString::FindLast), "", py::arg("string"))
-.def("FindLast", py::overload_cast<const char *>(&BString::FindLast), "", py::arg("string"))
-.def("FindLast", py::overload_cast<const BString &, int>(&BString::FindLast), "", py::arg("string"), py::arg("beforeOffset"))
-.def("FindLast", py::overload_cast<const char *, int>(&BString::FindLast), "", py::arg("string"), py::arg("beforeOffset"))
-.def("FindLast", py::overload_cast<char>(&BString::FindLast), "", py::arg("c"))
-.def("FindLast", py::overload_cast<char, int>(&BString::FindLast), "", py::arg("c"), py::arg("beforeOffset"))
-.def("FindLastChars", py::overload_cast<const BString &, int>(&BString::FindLastChars), "", py::arg("string"), py::arg("beforeCharOffset"))
-.def("FindLastChars", py::overload_cast<const char *, int>(&BString::FindLastChars), "", py::arg("string"), py::arg("beforeCharOffset"))
-.def("IFindFirst", py::overload_cast<const BString &>(&BString::IFindFirst), "", py::arg("string"))
-.def("IFindFirst", py::overload_cast<const char *>(&BString::IFindFirst), "", py::arg("string"))
-.def("IFindFirst", py::overload_cast<const BString &, int>(&BString::IFindFirst), "", py::arg("string"), py::arg("fromOffset"))
-.def("IFindFirst", py::overload_cast<const char *, int>(&BString::IFindFirst), "", py::arg("string"), py::arg("fromOffset"))
-.def("IFindLast", py::overload_cast<const BString &>(&BString::IFindLast), "", py::arg("string"))
-.def("IFindLast", py::overload_cast<const char *>(&BString::IFindLast), "", py::arg("string"))
-.def("IFindLast", py::overload_cast<const BString &, int>(&BString::IFindLast), "", py::arg("string"), py::arg("beforeOffset"))
-.def("IFindLast", py::overload_cast<const char *, int>(&BString::IFindLast), "", py::arg("string"), py::arg("beforeOffset"))
-.def("StartsWith", py::overload_cast<const BString &>(&BString::StartsWith), "", py::arg("string"))
-.def("StartsWith", py::overload_cast<const char *>(&BString::StartsWith), "", py::arg("string"))
-.def("StartsWith", py::overload_cast<const char *, int>(&BString::StartsWith), "", py::arg("string"), py::arg("length"))
-.def("IStartsWith", py::overload_cast<const BString &>(&BString::IStartsWith), "", py::arg("string"))
-.def("IStartsWith", py::overload_cast<const char *>(&BString::IStartsWith), "", py::arg("string"))
-.def("IStartsWith", py::overload_cast<const char *, int>(&BString::IStartsWith), "", py::arg("string"), py::arg("length"))
-.def("EndsWith", py::overload_cast<const BString &>(&BString::EndsWith), "", py::arg("string"))
-.def("EndsWith", py::overload_cast<const char *>(&BString::EndsWith), "", py::arg("string"))
-.def("EndsWith", py::overload_cast<const char *, int>(&BString::EndsWith), "", py::arg("string"), py::arg("length"))
-.def("IEndsWith", py::overload_cast<const BString &>(&BString::IEndsWith), "", py::arg("string"))
-.def("IEndsWith", py::overload_cast<const char *>(&BString::IEndsWith), "", py::arg("string"))
-.def("IEndsWith", py::overload_cast<const char *, int>(&BString::IEndsWith), "", py::arg("string"), py::arg("length"))
+.def("CompareChars", py::overload_cast<const BString &, int>(&BString::CompareChars, py::const_), "", py::arg("string"), py::arg("charCount"))
+.def("CompareChars", py::overload_cast<const char *, int>(&BString::CompareChars, py::const_), "", py::arg("string"), py::arg("charCount"))
+.def("ICompare", py::overload_cast<const BString &>(&BString::ICompare, py::const_), "", py::arg("string"))
+.def("ICompare", py::overload_cast<const char *>(&BString::ICompare, py::const_), "", py::arg("string"))
+.def("ICompare", py::overload_cast<const BString &, int>(&BString::ICompare, py::const_), "", py::arg("string"), py::arg("length"))
+.def("ICompare", py::overload_cast<const char *, int>(&BString::ICompare, py::const_), "", py::arg("string"), py::arg("length"))
+.def("FindFirst", py::overload_cast<const BString &>(&BString::FindFirst, py::const_), "", py::arg("string"))
+.def("FindFirst", py::overload_cast<const char *>(&BString::FindFirst, py::const_), "", py::arg("string"))
+.def("FindFirst", py::overload_cast<const BString &, int>(&BString::FindFirst, py::const_), "", py::arg("string"), py::arg("fromOffset"))
+.def("FindFirst", py::overload_cast<const char *, int>(&BString::FindFirst, py::const_), "", py::arg("string"), py::arg("fromOffset"))
+.def("FindFirst", py::overload_cast<char>(&BString::FindFirst, py::const_), "", py::arg("c"))
+.def("FindFirst", py::overload_cast<char, int>(&BString::FindFirst, py::const_), "", py::arg("c"), py::arg("fromOffset"))
+.def("FindFirstChars", py::overload_cast<const BString &, int>(&BString::FindFirstChars, py::const_), "", py::arg("string"), py::arg("fromCharOffset"))
+.def("FindFirstChars", py::overload_cast<const char *, int>(&BString::FindFirstChars, py::const_), "", py::arg("string"), py::arg("fromCharOffset"))
+.def("FindLast", py::overload_cast<const BString &>(&BString::FindLast, py::const_), "", py::arg("string"))
+.def("FindLast", py::overload_cast<const char *>(&BString::FindLast, py::const_), "", py::arg("string"))
+.def("FindLast", py::overload_cast<const BString &, int>(&BString::FindLast, py::const_), "", py::arg("string"), py::arg("beforeOffset"))
+.def("FindLast", py::overload_cast<const char *, int>(&BString::FindLast, py::const_), "", py::arg("string"), py::arg("beforeOffset"))
+.def("FindLast", py::overload_cast<char>(&BString::FindLast, py::const_), "", py::arg("c"))
+.def("FindLast", py::overload_cast<char, int>(&BString::FindLast, py::const_), "", py::arg("c"), py::arg("beforeOffset"))
+.def("FindLastChars", py::overload_cast<const BString &, int>(&BString::FindLastChars, py::const_), "", py::arg("string"), py::arg("beforeCharOffset"))
+.def("FindLastChars", py::overload_cast<const char *, int>(&BString::FindLastChars, py::const_), "", py::arg("string"), py::arg("beforeCharOffset"))
+.def("IFindFirst", py::overload_cast<const BString &>(&BString::IFindFirst, py::const_), "", py::arg("string"))
+.def("IFindFirst", py::overload_cast<const char *>(&BString::IFindFirst, py::const_), "", py::arg("string"))
+.def("IFindFirst", py::overload_cast<const BString &, int>(&BString::IFindFirst, py::const_), "", py::arg("string"), py::arg("fromOffset"))
+.def("IFindFirst", py::overload_cast<const char *, int>(&BString::IFindFirst, py::const_), "", py::arg("string"), py::arg("fromOffset"))
+.def("IFindLast", py::overload_cast<const BString &>(&BString::IFindLast, py::const_), "", py::arg("string"))
+.def("IFindLast", py::overload_cast<const char *>(&BString::IFindLast, py::const_), "", py::arg("string"))
+.def("IFindLast", py::overload_cast<const BString &, int>(&BString::IFindLast, py::const_), "", py::arg("string"), py::arg("beforeOffset"))
+.def("IFindLast", py::overload_cast<const char *, int>(&BString::IFindLast, py::const_), "", py::arg("string"), py::arg("beforeOffset"))
+.def("StartsWith", py::overload_cast<const BString &>(&BString::StartsWith, py::const_), "", py::arg("string"))
+.def("StartsWith", py::overload_cast<const char *>(&BString::StartsWith, py::const_), "", py::arg("string"))
+.def("StartsWith", py::overload_cast<const char *, int>(&BString::StartsWith, py::const_), "", py::arg("string"), py::arg("length"))
+.def("IStartsWith", py::overload_cast<const BString &>(&BString::IStartsWith, py::const_), "", py::arg("string"))
+.def("IStartsWith", py::overload_cast<const char *>(&BString::IStartsWith, py::const_), "", py::arg("string"))
+.def("IStartsWith", py::overload_cast<const char *, int>(&BString::IStartsWith, py::const_), "", py::arg("string"), py::arg("length"))
+.def("EndsWith", py::overload_cast<const BString &>(&BString::EndsWith, py::const_), "", py::arg("string"))
+.def("EndsWith", py::overload_cast<const char *>(&BString::EndsWith, py::const_), "", py::arg("string"))
+.def("EndsWith", py::overload_cast<const char *, int>(&BString::EndsWith, py::const_), "", py::arg("string"), py::arg("length"))
+.def("IEndsWith", py::overload_cast<const BString &>(&BString::IEndsWith, py::const_), "", py::arg("string"))
+.def("IEndsWith", py::overload_cast<const char *>(&BString::IEndsWith, py::const_), "", py::arg("string"))
+.def("IEndsWith", py::overload_cast<const char *, int>(&BString::IEndsWith, py::const_), "", py::arg("string"), py::arg("length"))
 .def("ReplaceFirst", py::overload_cast<char, char>(&BString::ReplaceFirst), "", py::arg("replaceThis"), py::arg("withThis"))
 .def("ReplaceLast", py::overload_cast<char, char>(&BString::ReplaceLast), "", py::arg("replaceThis"), py::arg("withThis"))
 .def("ReplaceAll", py::overload_cast<char, char, int>(&BString::ReplaceAll), "", py::arg("replaceThis"), py::arg("withThis"), py::arg("fromOffset")=0)
@@ -218,11 +222,11 @@ py::class_<BString>(m, "BString")
 .def("ReplaceSet", py::overload_cast<const char *, char>(&BString::ReplaceSet), "", py::arg("setOfBytes"), py::arg("with"))
 .def("ReplaceSet", py::overload_cast<const char *, const char *>(&BString::ReplaceSet), "", py::arg("setOfBytes"), py::arg("with"))
 .def("ReplaceCharsSet", &BString::ReplaceCharsSet, "", py::arg("setOfChars"), py::arg("with"))
-.def("__getitem__", py::overload_cast<int>(&BString::operator[]), "", py::arg("index"))
-.def("__getitem__", py::overload_cast<int>(&BString::operator[]), "", py::arg("index"))
+.def("__getitem__", py::overload_cast<int32>(&BString::operator[], py::const_), "", py::arg("index"))
+//.def("__getitem__", py::overload_cast<int32>(&BString::operator[]), "", py::arg("index"))
 .def("ByteAt", &BString::ByteAt, "", py::arg("index"))
-.def("CharAt", py::overload_cast<int, int>(&BString::CharAt), "", py::arg("charIndex"), py::arg("bytes")=NULL)
-.def("CharAt", py::overload_cast<int, char *, int>(&BString::CharAt), "", py::arg("charIndex"), py::arg("buffer"), py::arg("bytes"))
+.def("CharAt", py::overload_cast<int32, int32*>(&BString::CharAt, py::const_), "", py::arg("charIndex"), py::arg("bytes")=NULL)
+.def("CharAt", py::overload_cast<int32, char *, int32*>(&BString::CharAt, py::const_), "", py::arg("charIndex"), py::arg("buffer"), py::arg("bytes"))
 .def("LockBuffer", &BString::LockBuffer, "", py::arg("maxLength"))
 .def("UnlockBuffer", &BString::UnlockBuffer, "", py::arg("length")=- 1)
 .def("SetByteAt", &BString::SetByteAt, "", py::arg("pos"), py::arg("to"))
@@ -247,9 +251,9 @@ py::class_<BString>(m, "BString")
 .def("__lshift__", py::overload_cast<long long>(&BString::operator<<), "", py::arg("value"))
 .def("__lshift__", py::overload_cast<float>(&BString::operator<<), "", py::arg("value"))
 .def("__lshift__", py::overload_cast<double>(&BString::operator<<), "", py::arg("value"))
-.def_readwrite("Private", &BString::Private, "")
+//.def_readwrite("Private", &BString::Private, "")
 ;
-
+/*
 m.def("__lt__", py::overload_cast<const char *, const BString &>(&operator<), "", py::arg("a"), py::arg("b"));
 
 m.def("__le__", py::overload_cast<const char *, const BString &>(&operator<=), "", py::arg("a"), py::arg("b"));
@@ -301,5 +305,5 @@ m.def("__gt__", py::overload_cast<const char *, const BString &>(&operator>), ""
 m.def("__ge__", py::overload_cast<const char *, const BString &>(&operator>=), "", py::arg("str"), py::arg("string"));
 
 m.def("__ne__", py::overload_cast<const char *, const BString &>(&operator!=), "", py::arg("str"), py::arg("string"));
-
+*/
 }
