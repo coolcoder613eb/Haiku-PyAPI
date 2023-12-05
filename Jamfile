@@ -165,6 +165,7 @@ local sourceFiles =
 	DateTime.cpp
 	parsedate.cpp
 	List.cpp
+	String.cpp
 	
 	#Kernel
 	fs_attr.cpp
