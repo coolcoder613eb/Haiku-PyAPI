@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void define_Beep(py::module_& m)
+PYBIND11_MODULE(Beep, m)
 {
 m.def("beep", &beep, "");
 
