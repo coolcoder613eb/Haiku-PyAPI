@@ -4,11 +4,12 @@
 #include <pybind11/operators.h>
 
 #include <support/DateTime.h>
+#include <Message.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
-void define_DateTime(py::module_& m)
+PYBIND11_MODULE(DateTime, m)
 {
 py::enum_<time_type>(m, "time_type", "")
 .value("B_GMT_TIME", time_type::B_GMT_TIME, "")
@@ -23,37 +24,13 @@ py::enum_<diff_type>(m, "diff_type", "")
 .value("B_MICROSECONDS_DIFF", diff_type::B_MICROSECONDS_DIFF, "")
 .export_values();
 
-m.attr("time_type") = py::cast(time_type);
-
-m.attr("B_GMT_TIME") = py::cast(B_GMT_TIME);
-
-m.attr("B_LOCAL_TIME") = py::cast(B_LOCAL_TIME);
-
-m.attr("diff_type") = py::cast(diff_type);
-
-m.attr("B_HOURS_DIFF") = py::cast(B_HOURS_DIFF);
-
-m.attr("B_MINUTES_DIFF") = py::cast(B_MINUTES_DIFF);
-
-m.attr("B_SECONDS_DIFF") = py::cast(B_SECONDS_DIFF);
-
-m.attr("B_MILLISECONDS_DIFF") = py::cast(B_MILLISECONDS_DIFF);
-
-m.attr("B_MICROSECONDS_DIFF") = py::cast(B_MICROSECONDS_DIFF);
-
-m.attr("BTime") = py::cast(BTime);
-
-m.attr("BDate") = py::cast(BDate);
-
-m.attr("BDateTime") = py::cast(BDateTime);
-
 py::class_<BTime>(m, "BTime")
 .def(py::init(), "")
 .def(py::init<const BTime &>(), "", py::arg("other"))
 .def(py::init<int, int, int, int>(), "", py::arg("hour"), py::arg("minute"), py::arg("second"), py::arg("microsecond")=0)
 .def(py::init<const BMessage *>(), "", py::arg("archive"))
 .def("Archive", &BTime::Archive, "", py::arg("into"))
-.def("IsValid", py::overload_cast<>(&BTime::IsValid), "")
+//.def("IsValid", py::overload_cast<>(&BTime::IsValid, py::const_), "") // overloading a method with both static and instance methods is not supported;
 .def_static("IsValid", py::overload_cast<const BTime &>(&BTime::IsValid), "", py::arg("time"))
 .def_static("IsValid", py::overload_cast<int, int, int, int>(&BTime::IsValid), "", py::arg("hour"), py::arg("minute"), py::arg("second"), py::arg("microsecond")=0)
 .def_static("CurrentTime", &BTime::CurrentTime, "", py::arg("type"))
@@ -86,7 +63,7 @@ py::class_<BDate>(m, "BDate")
 .def(py::init<time_t, time_type>(), "", py::arg("time"), py::arg("type")=B_LOCAL_TIME)
 .def(py::init<const BMessage *>(), "", py::arg("archive"))
 .def("Archive", &BDate::Archive, "", py::arg("into"))
-.def("IsValid", py::overload_cast<>(&BDate::IsValid), "")
+//.def("IsValid", py::overload_cast<>(&BDate::IsValid, py::const_), "") // overloading a method with both static and instance methods is not supported;
 .def_static("IsValid", py::overload_cast<const BDate &>(&BDate::IsValid), "", py::arg("date"))
 .def_static("IsValid", py::overload_cast<int, int, int>(&BDate::IsValid), "", py::arg("year"), py::arg("month"), py::arg("day"))
 .def_static("CurrentDate", &BDate::CurrentDate, "", py::arg("type"))
@@ -107,19 +84,19 @@ py::class_<BDate>(m, "BDate")
 .def("DayOfWeek", &BDate::DayOfWeek, "")
 .def("DayOfYear", &BDate::DayOfYear, "")
 .def("WeekNumber", &BDate::WeekNumber, "")
-.def("IsLeapYear", py::overload_cast<>(&BDate::IsLeapYear), "")
+//.def("IsLeapYear", py::overload_cast<>(&BDate::IsLeapYear, py::const_), "")
 .def_static("IsLeapYear", py::overload_cast<int>(&BDate::IsLeapYear), "", py::arg("year"))
 .def("DaysInYear", &BDate::DaysInYear, "")
 .def("DaysInMonth", &BDate::DaysInMonth, "")
-.def("ShortDayName", py::overload_cast<>(&BDate::ShortDayName), "")
+//.def("ShortDayName", py::overload_cast<>(&BDate::ShortDayName, py::const_), "")
 .def_static("ShortDayName", py::overload_cast<int>(&BDate::ShortDayName), "", py::arg("day"))
-.def("ShortMonthName", py::overload_cast<>(&BDate::ShortMonthName), "")
+//.def("ShortMonthName", py::overload_cast<>(&BDate::ShortMonthName, py::const_), "")
 .def_static("ShortMonthName", py::overload_cast<int>(&BDate::ShortMonthName), "", py::arg("month"))
-.def("LongDayName", py::overload_cast<>(&BDate::LongDayName), "")
+//.def("LongDayName", py::overload_cast<>(&BDate::LongDayName, py::const_), "")
 .def_static("LongDayName", py::overload_cast<int>(&BDate::LongDayName), "", py::arg("day"))
-.def("LongMonthName", py::overload_cast<>(&BDate::LongMonthName), "")
+//.def("LongMonthName", py::overload_cast<>(&BDate::LongMonthName, py::const_), "")
 .def_static("LongMonthName", py::overload_cast<int>(&BDate::LongMonthName), "", py::arg("month"))
-.def("DateToJulianDay", &BDate::DateToJulianDay, "")
+//.def("DateToJulianDay", &BDate::DateToJulianDay, "")
 .def_static("JulianDayToDate", &BDate::JulianDayToDate, "", py::arg("julianDay"))
 .def("__ne__", &BDate::operator!=, "", py::arg("date"))
 .def("__eq__", &BDate::operator==, "", py::arg("date"))
@@ -153,5 +130,29 @@ py::class_<BDateTime>(m, "BDateTime")
 .def("__ge__", &BDateTime::operator>=, "", py::arg("dateTime"))
 ;
 
+/*
+m.attr("time_type") = py::cast(time_type);
 
+m.attr("B_GMT_TIME") = py::cast(B_GMT_TIME);
+
+m.attr("B_LOCAL_TIME") = py::cast(B_LOCAL_TIME);
+
+m.attr("diff_type") = py::cast(diff_type);
+
+m.attr("B_HOURS_DIFF") = py::cast(B_HOURS_DIFF);
+
+m.attr("B_MINUTES_DIFF") = py::cast(B_MINUTES_DIFF);
+
+m.attr("B_SECONDS_DIFF") = py::cast(B_SECONDS_DIFF);
+
+m.attr("B_MILLISECONDS_DIFF") = py::cast(B_MILLISECONDS_DIFF);
+
+m.attr("B_MICROSECONDS_DIFF") = py::cast(B_MICROSECONDS_DIFF);
+
+m.attr("BTime") = py::cast(BTime);
+
+m.attr("BDate") = py::cast(BDate);
+
+m.attr("BDateTime") = py::cast(BDateTime);
+*/
 }

@@ -155,12 +155,14 @@ local sourceFiles =
 	Slider.cpp
 	
 	#SupportKit
+	Beep.cpp
 	Locker.cpp
 	Autolock.cpp
 	SupportDefs.cpp
 	Archivable.cpp
 	TypeConstants.cpp
 	Architecture.cpp
+	DateTime.cpp
 
 	#Kernel
 	fs_attr.cpp

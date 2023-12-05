@@ -63,9 +63,11 @@ from .ScrollBar import *
 from .Shape import *
 from .Size import *
 from .Slider import *
+from .Beep import *
 from .Architecture import *
 from .Locker import *
-#from .Autolock import *
+from .Autolock import *
+from .DateTime import *
 
 from .fs_attr import *
 
