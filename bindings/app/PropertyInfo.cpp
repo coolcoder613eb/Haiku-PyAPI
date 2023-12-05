@@ -12,6 +12,31 @@
 
 namespace py = pybind11;
 
+class PyBPropertyInfo : public BPropertyInfo{
+	public:
+        using BPropertyInfo::BPropertyInfo;
+        int32				FindMatch(BMessage* msg, int32 index, BMessage* specifier, int32 form, const char* prop, void* data = NULL) const override {
+            PYBIND11_OVERLOAD(int32, BPropertyInfo, FindMatch, msg, index, specifier, form, prop, data);
+        }
+        bool				IsFixedSize() const override {
+            PYBIND11_OVERLOAD(bool, BPropertyInfo, IsFixedSize);
+        }
+        type_code			TypeCode() const override {
+            PYBIND11_OVERLOAD(type_code, BPropertyInfo, TypeCode);
+        }
+        ssize_t				FlattenedSize() const override {
+            PYBIND11_OVERLOAD(ssize_t, BPropertyInfo, FlattenedSize);
+        }
+        status_t			Flatten(void* buffer, ssize_t size) const override {
+            PYBIND11_OVERLOAD(status_t, BPropertyInfo, Flatten, buffer, size);
+        }
+        bool				AllowsTypeCode(type_code code) const override {
+            PYBIND11_OVERLOAD(bool, BPropertyInfo, AllowsTypeCode, code);
+        }
+        status_t			Unflatten(type_code code, const void* buffer, ssize_t size) override {
+            PYBIND11_OVERLOAD(status_t, BPropertyInfo, Unflatten, code, buffer, size);
+        }
+};
 
 PYBIND11_MODULE(PropertyInfo,m)
 {
@@ -49,7 +74,7 @@ py::class_<value_info>(m, "value_info")
 .def_readonly("_reserved", &value_info::_reserved, "")
 ;
 
-py::class_<BPropertyInfo>(m, "BPropertyInfo")
+py::class_<BPropertyInfo,PyBPropertyInfo>(m, "BPropertyInfo")
 .def(py::init<property_info *, value_info *, bool>(), "", py::arg("prop")=NULL, py::arg("value")=NULL, py::arg("freeOnDelete")=false)
 .def("FindMatch", &BPropertyInfo::FindMatch, "", py::arg("msg"), py::arg("index"), py::arg("specifier"), py::arg("form"), py::arg("prop"), py::arg("data")=NULL)
 .def("IsFixedSize", &BPropertyInfo::IsFixedSize, "")
