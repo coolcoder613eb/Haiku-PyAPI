@@ -73,6 +73,7 @@ from .List import *
 from .String import *
 from .Flattenable import *
 from .StringList import *
+from .DataIO import *
 
 from .fs_attr import *
 
