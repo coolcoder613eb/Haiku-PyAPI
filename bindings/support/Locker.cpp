@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void define_Locker(py::module_& m)
+PYBIND11_MODULE(Locker, m)
 {
 py::class_<BLocker>(m, "BLocker")
 .def(py::init(), "")
