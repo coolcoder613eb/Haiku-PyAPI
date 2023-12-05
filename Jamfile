@@ -163,7 +163,8 @@ local sourceFiles =
 	TypeConstants.cpp
 	Architecture.cpp
 	DateTime.cpp
-
+	List.cpp
+	
 	#Kernel
 	fs_attr.cpp
 	
