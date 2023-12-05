@@ -163,6 +163,7 @@ local sourceFiles =
 	TypeConstants.cpp
 	Architecture.cpp
 	DateTime.cpp
+	parsedate.cpp
 	List.cpp
 	
 	#Kernel
