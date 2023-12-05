@@ -166,6 +166,8 @@ local sourceFiles =
 	parsedate.cpp
 	List.cpp
 	String.cpp
+	Flattenable.cpp
+	StringList.cpp
 	
 	#Kernel
 	fs_attr.cpp

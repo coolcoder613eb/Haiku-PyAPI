@@ -71,6 +71,8 @@ from .DateTime import *
 from .parsedate import *
 from .List import *
 from .String import *
+from .Flattenable import *
+from .StringList import *
 
 from .fs_attr import *
 

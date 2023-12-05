@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void define_Flattenable(py::module_& m)
+PYBIND11_MODULE(Flattenable, m)
 {
 py::class_<BFlattenable>(m, "BFlattenable")
 .def("IsFixedSize", &BFlattenable::IsFixedSize, "")

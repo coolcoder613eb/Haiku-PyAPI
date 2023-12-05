@@ -2,13 +2,53 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/functional.h>
 
 #include <support/StringList.h>
 
 namespace py = pybind11;
 
+class PyBStringList : public BStringList{
+	public:
+        using BStringList::BStringList;
+        bool				IsFixedSize() const override {
+        	PYBIND11_OVERLOAD(bool, BStringList, IsFixedSize);
+        }
+        type_code			TypeCode() const override {
+        	PYBIND11_OVERLOAD(type_code, BStringList, TypeCode);
+        }
+        bool				AllowsTypeCode(type_code code) const override {
+        	PYBIND11_OVERLOAD(bool, BStringList, AllowsTypeCode, code);
+        }
+        ssize_t				FlattenedSize() const override {
+        	PYBIND11_OVERLOAD(ssize_t, BStringList, FlattenedSize);
+        }
+        status_t			Flatten(void* buffer, ssize_t size) const override {
+        	PYBIND11_OVERLOAD(status_t, BStringList, Flatten, buffer, size);
+        }
+        status_t			Unflatten(type_code code, const void* buffer, ssize_t size) override {
+        	PYBIND11_OVERLOAD(status_t, BStringList, Unflatten, code, buffer, size);
+        }
+};
 
-void define_StringList(py::module_& m)
+bool CallPythonFunction(const BString& item, py::function& func) {
+    // Chiamare la funzione Python passando l'elemento
+    // Questo richiede la conversione tra tipi C++ e Python
+    // Includere eventuali conversioni necessarie qui
+    // Esempio di chiamata della funzione Python
+    py::object result = func(item);
+
+    // Convertire il risultato della funzione Python in un booleano
+    return py::cast<bool>(result);
+}
+/* or this way
+bool CallPythonFunction(const BString& str, const py::function& func) {
+    // Chiamare la funzione Python
+    return func(str).template cast<bool>();
+}*/
+
+
+PYBIND11_MODULE(StringList, m)
 {
 py::class_<BStringList, BFlattenable>(m, "BStringList")
 .def(py::init<int>(), "", py::arg("count")=20)
@@ -34,8 +74,18 @@ py::class_<BStringList, BFlattenable>(m, "BStringList")
 .def("CountStrings", &BStringList::CountStrings, "")
 .def("IsEmpty", &BStringList::IsEmpty, "")
 .def("Join", &BStringList::Join, "", py::arg("separator"), py::arg("length")=- 1)
-.def("DoForEach", py::overload_cast<bool(*func)(constBString&string)>(&BStringList::DoForEach), "", py::arg(""))
-.def("DoForEach", py::overload_cast<bool(*func)(constBString&string,void*arg2), void *>(&BStringList::DoForEach), "", py::arg(""), py::arg("arg2"))
+//.def("DoForEach", py::overload_cast<bool(*func)(constBString&string)>(&BStringList::DoForEach), "", py::arg(""))
+.def("DoForEach", [](BStringList& self, py::function& func) -> void {
+    self.DoForEach(static_cast<bool (*)(const BString&, void*)>(+[](const BString& item, void* userData) -> bool {
+        return CallPythonFunction(item, *static_cast<py::function*>(userData));
+    }), &func);
+}, "", py::arg("func"))
+//.def("DoForEach", py::overload_cast<bool(*func)(constBString&string,void*arg2), void *>(&BStringList::DoForEach), "", py::arg(""), py::arg("arg2"))
+.def("DoForEach", [](BStringList& self, py::function& func, void* arg2) -> void {
+    self.DoForEach(static_cast<bool (*)(const BString&, void*)>(+[](const BString& item, void* userData) -> bool {
+        return CallPythonFunction(item, *static_cast<py::function*>(userData));
+    }), arg2);
+}, "", py::arg("func"), py::arg("arg2"))
 .def("operator=", &BStringList::operator=, "", py::arg("other"))
 .def("__eq__", &BStringList::operator==, "", py::arg("other"))
 .def("__ne__", &BStringList::operator!=, "", py::arg("other"))
@@ -47,6 +97,6 @@ py::class_<BStringList, BFlattenable>(m, "BStringList")
 .def("Unflatten", &BStringList::Unflatten, "", py::arg("code"), py::arg("buffer"), py::arg("size"))
 ;
 
-m.def("__ne__", &operator!=, "", py::arg("other"));
+//m.def("__ne__", &operator!=, "", py::arg("other"));
 
 }
