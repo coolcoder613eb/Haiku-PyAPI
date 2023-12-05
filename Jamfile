@@ -155,9 +155,12 @@ local sourceFiles =
 	Slider.cpp
 	
 	#SupportKit
+	Locker.cpp
+	Autolock.cpp
 	SupportDefs.cpp
 	Archivable.cpp
 	TypeConstants.cpp
+	Architecture.cpp
 
 	#Kernel
 	fs_attr.cpp
