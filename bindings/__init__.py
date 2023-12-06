@@ -80,9 +80,11 @@ from .fs_attr import *
 from .StorageDefs import *
 from .Entry import *
 from .Node import *
+from .SymLink import *
 from .Directory import *
 from .File import *
 from .Volume import *
+from .VolumeRoster import *
 from .Path import *
 from .Statable import *
 #from .FilePanel import *

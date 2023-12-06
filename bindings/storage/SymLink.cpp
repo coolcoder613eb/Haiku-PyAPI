@@ -4,14 +4,18 @@
 #include <pybind11/operators.h>
 
 #include <SymLink.h>
+#include <Path.h>
+#include <Directory.h>
+#include <Node.h>
+#include <Entry.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
-using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+//using namespace BPrivate;
+//using namespace BPrivate::Storage;
+//using namespace BPrivate::Storage::Mime;
+//using namespace BPackageKit;
 
-void define_SymLink(py::module_& m)
+PYBIND11_MODULE(SymLink, m)
 {
 py::class_<BSymLink, BNode>(m, "BSymLink")
 .def(py::init(), "")
