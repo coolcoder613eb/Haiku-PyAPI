@@ -89,6 +89,7 @@ from .Path import *
 from .Statable import *
 from .Resources import *
 from .ResourceStrings import *
+from .Query import *
 #from .FilePanel import *
 
 _BWindow=BWindow
