@@ -177,10 +177,13 @@ local sourceFiles =
 	StorageDefs.cpp
 	Entry.cpp
 	Node.cpp
+	
 	Directory.cpp
 	File.cpp
 	Volume.cpp
+	VolumeRoster.cpp
 	Path.cpp
+	SymLink.cpp
 	Statable.cpp
 	#FilePanel.cpp
 	;
