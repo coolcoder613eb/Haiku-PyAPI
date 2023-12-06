@@ -179,6 +179,7 @@ local sourceFiles =
 	Node.cpp
 	Directory.cpp
 	File.cpp
+	Path.cpp
 	;
 
 # The shared library Be.so can be built from the sourceFiles
