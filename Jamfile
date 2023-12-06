@@ -188,6 +188,7 @@ local sourceFiles =
 	Statable.cpp
 	Resources.cpp
 	ResourceStrings.cpp
+	Query.cpp
 	#FilePanel.cpp
 	;
 

@@ -4,14 +4,16 @@
 #include <pybind11/operators.h>
 
 #include <Query.h>
+#include <Volume.h>
+#include <String.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+//using namespace BPrivate::Storage::Mime;
+//using namespace BPackageKit;
 
-void define_Query(py::module_& m)
+PYBIND11_MODULE(Query, m)
 {
 py::enum_<query_op>(m, "query_op", "")
 .value("B_INVALID_OP", query_op::B_INVALID_OP, "")
@@ -30,11 +32,11 @@ py::enum_<query_op>(m, "query_op", "")
 .value("_B_RESERVED_OP_", query_op::_B_RESERVED_OP_, "")
 .export_values();
 
-m.attr("QueryNode") = py::cast(QueryNode);
+//m.attr("QueryNode") = py::cast(QueryNode);
 
-m.attr("QueryStack") = py::cast(QueryStack);
+//m.attr("QueryStack") = py::cast(QueryStack);
 
-m.attr("QueryTree") = py::cast(QueryTree);
+//m.attr("QueryTree") = py::cast(QueryTree);
 
 py::class_<BQuery, BEntryList>(m, "BQuery")
 .def(py::init(), "")

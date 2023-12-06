@@ -4,6 +4,8 @@
 #include <pybind11/operators.h>
 
 #include <PathFinder.h>
+#include <FindDirectory.h>
+#include <package/PackageResolvableExpression.h>
 #include <Path.h>
 
 namespace py = pybind11;
@@ -20,11 +22,11 @@ py::class_<BPathFinder>(m, "BPathFinder")
 .def(py::init<const void *, const char *>(), "", py::arg("codePointer")=NULL, py::arg("dependency")=NULL)
 .def(py::init<const char *, const char *>(), "", py::arg("path"), py::arg("dependency")=NULL)
 .def(py::init<const entry_ref &, const char *>(), "", py::arg("ref"), py::arg("dependency")=NULL)
-//.def(py::init<const BResolvableExpression &, const char *>(), "", py::arg("expression"), py::arg("dependency")=NULL)
+//.def(py::init<const BPackageKit::BPackageResolvableExpression &, const char *>(), "", py::arg("expression"), py::arg("dependency")=NULL) //BResolvableExpression
 .def("SetTo", py::overload_cast<const void *, const char *>(&BPathFinder::SetTo), "", py::arg("codePointer")=NULL, py::arg("dependency")=NULL)
 .def("SetTo", py::overload_cast<const char *, const char *>(&BPathFinder::SetTo), "", py::arg("path"), py::arg("dependency")=NULL)
 .def("SetTo", py::overload_cast<const entry_ref &, const char *>(&BPathFinder::SetTo), "", py::arg("ref"), py::arg("dependency")=NULL)
-//.def("SetTo", py::overload_cast<const BResolvableExpression &, const char *>(&BPathFinder::SetTo), "", py::arg("expression"), py::arg("dependency")=NULL)
+//.def("SetTo", py::overload_cast<const BPackageKit::BPackageResolvableExpression &, const char *>(&BPathFinder::SetTo), "", py::arg("expression"), py::arg("dependency")=NULL) //BResolvableExpression
 .def("FindPath", [](BPathFinder& self,const char * architecture,path_base_directory baseDirectory,const char * subPath,unsigned int flags) {
     BPath  _path;
     status_t r = self.FindPath(architecture, baseDirectory, subPath, flags, _path);
