@@ -4,44 +4,46 @@
 #include <pybind11/operators.h>
 
 #include <NodeMonitor.h>
+#include <StorageDefs.h>
+#include <Handler.h>
+#include <Looper.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
-using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
+//using namespace BPrivate;
+//using namespace BPrivate::Storage;
+//using namespace BPrivate::Storage::Mime;
 
-void define_NodeMonitor(py::module_& m)
+PYBIND11_MODULE(NodeMonitor, m)
 {
-m.attr("B_STOP_WATCHING") = py::cast(B_STOP_WATCHING);
-m.attr("B_WATCH_NAME") = py::cast(B_WATCH_NAME);
-m.attr("B_WATCH_STAT") = py::cast(B_WATCH_STAT);
-m.attr("B_WATCH_ATTR") = py::cast(B_WATCH_ATTR);
-m.attr("B_WATCH_DIRECTORY") = py::cast(B_WATCH_DIRECTORY);
-m.attr("B_WATCH_ALL") = py::cast(B_WATCH_ALL);
-m.attr("B_WATCH_MOUNT") = py::cast(B_WATCH_MOUNT);
-m.attr("B_WATCH_INTERIM_STAT") = py::cast(B_WATCH_INTERIM_STAT);
-m.attr("B_WATCH_CHILDREN") = py::cast(B_WATCH_CHILDREN);
+m.def("watch_volume", py::overload_cast<dev_t, uint32, BMessenger>(&watch_volume), "", py::arg("volume"), py::arg("flags"), py::arg("target"));
 
-m.attr("B_STAT_MODE") = py::cast(B_STAT_MODE);
-m.attr("B_STAT_UID") = py::cast(B_STAT_UID);
-m.attr("B_STAT_GID") = py::cast(B_STAT_GID);
-m.attr("B_STAT_SIZE") = py::cast(B_STAT_SIZE);
-m.attr("B_STAT_ACCESS_TIME") = py::cast(B_STAT_ACCESS_TIME);
-m.attr("B_STAT_MODIFICATION_TIME") = py::cast(B_STAT_MODIFICATION_TIME);
-m.attr("B_STAT_CREATION_TIME") = py::cast(B_STAT_CREATION_TIME);
-m.attr("B_STAT_CHANGE_TIME") = py::cast(B_STAT_CHANGE_TIME);
-m.attr("B_STAT_INTERIM_UPDATE") = py::cast(B_STAT_INTERIM_UPDATE);
+m.def("watch_volume", py::overload_cast<dev_t, uint32, const BHandler *, const BLooper *>(&watch_volume), "", py::arg("volume"), py::arg("flags"), py::arg("handler"), py::arg("looper")=NULL);
 
-m.def("watch_volume", py::overload_cast<dev_t, unsigned int, BMessenger>(&watch_volume), "", py::arg("volume"), py::arg("flags"), py::arg("target"));
+m.def("watch_node", py::overload_cast<const node_ref *, uint32, BMessenger>(&watch_node), "", py::arg("node"), py::arg("flags"), py::arg("target"));
 
-m.def("watch_volume", py::overload_cast<dev_t, unsigned int, const BHandler *, const BLooper *>(&watch_volume), "", py::arg("volume"), py::arg("flags"), py::arg("handler"), py::arg("looper")=NULL);
-
-m.def("watch_node", py::overload_cast<const node_ref *, unsigned int, BMessenger>(&watch_node), "", py::arg("node"), py::arg("flags"), py::arg("target"));
-
-m.def("watch_node", py::overload_cast<const node_ref *, unsigned int, const BHandler *, const BLooper *>(&watch_node), "", py::arg("node"), py::arg("flags"), py::arg("handler"), py::arg("looper")=NULL);
+m.def("watch_node", py::overload_cast<const node_ref *, uint32, const BHandler *, const BLooper *>(&watch_node), "", py::arg("node"), py::arg("flags"), py::arg("handler"), py::arg("looper")=NULL);
 
 m.def("stop_watching", py::overload_cast<BMessenger>(&stop_watching), "", py::arg("target"));
 
 m.def("stop_watching", py::overload_cast<const BHandler *, const BLooper *>(&stop_watching), "", py::arg("handler"), py::arg("looper")=NULL);
 
+m.attr("B_STOP_WATCHING") = 0x0000; //these have been hardcoded due to fault on loading module
+m.attr("B_WATCH_NAME") = 0x0001;
+m.attr("B_WATCH_STAT") = 0x0002;
+m.attr("B_WATCH_ATTR") = 0x0004;
+m.attr("B_WATCH_DIRECTORY") = 0x0008;
+m.attr("B_WATCH_ALL") = 0x000f;
+m.attr("B_WATCH_MOUNT") = 0x0010;
+m.attr("B_WATCH_INTERIM_STAT") = 0x0020;
+m.attr("B_WATCH_CHILDREN") = 0x0040;
+
+m.attr("B_STAT_MODE") = 0x0001;
+m.attr("B_STAT_UID") = 0x0002;
+m.attr("B_STAT_GID") = 0x0004;
+m.attr("B_STAT_SIZE") = 0x0008;
+m.attr("B_STAT_ACCESS_TIME") = 0x0010;
+m.attr("B_STAT_MODIFICATION_TIME") = 0x0020;
+m.attr("B_STAT_CREATION_TIME") = 0x0040;
+m.attr("B_STAT_CHANGE_TIME") = 0x0080;
+m.attr("B_STAT_INTERIM_UPDATE") = 0x1000;
 }

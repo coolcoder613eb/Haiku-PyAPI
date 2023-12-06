@@ -13,6 +13,7 @@ using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
 using namespace BPackageKit;*/
 
+// ADD GetStat overload_pure ?
 PYBIND11_MODULE(Statable, m)
 {
 py::class_<BStatable>(m, "BStatable")
