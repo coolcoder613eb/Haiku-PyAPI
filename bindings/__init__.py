@@ -82,6 +82,7 @@ from .Entry import *
 from .Node import *
 from .Directory import *
 from .File import *
+from .Path import *
 
 _BWindow=BWindow
 _BApplication=BApplication

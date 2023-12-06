@@ -4,13 +4,37 @@
 #include <pybind11/operators.h>
 
 #include <Path.h>
+#include <Directory.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
+/*using namespace BPrivate;
 using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
+using namespace BPrivate::Storage::Mime;*/
 
-void define_Path(py::module_& m)
+class PyBPath : public BPath{
+	public:
+        using BPath::BPath;
+        bool			IsFixedSize() const override {
+        	PYBIND11_OVERLOAD(bool, BPath, IsFixedSize);
+        }
+        type_code		TypeCode() const override {
+        	PYBIND11_OVERLOAD(type_code, BPath, TypeCode);
+        }
+        ssize_t			FlattenedSize() const override {
+        	PYBIND11_OVERLOAD(ssize_t, BPath, FlattenedSize);
+        }
+        status_t		Flatten(void* buffer, ssize_t size) const override {
+        	PYBIND11_OVERLOAD(status_t, BPath, Flatten, buffer, size);
+        }
+        bool			AllowsTypeCode(type_code code) const override {
+        	PYBIND11_OVERLOAD(bool, BPath, AllowsTypeCode, code);
+        }
+        status_t		Unflatten(type_code code, const void* buffer, ssize_t size) override {
+        	PYBIND11_OVERLOAD(status_t, BPath, Unflatten, code, buffer, size);
+        }
+};
+
+PYBIND11_MODULE(Path, m)
 {
 py::class_<BPath, BFlattenable>(m, "BPath")
 .def(py::init(), "")
@@ -30,10 +54,10 @@ py::class_<BPath, BFlattenable>(m, "BPath")
 .def("Leaf", &BPath::Leaf, "")
 .def("GetParent", &BPath::GetParent, "", py::arg("path"))
 .def("IsAbsolute", &BPath::IsAbsolute, "")
-.def("__eq__", py::overload_cast<const BPath &>(&BPath::operator==), "", py::arg("item"))
-.def("__eq__", py::overload_cast<const char *>(&BPath::operator==), "", py::arg("path"))
-.def("__ne__", py::overload_cast<const BPath &>(&BPath::operator!=), "", py::arg("item"))
-.def("__ne__", py::overload_cast<const char *>(&BPath::operator!=), "", py::arg("path"))
+.def("__eq__", py::overload_cast<const BPath &>(&BPath::operator==, py::const_), "", py::arg("item"))
+.def("__eq__", py::overload_cast<const char *>(&BPath::operator==, py::const_), "", py::arg("path"))
+.def("__ne__", py::overload_cast<const BPath &>(&BPath::operator!=, py::const_), "", py::arg("item"))
+.def("__ne__", py::overload_cast<const char *>(&BPath::operator!=, py::const_), "", py::arg("path"))
 .def("operator=", py::overload_cast<const BPath &>(&BPath::operator=), "", py::arg("item"))
 .def("operator=", py::overload_cast<const char *>(&BPath::operator=), "", py::arg("path"))
 .def("IsFixedSize", &BPath::IsFixedSize, "")
