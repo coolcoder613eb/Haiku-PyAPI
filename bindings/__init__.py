@@ -83,6 +83,8 @@ from .Node import *
 from .Directory import *
 from .File import *
 from .Path import *
+from .Statable import *
+#from .FilePanel import *
 
 _BWindow=BWindow
 _BApplication=BApplication

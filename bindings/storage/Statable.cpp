@@ -4,14 +4,16 @@
 #include <pybind11/operators.h>
 
 #include <Statable.h>
+#include <Node.h>
+#include <Volume.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
+/*using namespace BPrivate;
 using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+using namespace BPackageKit;*/
 
-void define_Statable(py::module_& m)
+PYBIND11_MODULE(Statable, m)
 {
 py::class_<BStatable>(m, "BStatable")
 .def("GetStat", &BStatable::GetStat, "", py::arg("stat"))
@@ -33,7 +35,7 @@ py::class_<BStatable>(m, "BStatable")
 .def("GetAccessTime", &BStatable::GetAccessTime, "", py::arg("atime"))
 .def("SetAccessTime", &BStatable::SetAccessTime, "", py::arg("atime"))
 .def("GetVolume", &BStatable::GetVolume, "", py::arg("volume"))
-.def_readwrite("Private", &BStatable::Private, "")
+//.def_readwrite("Private", &BStatable::Private, "")
 ;
 
 
