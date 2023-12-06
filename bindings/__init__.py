@@ -82,6 +82,7 @@ from .Entry import *
 from .Node import *
 from .Directory import *
 from .File import *
+from .Volume import *
 from .Path import *
 from .Statable import *
 #from .FilePanel import *

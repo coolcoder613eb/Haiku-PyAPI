@@ -179,6 +179,7 @@ local sourceFiles =
 	Node.cpp
 	Directory.cpp
 	File.cpp
+	Volume.cpp
 	Path.cpp
 	Statable.cpp
 	#FilePanel.cpp
