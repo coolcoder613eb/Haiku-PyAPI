@@ -188,7 +188,9 @@ local sourceFiles =
 	Statable.cpp
 	Resources.cpp
 	ResourceStrings.cpp
+	EntryList.cpp
 	Query.cpp
+	NodeMonitor.cpp
 	#FilePanel.cpp
 	;
 
