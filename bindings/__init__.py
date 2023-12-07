@@ -87,6 +87,8 @@ from .Volume import *
 from .VolumeRoster import *
 from .Path import *
 from .Statable import *
+from .Resources import *
+from .ResourceStrings import *
 #from .FilePanel import *
 
 _BWindow=BWindow
