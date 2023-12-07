@@ -29,7 +29,7 @@ py::class_<BNodeInfo>(m, "BNodeInfo")
 .def("GetAppHint", &BNodeInfo::GetAppHint, "", py::arg("ref"))
 .def("SetAppHint", &BNodeInfo::SetAppHint, "", py::arg("ref"))
 .def("GetTrackerIcon", py::overload_cast<BBitmap *, icon_size>(&BNodeInfo::GetTrackerIcon, py::const_), "", py::arg("icon"), py::arg("which")=B_LARGE_ICON)
-.def_static("GetTrackerIcon", py::overload_cast<const entry_ref *, BBitmap *, icon_size>(&BNodeInfo::GetTrackerIcon), "", py::arg("ref"), py::arg("icon"), py::arg("which")=B_LARGE_ICON)
+.def_static("GetTrackerIcon_static", py::overload_cast<const entry_ref *, BBitmap *, icon_size>(&BNodeInfo::GetTrackerIcon), "", py::arg("ref"), py::arg("icon"), py::arg("which")=B_LARGE_ICON)
 ;
 
 
