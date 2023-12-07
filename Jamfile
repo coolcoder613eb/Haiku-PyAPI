@@ -194,6 +194,7 @@ local sourceFiles =
 	Query.cpp
 	NodeMonitor.cpp
 	NodeInfo.cpp
+	#DiskDeviceDefs.cpp
 	#FilePanel.cpp
 	;
 

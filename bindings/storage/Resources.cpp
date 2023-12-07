@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+//#include <pybind11/numpy.h>
 
 #include <Resources.h>
 
@@ -10,7 +11,7 @@ namespace py = pybind11;
 //using namespace BPrivate::Storage;
 //using namespace BPrivate::Storage::Mime;
 //using namespace BPackageKit;
-
+/*
 std::vector<char*> convertConstCharPtrArray(const char** constCharPtrArray, std::size_t size) {
     std::vector<char*> charPtrVector;
 
@@ -20,7 +21,7 @@ std::vector<char*> convertConstCharPtrArray(const char** constCharPtrArray, std:
     }
 
     return charPtrVector;
-}
+}*/
 
 PYBIND11_MODULE(Resources, m)
 {
@@ -52,15 +53,43 @@ py::class_<BResources>(m, "BResources")
 .def("HasResource", py::overload_cast<type_code, const char *>(&BResources::HasResource), "", py::arg("type"), py::arg("name"))
 //.def("GetResourceInfo", py::overload_cast<int32, type_code *, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byIndex"), py::arg("typeFound"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
 .def("GetResourceInfo", [](BResources& self, int32 byIndex){
+    type_code typeFound;
+    int32 idFound;
+    const char * nameFound;
+    size_t lengthFound;
+    bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
+
+    // Utilizza py::bytes per rappresentare la sequenza di byte
+    py::bytes byteSequence(nameFound, lengthFound);
+
+    return py::make_tuple(result, static_cast<int>(typeFound), idFound, byteSequence, lengthFound);
+}, "", py::arg("byIndex"))
+/*
+.def("GetResourceInfo", [](BResources& self, int32 byIndex){
+    type_code typeFound;
+    int32 idFound;
+    const char * nameFound;
+    size_t lengthFound;
+    bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
+
+    // Utilizza py::str per rappresentare la stringa in Python
+    py::str pythonString(nameFound, lengthFound);
+
+    return py::make_tuple(result, static_cast<int>(typeFound), idFound, pythonString, lengthFound);
+}, "", py::arg("byIndex"))*/
+/*
+.def("GetResourceInfo", [](BResources& self, int32 byIndex){
 	type_code typeFound;
 	int32 idFound;
 	const char * nameFound;
 	//std::vector<char *> nameFound;
 	size_t lengthFound;
 	bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
-	std::vector<char*> charPtrVector = convertConstCharPtrArray(&nameFound, lengthFound);
-	return py::make_tuple(result, typeFound, idFound, charPtrVector, lengthFound);
-}, "", py::arg("byIndex"))
+	py::array_t<const char> array = py::array_t<const char>({static_cast<ssize_t>(lengthFound)}, {sizeof(const char)}, nameFound);
+	return py::make_tuple(result, typeFound, idFound, array, lengthFound);
+	//std::vector<char*> charPtrVector = convertConstCharPtrArray(&nameFound, lengthFound);
+//	return py::make_tuple(result, typeFound, idFound, charPtrVector, lengthFound);
+}, "", py::arg("byIndex"))*/
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andIndex"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andID"), py::arg("nameFound"), py::arg("lengthFound"))
 .def("GetResourceInfo", py::overload_cast<type_code, const char *, int32*, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andName"), py::arg("idFound"), py::arg("lengthFound"))
