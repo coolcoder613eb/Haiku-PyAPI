@@ -186,11 +186,14 @@ local sourceFiles =
 	PathFinder.cpp
 	SymLink.cpp
 	Statable.cpp
+	Mime.cpp
+	MimeType.cpp
 	Resources.cpp
 	ResourceStrings.cpp
 	EntryList.cpp
 	Query.cpp
 	NodeMonitor.cpp
+	NodeInfo.cpp
 	#FilePanel.cpp
 	;
 

@@ -87,11 +87,14 @@ from .Volume import *
 from .VolumeRoster import *
 from .Path import *
 from .Statable import *
+from .Mime import *
+from .MimeType import *
 from .Resources import *
 from .ResourceStrings import *
 from .EntryList import *
 from .Query import *
 from .NodeMonitor import *
+from .NodeInfo import *
 
 #from .FilePanel import *
 

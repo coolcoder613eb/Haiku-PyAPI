@@ -11,6 +11,17 @@ namespace py = pybind11;
 //using namespace BPrivate::Storage::Mime;
 //using namespace BPackageKit;
 
+std::vector<char*> convertConstCharPtrArray(const char** constCharPtrArray, std::size_t size) {
+    std::vector<char*> charPtrVector;
+
+    for (std::size_t i = 0; i < size; ++i) {
+        // Copia ogni stringa di caratteri nel vettore
+        charPtrVector.push_back(const_cast<char*>(constCharPtrArray[i]));
+    }
+
+    return charPtrVector;
+}
+
 PYBIND11_MODULE(Resources, m)
 {
 //m.attr("ResourcesContainer") = py::cast(ResourcesContainer);
@@ -40,6 +51,16 @@ py::class_<BResources>(m, "BResources")
 .def("HasResource", py::overload_cast<type_code, int32>(&BResources::HasResource), "", py::arg("type"), py::arg("id"))
 .def("HasResource", py::overload_cast<type_code, const char *>(&BResources::HasResource), "", py::arg("type"), py::arg("name"))
 //.def("GetResourceInfo", py::overload_cast<int32, type_code *, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byIndex"), py::arg("typeFound"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
+.def("GetResourceInfo", [](BResources& self, int32 byIndex){
+	type_code typeFound;
+	int32 idFound;
+	const char * nameFound;
+	//std::vector<char *> nameFound;
+	size_t lengthFound;
+	bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
+	std::vector<char*> charPtrVector = convertConstCharPtrArray(&nameFound, lengthFound);
+	return py::make_tuple(result, typeFound, idFound, charPtrVector, lengthFound);
+}, "", py::arg("byIndex"))
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andIndex"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andID"), py::arg("nameFound"), py::arg("lengthFound"))
 .def("GetResourceInfo", py::overload_cast<type_code, const char *, int32*, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andName"), py::arg("idFound"), py::arg("lengthFound"))
