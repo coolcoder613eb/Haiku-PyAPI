@@ -183,8 +183,11 @@ local sourceFiles =
 	Volume.cpp
 	VolumeRoster.cpp
 	Path.cpp
+	PathFinder.cpp
 	SymLink.cpp
 	Statable.cpp
+	Resources.cpp
+	ResourceStrings.cpp
 	#FilePanel.cpp
 	;
 
