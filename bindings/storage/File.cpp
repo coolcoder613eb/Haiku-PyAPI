@@ -12,6 +12,34 @@
 
 namespace py = pybind11;
 
+class PyBFile : public BFile {
+public:
+    using BFile::BFile;
+    ssize_t Read(void *buffer, size_t size)  override {
+        PYBIND11_OVERLOAD(ssize_t, BFile, Read, buffer, size);
+    }
+    ssize_t ReadAt(off_t location, void *buffer, size_t size)  override {
+        PYBIND11_OVERLOAD(ssize_t, BFile, ReadAt, location, buffer, size);
+    }
+    ssize_t Write(const void *buffer, size_t size)  override {
+        PYBIND11_OVERLOAD(ssize_t, BFile, Write, buffer, size);
+    }
+    ssize_t WriteAt(off_t location, const void *buffer, size_t size)  override {
+        PYBIND11_OVERLOAD(ssize_t, BFile, WriteAt, location, buffer, size);
+    }
+    off_t Seek(off_t offset, uint32 seekMode)  override {
+        PYBIND11_OVERLOAD(off_t, BFile, Seek, offset, seekMode);
+    }
+    off_t Position() const  override {
+        PYBIND11_OVERLOAD(off_t, BFile, Position);
+    }
+    status_t SetSize(off_t size)  override {
+        PYBIND11_OVERLOAD(status_t, BFile, SetSize, size);
+    }
+    status_t GetSize(off_t* size) const  override {
+        PYBIND11_OVERLOAD(status_t, BFile, GetSize, size);
+    }
+};
 
 PYBIND11_MODULE(File, m)
 {
