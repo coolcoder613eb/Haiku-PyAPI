@@ -62,10 +62,10 @@ py::class_<BResources>(m, "BResources")
     py::bytes byteSequence(nameFound, lengthFound);
 
     return py::make_tuple(result, static_cast<int>(typeFound), idFound, byteSequence, lengthFound);
-}, "", py::arg("byIndex"))
+}, "", py::arg("byIndex")) //<- this works
 
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andIndex"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
-.def("GetResourceInfo", [](BResources& self, type_code byType, int32 andIndex){
+.def("GetResourceInfo_byTypeAndIndex", [](BResources& self, type_code byType, int32 andIndex){
     int32 idFound;
     const char * nameFound;
     size_t lengthFound;
@@ -76,7 +76,7 @@ py::class_<BResources>(m, "BResources")
     return py::make_tuple(result, idFound, byteSequence, lengthFound);
 }, "", py::arg("byType"), py::arg("andIndex"))
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andID"), py::arg("nameFound"), py::arg("lengthFound"))
-.def("GetResourceInfo", [](BResources& self, type_code byType, int32 andID){
+.def("GetResourceInfo_byTypeAndID", [](BResources& self, type_code byType, int32 andID){
     const char * nameFound;
     size_t lengthFound;
     bool result = self.GetResourceInfo(byType, andID, &nameFound, &lengthFound);
@@ -92,7 +92,7 @@ py::class_<BResources>(m, "BResources")
     bool result = self.GetResourceInfo(byType, andName, &idFound, &lengthFound);
 
     return py::make_tuple(result, idFound, lengthFound);
-}, "", py::arg("byType"), py::arg("andID"))
+}, "", py::arg("byType"), py::arg("andName"))
 //.def("GetResourceInfo", py::overload_cast<const void *, type_code *, int32*, size_t *, const char * *>(&BResources::GetResourceInfo), "", py::arg("byPointer"), py::arg("typeFound"), py::arg("idFound"), py::arg("lengthFound"), py::arg("nameFound")) //<- There's no pointer in Python
 .def("RemoveResource", py::overload_cast<const void *>(&BResources::RemoveResource), "", py::arg("resource"))
 .def("RemoveResource", py::overload_cast<type_code, int32>(&BResources::RemoveResource), "", py::arg("type"), py::arg("id"))
