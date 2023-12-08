@@ -58,17 +58,42 @@ py::class_<BResources>(m, "BResources")
     const char * nameFound;
     size_t lengthFound;
     bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
-
-    // Utilizza py::bytes per rappresentare la sequenza di byte
+    
     py::bytes byteSequence(nameFound, lengthFound);
 
     return py::make_tuple(result, static_cast<int>(typeFound), idFound, byteSequence, lengthFound);
 }, "", py::arg("byIndex"))
 
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andIndex"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
+.def("GetResourceInfo", [](BResources& self, type_code byType, int32 andIndex){
+    int32 idFound;
+    const char * nameFound;
+    size_t lengthFound;
+    bool result = self.GetResourceInfo(byType, andIndex, &idFound, &nameFound, &lengthFound);
+
+    py::bytes byteSequence(nameFound, lengthFound);
+
+    return py::make_tuple(result, idFound, byteSequence, lengthFound);
+}, "", py::arg("byType"), py::arg("andIndex"))
 //.def("GetResourceInfo", py::overload_cast<type_code, int32, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andID"), py::arg("nameFound"), py::arg("lengthFound"))
-.def("GetResourceInfo", py::overload_cast<type_code, const char *, int32*, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andName"), py::arg("idFound"), py::arg("lengthFound"))
-//.def("GetResourceInfo", py::overload_cast<const void *, type_code *, int32*, size_t *, const char * *>(&BResources::GetResourceInfo), "", py::arg("byPointer"), py::arg("typeFound"), py::arg("idFound"), py::arg("lengthFound"), py::arg("nameFound"))
+.def("GetResourceInfo", [](BResources& self, type_code byType, int32 andID){
+    const char * nameFound;
+    size_t lengthFound;
+    bool result = self.GetResourceInfo(byType, andID, &nameFound, &lengthFound);
+
+    py::bytes byteSequence(nameFound, lengthFound);
+
+    return py::make_tuple(result, byteSequence, lengthFound);
+}, "", py::arg("byType"), py::arg("andID"))
+//.def("GetResourceInfo", py::overload_cast<type_code, const char *, int32*, size_t *>(&BResources::GetResourceInfo), "", py::arg("byType"), py::arg("andName"), py::arg("idFound"), py::arg("lengthFound"))// <- TODO!!
+.def("GetResourceInfo", [](BResources& self, type_code byType, const char* andName){
+    int32 idFound;
+    size_t lengthFound;
+    bool result = self.GetResourceInfo(byType, andName, &idFound, &lengthFound);
+
+    return py::make_tuple(result, idFound, lengthFound);
+}, "", py::arg("byType"), py::arg("andID"))
+//.def("GetResourceInfo", py::overload_cast<const void *, type_code *, int32*, size_t *, const char * *>(&BResources::GetResourceInfo), "", py::arg("byPointer"), py::arg("typeFound"), py::arg("idFound"), py::arg("lengthFound"), py::arg("nameFound")) //<- There's no pointer in Python
 .def("RemoveResource", py::overload_cast<const void *>(&BResources::RemoveResource), "", py::arg("resource"))
 .def("RemoveResource", py::overload_cast<type_code, int32>(&BResources::RemoveResource), "", py::arg("type"), py::arg("id"))
 .def("WriteResource", &BResources::WriteResource, "", py::arg("type"), py::arg("id"), py::arg("data"), py::arg("offset"), py::arg("length"))
