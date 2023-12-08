@@ -17,7 +17,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(Directory,m)
 {
-py::class_<BDirectory, BNode>(m, "BDirectory")//, BEntryList verify if needed
+py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")// verify if needed
 .def(py::init(), "")
 .def(py::init<const BDirectory &>(), "", py::arg("dir"))
 .def(py::init<const entry_ref *>(), "", py::arg("ref"))

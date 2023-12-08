@@ -29,7 +29,7 @@ py::class_<entry_ref>(m, "entry_ref")
 .def_readwrite("name", &entry_ref::name, "")
 ;
 
-py::class_<BEntry>(m, "BEntry") //Commented out BStatable verify if needed
+py::class_<BEntry, BStatable>(m, "BEntry")
 .def(py::init(), "")
 .def(py::init<const BDirectory *, const char *, bool>(), "", py::arg("dir"), py::arg("path"), py::arg("traverse")=false)
 .def(py::init<const entry_ref *, bool>(), "", py::arg("ref"), py::arg("traverse")=false)
