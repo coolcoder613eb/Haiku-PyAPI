@@ -2,8 +2,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <MimeType.h>
+#include <Mime.h>
 #include <Bitmap.h>
 
 namespace py = pybind11;
@@ -68,8 +70,37 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("Install", &BMimeType::Install, "")
 .def("Delete", &BMimeType::Delete, "")
 .def("IsInstalled", &BMimeType::IsInstalled, "")
-.def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size"))
+//.def("GetIcon_toBitmap", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) //changed names to GetIcon
+.def("GetIcon_toBitmap", [](const BMimeType &self, icon_size size) {
+            BBitmap *icon;
+            // Chiamata alla funzione C++
+            if(size==B_LARGE_ICON){
+            	icon = new BBitmap(BRect(0, 0, 31, 31), B_RGBA32);
+            } else {
+            	icon = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
+            }
+            status_t result = self.GetIcon(icon, size);
+
+            // Restituisci una tupla contenente il risultato e l'oggetto BBitmap
+            return std::make_tuple(result, icon);
+        }, "", py::arg("size")=B_LARGE_ICON)
 //.def("GetIcon", py::overload_cast<unsigned char, size_t *>(&BMimeType::GetIcon, py::const_), "", py::arg("_data"), py::arg("_size"))
+.def("GetIcon_toVector", [](const BMimeType &self) {
+            uint8 *data = nullptr;
+            size_t size = 0;
+            
+            // Chiamata alla funzione C++
+            status_t result = self.GetIcon(&data, &size);
+
+            // Creazione di un array NumPy dalla memoria ottenuta
+            auto capsule = py::capsule(data, [](void *d) {
+                // Implementa la logica per deallocare la memoria
+                // In questo esempio, si presume che la memoria sia stata allocata con new[]
+                delete[] static_cast<uint8 *>(d);
+            });
+
+            return std::make_tuple(result, py::array_t<uint8>({static_cast<ssize_t>(size)}, {sizeof(uint8)}, data, capsule));
+}, "")
 .def("GetPreferredApp", &BMimeType::GetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
 .def("GetAttrInfo", &BMimeType::GetAttrInfo, "", py::arg("info"))
 .def("GetFileExtensions", &BMimeType::GetFileExtensions, "", py::arg("extensions"))
