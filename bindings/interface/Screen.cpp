@@ -8,13 +8,15 @@
 #include <GraphicsDefs.h>
 #include <Rect.h>
 #include <OS.h>
+#include <Bitmap.h>
+#include <Window.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
 PYBIND11_MODULE(Screen,m)
 {
-m.attr("BPrivateScreen") = BPrivateScreen;
+//m.attr("BPrivateScreen") = BPrivateScreen;
 
 py::class_<BScreen>(m, "BScreen")
 .def(py::init<screen_id>(), "", py::arg("id")=B_MAIN_SCREEN_ID)
@@ -31,18 +33,83 @@ py::class_<BScreen>(m, "BScreen")
 .def("ColorForIndex", &BScreen::ColorForIndex, "", py::arg("index"))
 .def("InvertIndex", &BScreen::InvertIndex, "", py::arg("index"))
 .def("ColorMap", &BScreen::ColorMap, "")
-.def("GetBitmap", &BScreen::GetBitmap, "", py::arg("_bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
+//.def("GetBitmap", &BScreen::GetBitmap, "", py::arg("_bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
+.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> std::tuple<BBitmap*,status_t> {
+            BBitmap* buffer = new BBitmap(*frame,B_RGBA32);
+            status_t result = self.GetBitmap(&buffer,drawCursor,frame);
+            //if (result != B_OK) {
+            //    throw std::runtime_error("Errore durante la chiamata a GetBitmap");
+            //}
+            return std::make_tuple(buffer,result);
+        }, py::arg("drawCursor")=true, py::arg("frame")=NULL)
+/*
+.def("GetBitmap", [](BScreen& self, bool drawCursor, BRect* frame) -> BBitmap* {
+            // Chiamare la funzione originale
+            //BBitmap* buffer;
+            BBitmap* buffer = new BBitmap(*frame,B_RGBA32);
+            status_t result = self.GetBitmap(&buffer,drawCursor,frame);
+
+            // Gestire gli errori
+            if (result != B_OK) {
+                throw std::runtime_error("Errore durante la chiamata a GetBitmap");
+            }
+            return buffer;
+            //return py::capsule(buffer,""BBitmap", &deleteBBitmap);
+        }, py::arg("drawCursor")=true, py::arg("frame")=NULL)
+*/
 .def("ReadBitmap", &BScreen::ReadBitmap, "", py::arg("bitmap"), py::arg("drawCursor")=true, py::arg("frame")=NULL)
 .def("DesktopColor", py::overload_cast<>(&BScreen::DesktopColor), "")
-.def("DesktopColor", py::overload_cast<unsigned int>(&BScreen::DesktopColor), "", py::arg("workspace"))
+.def("DesktopColor", py::overload_cast<unsigned int32>(&BScreen::DesktopColor), "", py::arg("workspace"))
 .def("SetDesktopColor", py::overload_cast<rgb_color, bool>(&BScreen::SetDesktopColor), "", py::arg("color"), py::arg("stick")=true)
-.def("SetDesktopColor", py::overload_cast<rgb_color, unsigned int, bool>(&BScreen::SetDesktopColor), "", py::arg("color"), py::arg("workspace"), py::arg("stick")=true)
+.def("SetDesktopColor", py::overload_cast<rgb_color, unsigned int32, bool>(&BScreen::SetDesktopColor), "", py::arg("color"), py::arg("workspace"), py::arg("stick")=true)
 .def("ProposeMode", &BScreen::ProposeMode, "", py::arg("target"), py::arg("low"), py::arg("high"))
-.def("GetModeList", &BScreen::GetModeList, "", py::arg("_modeList"), py::arg("_count"))
+//.def("GetModeList", &BScreen::GetModeList, "", py::arg("_modeList"), py::arg("_count"))
+.def("GetModeList", [](BScreen& self, uint32 _count) -> std::tuple<std::vector<display_mode>, status_t>{
+            // Chiamare la funzione originale
+            // uint32 _count; <- removed as passed by argument
+            display_mode* _modeList;
+            status_t result = self.GetModeList(&_modeList, &_count);
+
+            // Gestire gli errori
+            //if (result != B_OK) {
+            //    throw std::runtime_error("Errore durante la chiamata a GetModeList");
+            //}
+
+            // Convertire il risultato in un vettore di display_mode
+            std::vector<display_mode> resultVector(_modeList, _modeList + _count);
+
+            // Liberare la memoria allocata da GetModeList
+            free(_modeList);
+
+            return std::make_tuple(resultVector,result);
+        }
+)
+/*
+.def("GetModeList", [](BScreen& self, uint32 _count) -> std::vector<display_mode> {
+            // Chiamare la funzione originale
+            // uint32 _count; <- removed as passed by argument
+            display_mode* _modeList;
+            status_t result = self.GetModeList(&_modeList, &_count);
+
+            // Gestire gli errori
+            if (result != B_OK) {
+                throw std::runtime_error("Errore durante la chiamata a GetModeList");
+            }
+
+            // Convertire il risultato in un vettore di display_mode
+            std::vector<display_mode> resultVector(_modeList, _modeList + _count);
+
+            // Liberare la memoria allocata da GetModeList
+            free(_modeList);
+
+            return resultVector;
+        }
+)
+*/
 .def("GetMode", py::overload_cast<display_mode *>(&BScreen::GetMode), "", py::arg("mode"))
-.def("GetMode", py::overload_cast<unsigned int, display_mode *>(&BScreen::GetMode), "", py::arg("workspace"), py::arg("mode"))
+.def("GetMode", py::overload_cast<unsigned int32, display_mode *>(&BScreen::GetMode), "", py::arg("workspace"), py::arg("mode"))
 .def("SetMode", py::overload_cast<display_mode *, bool>(&BScreen::SetMode), "", py::arg("mode"), py::arg("makeDefault")=false)
-.def("SetMode", py::overload_cast<unsigned int, display_mode *, bool>(&BScreen::SetMode), "", py::arg("workspace"), py::arg("mode"), py::arg("makeDefault")=false)
+.def("SetMode", py::overload_cast<unsigned int32, display_mode *, bool>(&BScreen::SetMode), "", py::arg("workspace"), py::arg("mode"), py::arg("makeDefault")=false)
 .def("GetDeviceInfo", &BScreen::GetDeviceInfo, "", py::arg("info"))
 .def("GetMonitorInfo", &BScreen::GetMonitorInfo, "", py::arg("info"))
 .def("GetPixelClockLimits", &BScreen::GetPixelClockLimits, "", py::arg("mode"), py::arg("_low"), py::arg("_high"))

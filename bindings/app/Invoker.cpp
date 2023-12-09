@@ -12,6 +12,25 @@
 
 namespace py = pybind11;
 
+class PyBInvoker : public BInvoker{
+	public:
+        using BInvoker::BInvoker;
+        status_t			SetMessage(BMessage* message) override {
+        	PYBIND11_OVERLOAD(status_t, BInvoker, SetMessage, message);
+        }
+        status_t			SetTarget(const BHandler* handler, const BLooper* looper = NULL) override {
+        	PYBIND11_OVERLOAD(status_t, BInvoker, SetTarget, handler, looper);
+        }
+        status_t			SetTarget(BMessenger messenger) override {
+        	PYBIND11_OVERLOAD(status_t, BInvoker, SetTarget, messenger);
+        }
+        status_t			SetHandlerForReply(BHandler* handler) override {
+        	PYBIND11_OVERLOAD(status_t, BInvoker, SetHandlerForReply, handler);
+        }
+        status_t			Invoke(BMessage* message = NULL) override {
+        	PYBIND11_OVERLOAD(status_t, BInvoker, Invoke, message);
+        }
+};
 
 py::tuple TargetWrapper(BInvoker& self) {
 	BHandler* handler;
@@ -24,7 +43,7 @@ py::tuple TargetWrapper(BInvoker& self) {
 
 PYBIND11_MODULE(Invoker,m)
 {
-py::class_<BInvoker>(m, "BInvoker")
+py::class_<BInvoker, PyBInvoker>(m, "BInvoker")
 .def(py::init(), "")
 .def(py::init<BMessage *, const BHandler *, const BLooper *>(), "", py::arg("message"), py::arg("handler"), py::arg("looper")=NULL)
 .def(py::init<BMessage *, BMessenger>(), "", py::arg("message"), py::arg("target"))

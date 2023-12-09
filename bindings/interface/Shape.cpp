@@ -5,17 +5,34 @@
 
 #include <interface/Shape.h>
 #include <Archivable.h>
+#include <Point.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBShapeIterator : public BShapeIterator{
+	public:
+        using BShapeIterator::BShapeIterator;
+        status_t		IterateMoveTo(BPoint* point) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateMoveTo, point);
+        }
+        status_t		IterateLineTo(int32 lineCount, BPoint* linePoints) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateLineTo, lineCount, linePoints);
+        }
+        status_t		IterateBezierTo(int32 bezierCount, BPoint* bezierPoints) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateBezierTo, bezierCount, bezierPoints);
+        }
+        status_t		IterateClose() override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateClose);
+        }
+        status_t		IterateArcTo(float& rx, float& ry, float& angle, bool largeArc, bool counterClockWise, BPoint& point) override {
+            PYBIND11_OVERLOAD(status_t, BShapeIterator, IterateArcTo, rx, ry, angle, largeArc, counterClockWise, point);
+        }
+};
+
 PYBIND11_MODULE(Shape,m)
 {
-m.attr("ServerLink") = ServerLink;
-
-m.attr("PicturePlayer") = PicturePlayer;
-
-py::class_<BShapeIterator>(m, "BShapeIterator")
+py::class_<BShapeIterator, PyBShapeIterator>(m, "BShapeIterator")
 .def(py::init(), "")
 .def("IterateMoveTo", &BShapeIterator::IterateMoveTo, "", py::arg("point"))
 .def("IterateLineTo", &BShapeIterator::IterateLineTo, "", py::arg("lineCount"), py::arg("linePoints"))
@@ -48,11 +65,14 @@ py::class_<BShape, BArchivable>(m, "BShape")
 .def("AddShape", &BShape::AddShape, "", py::arg("other"))
 .def("MoveTo", &BShape::MoveTo, "", py::arg("point"))
 .def("LineTo", &BShape::LineTo, "", py::arg("linePoint"))
-.def("BezierTo", py::overload_cast<BPoint>(&BShape::BezierTo), "", py::arg("controlPoints"))
+.def("BezierTo", py::overload_cast<BPoint[3]>(&BShape::BezierTo), "", py::arg("controlPoints"))
 .def("BezierTo", py::overload_cast<const BPoint &, const BPoint &, const BPoint &>(&BShape::BezierTo), "", py::arg("control1"), py::arg("control2"), py::arg("endPoint"))
 .def("ArcTo", &BShape::ArcTo, "", py::arg("rx"), py::arg("ry"), py::arg("angle"), py::arg("largeArc"), py::arg("counterClockWise"), py::arg("point"))
 .def("Close", &BShape::Close, "")
 ;
 
+//m.attr("ServerLink") = ServerLink;
+
+//m.attr("PicturePlayer") = PicturePlayer;
 
 }

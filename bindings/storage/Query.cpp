@@ -4,14 +4,38 @@
 #include <pybind11/operators.h>
 
 #include <Query.h>
+#include <Volume.h>
+#include <String.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::Storage;
-using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+//using namespace BPrivate::Storage::Mime;
+//using namespace BPackageKit;
 
-void define_Query(py::module_& m)
+//Add overrides
+class PyBQuery : public BQuery {
+public:
+    using BQuery::BQuery;
+    status_t			GetNextEntry(BEntry* entry, bool traverse = false)  override {
+        PYBIND11_OVERLOAD_PURE(status_t, BQuery, GetNextEntry, entry, traverse);
+    }
+    status_t			GetNextRef(entry_ref* ref) override {
+        PYBIND11_OVERLOAD_PURE(status_t, BQuery, GetNextRef, ref);
+    }
+	int32				GetNextDirents(struct dirent* direntBuffer, size_t length, int32 count = INT_MAX) override {
+        PYBIND11_OVERLOAD_PURE(int32, BQuery, GetNextDirents, direntBuffer, length, count);
+    }
+	status_t			Rewind() override {
+        PYBIND11_OVERLOAD_PURE(status_t, BQuery, Rewind);
+    }
+	int32				CountEntries() override {
+        PYBIND11_OVERLOAD_PURE(int32, BQuery, CountEntries);
+    }
+
+};
+
+PYBIND11_MODULE(Query, m)
 {
 py::enum_<query_op>(m, "query_op", "")
 .value("B_INVALID_OP", query_op::B_INVALID_OP, "")
@@ -30,11 +54,11 @@ py::enum_<query_op>(m, "query_op", "")
 .value("_B_RESERVED_OP_", query_op::_B_RESERVED_OP_, "")
 .export_values();
 
-m.attr("QueryNode") = py::cast(QueryNode);
+//m.attr("QueryNode") = py::cast(QueryNode);
 
-m.attr("QueryStack") = py::cast(QueryStack);
+//m.attr("QueryStack") = py::cast(QueryStack);
 
-m.attr("QueryTree") = py::cast(QueryTree);
+//m.attr("QueryTree") = py::cast(QueryTree);
 
 py::class_<BQuery, BEntryList>(m, "BQuery")
 .def(py::init(), "")

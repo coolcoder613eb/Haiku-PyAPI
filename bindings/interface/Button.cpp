@@ -9,10 +9,99 @@
 
 namespace py = pybind11;
 
+class PyBButton : public BButton{
+	public:
+        using BButton::BButton;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BButton, Archive, data, deep);
+        }
+        void 		Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BButton, Draw, updateRect);
+        }
+        void		MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BButton, MouseDown, where);
+        }
+        void		AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BButton, AttachedToWindow);
+        }
+        void		KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BButton, KeyDown, bytes, numBytes);
+        }
+        void		MakeDefault(bool flag) override {
+            PYBIND11_OVERLOAD(void, BButton, MakeDefault, flag);
+        }
+        void		SetLabel(const char* string) override {
+            PYBIND11_OVERLOAD(void, BButton, SetLabel, string);
+        }
+        void		MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BButton, MessageReceived, message);
+        }
+        void		WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BButton, WindowActivated, active);
+        }
+        void		MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BButton, MouseMoved, where, code, dragMessage);
+        }
+        void		MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BButton, MouseUp, where);
+        }
+        void		DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BButton, DetachedFromWindow);
+        }
+        void		SetValue(int32 value) override {
+            PYBIND11_OVERLOAD(void, BButton, SetValue, value);
+        }
+        void		GetPreferredSize (float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BButton, GetPreferredSize, _width, _height);
+        }
+        void		ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BButton, ResizeToPreferred);
+        }
+        status_t	Invoke(BMessage* message = NULL) override {
+            PYBIND11_OVERLOAD(status_t, BButton, Invoke, message);
+        }
+        void		FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BButton, FrameMoved, newPosition);
+        }
+        void		FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BButton, FrameResized, newWidth, newHeight);
+        }
+        void		MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BButton, MakeFocus, focus);
+        }
+        void		AllAttached() override {
+            PYBIND11_OVERLOAD(void, BButton, AllAttached);
+        }
+        void		AllDetached() override {
+            PYBIND11_OVERLOAD(void, BButton, AllDetached);
+        }
+        BHandler*	ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BButton, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        status_t	GetSupportedSuites(BMessage* message) override {
+            PYBIND11_OVERLOAD(status_t, BButton, GetSupportedSuites, message);
+        }
+        status_t	Perform(perform_code d, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BButton, Perform, d, arg);
+        }
+        BSize		MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BButton, MinSize);
+        }
+        BSize		MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BButton, MaxSize);
+        }
+        BSize		PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BButton, PreferredSize);
+        }
+        status_t	SetIcon(const BBitmap* icon, uint32 flags = 0) override {
+            PYBIND11_OVERLOAD(status_t, BButton, SetIcon, icon, flags);
+        }
+};
+
 
 PYBIND11_MODULE(Button,m)
 {
-py::class_<BButton,BControl,BView,std::unique_ptr<BButton, py::nodelete>>(m, "BButton")
+py::class_<BButton,PyBButton,BControl,BView,std::unique_ptr<BButton, py::nodelete>>(m, "BButton")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
 .def(py::init<const char *, BMessage *>(), "", py::arg("label"), py::arg("message")=NULL)

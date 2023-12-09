@@ -9,9 +9,9 @@ namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
-using namespace BPackageKit;
+//using namespace BPackageKit;
 
-void define_VolumeRoster(py::module_& m)
+PYBIND11_MODULE(VolumeRoster, m)
 {
 py::class_<BVolumeRoster>(m, "BVolumeRoster")
 .def(py::init(), "")

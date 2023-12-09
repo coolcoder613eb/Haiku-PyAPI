@@ -2,25 +2,47 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
-#include "support/SupportDefs.h"
-#include <BeBuild.h>
+
+#include <support/SupportDefs.h>
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(SupportDefs, m) {
-    m.attr("B_EMPTY_STRING") = B_EMPTY_STRING;
 
-    // Definizione dei tipi di dati
-    py::class_<status_t>(m, "status_t");
-    py::class_<bigtime_t>(m, "bigtime_t");
-    py::class_<type_code>(m, "type_code");
-    
-    py::class_<phys_addr_t>(m, "phys_addr_t");
+PYBIND11_MODULE(SupportDefs, m)
+{
+m.attr("B_EMPTY_STRING") = py::cast(B_EMPTY_STRING);
 
-    // ... Aggiungi altri tipi di dati secondo necessità ...
+m.def("get_stack_frame", &get_stack_frame, "");//, py::arg(""));
 
-    // Aggiungi costanti o macro se necessario
-    m.attr("B_PRId8") = B_PRId8;
+m.def("atomic_set", py::overload_cast<int32*, int32>(&atomic_set), "", py::arg("value"), py::arg("newValue"));
+
+m.def("atomic_get_and_set", py::overload_cast<int32*, int32>(&atomic_get_and_set), "", py::arg("value"), py::arg("newValue"));
+
+m.def("atomic_test_and_set", py::overload_cast<int32*, int32, int32>(&atomic_test_and_set), "", py::arg("value"), py::arg("newValue"), py::arg("testAgainst"));
+
+m.def("atomic_add", py::overload_cast<int32*, int32>(&atomic_add), "", py::arg("value"), py::arg("addValue"));
+
+m.def("atomic_and", py::overload_cast<int32*, int32>(&atomic_and), "", py::arg("value"), py::arg("andValue"));
+
+m.def("atomic_or", py::overload_cast<int32*, int32>(&atomic_or), "", py::arg("value"), py::arg("orValue"));
+
+m.def("atomic_get", py::overload_cast<int32*>(&atomic_get), "", py::arg("value"));
+
+m.def("atomic_set64", py::overload_cast<int64_t*, int64_t>(&atomic_set64), "", py::arg("value"), py::arg("newValue"));
+
+m.def("atomic_get_and_set64", py::overload_cast<int64_t*, int64_t>(&atomic_get_and_set64), "", py::arg("value"), py::arg("newValue"));
+
+m.def("atomic_test_and_set64", py::overload_cast<int64_t*, int64_t, int64_t>(&atomic_test_and_set64), "", py::arg("value"), py::arg("newValue"), py::arg("testAgainst"));
+
+m.def("atomic_add64", py::overload_cast<int64_t*, int64_t>(&atomic_add64), "", py::arg("value"), py::arg("addValue"));
+
+m.def("atomic_and64", py::overload_cast<int64_t*, int64_t>(&atomic_and64), "", py::arg("value"), py::arg("andValue"));
+
+m.def("atomic_or64", py::overload_cast<int64_t*, int64_t>(&atomic_or64), "", py::arg("value"), py::arg("orValue"));
+
+m.def("atomic_get64", py::overload_cast<int64_t*>(&atomic_get64), "", py::arg("value"));
+
+m.attr("B_PRId8") = B_PRId8;
     m.attr("B_PRIi8") = B_PRIi8;
     m.attr("B_PRId16") = B_PRId16;
     m.attr("B_PRIi16") = B_PRIi16;
@@ -112,4 +134,3 @@ PYBIND11_MODULE(SupportDefs, m) {
     m.attr("B_PRIdBIGTIME") = B_PRIdBIGTIME;
     m.attr("B_PRIiBIGTIME") = B_PRIiBIGTIME;
 }
-

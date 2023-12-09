@@ -14,6 +14,98 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBTextView : public BTextView{
+	public:
+        using BTextView::BTextView;
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BTextView, Archive, archive, deep);
+        }
+        void				AttachedToWindow() override {
+        	PYBIND11_OVERLOAD(void, BTextView, AttachedToWindow);
+        }
+        void				DetachedFromWindow() override {
+        	PYBIND11_OVERLOAD(void, BTextView, DetachedFromWindow);
+        }
+        void				Draw(BRect updateRect) override {
+        	PYBIND11_OVERLOAD(void, BTextView, Draw, updateRect);
+        }
+        void				MouseDown(BPoint where) override {
+        	PYBIND11_OVERLOAD(void, BTextView, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+        	PYBIND11_OVERLOAD(void, BTextView, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BTextView, MouseMoved, where, code, dragMessage);
+        }
+        void				WindowActivated(bool active) override {
+        	PYBIND11_OVERLOAD(void, BTextView, WindowActivated, active);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+        	PYBIND11_OVERLOAD(void, BTextView, KeyDown, bytes, numBytes);
+        }
+        void				Pulse() override {
+        	PYBIND11_OVERLOAD(void, BTextView, Pulse);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+        	PYBIND11_OVERLOAD(void, BTextView, FrameResized, newWidth, newHeight);
+        }
+        void				MakeFocus(bool focus = true) override {
+        	PYBIND11_OVERLOAD(void, BTextView, MakeFocus, focus);
+        }
+        void				MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BTextView, MessageReceived, message);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BTextView, ResolveSpecifier, message, index, specifier, form, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+        	PYBIND11_OVERLOAD(status_t, BTextView, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code code, void* data) override {
+        	PYBIND11_OVERLOAD(status_t, BTextView, Perform, code, data);
+        }
+        void				Cut(BClipboard* clipboard) override {
+        	PYBIND11_OVERLOAD(void, BTextView, Cut, clipboard);
+        }
+        void				Copy(BClipboard* clipboard) override {
+        	PYBIND11_OVERLOAD(void, BTextView, Copy, clipboard);
+        }
+        void				Paste(BClipboard* clipboard) override {
+        	PYBIND11_OVERLOAD(void, BTextView, Paste, clipboard);
+        }
+        bool				AcceptsPaste(BClipboard* clipboard) override {
+        	PYBIND11_OVERLOAD(bool, BTextView, AcceptsPaste, clipboard);
+        }
+        bool				AcceptsDrop(const BMessage* message) override {
+        	PYBIND11_OVERLOAD(bool, BTextView, AcceptsDrop, message);
+        }
+        void				Select(int32 startOffset, int32 endOffset) override {
+        	PYBIND11_OVERLOAD(void, BTextView, Select, startOffset, endOffset);
+        }
+        void				FindWord(int32 offset, int32* _fromOffset, int32* _toOffset) override {
+        	PYBIND11_OVERLOAD(void, BTextView, FindWord, offset, _fromOffset, _toOffset);
+        }
+        bool				CanEndLine(int32 offset) override {
+        	PYBIND11_OVERLOAD(bool, BTextView, CanEndLine, offset);
+        }
+        void				ScrollToOffset(int32 offset) override {
+        	PYBIND11_OVERLOAD(void, BTextView, ScrollToOffset, offset);
+        }
+        void				ResizeToPreferred() override {
+        	PYBIND11_OVERLOAD(void, BTextView, ResizeToPreferred);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+        	PYBIND11_OVERLOAD(void, BTextView, GetPreferredSize, _width, _height);
+        }
+        void				AllAttached() override {
+        	PYBIND11_OVERLOAD(void, BTextView, AllAttached);
+        }
+        void				AllDetached() override {
+        	PYBIND11_OVERLOAD(void, BTextView, AllDetached);
+        }
+};
+
 PYBIND11_MODULE(TextView,m)
 {
 py::enum_<undo_state>(m, "undo_state", "")
@@ -38,7 +130,7 @@ py::class_<text_run_array>(m, "text_run_array")
 .def_readonly("runs", &text_run_array::runs, "")
 ;
 
-py::class_<BTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextView")
+py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextView")
 .def(py::init<BRect, const char *, BRect, uint32, uint32>(), "", py::arg("frame"), py::arg("name"), py::arg("textRect"), py::arg("resizeMask"), py::arg("flags")=B_WILL_DRAW | B_PULSE_NEEDED)
 .def(py::init<BRect, const char *, BRect, const BFont *, const rgb_color *, uint32, uint32>(), "", py::arg("frame"), py::arg("name"), py::arg("textRect"), py::arg("initialFont"), py::arg("initialColor"), py::arg("resizeMask"), py::arg("flags"))
 .def(py::init<const char *, unsigned int>(), "", py::arg("name"), py::arg("flags")=B_WILL_DRAW | B_PULSE_NEEDED)
@@ -85,10 +177,12 @@ py::class_<BTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextV
 .def("Select", &BTextView::Select, "", py::arg("startOffset"), py::arg("endOffset"))
 .def("SelectAll", &BTextView::SelectAll, "")
 .def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
+.def("SetFontAndColor", static_cast<void (BTextView::*)(const BFont*, uint32, const rgb_color*)>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", py::overload_cast<const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
+.def("SetFontAndColor", static_cast<void (BTextView::*)(int32, int32, const BFont *, uint32, const rgb_color *)>(&BTextView::SetFontAndColor), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", py::overload_cast<int32, int32, const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor,py::const_), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
-//.def("GetFontAndColor", py::overload_cast<int32, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
-//.def("GetFontAndColor", py::overload_cast<BFont *, uint32 *, rgb_color *, bool *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
+.def("GetFontAndColor", py::overload_cast<int32, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
+.def("GetFontAndColor", py::overload_cast<BFont *, uint32 *, rgb_color *, bool *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
 .def("SetRunArray", &BTextView::SetRunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("runs"))
 .def("RunArray", &BTextView::RunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("_size")=NULL)
 .def("LineAt", py::overload_cast<int32>(&BTextView::LineAt,py::const_), "", py::arg("offset"))

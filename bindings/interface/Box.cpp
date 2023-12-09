@@ -8,10 +8,87 @@
 
 namespace py = pybind11;
 
+class PyBBox : public BBox{
+	public:
+        using BBox::BBox;
+        status_t	Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BBox, Archive, archive, deep);
+        }
+        void		SetBorder(border_style border) override {
+        	PYBIND11_OVERLOAD(void, BBox, SetBorder, border);
+        }
+        void Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BBox, Draw, updateRect);
+        }
+        void		AttachedToWindow() override {
+        	PYBIND11_OVERLOAD(void, BBox, AttachedToWindow);
+        }
+        void		DetachedFromWindow() override {
+        	PYBIND11_OVERLOAD(void, BBox, DetachedFromWindow);
+        }
+        void		AllAttached() override {
+        	PYBIND11_OVERLOAD(void, BBox, AllAttached);
+        }
+        void		AllDetached() override {
+        	PYBIND11_OVERLOAD(void, BBox, AllDetached);
+        }
+        void		FrameResized(float width, float height) override {
+        	PYBIND11_OVERLOAD(void, BBox, FrameResized, width, height);
+        }
+        void		MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BBox, MessageReceived, message);
+        }
+        void		MouseDown(BPoint point) override {
+        	PYBIND11_OVERLOAD(void, BBox, MouseDown, point);
+        }
+        void		MouseUp(BPoint point) override {
+        	PYBIND11_OVERLOAD(void, BBox, MouseUp, point);
+        }
+        void		WindowActivated(bool active) override {
+        	PYBIND11_OVERLOAD(void, BBox, WindowActivated, active);
+        }
+        void		MouseMoved(BPoint point, uint32 transit, const BMessage* dragMessage) override {
+        	PYBIND11_OVERLOAD(void, BBox, MouseMoved, point, transit, dragMessage);
+        }
+        void		FrameMoved(BPoint newLocation) override {
+        	PYBIND11_OVERLOAD(void, BBox, FrameMoved, newLocation);
+        }
+        BHandler*	ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 what, const char* property) override {
+        	PYBIND11_OVERLOAD(BHandler*, BBox, ResolveSpecifier, message, index, specifier, what, property);
+        }
+        void		ResizeToPreferred() override {
+        	PYBIND11_OVERLOAD(void, BBox, ResizeToPreferred);
+        }
+        void		GetPreferredSize(float* _width, float* _height) override {
+        	PYBIND11_OVERLOAD(void, BBox, GetPreferredSize, _width, _height);
+        }
+        void		MakeFocus(bool focused = true) override {
+        	PYBIND11_OVERLOAD(void, BBox, MakeFocus, focused);
+        }
+        status_t	GetSupportedSuites(BMessage* message) override {
+        	PYBIND11_OVERLOAD(status_t, BBox, GetSupportedSuites, message);
+        }
+        status_t	Perform(perform_code d, void* arg) override {
+        	PYBIND11_OVERLOAD(status_t, BBox, Perform, d, arg);
+        }
+        BSize		MinSize() override {
+        	PYBIND11_OVERLOAD(BSize, BBox, MinSize);
+        }
+        BSize		MaxSize() override {
+        	PYBIND11_OVERLOAD(BSize, BBox, MaxSize);
+        }
+        BSize		PreferredSize() override {
+        	PYBIND11_OVERLOAD(BSize, BBox, PreferredSize);
+        }
+        BAlignment	LayoutAlignment() override {
+        	PYBIND11_OVERLOAD(BAlignment, BBox, LayoutAlignment);
+        }
+};
+
 
 PYBIND11_MODULE(Box,m)
 {
-py::class_<BBox, BView, std::unique_ptr<BBox, py::nodelete>>(m, "BBox")
+py::class_<BBox,PyBBox, BView, std::unique_ptr<BBox, py::nodelete>>(m, "BBox")
 .def(py::init<BRect, const char *, unsigned int, unsigned int, border_style>(), "", py::arg("frame"), py::arg("name")=NULL, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP, py::arg("border")=B_FANCY_BORDER)
 .def(py::init<const char *, unsigned int, border_style, BView *>(), "", py::arg("name"), py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP, py::arg("border")=B_FANCY_BORDER, py::arg("child")=NULL)
 .def(py::init<border_style, BView *>(), "", py::arg("border"), py::arg("child"))

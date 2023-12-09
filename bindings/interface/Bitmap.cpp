@@ -7,8 +7,25 @@
 #include <Archivable.h>
 #include <InterfaceDefs.h>
 #include <Rect.h>
+#include <View.h>
 
 namespace py = pybind11;
+/*
+class PyBitmap : public BBitmap{
+	public:
+        using BBitmap::BBitmap;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BBitmap, Archive, data, deep);
+        }
+        void		AddChild(BView* view) override {
+        	PYBIND11_OVERLOAD(void, BBitmap, AddChild, view);
+        }
+        bool		RemoveChild(BView* view) override {
+        	PYBIND11_OVERLOAD(bool, BBitmap, RemoveChild, view);
+        }
+};
+*/
+
 using namespace BPrivate;
 
 PYBIND11_MODULE(Bitmap,m)
@@ -23,12 +40,12 @@ m.attr("B_BITMAP_WILL_OVERLAY") = "0x00000040 | B_BITMAP_IS_OFFSCREEN";
 m.attr("B_BITMAP_RESERVE_OVERLAY_CHANNEL") = 128;
 m.attr("B_BITMAP_NO_SERVER_LINK") = 256;
 
-m.attr("BPrivateScreen") = BPrivateScreen;
+//m.attr("BPrivateScreen") = BPrivateScreen;
 
 py::class_<BBitmap, BArchivable>(m, "BBitmap")
-.def(py::init<BRect, unsigned int, color_space, int, screen_id>(), "", py::arg("bounds"), py::arg("flags"), py::arg("colorSpace"), py::arg("bytesPerRow")=B_ANY_BYTES_PER_ROW, py::arg("screenID")=B_MAIN_SCREEN_ID)
+.def(py::init<BRect, unsigned int32, color_space, int32, screen_id>(), "", py::arg("bounds"), py::arg("flags"), py::arg("colorSpace"), py::arg("bytesPerRow")=B_ANY_BYTES_PER_ROW, py::arg("screenID")=B_MAIN_SCREEN_ID)
 .def(py::init<BRect, color_space, bool, bool>(), "", py::arg("bounds"), py::arg("colorSpace"), py::arg("acceptsViews")=false, py::arg("needsContiguous")=false)
-.def(py::init<const BBitmap &, unsigned int>(), "", py::arg("source"), py::arg("flags"))
+.def(py::init<const BBitmap &, unsigned int32>(), "", py::arg("source"), py::arg("flags"))
 .def(py::init<const BBitmap &>(), "", py::arg("source"))
 .def(py::init<const BBitmap *, bool, bool>(), "", py::arg("source"), py::arg("acceptsViews")=false, py::arg("needsContiguous")=false)
 .def(py::init<BMessage *>(), "", py::arg("data"))
@@ -39,15 +56,28 @@ py::class_<BBitmap, BArchivable>(m, "BBitmap")
 .def("LockBits", &BBitmap::LockBits, "", py::arg("state")=NULL)
 .def("UnlockBits", &BBitmap::UnlockBits, "")
 .def("Area", &BBitmap::Area, "")
-.def("Bits", &BBitmap::Bits, "")
+//.def("Bits", &BBitmap::Bits, "")
+//.def("Bits", py::overload_cast<>(&BBitmap::Bits, py::const_),"")
+
+.def("Bits", [](BBitmap& self)->py::bytes{
+		size_t dataSize = self.BitsLength();
+		const uint8_t* data = static_cast<const uint8_t*>(self.Bits());
+		//int32* lung = self.BitsLength();
+		//void* tmp = malloc(lung);
+		//if (tmp == nullptr){
+		//	throw std::runtime_error("Error allocating memory");
+		//}
+		return py::bytes(reinterpret_cast<const char*>(data), dataSize);
+	}
+)
 .def("BitsLength", &BBitmap::BitsLength, "")
 .def("BytesPerRow", &BBitmap::BytesPerRow, "")
 .def("ColorSpace", &BBitmap::ColorSpace, "")
 .def("Bounds", &BBitmap::Bounds, "")
-.def("SetDrawingFlags", &BBitmap::SetDrawingFlags, "", py::arg("flags"))
+//.def("SetDrawingFlags", py::overload_cast<uint32>(&BBitmap::SetDrawingFlags), "", py::arg("flags"))
 .def("Flags", &BBitmap::Flags, "")
-.def("ImportBits", py::overload_cast<const void *, int, int, int, color_space>(&BBitmap::ImportBits), "", py::arg("data"), py::arg("length"), py::arg("bpr"), py::arg("offset"), py::arg("colorSpace"))
-.def("ImportBits", py::overload_cast<const void *, int, int, color_space, BPoint, BPoint, BSize>(&BBitmap::ImportBits), "", py::arg("data"), py::arg("length"), py::arg("bpr"), py::arg("colorSpace"), py::arg("from"), py::arg("to"), py::arg("size"))
+.def("ImportBits", py::overload_cast<const void *, int32, int32, int32, color_space>(&BBitmap::ImportBits), "", py::arg("data"), py::arg("length"), py::arg("bpr"), py::arg("offset"), py::arg("colorSpace"))
+.def("ImportBits", py::overload_cast<const void *, int32, int32, color_space, BPoint, BPoint, BSize>(&BBitmap::ImportBits), "", py::arg("data"), py::arg("length"), py::arg("bpr"), py::arg("colorSpace"), py::arg("from"), py::arg("to"), py::arg("size"))
 .def("ImportBits", py::overload_cast<const BBitmap *>(&BBitmap::ImportBits), "", py::arg("bitmap"))
 .def("ImportBits", py::overload_cast<const BBitmap *, BPoint, BPoint, BSize>(&BBitmap::ImportBits), "", py::arg("bitmap"), py::arg("from"), py::arg("to"), py::arg("size"))
 .def("GetOverlayRestrictions", &BBitmap::GetOverlayRestrictions, "", py::arg("restrictions"))
@@ -55,14 +85,14 @@ py::class_<BBitmap, BArchivable>(m, "BBitmap")
 .def("RemoveChild", &BBitmap::RemoveChild, "", py::arg("view"))
 .def("CountChildren", &BBitmap::CountChildren, "")
 .def("ChildAt", &BBitmap::ChildAt, "", py::arg("index"))
-.def("FindView", py::overload_cast<const char *>(&BBitmap::FindView), "", py::arg("viewName"))
-.def("FindView", py::overload_cast<BPoint>(&BBitmap::FindView), "", py::arg("point"))
+.def("FindView", py::overload_cast<const char *>(&BBitmap::FindView, py::const_), "", py::arg("viewName"))
+.def("FindView", py::overload_cast<BPoint>(&BBitmap::FindView, py::const_), "", py::arg("point"))
 .def("Lock", &BBitmap::Lock, "")
 .def("Unlock", &BBitmap::Unlock, "")
 .def("IsLocked", &BBitmap::IsLocked, "")
 .def("operator=", &BBitmap::operator=, "", py::arg("source"))
 .def("SetBits", &BBitmap::SetBits, "", py::arg("data"), py::arg("length"), py::arg("offset"), py::arg("colorSpace"))
-.def_readwrite("Private", &BBitmap::Private, "")
+//.def_readwrite("Private", &BBitmap::Private, "")
 ;
 
 

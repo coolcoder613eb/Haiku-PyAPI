@@ -13,15 +13,29 @@ namespace py = pybind11;
 class PyStringItem : public BStringItem{
 	public:
         using BStringItem::BStringItem;
-        void DrawItem(BView* owner, BRect frame, bool complete = false) override {
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BStringItem, Archive, archive, deep);
+        }
+        void 				DrawItem(BView* owner, BRect frame, bool complete = false) override {
             PYBIND11_OVERLOAD(void, BStringItem, DrawItem, owner, frame, complete);
         }
+        void				SetText(const char* text) override {
+            PYBIND11_OVERLOAD(void, BStringItem, SetText, text);
+        }
+        void				Update(BView* owner, const BFont* font) override {
+            PYBIND11_OVERLOAD(void, BStringItem, Update, owner, font);
+        }
+        status_t			Perform(perform_code code, void* arg) override {
+            PYBIND11_OVERLOAD(status_t, BStringItem, Perform, code, arg);
+        }
         // TODO: there may be more methods that we should allow overloading
+private:
+    BStringItem* item_;
 };
 
 PYBIND11_MODULE(StringItem,m)
 {
-py::class_<BStringItem, PyStringItem, BListItem>(m, "BStringItem")
+py::class_<BStringItem, BListItem,std::unique_ptr<BStringItem, py::nodelete>>(m, "BStringItem")
 .def(py::init<const char *, unsigned int, bool>(), "", py::arg("text"), py::arg("outlineLevel")=0, py::arg("expanded")=true)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BStringItem::Instantiate, "", py::arg("archive"))

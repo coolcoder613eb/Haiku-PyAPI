@@ -13,6 +13,28 @@
 
 namespace py = pybind11;
 
+class PyBAlert : public BAlert{
+	public:
+        using BAlert::BAlert;
+        status_t	Archive(BMessage* data, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BAlert, Archive, data, deep);
+        }
+        void		MessageReceived(BMessage* message) override {
+        	PYBIND11_OVERLOAD(void, BAlert, MessageReceived, message);
+        }
+        void		FrameResized(float newWidth, float newHeight) override {
+        	PYBIND11_OVERLOAD(void, BAlert, FrameResized, newWidth, newHeight);
+        }
+        BHandler*	ResolveSpecifier(BMessage* message, int32 index,
+									BMessage* specifier, int32 form,
+									const char* property) override {
+			PYBIND11_OVERLOAD(BHandler*, BAlert, ResolveSpecifier, message, index, specifier, form, property);
+		}
+		status_t	GetSupportedSuites(BMessage* data) override {
+			PYBIND11_OVERLOAD(status_t, BAlert, GetSupportedSuites, data);
+		}
+};
+
 
 PYBIND11_MODULE(Alert,m)
 {
@@ -29,7 +51,7 @@ py::enum_<button_spacing>(m, "button_spacing", "")
 .value("B_OFFSET_SPACING", button_spacing::B_OFFSET_SPACING, "")
 .export_values();
 
-py::class_<BAlert, BWindow, std::unique_ptr<BAlert, py::nodelete>>(m, "BAlert")
+py::class_<BAlert,PyBAlert, BWindow, std::unique_ptr<BAlert, py::nodelete>>(m, "BAlert")
 .def(py::init(), "")
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2")=NULL, py::arg("button3")=NULL, py::arg("width")=B_WIDTH_AS_USUAL, py::arg("type")=B_INFO_ALERT)
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, button_spacing, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2"), py::arg("button3"), py::arg("width"), py::arg("spacing"), py::arg("type")=B_INFO_ALERT)

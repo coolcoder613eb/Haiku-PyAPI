@@ -35,10 +35,10 @@ py::class_<BSize>(m, "BSize")
 .def_readwrite("height", &BSize::height, "")
 ;
 
-m.def("__eq__", &operator==, "", py::arg("other"));
+//m.def("__eq__", &operator==, "", py::arg("other"));
 
-m.def("__ne__", &operator!=, "", py::arg("other"));
+//m.def("__ne__", &operator!=, "", py::arg("other"));
 
-m.def("operator=", &operator=, "", py::arg("other"));
+//m.def("operator=", &operator=, "", py::arg("other"));
 
 }

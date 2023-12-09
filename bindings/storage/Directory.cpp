@@ -3,14 +3,21 @@
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
 
+
 #include <Directory.h>
+#include <Node.h>
+#include <EntryList.h>
+#include <StorageDefs.h>
+#include <Entry.h>
+#include <File.h>
+#include <SymLink.h>
 
 namespace py = pybind11;
 
 
-void define_Directory(py::module_& m)
+PYBIND11_MODULE(Directory,m)
 {
-py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")
+py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")// verify if needed
 .def(py::init(), "")
 .def(py::init<const BDirectory &>(), "", py::arg("dir"))
 .def(py::init<const entry_ref *>(), "", py::arg("ref"))
@@ -23,11 +30,13 @@ py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")
 .def("SetTo", py::overload_cast<const BEntry *>(&BDirectory::SetTo), "", py::arg("entry"))
 .def("SetTo", py::overload_cast<const char *>(&BDirectory::SetTo), "", py::arg("path"))
 .def("SetTo", py::overload_cast<const BDirectory *, const char *>(&BDirectory::SetTo), "", py::arg("dir"), py::arg("path"))
-.def("GetEntry", &BDirectory::GetEntry, "", py::arg("entry"))
+// works also as
+//.def("GetEntry", &BDirectory::GetEntry, "", py::arg("entry"))
+.def("GetEntry", py::overload_cast<BEntry *>(&BDirectory::GetEntry, py::const_), "",py::arg("entry")) // verificare
 .def("IsRootDirectory", &BDirectory::IsRootDirectory, "")
 .def("FindEntry", &BDirectory::FindEntry, "", py::arg("path"), py::arg("entry"), py::arg("traverse")=false)
-.def("Contains", py::overload_cast<const char *, int>(&BDirectory::Contains), "", py::arg("path"), py::arg("nodeFlags")=B_ANY_NODE)
-.def("Contains", py::overload_cast<const BEntry *, int>(&BDirectory::Contains), "", py::arg("entry"), py::arg("nodeFlags")=B_ANY_NODE)
+.def("Contains", py::overload_cast<const char *, int32>(&BDirectory::Contains, py::const_), "",py::arg("path"),py::arg("nodeFlags")=B_ANY_NODE)
+.def("Contains", py::overload_cast<const BEntry *, int32>(&BDirectory::Contains, py::const_), "",py::arg("entry"),py::arg("nodeFlags")=B_ANY_NODE)
 .def("GetStatFor", &BDirectory::GetStatFor, "", py::arg("path"), py::arg("st"))
 .def("GetNextEntry", &BDirectory::GetNextEntry, "", py::arg("entry"), py::arg("traverse")=false)
 .def("GetNextRef", &BDirectory::GetNextRef, "", py::arg("ref"))

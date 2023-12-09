@@ -72,7 +72,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel ;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
@@ -131,6 +131,8 @@ local sourceFiles =
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp
+	Alignment.cpp
+	SeparatorView.cpp
 	MenuBar.cpp
 	StatusBar.cpp
 	CheckBox.cpp
@@ -140,15 +142,60 @@ local sourceFiles =
 	ListView.cpp
 	ScrollView.cpp
 	ListItem.cpp
-	#Bitmap.cpp
-	#Slider.cpp
+	Bitmap.cpp
 	Picture.cpp
+	PictureButton.cpp
 	StringItem.cpp
 	TabView.cpp
+	ScrollBar.cpp
+	GraphicsDefs.cpp
+	Screen.cpp
+	Shape.cpp
+	Size.cpp
+	Slider.cpp
 	
 	#SupportKit
+	Beep.cpp
+	Locker.cpp
+	Autolock.cpp
 	SupportDefs.cpp
 	Archivable.cpp
+	TypeConstants.cpp
+	Architecture.cpp
+	DateTime.cpp
+	parsedate.cpp
+	List.cpp
+	String.cpp
+	Flattenable.cpp
+	StringList.cpp
+	DataIO.cpp
+	
+	#Kernel
+	fs_attr.cpp
+	
+	#StorageKit
+	StorageDefs.cpp
+	Entry.cpp
+	Node.cpp
+	
+	Directory.cpp
+	File.cpp
+	Volume.cpp
+	VolumeRoster.cpp
+	Path.cpp
+	PathFinder.cpp
+	SymLink.cpp
+	Statable.cpp
+	Mime.cpp
+	MimeType.cpp
+	Resources.cpp
+	ResourceStrings.cpp
+	EntryList.cpp
+	Query.cpp
+	NodeMonitor.cpp
+	NodeInfo.cpp
+	#DiskDeviceDefs.cpp
+	#FilePanel.cpp
 	;
 
 # The shared library Be.so can be built from the sourceFiles

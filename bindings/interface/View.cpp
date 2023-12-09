@@ -9,6 +9,7 @@
 #include <Font.h>
 #include <Handler.h>
 #include <InterfaceDefs.h>
+#include <GraphicsDefs.h>
 #include <Rect.h>
 #include <Gradient.h>
 #include <Bitmap.h>
@@ -22,9 +23,152 @@
 #include <Shape.h>
 #include <LayoutContext.h>
 #include <Region.h>
+#include <Point.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
+
+class PyBView : public BView{
+	public:
+        using BView::BView;
+        
+        status_t			Archive(BMessage* archive, bool deep = true) const override {
+            PYBIND11_OVERLOAD(status_t, BView, Archive, archive, deep);
+        }
+        status_t			AllUnarchived(const BMessage* archive) override {
+            PYBIND11_OVERLOAD(status_t, BView, AllUnarchived, archive);
+        }
+        status_t			AllArchived(BMessage* archive) const override {
+            PYBIND11_OVERLOAD(status_t, BView, AllArchived, archive);
+        }
+        void				AttachedToWindow() override {
+            PYBIND11_OVERLOAD(void, BView, AttachedToWindow);
+        }
+        void				AllAttached() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				DetachedFromWindow() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				AllDetached() override {
+            PYBIND11_OVERLOAD(void, BView, AllAttached);
+        }
+        void				MessageReceived(BMessage* message) override {
+            PYBIND11_OVERLOAD(void, BView, MessageReceived, message);
+        }
+        void 				Draw(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BView, Draw, updateRect);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, MouseDown, where);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, MouseUp, where);
+        }
+        void				MouseMoved(BPoint where, uint32 code, const BMessage* dragMessage) override {
+            PYBIND11_OVERLOAD(void, BView, MouseMoved, where, code, dragMessage);
+        }
+        void				WindowActivated(bool active) override {
+            PYBIND11_OVERLOAD(void, BView, WindowActivated, active);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BView, KeyDown, bytes, numBytes);
+        }
+        void				KeyUp(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BView, KeyUp, bytes, numBytes);
+        }
+        void				Pulse() override {
+            PYBIND11_OVERLOAD(void, BView, Pulse);
+        }
+        void				FrameMoved(BPoint newPosition) override {
+            PYBIND11_OVERLOAD(void, BView, FrameMoved, newPosition);
+        }
+        void				FrameResized(float newWidth, float newHeight) override {
+            PYBIND11_OVERLOAD(void, BView, FrameResized, newWidth, newHeight);
+        }
+        void				TargetedByScrollView(BScrollView* scrollView) override {
+            PYBIND11_OVERLOAD(void, BView, TargetedByScrollView, scrollView);
+        }
+        void				ConstrainClippingRegion(BRegion* region) override {
+            PYBIND11_OVERLOAD(void, BView, ConstrainClippingRegion, region);
+        }
+        void				SetDrawingMode(drawing_mode mode) override {
+            PYBIND11_OVERLOAD(void, BView, SetDrawingMode, mode);
+        }
+        void				SetPenSize(float size) override {
+            PYBIND11_OVERLOAD(void, BView, SetPenSize, size);
+        }
+        void				SetViewColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetViewColor, color);
+        }
+        void				SetHighColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetHighColor, color);
+        }
+        void				SetLowColor(rgb_color color) override {
+            PYBIND11_OVERLOAD(void, BView, SetLowColor, color);
+        }
+        void				SetFont(const BFont* font, uint32 mask = B_FONT_ALL) override {
+            PYBIND11_OVERLOAD(void, BView, SetFont, font, mask);
+        }
+        void				SetFlags(uint32 flags) override {
+            PYBIND11_OVERLOAD(void, BView, SetFlags, flags);
+        }
+        void				SetResizingMode(uint32 mode) override {
+            PYBIND11_OVERLOAD(void, BView, SetResizingMode, mode);
+        }
+        void				ScrollTo(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BView, ScrollTo, where);
+        }
+        void				MakeFocus(bool focus = true) override {
+            PYBIND11_OVERLOAD(void, BView, MakeFocus, focus);
+        }
+        void				Show() override {
+            PYBIND11_OVERLOAD(void, BView, Show);
+        }
+        void				Hide() override {
+            PYBIND11_OVERLOAD(void, BView, Hide);
+        }
+        void				GetPreferredSize(float* _width, float* _height) override {
+            PYBIND11_OVERLOAD(void, BView, GetPreferredSize, _width, _height);
+        }
+        void				ResizeToPreferred() override {
+            PYBIND11_OVERLOAD(void, BView, ResizeToPreferred);
+        }
+        BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+            PYBIND11_OVERLOAD(BHandler*, BView, ResolveSpecifier, message, index, specifier, form, property);
+        }
+        status_t			GetSupportedSuites(BMessage* data) override {
+            PYBIND11_OVERLOAD(status_t, BView, GetSupportedSuites, data);
+        }
+        status_t			Perform(perform_code code, void* data) override {
+            PYBIND11_OVERLOAD(status_t, BView, Perform, code, data);
+        }
+        void				DrawAfterChildren(BRect updateRect) override {
+            PYBIND11_OVERLOAD(void, BView, DrawAfterChildren, updateRect);
+        }
+        BSize				MinSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, MinSize);
+        }
+        BSize				MaxSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, MaxSize);
+        }
+        BSize				PreferredSize() override {
+            PYBIND11_OVERLOAD(BSize, BView, PreferredSize);
+        }
+        BAlignment			LayoutAlignment() override {
+            PYBIND11_OVERLOAD(BAlignment, BView, LayoutAlignment);
+        }
+        bool				HasHeightForWidth() override {
+            PYBIND11_OVERLOAD(bool, BView, HasHeightForWidth);
+        }
+        void				GetHeightForWidth(float width, float* min, float* max, float* preferred) override {
+            PYBIND11_OVERLOAD(void, BView, GetHeightForWidth, width, min, max, preferred);
+        }
+        void				SetLayout(BLayout* layout) override {
+            PYBIND11_OVERLOAD(void, BView, SetLayout, layout);
+        }
+};
+
 
 PYBIND11_MODULE(View,m)
 {
@@ -45,9 +189,26 @@ m.attr("B_SUSPEND_VIEW_FOCUS") = 2;
 m.attr("B_NO_POINTER_HISTORY") = 4;
 m.attr("B_FULL_POINTER_HISTORY") = 8;
 
-m.attr("B_TRACK_WHOLE_RECT") = 0;
-m.attr("B_TRACK_RECT_CORNER") = 1;
 
+py::enum_<rect_tracking_style> (m, "rect_tracking_style", "")
+.value("B_TRACK_WHOLE_RECT", rect_tracking_style::B_TRACK_WHOLE_RECT, "")
+.value("B_TRACK_RECT_CORNER", rect_tracking_style::B_TRACK_RECT_CORNER, "")
+.export_values();
+//m.attr("B_TRACK_WHOLE_RECT") = 0;
+//m.attr("B_TRACK_RECT_CORNER") = 1;
+py::enum_<set_font_mask> (m, "set_font_mask", "")
+.value("B_FONT_FAMILY_AND_STYLE", set_font_mask::B_FONT_FAMILY_AND_STYLE, "")
+.value("B_FONT_SIZE", set_font_mask::B_FONT_SIZE, "")
+.value("B_FONT_SHEAR", set_font_mask::B_FONT_SHEAR, "")
+.value("B_FONT_ROTATION", set_font_mask::B_FONT_ROTATION, "")
+.value("B_FONT_SPACING", set_font_mask::B_FONT_SPACING, "")
+.value("B_FONT_ENCODING", set_font_mask::B_FONT_ENCODING, "")
+.value("B_FONT_FACE", set_font_mask::B_FONT_FACE, "")
+.value("B_FONT_FLAGS", set_font_mask::B_FONT_FLAGS, "")
+.value("B_FONT_FALSE_BOLD_WIDTH", set_font_mask::B_FONT_FALSE_BOLD_WIDTH, "")
+.value("B_FONT_ALL", set_font_mask::B_FONT_ALL, "")
+.export_values();
+/*
 m.attr("B_FONT_FAMILY_AND_STYLE") = 1;
 m.attr("B_FONT_SIZE") = 2;
 m.attr("B_FONT_SHEAR") = 4;
@@ -58,6 +219,7 @@ m.attr("B_FONT_FACE") = 64;
 m.attr("B_FONT_FLAGS") = 128;
 m.attr("B_FONT_FALSE_BOLD_WIDTH") = 256;
 m.attr("B_FONT_ALL") = 511;
+*/
 
 py::enum_<coordinate_space>(m, "coordinate_space", "")
 .value("B_CURRENT_STATE_COORDINATES", coordinate_space::B_CURRENT_STATE_COORDINATES, "")
@@ -109,7 +271,7 @@ m.attr("_VIEW_CENTER_") = _VIEW_CENTER_;
 
 //m.attr("ViewState") = ViewState;
 
-py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
+py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
 .def(py::init<BRect, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))
@@ -142,7 +304,7 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FrameMoved", &BView::FrameMoved, "", py::arg("newPosition"))
 .def("FrameResized", &BView::FrameResized, "", py::arg("newWidth"), py::arg("newHeight"))
 .def("TargetedByScrollView", &BView::TargetedByScrollView, "", py::arg("scrollView"))
-//.def("BeginRectTracking", &BView::BeginRectTracking, "", py::arg("startRect"), py::arg("style")=B_TRACK_WHOLE_RECT)
+.def("BeginRectTracking", &BView::BeginRectTracking, "", py::arg("startRect"), py::arg("style")=B_TRACK_WHOLE_RECT)
 .def("EndRectTracking", &BView::EndRectTracking, "")
 .def("GetMouse", &BView::GetMouse, "", py::arg("location"), py::arg("buttons"), py::arg("checkMessageQueue")=true)
 .def("DragMessage", py::overload_cast<BMessage *, BRect, BHandler *>(&BView::DragMessage), "", py::arg("message"), py::arg("dragRect"), py::arg("replyTo")=NULL)
@@ -171,8 +333,8 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("LeftTop", &BView::LeftTop, "")
 .def("GetClippingRegion", &BView::GetClippingRegion, "", py::arg("region"))
 .def("ConstrainClippingRegion", &BView::ConstrainClippingRegion, "", py::arg("region"))
-//.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
-//.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToPicture", &BView::ClipToPicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
+.def("ClipToInversePicture", &BView::ClipToInversePicture, "", py::arg("picture"), py::arg("where")=B_ORIGIN, py::arg("sync")=true)
 .def("ClipToRect", &BView::ClipToRect, "", py::arg("rect"))
 .def("ClipToInverseRect", &BView::ClipToInverseRect, "", py::arg("rect"))
 .def("ClipToShape", &BView::ClipToShape, "", py::arg("shape"))
@@ -194,8 +356,8 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("ViewColor", &BView::ViewColor, "")
 .def("SetViewUIColor", &BView::SetViewUIColor, "", py::arg("which"), py::arg("tint")=B_NO_TINT)
 .def("ViewUIColor", &BView::ViewUIColor, "", py::arg("tint")=NULL)
-//.def("SetViewBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int, unsigned int>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("srcRect"), py::arg("dstRect"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
-//.def("SetViewBitmap", py::overload_cast<const BBitmap *, unsigned int, unsigned int>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
+.def("SetViewBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32, unsigned int32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("srcRect"), py::arg("dstRect"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
+.def("SetViewBitmap", py::overload_cast<const BBitmap *, unsigned int32, unsigned int32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
 .def("ClearViewBitmap", &BView::ClearViewBitmap, "")
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, BRect, BRect, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("srcRect"), py::arg("dstRect"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
@@ -231,21 +393,20 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("MovePenTo", py::overload_cast<float, float>(&BView::MovePenTo), "", py::arg("x"), py::arg("y"))
 .def("MovePenBy", &BView::MovePenBy, "", py::arg("x"), py::arg("y"))
 .def("PenLocation", &BView::PenLocation, "")
-//.def("StrokeLine", py::overload_cast<BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("toPoint"), py::arg("pattern")=B_SOLID_HIGH)
-//.def("StrokeLine", py::overload_cast<BPoint, BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("start"), py::arg("end"), py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokeLine", py::overload_cast<BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("toPoint"), py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokeLine", py::overload_cast<BPoint, BPoint, ::pattern>(&BView::StrokeLine), "", py::arg("start"), py::arg("end"), py::arg("pattern")=B_SOLID_HIGH)
 .def("BeginLineArray", &BView::BeginLineArray, "", py::arg("count"))
 .def("AddLine", &BView::AddLine, "", py::arg("start"), py::arg("end"), py::arg("color"))
 .def("EndLineArray", &BView::EndLineArray, "")
-/*
 .def("StrokePolygon", py::overload_cast<const BPolygon *, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("polygon"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
-.def("StrokePolygon", py::overload_cast<const BPoint *, int, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
-.def("StrokePolygon", py::overload_cast<const BPoint *, int, BRect, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokePolygon", py::overload_cast<const BPoint *, int32, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
+.def("StrokePolygon", py::overload_cast<const BPoint *, int32, BRect, bool, ::pattern>(&BView::StrokePolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("closed")=true, py::arg("pattern")=B_SOLID_HIGH)
 .def("FillPolygon", py::overload_cast<const BPolygon *, ::pattern>(&BView::FillPolygon), "", py::arg("polygon"), py::arg("pattern")=B_SOLID_HIGH)
-.def("FillPolygon", py::overload_cast<const BPoint *, int, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("pattern")=B_SOLID_HIGH)
-.def("FillPolygon", py::overload_cast<const BPoint *, int, BRect, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("pattern")=B_SOLID_HIGH)
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, BRect, ::pattern>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillPolygon", py::overload_cast<const BPolygon *, const BGradient &>(&BView::FillPolygon), "", py::arg("polygon"), py::arg("gradient"))
-.def("FillPolygon", py::overload_cast<const BPoint *, int, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("gradient"))
-.def("FillPolygon", py::overload_cast<const BPoint *, int, BRect, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("gradient"))
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("gradient"))
+.def("FillPolygon", py::overload_cast<const BPoint *, int32, BRect, const BGradient &>(&BView::FillPolygon), "", py::arg("pointArray"), py::arg("numPoints"), py::arg("bounds"), py::arg("gradient"))
 .def("StrokeTriangle", py::overload_cast<BPoint, BPoint, BPoint, BRect, ::pattern>(&BView::StrokeTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("bounds"), py::arg("pattern")=B_SOLID_HIGH)
 .def("StrokeTriangle", py::overload_cast<BPoint, BPoint, BPoint, ::pattern>(&BView::StrokeTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillTriangle", py::overload_cast<BPoint, BPoint, BPoint, ::pattern>(&BView::FillTriangle), "", py::arg("point1"), py::arg("point2"), py::arg("point3"), py::arg("pattern")=B_SOLID_HIGH)
@@ -279,15 +440,13 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("StrokeShape", &BView::StrokeShape, "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
-*/
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
-/*
-.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("where"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"))
-.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("where"))
@@ -298,14 +457,12 @@ py::class_<BView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("DrawChar", py::overload_cast<char, BPoint>(&BView::DrawChar), "", py::arg("aChar"), py::arg("location"))
 .def("DrawString", py::overload_cast<const char *, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("delta")=NULL)
 .def("DrawString", py::overload_cast<const char *, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("location"), py::arg("delta")=NULL)
-.def("DrawString", py::overload_cast<const char *, int, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("delta")=NULL)
-.def("DrawString", py::overload_cast<const char *, int, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
-.def("DrawString", py::overload_cast<const char *, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
-.def("DrawString", py::overload_cast<const char *, int, const BPoint *, int>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
-*/
-.def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=py::int_(0x000001FF))
+.def("DrawString", py::overload_cast<const char *, int32, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("delta")=NULL)
+.def("DrawString", py::overload_cast<const char *, int32, BPoint, escapement_delta *>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("location"), py::arg("delta")=0)
+.def("DrawString", py::overload_cast<const char *, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("locations"), py::arg("locationCount"))
+.def("DrawString", py::overload_cast<const char *, int32, const BPoint *, int32>(&BView::DrawString), "", py::arg("string"), py::arg("length"), py::arg("locations"), py::arg("locationCount"))
+.def("SetFont", &BView::SetFont, "", py::arg("font"), py::arg("mask")=B_FONT_ALL)
 .def("GetFont", &BView::GetFont, "", py::arg("font"))
-
 .def("TruncateString", &BView::TruncateString, "", py::arg("in_out"), py::arg("mode"), py::arg("width"))
 .def("StringWidth", py::overload_cast<const char *>(&BView::StringWidth, py::const_), "", py::arg("string"))
 .def("StringWidth", py::overload_cast<const char *, int32>(&BView::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))

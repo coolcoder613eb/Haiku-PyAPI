@@ -30,10 +30,10 @@ py::class_<BAlignment>(m, "BAlignment")
 .def_readwrite("vertical", &BAlignment::vertical, "")
 ;
 
-m.def("__eq__", &operator==, "", py::arg("other"));
+//m.def("__eq__", &operator==, "", py::arg("other"));
 
-m.def("__ne__", &operator!=, "", py::arg("other"));
+//m.def("__ne__", &operator!=, "", py::arg("other"));
 
-m.def("operator=", &operator=, "", py::arg("other"));
+//m.def("operator=", &operator=, "", py::arg("other"));
 
 }
