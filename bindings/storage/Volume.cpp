@@ -14,6 +14,17 @@ using namespace BPrivate::Storage;
 using namespace BPrivate::Storage::Mime;
 //using namespace BPackageKit;
 
+py::tuple GetIcon_toArray(BVolume& self, size_t size, type_code type){
+            uint8_t* data;
+            status_t result = self.GetIcon(&data, &size, &type);
+            py::array_t<uint8_t> array = py::array_t<uint8_t>(
+            {static_cast<ssize_t>(size)},
+            {sizeof(uint8_t)},
+            data
+            );
+            return py::make_tuple(result, array);
+};
+
 PYBIND11_MODULE(Volume, m)
 {
 py::class_<BVolume>(m, "BVolume")
@@ -32,6 +43,8 @@ py::class_<BVolume>(m, "BVolume")
 .def("SetName", &BVolume::SetName, "", py::arg("name"))
 .def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BVolume::GetIcon, py::const_), "", py::arg("icon"), py::arg("which"))
 //.def("GetIcon", py::overload_cast<unsigned char, size_t *, type_code *>(&BVolume::GetIcon, py::const_), "", py::arg("_data"), py::arg("_size"), py::arg("_type"))
+.def("GetIcon", &GetIcon_toArray, "", py::arg("_size"), py::arg("_type"))
+/*
 .def("GetIcon", [](BVolume& self, size_t size, type_code type){
     uint8_t* data;
     status_t result = self.GetIcon(&data, &size, &type);
@@ -41,7 +54,7 @@ py::class_<BVolume>(m, "BVolume")
             data
     );
     return py::make_tuple(array, result);
-}, "", py::arg("size"), py::arg("type"))
+}, "", py::arg("size"), py::arg("type"))*/
 .def("IsRemovable", &BVolume::IsRemovable, "")
 .def("IsReadOnly", &BVolume::IsReadOnly, "")
 .def("IsPersistent", &BVolume::IsPersistent, "")
