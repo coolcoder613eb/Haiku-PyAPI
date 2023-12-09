@@ -28,7 +28,7 @@ class PyBResourceStrings : public BResourceStrings{
 
 PYBIND11_MODULE(ResourceStrings, m)
 {
-py::class_<BResourceStrings>(m, "BResourceStrings")
+py::class_<BResourceStrings, PyBResourceStrings>(m, "BResourceStrings")
 .def(py::init(), "")
 .def(py::init<const entry_ref &>(), "", py::arg("ref"))
 .def("InitCheck", &BResourceStrings::InitCheck, "")
