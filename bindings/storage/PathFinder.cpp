@@ -13,6 +13,29 @@ namespace py = pybind11;
 //using namespace BPrivate::Storage;
 //using namespace BPrivate::Storage::Mime;
 //using namespace BPackageKit;
+class BPathFinderWrapper {
+public:
+    static std::tuple<status_t, BStringList> FindPaths(BPathFinder& self, const char* architecture, path_base_directory baseDirectory, const char* subPath, uint32 flags) {
+        BStringList _paths;
+        status_t result = self.FindPaths(architecture, baseDirectory, subPath, flags, _paths);
+        return std::make_tuple(result, _paths);
+    }
+    static std::tuple<status_t, BStringList> FindPaths(BPathFinder& self, path_base_directory baseDirectory, const char* subPath, uint32 flags) {
+        BStringList _paths;
+        status_t result = self.FindPaths(baseDirectory, subPath, flags, _paths);
+        return std::make_tuple(result, _paths);
+    }
+    static std::tuple<status_t, BStringList> FindPaths(BPathFinder& self, path_base_directory baseDirectory, const char* subPath) {
+        BStringList _paths;
+        status_t result = self.FindPaths(baseDirectory, subPath, _paths);
+        return std::make_tuple(result, _paths);
+    }
+    static std::tuple<status_t, BStringList> FindPaths(BPathFinder& self, path_base_directory baseDirectory) {
+        BStringList _paths;
+        status_t result = self.FindPaths(baseDirectory, _paths);
+        return std::make_tuple(result, _paths);
+    }
+};
 
 PYBIND11_MODULE(PathFinder, m)
 {
@@ -51,30 +74,34 @@ py::class_<BPathFinder>(m, "BPathFinder")
     return std::make_tuple(r,_path);
 }
 , "", py::arg("baseDirectory"))
-.def("FindPaths", [](BPathFinder& self,const char * architecture,path_base_directory baseDirectory,const char * subPath,uint32 flags) {
+/*.def_static("FindPaths", [](BPathFinder& self,const char * architecture,path_base_directory baseDirectory,const char * subPath,uint32 flags) {
     BStringList  _paths;
-    static status_t r = self.FindPaths(architecture, baseDirectory, subPath, flags, _paths);
+    status_t r = self.FindPaths(architecture, baseDirectory, subPath, flags, _paths);
     return std::make_tuple(r,_paths);
 }
-, "", py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))
-.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory,const char * subPath,uint32 flags) {
+, "", py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))*/
+.def_static("FindPaths", py::overload_cast<BPathFinder&, const char*, path_base_directory, const char*, uint32>(&BPathFinderWrapper::FindPaths), "", py::arg("self"), py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))
+/*.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory,const char * subPath,uint32 flags) {
     BStringList  _paths;
-    static status_t r = self.FindPaths(baseDirectory, subPath, flags, _paths);
+    status_t r = self.FindPaths(baseDirectory, subPath, flags, _paths);
     return std::make_tuple(r,_paths);
 }
-, "", py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))
-.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory,const char * subPath) {
+, "", py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))*/
+.def_static("FindPaths", py::overload_cast<BPathFinder&,path_base_directory,const char*, uint32>(&BPathFinderWrapper::FindPaths), "", py::arg("self"),  py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"))
+/*.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory,const char * subPath) {
     BStringList  _paths;
-    static status_t r = self.FindPaths(baseDirectory, subPath, _paths);
+    status_t r = self.FindPaths(baseDirectory, subPath, _paths);
     return std::make_tuple(r,_paths);
 }
-, "", py::arg("baseDirectory"), py::arg("subPath"))
-.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory) {
+, "", py::arg("baseDirectory"), py::arg("subPath"))*/
+.def_static("FindPaths", py::overload_cast<BPathFinder&, path_base_directory, const char*>(&BPathFinderWrapper::FindPaths), "", py::arg("self"), py::arg("baseDirectory"), py::arg("subPath"))
+/*.def("FindPaths", [](BPathFinder& self,path_base_directory baseDirectory) {
     BStringList  _paths;
-    static status_t r = self.FindPaths(baseDirectory, _paths);
+    status_t r = self.FindPaths(baseDirectory, _paths);
     return std::make_tuple(r,_paths);
 }
-, "", py::arg("baseDirectory"))
+, "", py::arg("baseDirectory"))*/
+.def_static("FindPaths", py::overload_cast<BPathFinder&, path_base_directory>(&BPathFinderWrapper::FindPaths), "", py::arg("self"), py::arg("baseDirectory"))
 ;
 
 
