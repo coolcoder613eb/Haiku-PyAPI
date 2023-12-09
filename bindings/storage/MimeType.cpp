@@ -108,7 +108,7 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("GetLongDescription", &BMimeType::GetLongDescription, "", py::arg("description"))
 .def("GetSupportingApps", &BMimeType::GetSupportingApps, "", py::arg("signatures"))
 .def("SetIcon", py::overload_cast<const BBitmap *, icon_size>(&BMimeType::SetIcon), "", py::arg("icon"), py::arg("size"))
-//.def("SetIcon", py::overload_cast<unsigned char, size_t>(&BMimeType::SetIcon), "", py::arg("data"), py::arg("size"))
+.def("SetIcon", py::overload_cast<const uint8*, size_t>(&BMimeType::SetIcon), "", py::arg("data"), py::arg("size"))
 .def("SetPreferredApp", &BMimeType::SetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
 .def("SetAttrInfo", &BMimeType::SetAttrInfo, "", py::arg("info"))
 .def("SetFileExtensions", &BMimeType::SetFileExtensions, "", py::arg("extensions"))
@@ -121,8 +121,31 @@ py::class_<BMimeType>(m, "BMimeType")
 .def_static("IsValid_static", py::overload_cast<const char *>(&BMimeType::IsValid), "", py::arg("mimeType"))
 .def("GetAppHint", &BMimeType::GetAppHint, "", py::arg("ref"))
 .def("SetAppHint", &BMimeType::SetAppHint, "", py::arg("ref"))
-.def("GetIconForType", py::overload_cast<const char *, BBitmap *, icon_size>(&BMimeType::GetIconForType, py::const_), "", py::arg("type"), py::arg("icon"), py::arg("which"))
+//.def("GetIconForType", py::overload_cast<const char *, BBitmap *, icon_size>(&BMimeType::GetIconForType, py::const_), "", py::arg("type"), py::arg("icon"), py::arg("which"))
+.def("GetIconForType_toBitmap", [](const BMimeType &self, const char *type, icon_size size) {
+            BBitmap *icon;
+            // Chiamata alla funzione C++
+            if(size==B_LARGE_ICON){
+            	icon = new BBitmap(BRect(0, 0, 31, 31), B_RGBA32);
+            } else {
+            	icon = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
+            }
+            status_t result = self.GetIconForType(type, icon, size);
+
+            // Restituisci una tupla contenente il risultato e l'oggetto BBitmap
+            return std::make_tuple(result, icon);
+        }, "", py::arg("type"), py::arg("size")=B_LARGE_ICON)
 //.def("GetIconForType", py::overload_cast<const char *, unsigned char, size_t *>(&BMimeType::GetIconForType, py::const_), "", py::arg("type"), py::arg("_data"), py::arg("_size"))
+.def("GetIconForType_toVector", [](const BMimeType &self, const char *type) {
+            size_t size;
+            uint8_t *data;
+            status_t result = self.GetIconForType(type, &data, &size);
+            auto capsule = py::capsule(data, [](void *d) {
+                delete[] static_cast<uint8_t *>(d);
+            });
+
+            return std::make_tuple(result, py::array_t<uint8_t>({static_cast<ssize_t>(size)}, {sizeof(uint8_t)}, data, capsule));
+        }, "",py::arg("type"))
 .def("SetIconForType", py::overload_cast<const char *, const BBitmap *, icon_size>(&BMimeType::SetIconForType), "", py::arg("type"), py::arg("icon"), py::arg("which"))
 .def("SetIconForType", py::overload_cast<const char *, const uint8*, size_t>(&BMimeType::SetIconForType), "", py::arg("type"), py::arg("data"), py::arg("size"))
 .def("GetSnifferRule", &BMimeType::GetSnifferRule, "", py::arg("result"))
