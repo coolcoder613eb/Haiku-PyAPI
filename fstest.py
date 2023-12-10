@@ -1,5 +1,9 @@
 import os, sys, struct, ctypes
-from Be import BNode#,BString
+from Be import BNode,BEntry
+from Be.Entry import entry_ref
+from Be import BMimeType,BBitmap,BRect
+from Be.Mime import icon_size
+from Be.GraphicsDefs import color_space
 from Be.fs_attr import attr_info
 
 class card:
@@ -69,6 +73,45 @@ carta=card(f)
 #print(f)
 nf = BNode(f)
 print(attr(nf))
+en=BEntry(f)
+ref=entry_ref()
+en_ref=en.GetRef(ref)
+static = BMimeType()
+mime = BMimeType.GuessMimeType(f,static)
+if mime == 0:
+	print(static.Type())
+#TESTING MIMETYPE GETICON
+## testing geticon with raw data, most similar to c++ func
+dataicon = []
+dim = 0
+static.GetIcon(dataicon,dim)
+print(dim)
+############################
+## testing with BBitmap, most similar to c++ func
+print(color_space)
+#icon = BBitmap(BRect(0, 0, 15, 15), color_space.B_RGBA32)
+#bitti= icon.Bits()
+#static.GetIcon(icon,B_SMALL_ICON)
+#ribitti=icon.Bits()
+#if bitti == ribitti:
+#	print("nothing changed")
+#else:
+#	print("the new bitmap bits are:",ribitti)
+#############################
+## test geticon with BBitmap, return tuple
+#vale,icona=static.GetIcon(icon_size.B_MINI_ICON)
+#if vale:
+#	print("icona bitmap ottuenuta")
+#	print(icona)
+#############################
+## test geticon with raw data, return tuple <--- this works
+#vale,iconaraw=static.GetIcon()
+#if vale==0:
+#	print("icona raw ottenuta")
+#	print(iconaraw)
+	
+	
+	
 #for n, i, v in attr(nf):
 #	carta.addattrib(n,v)
 #	#if n[:5]=="META:":

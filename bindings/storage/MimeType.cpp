@@ -7,6 +7,7 @@
 #include <MimeType.h>
 #include <Mime.h>
 #include <Bitmap.h>
+#include <GraphicsDefs.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -71,6 +72,7 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("Delete", &BMimeType::Delete, "")
 .def("IsInstalled", &BMimeType::IsInstalled, "")
 //.def("GetIcon_toBitmap", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) //changed names to GetIcon
+//.def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) <-- Works but runtime problems assigning bitmap
 .def("GetIcon", [](const BMimeType &self, icon_size size) {
             BBitmap *icon;
             // Chiamata alla funzione C++
@@ -83,9 +85,50 @@ py::class_<BMimeType>(m, "BMimeType")
 
             // Restituisci una tupla contenente il risultato e l'oggetto BBitmap
             return std::make_tuple(result, icon);
-        }, "", py::arg("size")=B_LARGE_ICON)
+        }, "", py::arg("size")) //=B_LARGE_ICON ToDo return only result and pass BBitmap as argument*/
+//------------------------------------------------------------------------------------------------------------------------------------
 //.def("GetIcon", py::overload_cast<unsigned char, size_t *>(&BMimeType::GetIcon, py::const_), "", py::arg("_data"), py::arg("_size"))
-.def("GetIcon", [](const BMimeType &self) {
+/* This does not accept a "variable = []" from python
+.def("GetIcon", [](const BMimeType &self, py::array_t<uint8>& _data, size_t& _size) {
+            uint8 *data = nullptr;
+            size_t size = 0;
+            
+            // Chiamata alla funzione C++
+            status_t result = self.GetIcon(&data, &size);
+            
+            auto buf_info = _data.request();
+            if (buf_info.size != size * sizeof(uint8) || buf_info.format != py::format_descriptor<uint8>::format()) {
+                throw std::runtime_error("Formato o dimensione dell'array incompatibili");
+            }
+            std::memcpy(buf_info.ptr, data, size * sizeof(uint8));
+            _size = size;
+
+            // Deallocazione della memoria ottenuta da GetIcon
+            delete[] data;
+
+            return result;
+}, "", py::arg("_data"), py::arg("_size"))
+*/
+.def("GetIcon", [](const BMimeType& self, py::list& _data, size_t& _size) {
+            uint8* data = nullptr;
+            size_t size = 0;
+
+            // Chiamata alla funzione C++
+            status_t result = self.GetIcon(&data, &size);
+
+            // Assegna i valori ottenuti a _data e _size
+            for (size_t i = 0; i < size; ++i) {
+                _data.append(data[i]);
+            }
+            _size = size;
+
+            // Deallocazione della memoria ottenuta da GetIcon
+            delete[] data;
+
+            return result;
+},"")
+/*
+.def("GetIcon", [](const BMimeType &self) {     //   <---This works
             uint8 *data = nullptr;
             size_t size = 0;
             
@@ -100,7 +143,7 @@ py::class_<BMimeType>(m, "BMimeType")
             });
 
             return std::make_tuple(result, py::array_t<uint8>({static_cast<ssize_t>(size)}, {sizeof(uint8)}, data, capsule));
-}, "")
+}, "")*/
 .def("GetPreferredApp", &BMimeType::GetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
 .def("GetAttrInfo", &BMimeType::GetAttrInfo, "", py::arg("info"))
 .def("GetFileExtensions", &BMimeType::GetFileExtensions, "", py::arg("extensions"))
