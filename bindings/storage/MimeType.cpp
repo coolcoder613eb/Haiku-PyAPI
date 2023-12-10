@@ -72,7 +72,8 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("Delete", &BMimeType::Delete, "")
 .def("IsInstalled", &BMimeType::IsInstalled, "")
 //.def("GetIcon_toBitmap", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) //changed names to GetIcon
-//.def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) <-- Works but runtime problems assigning bitmap
+.def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size"))
+/*
 .def("GetIcon", [](const BMimeType &self, icon_size size) {
             BBitmap *icon;
             // Chiamata alla funzione C++
@@ -112,19 +113,12 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("GetIcon", [](const BMimeType& self, py::list& _data, size_t& _size) {
             uint8* data = nullptr;
             size_t size = 0;
-
-            // Chiamata alla funzione C++
             status_t result = self.GetIcon(&data, &size);
-
-            // Assegna i valori ottenuti a _data e _size
             for (size_t i = 0; i < size; ++i) {
                 _data.append(data[i]);
             }
             _size = size;
-
-            // Deallocazione della memoria ottenuta da GetIcon
             delete[] data;
-
             return result;
 },"")
 /*
