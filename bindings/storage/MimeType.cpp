@@ -71,7 +71,7 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("Delete", &BMimeType::Delete, "")
 .def("IsInstalled", &BMimeType::IsInstalled, "")
 //.def("GetIcon_toBitmap", py::overload_cast<BBitmap *, icon_size>(&BMimeType::GetIcon, py::const_), "", py::arg("icon"), py::arg("size")) //changed names to GetIcon
-.def("GetIcon_toBitmap", [](const BMimeType &self, icon_size size) {
+.def("GetIcon", [](const BMimeType &self, icon_size size) {
             BBitmap *icon;
             // Chiamata alla funzione C++
             if(size==B_LARGE_ICON){
@@ -85,7 +85,7 @@ py::class_<BMimeType>(m, "BMimeType")
             return std::make_tuple(result, icon);
         }, "", py::arg("size")=B_LARGE_ICON)
 //.def("GetIcon", py::overload_cast<unsigned char, size_t *>(&BMimeType::GetIcon, py::const_), "", py::arg("_data"), py::arg("_size"))
-.def("GetIcon_toVector", [](const BMimeType &self) {
+.def("GetIcon", [](const BMimeType &self) {
             uint8 *data = nullptr;
             size_t size = 0;
             
@@ -122,7 +122,7 @@ py::class_<BMimeType>(m, "BMimeType")
 .def("GetAppHint", &BMimeType::GetAppHint, "", py::arg("ref"))
 .def("SetAppHint", &BMimeType::SetAppHint, "", py::arg("ref"))
 //.def("GetIconForType", py::overload_cast<const char *, BBitmap *, icon_size>(&BMimeType::GetIconForType, py::const_), "", py::arg("type"), py::arg("icon"), py::arg("which"))
-.def("GetIconForType_toBitmap", [](const BMimeType &self, const char *type, icon_size size) {
+.def("GetIconForType", [](const BMimeType &self, const char *type, icon_size size) {
             BBitmap *icon;
             // Chiamata alla funzione C++
             if(size==B_LARGE_ICON){
@@ -136,7 +136,7 @@ py::class_<BMimeType>(m, "BMimeType")
             return std::make_tuple(result, icon);
         }, "", py::arg("type"), py::arg("size")=B_LARGE_ICON)
 //.def("GetIconForType", py::overload_cast<const char *, unsigned char, size_t *>(&BMimeType::GetIconForType, py::const_), "", py::arg("type"), py::arg("_data"), py::arg("_size"))
-.def("GetIconForType_toVector", [](const BMimeType &self, const char *type) {
+.def("GetIconForType", [](const BMimeType &self, const char *type) {
             size_t size;
             uint8_t *data;
             status_t result = self.GetIconForType(type, &data, &size);
