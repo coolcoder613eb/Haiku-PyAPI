@@ -52,34 +52,6 @@ py::class_<BResources>(m, "BResources")
 .def("HasResource", py::overload_cast<type_code, int32>(&BResources::HasResource), "", py::arg("type"), py::arg("id"))
 .def("HasResource", py::overload_cast<type_code, const char *>(&BResources::HasResource), "", py::arg("type"), py::arg("name"))
 //.def("GetResourceInfo", py::overload_cast<int32, type_code *, int32*, const char * *, size_t *>(&BResources::GetResourceInfo), "", py::arg("byIndex"), py::arg("typeFound"), py::arg("idFound"), py::arg("nameFound"), py::arg("lengthFound"))
-/*.def("GetResourceInfo", [](BResources& self, int32 byIndex) {
-    type_code typeFound;
-    int32 idFound;
-    const char* nameFound;
-    size_t lengthFound;
-    bool result = self.GetResourceInfo(byIndex, &typeFound, &idFound, &nameFound, &lengthFound);
-
-    // Creare una lista Python per contenere i risultati
-    py::list resultList;
-
-    // Iterare attraverso i dati restituiti estrarre ciascun blocco
-    size_t currentIndex = 0;
-    while (currentIndex < lengthFound) {
-        // Trova la lunghezza del blocco corrente
-        size_t currentBlockLength = strlen(nameFound + currentIndex);
-
-        // Estrai il blocco corrente
-        std::string currentBlock(nameFound + currentIndex, currentBlockLength);
-
-        // Aggiungi il blocco alla lista Python
-        resultList.append(py::bytes(currentBlock));
-
-        // Passa al prossimo blocco
-        currentIndex += currentBlockLength + 1;  // +1 per includere il terminatore nullo
-    }
-
-    return py::make_tuple(result, static_cast<int>(typeFound), idFound, resultList);
-}, "", py::arg("byIndex"))*/
 .def("GetResourceInfo", [](BResources& self, int32 byIndex){
     type_code typeFound;
     int32 idFound;
