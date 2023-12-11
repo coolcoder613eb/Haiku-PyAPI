@@ -35,7 +35,7 @@ py::class_<BNodeInfo>(m, "BNodeInfo")
 }, "", py::arg("which")=B_LARGE_ICON)*/
 .def("SetIcon", py::overload_cast<const BBitmap *, icon_size>(&BNodeInfo::SetIcon), "", py::arg("icon"), py::arg("which")=B_LARGE_ICON)
 //.def("GetIcon", py::overload_cast<unsigned char, size_t *, type_code *>(&BNodeInfo::GetIcon, py::const_), "", py::arg("data"), py::arg("size"), py::arg("type"))
-.def("GetIcon", [](const BMimeType& self, py::list& _data, size_t& _size, type_code& _type) {
+.def("GetIcon", [](const BNodeInfo& self, py::list& _data, size_t& _size, type_code& _type) {
             uint8* data = nullptr;
             size_t size = 0;
             type_code type = 0;
