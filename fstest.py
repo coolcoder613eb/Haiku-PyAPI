@@ -1,9 +1,10 @@
 import os, sys, struct#, ctypes
 from Be import BApplication,BNode,BEntry,BBitmap,BNodeInfo
 from Be.Entry import entry_ref
-from Be import BMimeType,BRect
+from Be import BMimeType,BRect,BPathFinder,BStringList
 from Be.Mime import icon_size
 from Be.GraphicsDefs import *
+from Be.FindDirectory import directory_which,path_base_directory
 #from Be.GraphicsDefs import color_space
 from Be.fs_attr import attr_info
 
@@ -109,6 +110,10 @@ class App(BApplication):
 			print("nothing changed")
 		else:
 			print("the new bitmap bits are:",ribitti)
+		listperc=BStringList()
+		BPathFinder.FindPaths(path_base_directory.B_FIND_PATH_BIN_DIRECTORY,listperc)
+		print(listperc.CountStrings())
+		print(listperc.First().String())
 		#############################
 		## test geticon with BBitmap, return tuple
 		#vale,icona=static.GetIcon(icon_size.B_MINI_ICON)
