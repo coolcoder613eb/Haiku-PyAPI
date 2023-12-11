@@ -154,7 +154,7 @@ py::enum_<path_base_directory>(m, "path_base_directory", "")
 
 //m.attr("BVolume") = py::cast(BVolume);
 
-m.def("find_directory", py::overload_cast<directory_which, dev_t, bool, char *, int>(&find_directory), "", py::arg("which"), py::arg("volume"), py::arg("createIt"), py::arg("pathString"), py::arg("length"));
+m.def("find_directory", py::overload_cast<directory_which, dev_t, bool, char *, int32>(&find_directory), "", py::arg("which"), py::arg("volume"), py::arg("createIt"), py::arg("pathString"), py::arg("length"));
 
 m.def("find_path", &find_path, "", py::arg("codePointer"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("pathBuffer"), py::arg("bufferSize"));
 
