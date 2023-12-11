@@ -86,6 +86,8 @@ from .File import *
 from .Volume import *
 from .VolumeRoster import *
 from .Path import *
+from .FindDirectory import *
+from .PathFinder import *
 
 from .Mime import *
 from .MimeType import *

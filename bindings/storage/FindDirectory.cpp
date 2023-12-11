@@ -4,11 +4,13 @@
 #include <pybind11/operators.h>
 
 #include <FindDirectory.h>
+#include <Volume.h>
+#include <Path.h>
 
 namespace py = pybind11;
 
 
-void define_FindDirectory(py::module_& m)
+PYBIND11_MODULE(FindDirectory, m)
 {
 py::enum_<directory_which>(m, "directory_which", "")
 .value("B_DESKTOP_DIRECTORY", directory_which::B_DESKTOP_DIRECTORY, "")
@@ -107,12 +109,19 @@ py::enum_<directory_which>(m, "directory_which", "")
 .value("B_BEOS_MEDIA_NODES_DIRECTORY", directory_which::B_BEOS_MEDIA_NODES_DIRECTORY, "")
 .value("B_BEOS_SOUNDS_DIRECTORY", directory_which::B_BEOS_SOUNDS_DIRECTORY, "")
 .export_values();
-
+/* These are hardcoded
 m.attr("B_FIND_PATH_CREATE_DIRECTORY") = py::cast(B_FIND_PATH_CREATE_DIRECTORY);
 m.attr("B_FIND_PATH_CREATE_PARENT_DIRECTORY") = py::cast(B_FIND_PATH_CREATE_PARENT_DIRECTORY);
 m.attr("B_FIND_PATH_EXISTING_ONLY") = py::cast(B_FIND_PATH_EXISTING_ONLY);
 m.attr("B_FIND_PATHS_SYSTEM_ONLY") = py::cast(B_FIND_PATHS_SYSTEM_ONLY);
 m.attr("B_FIND_PATHS_USER_ONLY") = py::cast(B_FIND_PATHS_USER_ONLY);
+*/
+m.attr("B_FIND_PATH_CREATE_DIRECTORY") = 0x0001;
+m.attr("B_FIND_PATH_CREATE_PARENT_DIRECTORY") = 0x0002;
+m.attr("B_FIND_PATH_EXISTING_ONLY") = 0x0004;
+m.attr("B_FIND_PATHS_SYSTEM_ONLY") = 0x0010;
+m.attr("B_FIND_PATHS_USER_ONLY") = 0x0020;
+
 
 py::enum_<path_base_directory>(m, "path_base_directory", "")
 .value("B_FIND_PATH_INSTALLATION_LOCATION_DIRECTORY", path_base_directory::B_FIND_PATH_INSTALLATION_LOCATION_DIRECTORY, "")
@@ -143,7 +152,7 @@ py::enum_<path_base_directory>(m, "path_base_directory", "")
 .value("B_FIND_PATH_PACKAGE_PATH", path_base_directory::B_FIND_PATH_PACKAGE_PATH, "")
 .export_values();
 
-m.attr("BVolume") = py::cast(BVolume);
+//m.attr("BVolume") = py::cast(BVolume);
 
 m.def("find_directory", py::overload_cast<directory_which, dev_t, bool, char *, int>(&find_directory), "", py::arg("which"), py::arg("volume"), py::arg("createIt"), py::arg("pathString"), py::arg("length"));
 
@@ -155,9 +164,9 @@ m.def("find_path_for_path", &find_path_for_path, "", py::arg("path"), py::arg("b
 
 m.def("find_path_for_path_etc", &find_path_for_path_etc, "", py::arg("path"), py::arg("dependency"), py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"), py::arg("pathBuffer"), py::arg("bufferSize"));
 
-m.def("find_paths", &find_paths, "", py::arg("baseDirectory"), py::arg("subPath"), py::arg("_paths"), py::arg("_pathCount"));
+//m.def("find_paths", &find_paths, "", py::arg("baseDirectory"), py::arg("subPath"), py::arg("_paths"), py::arg("_pathCount"));
 
-m.def("find_paths_etc", &find_paths_etc, "", py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"), py::arg("_paths"), py::arg("_pathCount"));
+//m.def("find_paths_etc", &find_paths_etc, "", py::arg("architecture"), py::arg("baseDirectory"), py::arg("subPath"), py::arg("flags"), py::arg("_paths"), py::arg("_pathCount"));
 
 m.def("find_directory", py::overload_cast<directory_which, BPath *, bool, BVolume *>(&find_directory), "", py::arg("which"), py::arg("path"), py::arg("createIt")=false, py::arg("volume")=NULL);
 

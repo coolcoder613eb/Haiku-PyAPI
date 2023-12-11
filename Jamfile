@@ -183,6 +183,7 @@ local sourceFiles =
 	Volume.cpp
 	VolumeRoster.cpp
 	Path.cpp
+	FindDirectory.cpp
 	PathFinder.cpp
 	SymLink.cpp
 	Statable.cpp
