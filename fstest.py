@@ -1,5 +1,5 @@
 import os, sys, struct#, ctypes
-from Be import BApplication,BNode,BEntry,BBitmap
+from Be import BApplication,BNode,BEntry,BBitmap,BNodeInfo
 from Be.Entry import entry_ref
 from Be import BMimeType,BRect
 from Be.Mime import icon_size
@@ -79,6 +79,12 @@ class App(BApplication):
 		carta=card(f)
 		#print(f)
 		nf = BNode(f)
+		Ni = BNodeInfo(nf)
+		icondata=[]
+		dim = 0
+		tipo = 0
+		if Ni.GetIcon(icondata,dim,tipo):
+			print("ottenuto icondata da NodeInfo",icondata)
 		print(attr(nf))
 		en=BEntry(f)
 		ref=entry_ref()
