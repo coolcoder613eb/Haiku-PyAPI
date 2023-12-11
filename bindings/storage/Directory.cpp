@@ -31,8 +31,8 @@ py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")// verify if needed
 .def("SetTo", py::overload_cast<const char *>(&BDirectory::SetTo), "", py::arg("path"))
 .def("SetTo", py::overload_cast<const BDirectory *, const char *>(&BDirectory::SetTo), "", py::arg("dir"), py::arg("path"))
 // works also as
-//.def("GetEntry", &BDirectory::GetEntry, "", py::arg("entry"))
-.def("GetEntry", py::overload_cast<BEntry *>(&BDirectory::GetEntry, py::const_), "",py::arg("entry")) // verificare
+.def("GetEntry", &BDirectory::GetEntry, "", py::arg("entry"))
+//.def("GetEntry", py::overload_cast<BEntry *>(&BDirectory::GetEntry, py::const_), "",py::arg("entry")) // verificare
 .def("IsRootDirectory", &BDirectory::IsRootDirectory, "")
 .def("FindEntry", &BDirectory::FindEntry, "", py::arg("path"), py::arg("entry"), py::arg("traverse")=false)
 .def("Contains", py::overload_cast<const char *, int32>(&BDirectory::Contains, py::const_), "",py::arg("path"),py::arg("nodeFlags")=B_ANY_NODE)
