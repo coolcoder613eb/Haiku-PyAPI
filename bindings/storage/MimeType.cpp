@@ -120,7 +120,7 @@ py::class_<BMimeType>(m, "BMimeType")
             _size = size;
             delete[] data;
             return result;
-},"")
+},"", py::arg("_data"), py::arg("_size"))
 /*
 .def("GetIcon", [](const BMimeType &self) {     //   <---This works
             uint8 *data = nullptr;
