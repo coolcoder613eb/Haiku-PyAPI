@@ -4,6 +4,8 @@
 #include <pybind11/operators.h>
 
 #include <interface/CardView.h>
+#include <Layout.h>
+#include <CardLayout.h>
 #include <View.h>
 
 namespace py = pybind11;
