@@ -4,11 +4,41 @@
 #include <pybind11/operators.h>
 
 #include <FilePanel.h>
+//#include <Directory.h>
+//#include <Entry.h>
+//#include <Node.h>
+#include <Window.h>
+#include <Message.h>
+#include <Messenger.h>
+#include <posix/compat/sys/stat.h>
+//#include <sys/stat.h>
 
 namespace py = pybind11;
 
 
-void define_FilePanel(py::module_& m)
+class PyBRefFilter : public BRefFilter {
+public:
+    using BRefFilter::BRefFilter;
+    bool			Filter(const entry_ref* ref, BNode* node, struct stat_beos* stat, const char* mimeType)  override {
+        PYBIND11_OVERLOAD(bool, BRefFilter, Filter, ref, node, stat, mimeType);
+    }
+};
+
+class PyBFilePanel : public BFilePanel {
+public:
+    using BFilePanel::BFilePanel;
+    void	WasHidden() override {
+        PYBIND11_OVERLOAD(void, BFilePanel, WasHidden);
+    }
+    void	SelectionChanged() override {
+        PYBIND11_OVERLOAD(void, BFilePanel, SelectionChanged);
+    }
+    void	SendMessage(const BMessenger* target, BMessage* message) override {
+        PYBIND11_OVERLOAD(void, BFilePanel, SendMessage, target, message);
+    }
+};
+
+PYBIND11_MODULE(FilePanel, m)
 {
 py::enum_<file_panel_mode>(m, "file_panel_mode", "")
 .value("B_OPEN_PANEL", file_panel_mode::B_OPEN_PANEL, "")
@@ -20,12 +50,14 @@ py::enum_<file_panel_button>(m, "file_panel_button", "")
 .value("B_DEFAULT_BUTTON", file_panel_button::B_DEFAULT_BUTTON, "")
 .export_values();
 
-py::class_<BRefFilter>(m, "BRefFilter")
+py::class_<BRefFilter,PyBRefFilter>(m, "BRefFilter")
+//.def(py::init<>(),"")
 .def("Filter", &BRefFilter::Filter, "", py::arg("ref"), py::arg("node"), py::arg("stat"), py::arg("mimeType"))
 ;
 
-py::class_<BFilePanel>(m, "BFilePanel")
-.def(py::init<file_panel_mode, BMessenger *, const entry_ref *, unsigned int, bool, BMessage *, BRefFilter *, bool, bool>(), "", py::arg("mode")=B_OPEN_PANEL, py::arg("target")=NULL, py::arg("directory")=NULL, py::arg("nodeFlavors")=0, py::arg("allowMultipleSelection")=true, py::arg("message")=NULL, py::arg("refFilter")=NULL, py::arg("modal")=false, py::arg("hideWhenDone")=true)
+py::class_<BFilePanel,PyBFilePanel>(m, "BFilePanel")
+.def(py::init<file_panel_mode, BMessenger *, const entry_ref *, uint32, bool, BMessage *, BRefFilter *, bool, bool>(), "", py::arg("mode")=file_panel_mode::B_OPEN_PANEL, py::arg("target")=NULL, py::arg("directory")=NULL, py::arg("nodeFlavors")=0, py::arg("allowMultipleSelection")=true,
+	py::arg("message")=NULL, py::arg("refFilter")=NULL, py::arg("modal")=false, py::arg("hideWhenDone")=true)
 .def("Show", &BFilePanel::Show, "")
 .def("Hide", &BFilePanel::Hide, "")
 .def("IsShowing", &BFilePanel::IsShowing, "")
