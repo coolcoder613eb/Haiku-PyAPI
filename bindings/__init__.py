@@ -64,7 +64,7 @@ from .ScrollBar import *
 from .Shape import *
 from .Size import *
 from .Slider import *
-from .AffineTransform import *
+
 
 from .Beep import *
 from .Architecture import *
@@ -75,6 +75,7 @@ from .parsedate import *
 from .List import *
 from .String import *
 from .Flattenable import *
+from .AffineTransform import *
 from .StringList import *
 from .DataIO import *
 
