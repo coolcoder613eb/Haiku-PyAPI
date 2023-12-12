@@ -36,6 +36,7 @@ from .MenuField import *
 from .LayoutItem import *
 from .Layout import *
 from .AbstractLayout import *
+from .AbstractLayoutItem import *
 from .TwoDimensionalLayout import *
 from .GridLayout import *
 from .PopUpMenu import *
@@ -99,7 +100,7 @@ from .Query import *
 from .NodeMonitor import *
 from .NodeInfo import *
 #from .DiskDeviceDefs import *
-from .FilePanel import *
+#from .FilePanel import *
 
 _BWindow=BWindow
 _BApplication=BApplication

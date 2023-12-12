@@ -126,6 +126,7 @@ local sourceFiles =
 	LayoutItem.cpp
 	Layout.cpp
 	AbstractLayout.cpp
+	AbstractLayoutItem.cpp
 	TwoDimensionalLayout.cpp
 	GridLayout.cpp
 	PopUpMenu.cpp
