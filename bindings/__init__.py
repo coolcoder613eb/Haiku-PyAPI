@@ -64,6 +64,8 @@ from .ScrollBar import *
 from .Shape import *
 from .Size import *
 from .Slider import *
+from .AffineTransform import *
+
 from .Beep import *
 from .Architecture import *
 from .Locker import *

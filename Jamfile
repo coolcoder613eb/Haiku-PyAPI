@@ -154,6 +154,7 @@ local sourceFiles =
 	Shape.cpp
 	Size.cpp
 	Slider.cpp
+	AffineTransform.cpp
 	
 	#SupportKit
 	Beep.cpp
