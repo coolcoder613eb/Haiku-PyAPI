@@ -99,7 +99,7 @@ from .Query import *
 from .NodeMonitor import *
 from .NodeInfo import *
 #from .DiskDeviceDefs import *
-#from .FilePanel import *
+from .FilePanel import *
 
 _BWindow=BWindow
 _BApplication=BApplication

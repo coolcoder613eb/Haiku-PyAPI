@@ -195,8 +195,9 @@ local sourceFiles =
 	Query.cpp
 	NodeMonitor.cpp
 	NodeInfo.cpp
+	#AppFileInfo.cpp
 	#DiskDeviceDefs.cpp
-	#FilePanel.cpp
+	FilePanel.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
