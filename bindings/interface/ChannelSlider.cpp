@@ -5,6 +5,7 @@
 
 #include <interface/ChannelSlider.h>
 #include <ChannelControl.h>
+#include <Bitmap.h>
 
 namespace py = pybind11;
 

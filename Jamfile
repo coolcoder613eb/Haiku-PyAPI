@@ -158,6 +158,7 @@ local sourceFiles =
 	CardLayout.cpp
 	CardView.cpp
 	ChannelControl.cpp
+	ChannelSlider.cpp
 	
 	#SupportKit
 	Beep.cpp
