@@ -157,6 +157,7 @@ local sourceFiles =
 	AffineTransform.cpp
 	CardLayout.cpp
 	CardView.cpp
+	ChannelControl.cpp
 	
 	#SupportKit
 	Beep.cpp
