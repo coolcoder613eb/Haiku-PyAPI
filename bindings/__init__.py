@@ -64,7 +64,7 @@ from .ScrollBar import *
 from .Shape import *
 from .Size import *
 from .Slider import *
-
+from .CardLayout import *
 
 from .Beep import *
 from .Architecture import *

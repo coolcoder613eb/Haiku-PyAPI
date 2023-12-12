@@ -155,6 +155,7 @@ local sourceFiles =
 	Size.cpp
 	Slider.cpp
 	AffineTransform.cpp
+	CardLayout.cpp
 	
 	#SupportKit
 	Beep.cpp
