@@ -199,11 +199,11 @@ local sourceFiles =
 	#FilePanel.cpp
 	;
 
-# The shared library Be.so can be built from the sourceFiles
-SharedLibrary Be.so : $(sourceFiles) ;
-
-# The symlinked libraries can be built by linking to Be.so
-Symlink $(sourceFiles:S=.so) : Be.so ;
+# The .so files can be built from the .cpp files, each .cpp file mapping to
+# its own .so file
+for sourceFile  in $(sourceFiles) {
+	SharedLibrary $(sourceFile:S=.so) : $(sourceFile) ;
+}
 
 # __init__.py can be built by simply copying the file
 MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
@@ -211,4 +211,4 @@ File __init__.py : bindings/__init__.py ;
 
 # As part of `jam install`, copy the following files:
 InstallLib $(install_location)/Be
-	: Be.so $(sourceFiles:S=.so) __init__.py ;
+	: $(sourceFiles:S=.so) __init__.py ;
