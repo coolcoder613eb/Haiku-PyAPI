@@ -5,6 +5,7 @@
 
 #include <interface/GroupLayout.h>
 #include <TwoDimensionalLayout.h>
+#include <View.h>
 
 namespace py = pybind11;
 
@@ -12,7 +13,8 @@ namespace py = pybind11;
 PYBIND11_MODULE(GroupLayout,m)
 {
 py::class_<BGroupLayout, BTwoDimensionalLayout>(m, "BGroupLayout")
-.def(py::init<orientation, float>(), "", py::arg("orientation"), py::arg("spacing")=B_USE_DEFAULT_SPACING)
+//.def(py::init<orientation, float>(), "", py::arg("orientation"), py::arg("spacing")=B_USE_DEFAULT_SPACING)
+.def(py::init<orientation, float>(), "", py::arg("orientation"), py::arg("spacing")=-1002)
 .def(py::init<BMessage *>(), "", py::arg("from"))
 .def("Spacing", &BGroupLayout::Spacing, "")
 .def("SetSpacing", &BGroupLayout::SetSpacing, "", py::arg("spacing"))

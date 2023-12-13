@@ -130,6 +130,7 @@ local sourceFiles =
 	TwoDimensionalLayout.cpp
 	GridLayout.cpp
 	GridLayoutBuilder.cpp
+	GroupLayout.cpp
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp

@@ -40,6 +40,7 @@ from .AbstractLayoutItem import *
 from .TwoDimensionalLayout import *
 from .GridLayout import *
 from .GridLayoutBuilder import *
+from .GroupLayout import *
 from .PopUpMenu import *
 from .Box import *
 from .SeparatorItem import *
