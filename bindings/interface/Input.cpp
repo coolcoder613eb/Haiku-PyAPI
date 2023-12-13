@@ -5,6 +5,7 @@
 
 #include <interface/Input.h>
 #include <Messenger.h>
+#include <List.h>
 
 namespace py = pybind11;
 
@@ -37,10 +38,10 @@ py::class_<BInputDevice>(m, "BInputDevice")
 .def("IsRunning", &BInputDevice::IsRunning, "")
 .def("Start", py::overload_cast<>(&BInputDevice::Start), "")
 .def("Stop", py::overload_cast<>(&BInputDevice::Stop), "")
-.def("Control", py::overload_cast<unsigned int, BMessage *>(&BInputDevice::Control), "", py::arg("code"), py::arg("message"))
-.def_static("Start", py::overload_cast<input_device_type>(&BInputDevice::Start), "", py::arg("type"))
-.def_static("Stop", py::overload_cast<input_device_type>(&BInputDevice::Stop), "", py::arg("type"))
-.def_static("Control", py::overload_cast<input_device_type, unsigned int, BMessage *>(&BInputDevice::Control), "", py::arg("type"), py::arg("code"), py::arg("message"))
+.def("Control", py::overload_cast<uint32, BMessage *>(&BInputDevice::Control), "", py::arg("code"), py::arg("message"))
+.def_static("Start_static", py::overload_cast<input_device_type>(&BInputDevice::Start), "", py::arg("type"))
+.def_static("Stop_static", py::overload_cast<input_device_type>(&BInputDevice::Stop), "", py::arg("type"))
+.def_static("Control_static", py::overload_cast<input_device_type, uint32, BMessage *>(&BInputDevice::Control), "", py::arg("type"), py::arg("code"), py::arg("message"))
 ;
 
 m.def("find_input_device", &find_input_device, "", py::arg("name"));
