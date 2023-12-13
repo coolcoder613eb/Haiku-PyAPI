@@ -115,6 +115,7 @@ local sourceFiles =
 	Control.cpp
 	#OptionControl.cpp
 	Rect.cpp
+	Polygon.cpp
 	StringView.cpp
 	TextControl.cpp
 	View.cpp
