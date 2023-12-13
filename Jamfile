@@ -161,6 +161,7 @@ local sourceFiles =
 	ChannelSlider.cpp
 	ControlLook.cpp
 	Deskbar.cpp
+	Gradient.cpp
 	
 	#SupportKit
 	Beep.cpp

@@ -70,6 +70,7 @@ from .ChannelControl import *
 from .ChannelSlider import *
 from .ControlLook import *
 from .Deskbar import *
+from .Gradient import *
 
 from .Beep import *
 from .Architecture import *
