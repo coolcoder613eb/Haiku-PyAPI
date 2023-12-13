@@ -130,6 +130,8 @@ py::enum_<vertical_alignment>(m, "vertical_alignment", "")
 .value("B_ALIGN_USE_FULL_HEIGHT", vertical_alignment::B_ALIGN_USE_FULL_HEIGHT, "")
 .export_values();
 
+// WHY ARE THESE ASSIGNED AS STRINGS?
+/*
 m.attr("B_USE_DEFAULT_SPACING") = "- 1002";
 m.attr("B_USE_ITEM_SPACING") = "- 1003";
 m.attr("B_USE_ITEM_INSETS") = "B_USE_ITEM_SPACING";
@@ -145,6 +147,23 @@ m.attr("B_USE_BIG_SPACING") = "- 1008";
 m.attr("B_USE_BIG_INSETS") = "B_USE_BIG_SPACING";
 m.attr("B_USE_BORDER_SPACING") = "- 1009";
 m.attr("B_USE_BORDER_INSETS") = "B_USE_BORDER_SPACING";
+*/
+
+m.attr("B_USE_DEFAULT_SPACING") = -1002;
+m.attr("B_USE_ITEM_SPACING") = -1003;
+m.attr("B_USE_ITEM_INSETS") = -1003;
+m.attr("B_USE_HALF_ITEM_SPACING") = -1004;
+m.attr("B_USE_HALF_ITEM_INSETS") = -1004;
+m.attr("B_USE_WINDOW_SPACING") = -1005;
+m.attr("B_USE_WINDOW_INSETS") = -1005;
+m.attr("B_USE_SMALL_SPACING") = -1006;
+m.attr("B_USE_SMALL_INSETS") = -1006;
+m.attr("B_USE_CORNER_SPACING") = -1007;
+m.attr("B_USE_CORNER_INSETS") = -1007;
+m.attr("B_USE_BIG_SPACING") = -1008;
+m.attr("B_USE_BIG_INSETS") = -1008;
+m.attr("B_USE_BORDER_SPACING") = -1009;
+m.attr("B_USE_BORDER_INSETS") = -1009;
 
 py::enum_<join_mode>(m, "join_mode", "")
 .value("B_ROUND_JOIN", join_mode::B_ROUND_JOIN, "")
