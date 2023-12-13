@@ -19,6 +19,7 @@ from .Roster import *
 from .Window import *
 from .Rect import *
 from .Polygon import *
+from .Region import *
 from .GraphicsDefs import *
 from .Screen import *
 from .Point import *

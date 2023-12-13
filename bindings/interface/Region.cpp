@@ -11,9 +11,9 @@ using namespace BPrivate;
 
 PYBIND11_MODULE(Region,m)
 {
-m.attr("ServerLink") = ServerLink;
+//m.attr("ServerLink") = ServerLink;
 
-m.attr("LinkReceiver") = LinkReceiver;
+//m.attr("LinkReceiver") = LinkReceiver;
 
 py::class_<clipping_rect>(m, "clipping_rect")
 .def_readwrite("left", &clipping_rect::left, "")
@@ -32,20 +32,20 @@ py::class_<BRegion>(m, "BRegion")
 .def("Set", py::overload_cast<clipping_rect>(&BRegion::Set), "", py::arg("clipping"))
 .def("Frame", &BRegion::Frame, "")
 .def("FrameInt", &BRegion::FrameInt, "")
-.def("RectAt", py::overload_cast<int>(&BRegion::RectAt), "", py::arg("index"))
-.def("RectAt", py::overload_cast<int>(&BRegion::RectAt), "", py::arg("index"))
-.def("RectAtInt", py::overload_cast<int>(&BRegion::RectAtInt), "", py::arg("index"))
-.def("RectAtInt", py::overload_cast<int>(&BRegion::RectAtInt), "", py::arg("index"))
+.def("RectAt", py::overload_cast<int32>(&BRegion::RectAt), "", py::arg("index"))
+.def("RectAt", py::overload_cast<int32>(&BRegion::RectAt), "", py::arg("index"))
+.def("RectAtInt", py::overload_cast<int32>(&BRegion::RectAtInt), "", py::arg("index"))
+.def("RectAtInt", py::overload_cast<int32>(&BRegion::RectAtInt), "", py::arg("index"))
 .def("CountRects", py::overload_cast<>(&BRegion::CountRects), "")
 .def("CountRects", py::overload_cast<>(&BRegion::CountRects), "")
-.def("Intersects", py::overload_cast<BRect>(&BRegion::Intersects), "", py::arg("rect"))
-.def("Intersects", py::overload_cast<clipping_rect>(&BRegion::Intersects), "", py::arg("clipping"))
-.def("Contains", py::overload_cast<BPoint>(&BRegion::Contains), "", py::arg("point"))
-.def("Contains", py::overload_cast<int, int>(&BRegion::Contains), "", py::arg("x"), py::arg("y"))
-.def("Contains", py::overload_cast<int, int>(&BRegion::Contains), "", py::arg("x"), py::arg("y"))
+.def("Intersects", py::overload_cast<BRect>(&BRegion::Intersects, py::const_), "", py::arg("rect"))
+.def("Intersects", py::overload_cast<clipping_rect>(&BRegion::Intersects, py::const_), "", py::arg("clipping"))
+.def("Contains", py::overload_cast<BPoint>(&BRegion::Contains, py::const_), "", py::arg("point"))
+.def("Contains", py::overload_cast<int32, int32>(&BRegion::Contains), "", py::arg("x"), py::arg("y"))
+.def("Contains", py::overload_cast<int32, int32>(&BRegion::Contains), "", py::arg("x"), py::arg("y"))
 .def("PrintToStream", &BRegion::PrintToStream, "")
 .def("OffsetBy", py::overload_cast<const BPoint &>(&BRegion::OffsetBy), "", py::arg("point"))
-.def("OffsetBy", py::overload_cast<int, int>(&BRegion::OffsetBy), "", py::arg("x"), py::arg("y"))
+.def("OffsetBy", py::overload_cast<int32, int32>(&BRegion::OffsetBy), "", py::arg("x"), py::arg("y"))
 .def("ScaleBy", py::overload_cast<BSize>(&BRegion::ScaleBy), "", py::arg("scale"))
 .def("ScaleBy", py::overload_cast<float, float>(&BRegion::ScaleBy), "", py::arg("x"), py::arg("y"))
 .def("MakeEmpty", &BRegion::MakeEmpty, "")
