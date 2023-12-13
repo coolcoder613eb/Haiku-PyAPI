@@ -41,6 +41,7 @@ from .TwoDimensionalLayout import *
 from .GridLayout import *
 from .GridLayoutBuilder import *
 from .GroupLayout import *
+from .GroupLayoutBuilder import *
 from .PopUpMenu import *
 from .Box import *
 from .SeparatorItem import *
