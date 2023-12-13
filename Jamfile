@@ -113,6 +113,7 @@ local sourceFiles =
 	Alert.cpp
 	Button.cpp
 	Control.cpp
+	#OptionControl.cpp
 	Rect.cpp
 	StringView.cpp
 	TextControl.cpp
@@ -146,6 +147,7 @@ local sourceFiles =
 	ColorControl.cpp
 	RadioButton.cpp
 	ListView.cpp
+	OutlineListView.cpp
 	ScrollView.cpp
 	ListItem.cpp
 	Bitmap.cpp
