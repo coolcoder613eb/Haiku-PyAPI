@@ -71,6 +71,12 @@ from .ChannelSlider import *
 from .ControlLook import *
 from .Deskbar import *
 from .Gradient import *
+from .GradientConic import *
+from .GradientDiamond import *
+from .GradientLinear import *
+from .GradientRadial import *
+from .GradientRadialFocus import *
+
 
 from .Beep import *
 from .Architecture import *

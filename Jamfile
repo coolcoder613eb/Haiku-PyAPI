@@ -162,6 +162,11 @@ local sourceFiles =
 	ControlLook.cpp
 	Deskbar.cpp
 	Gradient.cpp
+	GradientConic.cpp
+	GradientDiamond.cpp
+	GradientLinear.cpp
+	GradientRadial.cpp
+	GradientRadialFocus.cpp
 	
 	#SupportKit
 	Beep.cpp
