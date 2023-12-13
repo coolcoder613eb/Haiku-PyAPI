@@ -7,15 +7,80 @@
 #include <Locker.h>
 #include <List.h>
 #include <View.h>
+#include <PopUpMenu.h>
+#include <Bitmap.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
+class PyBDragger : public BDragger {
+public:
+    using BDragger::BDragger;
+
+    status_t			Archive(BMessage* data, bool deep = true) const override {
+        PYBIND11_OVERRIDE_PURE(status_t, BDragger, Archive, data, deep);
+    }
+    void				AttachedToWindow() override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, AttachedToWindow);
+    }
+    void				DetachedFromWindow() override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, DetachedFromWindow);
+    }
+    void				Draw(BRect updateRect) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, Draw, updateRect);
+    }
+    void				MouseDown(BPoint where) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, MouseDown, where);
+    }
+    void				MouseUp(BPoint where) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, MouseUp, where);
+    }
+    void				MouseMoved(BPoint where, uint32 transit, const BMessage* dragMessage) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, MouseMoved, where, transit, dragMessage);
+    }
+    void				MessageReceived(BMessage* message) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, MessageReceived, message);
+    }
+    void				FrameMoved(BPoint newPosition) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, FrameMoved, newPosition);
+    }
+    void				FrameResized(float newWidth, float newHeight) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, FrameResized, newWidth, newHeight);
+    }
+    BHandler*			ResolveSpecifier(BMessage* message, int32 index, BMessage* specifier, int32 form, const char* property) override {
+        PYBIND11_OVERRIDE_PURE(BHandler*, BDragger, ResolveSpecifier, message, index, specifier, form, property);
+    }
+    status_t			GetSupportedSuites(BMessage* data) override {
+        PYBIND11_OVERRIDE_PURE(status_t, BDragger, GetSupportedSuites, data);
+    }
+    status_t			Perform(perform_code code, void* data) override {
+        PYBIND11_OVERRIDE_PURE(status_t, BDragger, Perform, code, data);
+    }
+    void				ResizeToPreferred() override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, ResizeToPreferred);
+    }
+    void				GetPreferredSize(float* _width, float* _height) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, GetPreferredSize, _width, _height);
+    }
+    void				MakeFocus(bool focus = true) override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, MakeFocus, focus);
+    }
+    void				AllAttached() override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, AllAttached);
+    }
+    void				AllDetached() override {
+        PYBIND11_OVERRIDE_PURE(void, BDragger, AllDetached);
+    }
+    BBitmap*			DragBitmap(BPoint* offset, drawing_mode* mode) override {
+        PYBIND11_OVERRIDE_PURE(BBitmap*, BDragger, DragBitmap, offset, mode);
+    }
+};
+
 PYBIND11_MODULE(Dragger,m)
 {
-m.attr("replicant_data") = replicant_data;
+//m.attr("replicant_data") = replicant_data;
 
-m.attr("ShelfContainerViewFilter") = ShelfContainerViewFilter;
+//m.attr("ShelfContainerViewFilter") = ShelfContainerViewFilter;
 
 py::class_<BDragger, BView>(m, "BDragger")
 .def(py::init<BRect, BView *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("target"), py::arg("resizingMode")=B_FOLLOW_NONE, py::arg("flags")=B_WILL_DRAW)
@@ -48,7 +113,7 @@ py::class_<BDragger, BView>(m, "BDragger")
 .def("InShelf", &BDragger::InShelf, "")
 .def("Target", &BDragger::Target, "")
 .def("DragBitmap", &BDragger::DragBitmap, "", py::arg("offset"), py::arg("mode"))
-.def_readwrite("Private", &BDragger::Private, "")
+//.def_readwrite("Private", &BDragger::Private, "")
 ;
 
 

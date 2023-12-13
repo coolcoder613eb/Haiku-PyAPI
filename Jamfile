@@ -170,6 +170,7 @@ local sourceFiles =
 	GradientRadial.cpp
 	GradientRadialFocus.cpp
 	GridView.cpp
+	Dragger.cpp
 	
 	#SupportKit
 	Beep.cpp

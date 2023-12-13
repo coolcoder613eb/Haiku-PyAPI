@@ -79,6 +79,7 @@ from .GradientLinear import *
 from .GradientRadial import *
 from .GradientRadialFocus import *
 from .GridView import *
+from .Dragger import *
 
 from .Beep import *
 from .Architecture import *
