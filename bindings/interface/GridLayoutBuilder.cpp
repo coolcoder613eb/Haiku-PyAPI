@@ -5,14 +5,15 @@
 
 #include <interface/GridLayoutBuilder.h>
 #include <GridView.h>
+#include <InterfaceDefs.h>
 
 namespace py = pybind11;
-
 
 PYBIND11_MODULE(GridLayoutBuilder,m)
 {
 py::class_<BGridLayoutBuilder>(m, "BGridLayoutBuilder")
-.def(py::init<float, float>(), "", py::arg("horizontal")=B_USE_DEFAULT_SPACING, py::arg("vertical")=B_USE_DEFAULT_SPACING)
+//.def(py::init<float, float>(), "", py::arg("horizontal")=B_USE_DEFAULT_SPACING, py::arg("vertical")=B_USE_DEFAULT_SPACING)
+.def(py::init<float, float>(), "", py::arg("horizontal")=-1002, py::arg("vertical")=-1002)
 .def(py::init<BGridLayout *>(), "", py::arg("layout"))
 .def(py::init<BGridView *>(), "", py::arg("view"))
 .def("GridLayout", &BGridLayoutBuilder::GridLayout, "")
