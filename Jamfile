@@ -160,6 +160,7 @@ local sourceFiles =
 	ChannelControl.cpp
 	ChannelSlider.cpp
 	ControlLook.cpp
+	Deskbar.cpp
 	
 	#SupportKit
 	Beep.cpp

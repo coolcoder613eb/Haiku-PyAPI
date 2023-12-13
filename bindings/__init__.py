@@ -69,6 +69,7 @@ from .CardView import *
 from .ChannelControl import *
 from .ChannelSlider import *
 from .ControlLook import *
+from .Deskbar import *
 
 from .Beep import *
 from .Architecture import *

@@ -5,6 +5,7 @@
 
 #include <interface/Deskbar.h>
 #include <Rect.h>
+#include <View.h>
 
 namespace py = pybind11;
 
@@ -34,16 +35,16 @@ py::class_<BDeskbar>(m, "BDeskbar")
 .def("SetAutoRaise", &BDeskbar::SetAutoRaise, "", py::arg("autoRaise"))
 .def("IsAutoHide", &BDeskbar::IsAutoHide, "")
 .def("SetAutoHide", &BDeskbar::SetAutoHide, "", py::arg("autoHide"))
-.def("GetItemInfo", py::overload_cast<int, const char * *>(&BDeskbar::GetItemInfo), "", py::arg("id"), py::arg("_name"))
-.def("GetItemInfo", py::overload_cast<const char *, int>(&BDeskbar::GetItemInfo), "", py::arg("name"), py::arg("_id"))
-.def("HasItem", py::overload_cast<int>(&BDeskbar::HasItem), "", py::arg("id"))
-.def("HasItem", py::overload_cast<const char *>(&BDeskbar::HasItem), "", py::arg("name"))
+//.def("GetItemInfo", py::overload_cast<int32, const char * *>(&BDeskbar::GetItemInfo, py::const_), "", py::arg("id"), py::arg("_name"))
+.def("GetItemInfo", py::overload_cast<const char *, int32 *>(&BDeskbar::GetItemInfo, py::const_), "", py::arg("name"), py::arg("_id"))
+.def("HasItem", py::overload_cast<int>(&BDeskbar::HasItem, py::const_), "", py::arg("id"))
+.def("HasItem", py::overload_cast<const char *>(&BDeskbar::HasItem, py::const_), "", py::arg("name"))
 .def("CountItems", &BDeskbar::CountItems, "")
 .def("MaxItemWidth", &BDeskbar::MaxItemWidth, "")
 .def("MaxItemHeight", &BDeskbar::MaxItemHeight, "")
-.def("AddItem", py::overload_cast<BView *, int>(&BDeskbar::AddItem), "", py::arg("archivableView"), py::arg("_id")=NULL)
-.def("AddItem", py::overload_cast<entry_ref *, int>(&BDeskbar::AddItem), "", py::arg("addOn"), py::arg("_id")=NULL)
-.def("RemoveItem", py::overload_cast<int>(&BDeskbar::RemoveItem), "", py::arg("id"))
+.def("AddItem", py::overload_cast<BView *, int32 *>(&BDeskbar::AddItem), "", py::arg("archivableView"), py::arg("_id")=NULL)
+.def("AddItem", py::overload_cast<entry_ref *, int32 *>(&BDeskbar::AddItem), "", py::arg("addOn"), py::arg("_id")=NULL)
+.def("RemoveItem", py::overload_cast<int32>(&BDeskbar::RemoveItem), "", py::arg("id"))
 .def("RemoveItem", py::overload_cast<const char *>(&BDeskbar::RemoveItem), "", py::arg("name"))
 ;
 
