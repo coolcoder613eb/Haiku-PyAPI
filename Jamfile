@@ -179,6 +179,7 @@ local sourceFiles =
 	Dragger.cpp
 	#IconUtils.cpp
 	Input.cpp
+	PrintJob.cpp
 	
 	#SupportKit
 	Beep.cpp

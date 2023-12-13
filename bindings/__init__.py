@@ -88,6 +88,7 @@ from .GridView import *
 from .Dragger import *
 #from .IconUtils import *
 from .Input import *
+from .PrintJob import *
 
 from .Beep import *
 from .Architecture import *
