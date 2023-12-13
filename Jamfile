@@ -132,6 +132,7 @@ local sourceFiles =
 	GridLayoutBuilder.cpp
 	GroupLayout.cpp
 	GroupLayoutBuilder.cpp
+	LayoutContext.cpp
 	PopUpMenu.cpp
 	Box.cpp
 	SeparatorItem.cpp
