@@ -38,28 +38,28 @@ public:
 
     void DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
                          const rgb_color& base, const rgb_color& background,
-                         uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                         uint32 flags = 0, uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonFrame, view, rect, updateRect, base, background, flags, borders);
     }
     void DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 						float radius, const rgb_color& base, const rgb_color& background,
-						uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+						uint32 flags = 0, uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonFrame, view, rect, updateRect, radius, base, background, flags, borders);
     }
     void DrawButtonFrame(BView* view, BRect& rect, const BRect& updateRect,
 						float leftTopRadius, float rightTopRadius, float leftBottomRadius,
 						float rightBottomRadius, const rgb_color& base, const rgb_color& background,
-						uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+						uint32 flags = 0, uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonFrame, view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, background, flags, borders);
     }
     void DrawButtonBackground(BView* view, BRect& rect, const BRect& updateRect,
-							const rgb_color& base, uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS,
+							const rgb_color& base, uint32 flags = 0, uint32 borders = B_ALL_BORDERS,
 							orientation orientation = B_HORIZONTAL) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonBackground, view, rect, updateRect, base, flags, borders, orientation);
     }
     void DrawButtonBackground(BView* view, BRect& rect, const BRect& updateRect,
 							float radius, const rgb_color& base, uint32 flags = 0,
-							uint32 borders = BControlLook::B_ALL_BORDERS, orientation orientation = B_HORIZONTAL) override {
+							uint32 borders = B_ALL_BORDERS, orientation orientation = B_HORIZONTAL) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonBackground, view, rect, updateRect, radius, base, flags, borders, orientation);
     }
     void DrawButtonBackground(BView* view, BRect& rect,
@@ -70,7 +70,7 @@ public:
 									float rightBottomRadius,
 									const rgb_color& base,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS,
+									uint32 borders = B_ALL_BORDERS,
 									orientation orientation = B_HORIZONTAL) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonBackground, view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, flags, borders, orientation);
     }
@@ -78,7 +78,7 @@ public:
 									const BRect& updateRect,
 									const rgb_color& base,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuBarBackground, view, rect, updateRect, base, flags, borders);
     }
     void DrawMenuFieldFrame(BView* view, BRect& rect,
@@ -86,7 +86,7 @@ public:
 									const rgb_color& base,
 									const rgb_color& background,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuFieldFrame, view, rect, updateRect, base, background, flags, borders);
     }
     void DrawMenuFieldFrame(BView* view, BRect& rect,
@@ -95,7 +95,7 @@ public:
 									const rgb_color& base,
 									const rgb_color& background,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuFieldFrame, view, rect, updateRect, radius, base, background, flags, borders);
     }
     void DrawMenuFieldFrame(BView* view, BRect& rect,
@@ -107,7 +107,7 @@ public:
 									const rgb_color& base,
 									const rgb_color& background,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuFieldFrame, view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, background, flags, borders);
     }
     void DrawMenuFieldBackground(BView* view,
@@ -135,19 +135,19 @@ public:
     void DrawMenuFieldBackground(BView* view,
 									BRect& rect, const BRect& updateRect,
 									const rgb_color& base, uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuFieldBackground, view, rect, updateRect, base, flags, borders);
     }
     void DrawMenuBackground(BView* view,
 									BRect& rect, const BRect& updateRect,
 									const rgb_color& base, uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuBackground, view, rect, updateRect, base, flags, borders);
     }
     void DrawMenuItemBackground(BView* view,
 									BRect& rect, const BRect& updateRect,
 									const rgb_color& base, uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawMenuItemBackground, view, rect, updateRect, base, flags, borders);
     }
     void DrawStatusBar(BView* view, BRect& rect,
@@ -189,7 +189,7 @@ public:
 									const rgb_color& base,
 									border_style borderStyle,
 									uint32 flags = 0,
-									uint32 borders = BControlLook::B_ALL_BORDERS) override {
+									uint32 borders = B_ALL_BORDERS) override {
         PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollViewFrame, view, rect, updateRect,verticalScrollBarFrame,horizontalScrollBarFrame, base, borderStyle, flags, borders);
     }
     void DrawArrowShape(BView* view,
@@ -259,7 +259,7 @@ public:
     }
     void DrawActiveTab(BView* view, BRect& rect, const BRect& updateRect,
                    const rgb_color& base, uint32 flags = 0,
-                   uint32 borders = BControlLook::B_ALL_BORDERS, uint32 side = B_TOP_BORDER,
+                   uint32 borders = B_ALL_BORDERS, uint32 side = B_TOP_BORDER,
                    int32 index = 0, int32 selected = -1,
                    int32 first = 0, int32 last = 0) override {
         PYBIND11_OVERRIDE_PURE(
@@ -271,7 +271,7 @@ public:
      }
      void DrawInactiveTab(BView* view, BRect& rect, const BRect& updateRect,
                      const rgb_color& base, uint32 flags,
-                     uint32 borders = BControlLook::B_ALL_BORDERS, uint32 side = B_TOP_BORDER,
+                     uint32 borders = B_ALL_BORDERS, uint32 side = B_TOP_BORDER,
                      int32 index = 0, int32 selected = -1,
                      int32 first = 0, int32 last = 0) override {
     PYBIND11_OVERRIDE_PURE(
@@ -280,34 +280,34 @@ public:
 }
 void DrawSplitter(BView* view, BRect& rect, const BRect& updateRect,
                   const rgb_color& base, orientation orientation,
-                  uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                  uint32 flags = 0, uint32 borders = B_ALL_BORDERS) override {
     PYBIND11_OVERRIDE_PURE(
         void, BControlLook, DrawSplitter, view, rect, updateRect, base,
         orientation, flags, borders);
 }
 void DrawBorder(BView* view, BRect& rect, const BRect& updateRect,
                 const rgb_color& base, border_style borderStyle,
-                uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                uint32 flags = 0, uint32 borders = B_ALL_BORDERS) override {
     PYBIND11_OVERRIDE_PURE(
         void, BControlLook, DrawBorder, view, rect, updateRect, base,
         borderStyle, flags, borders);
 }
 void DrawRaisedBorder(BView* view, BRect& rect, const BRect& updateRect,
                       const rgb_color& base, uint32 flags = 0,
-                      uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                      uint32 borders = B_ALL_BORDERS) override {
     PYBIND11_OVERRIDE_PURE(
         void, BControlLook, DrawRaisedBorder, view, rect, updateRect, base,
         flags, borders);
 }
 void DrawGroupFrame(BView* view, BRect& rect, const BRect& updateRect,
-                    const rgb_color& base, uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                    const rgb_color& base, uint32 borders = B_ALL_BORDERS) override {
     PYBIND11_OVERRIDE_PURE(
         void, BControlLook, DrawGroupFrame, view, rect, updateRect, base,
         borders);
 }
 void DrawTextControlBorder(BView* view, BRect& rect, const BRect& updateRect,
                            const rgb_color& base, uint32 flags = 0,
-                           uint32 borders = BControlLook::B_ALL_BORDERS) override {
+                           uint32 borders = B_ALL_BORDERS) override {
     PYBIND11_OVERRIDE_PURE(
         void, BControlLook, DrawTextControlBorder, view, rect, updateRect,
         base, flags, borders);
@@ -356,7 +356,7 @@ void GetBackgroundInsets(background_type backgroundType, uint32 flags,
 void DrawButtonWithPopUpBackground(BView* view, BRect& rect,
                                    const BRect& updateRect,
                                    const rgb_color& base, uint32 flags = 0,
-                                   uint32 borders = BControlLook::B_ALL_BORDERS,
+                                   uint32 borders = B_ALL_BORDERS,
                                    orientation orientation = B_HORIZONTAL) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonWithPopUpBackground,
                            view, rect, updateRect, base, flags, borders,
@@ -365,7 +365,7 @@ void DrawButtonWithPopUpBackground(BView* view, BRect& rect,
 void DrawButtonWithPopUpBackground(BView* view, BRect& rect,
                                    const BRect& updateRect, float radius,
                                    const rgb_color& base, uint32 flags = 0,
-                                   uint32 borders = BControlLook::B_ALL_BORDERS,
+                                   uint32 borders = B_ALL_BORDERS,
                                    orientation orientation = B_HORIZONTAL) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonWithPopUpBackground,
                            view, rect, updateRect, radius, base, flags, borders,
@@ -377,7 +377,7 @@ void DrawButtonWithPopUpBackground(BView* view, BRect& rect,
                                    float leftBottomRadius,
                                    float rightBottomRadius,
                                    const rgb_color& base, uint32 flags = 0,
-                                   uint32 borders = BControlLook::B_ALL_BORDERS,
+                                   uint32 borders = B_ALL_BORDERS,
                                    orientation orientation = B_HORIZONTAL) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawButtonWithPopUpBackground,
                            view, rect, updateRect, leftTopRadius, rightTopRadius,
@@ -385,7 +385,7 @@ void DrawButtonWithPopUpBackground(BView* view, BRect& rect,
                            borders, orientation);
 }
 void DrawTabFrame(BView* view, BRect& rect, const BRect& updateRect,
-                  const rgb_color& base, uint32 flags = 0, uint32 borders = BControlLook::B_ALL_BORDERS,
+                  const rgb_color& base, uint32 flags = 0, uint32 borders = B_ALL_BORDERS,
                   border_style borderStyle = B_FANCY_BORDER, uint32 side = B_TOP_BORDER) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawTabFrame, view, rect,
                            updateRect, base, flags, borders, borderStyle, side);
@@ -398,7 +398,7 @@ void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
 }
 void DrawScrollBarThumb(BView* view, BRect& rect, const BRect& updateRect,
                         const rgb_color& base, uint32 flags,
-                        orientation orientation, uint32 knobStyle = BControlLook::B_KNOB_NONE) override {
+                        orientation orientation, uint32 knobStyle = B_KNOB_NONE) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarThumb, view, rect,
                            updateRect, base, flags, orientation, knobStyle);
 }
@@ -411,11 +411,57 @@ void DrawScrollBarBorder(BView* view, BRect rect, const BRect& updateRect,
 float GetScrollBarWidth(orientation orientation = B_VERTICAL) override {
     PYBIND11_OVERLOAD(float, BControlLook, GetScrollBarWidth, orientation);
 }
-
 };
+
+class MyClass {
+public:
+enum various {
+		B_LEFT_BORDER		= 1 << 0,
+		B_RIGHT_BORDER		= 1 << 1,
+		B_TOP_BORDER		= 1 << 2,
+		B_BOTTOM_BORDER		= 1 << 3,
+		B_ALL_BORDERS		= B_LEFT_BORDER | B_RIGHT_BORDER | B_TOP_BORDER | B_BOTTOM_BORDER,
+		
+		B_LEFT_ARROW		= 0,
+		B_RIGHT_ARROW		= 1,
+		B_UP_ARROW			= 2,
+		B_DOWN_ARROW		= 3,
+		B_LEFT_UP_ARROW		= 4,
+		B_RIGHT_UP_ARROW	= 5,
+		B_RIGHT_DOWN_ARROW	= 6,
+		B_LEFT_DOWN_ARROW	= 7,
+
+		B_FOCUSED				= 1 << 0,
+		B_CLICKED				= 1 << 1, // some controls activate on mouse up
+		B_ACTIVATED				= 1 << 2,
+		B_HOVER					= 1 << 3,
+		B_DISABLED				= 1 << 4,
+		B_DEFAULT_BUTTON		= 1 << 5,
+		B_IGNORE_OUTLINE		= 1 << 6,
+		B_PARTIALLY_ACTIVATED	= 1 << 7, // like B_ACTIVATED, but for tri-state
+		B_FLAT					= 1 << 8, // flat look (e.g. button background)
+		B_INVALID				= 1 << 9, // invalid value, use B_FAILURE_COLOR
+		B_IS_CONTROL			= 1 << 10, // use control colors
+		B_BLEND_FRAME			= 1 << 16,
+
+		B_KNOB_NONE = 0,
+		B_KNOB_DOTS,
+		B_KNOB_LINES
+};
+//    static void exportEnum(py::module& m) {
+//        m.attr("B_KNOB_NONE") = py::int_(B_KNOB_NONE);
+//        m.attr("B_KNOB_DOTS") = py::int_(B_KNOB_DOTS);
+//        m.attr("B_KNOB_LINES") = py::int_(B_KNOB_LINES);
+//        
+//    }
+};
+
+
 
 PYBIND11_MODULE(ControlLook,m)
 {
+	
+
 /*py::enum_<frame_type>(m, "frame_type", "")
 .value("B_BUTTON_FRAME", frame_type::B_BUTTON_FRAME, "")
 .value("B_GROUP_FRAME", frame_type::B_GROUP_FRAME, "")
@@ -440,6 +486,37 @@ py::enum_<BControlLook::background_type>(m, "background_type")
             .value("B_MENU_ITEM_BACKGROUND", BControlLook::background_type::B_MENU_ITEM_BACKGROUND)
             .value("B_HORIZONTAL_SCROLL_BAR_BACKGROUND", BControlLook::background_type::B_HORIZONTAL_SCROLL_BAR_BACKGROUND)
             .value("B_VERTICAL_SCROLL_BAR_BACKGROUND", BControlLook::background_type::B_VERTICAL_SCROLL_BAR_BACKGROUND);
+            
+py::enum_<MyClass::various>(m, "BControlLookEnum")
+.value("B_LEFT_BORDER", MyClass::various::B_LEFT_BORDER)
+.value("B_RIGHT_BORDER", MyClass::various::B_RIGHT_BORDER)
+.value("B_TOP_BORDER", MyClass::various::B_TOP_BORDER)
+.value("B_BOTTOM_BORDER", MyClass::various::B_BOTTOM_BORDER)
+.value("B_ALL_BORDERS", MyClass::various::B_ALL_BORDERS)
+.value("B_LEFT_ARROW", MyClass::various::B_LEFT_ARROW)
+.value("B_RIGHT_ARROW", MyClass::various::B_RIGHT_ARROW)
+.value("B_UP_ARROW", MyClass::various::B_UP_ARROW)
+.value("B_DOWN_ARROW", MyClass::various::B_DOWN_ARROW)
+.value("B_LEFT_UP_ARROW", MyClass::various::B_LEFT_UP_ARROW)
+.value("B_RIGHT_UP_ARROW", MyClass::various::B_RIGHT_UP_ARROW)
+.value("B_RIGHT_DOWN_ARROW", MyClass::various::B_RIGHT_DOWN_ARROW)
+.value("B_LEFT_DOWN_ARROW", MyClass::various::B_LEFT_DOWN_ARROW)
+.value("B_FOCUSED", MyClass::various::B_FOCUSED)
+.value("B_CLICKED", MyClass::various::B_CLICKED)
+.value("B_ACTIVATED", MyClass::various::B_ACTIVATED)
+.value("B_HOVER", MyClass::various::B_HOVER)
+.value("B_DISABLED", MyClass::various::B_DISABLED)
+.value("B_DEFAULT_BUTTON", MyClass::various::B_DEFAULT_BUTTON)
+.value("B_IGNORE_OUTLINE", MyClass::various::B_IGNORE_OUTLINE)
+.value("B_PARTIALLY_ACTIVATED", MyClass::various::B_PARTIALLY_ACTIVATED)
+.value("B_FLAT", MyClass::various::B_FLAT)
+.value("B_INVALID", MyClass::various::B_INVALID)
+.value("B_IS_CONTROL", MyClass::various::B_IS_CONTROL)
+.value("B_BLEND_FRAME", MyClass::various::B_BLEND_FRAME)
+.value("B_KNOB_NONE", MyClass::various::B_KNOB_NONE)
+.value("B_KNOB_DOTS", MyClass::various::B_KNOB_DOTS)
+.value("B_KNOB_LINES", MyClass::various::B_KNOB_LINES)
+.export_values();
 /*
 m.attr("B_LEFT_BORDER") = BControlLook::B_LEFT_BORDER;
 m.attr("B_RIGHT_BORDER") = BControlLook::B_RIGHT_BORDER;
@@ -474,7 +551,7 @@ m.attr("B_LEFT_BORDER") = 1 << 0;
 m.attr("B_RIGHT_BORDER") = 1 << 1;
 m.attr("B_TOP_BORDER") = 1 << 2;
 m.attr("B_BOTTOM_BORDER") = 1 << 3;
-m.attr("B_ALL_BORDERS") = BControlLook::B_LEFT_BORDER | BControlLook::B_RIGHT_BORDER | BControlLook::B_TOP_BORDER | BControlLook::B_BOTTOM_BORDER;
+m.attr("B_ALL_BORDERS") = py::int_(BControlLook::B_LEFT_BORDER | BControlLook::B_RIGHT_BORDER | BControlLook::B_TOP_BORDER | BControlLook::B_BOTTOM_BORDER);
 m.attr("B_LEFT_ARROW") = 0;
 m.attr("B_RIGHT_ARROW") = 1;
 m.attr("B_UP_ARROW") = 2;
@@ -508,66 +585,66 @@ py::class_<BControlLook,PyBControlLook>(m, "BControlLook")
 .def_static("ComposeSpacing", &BControlLook::ComposeSpacing, "", py::arg("spacing"))
 .def_static("ComposeIconSize", &BControlLook::ComposeIconSize, "", py::arg("size"))
 .def("Flags", &BControlLook::Flags, "", py::arg("control"))
-.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawButtonFrame(view, rect, updateRect, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawButtonFrame(view, rect, updateRect, radius, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawButtonFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawButtonFrame(view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonBackground(view, rect, updateRect, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
-.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonBackground(view, rect, updateRect, radius, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
-.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+.def("DrawButtonBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonBackground(view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
-.def("DrawMenuBarBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+.def("DrawMenuBarBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuBarBackground(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuFieldFrame(view, rect, updateRect, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuFieldFrame(view, rect, updateRect, radius, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawMenuFieldFrame", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,const rgb_color & background,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuFieldFrame(view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, background, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("background"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
 .def("DrawMenuFieldBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,bool popupIndicator,unsigned int flags=0) {
     BRect  rect;
     self.DrawMenuFieldBackground(view, rect, updateRect, base, popupIndicator, flags);
@@ -586,24 +663,24 @@ py::class_<BControlLook,PyBControlLook>(m, "BControlLook")
     return rect;
 }
 , "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("popupIndicator"), py::arg("flags")=0)
-.def("DrawMenuFieldBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+.def("DrawMenuFieldBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuFieldBackground(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawMenuBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawMenuBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuBackground(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawMenuItemBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawMenuItemBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawMenuItemBackground(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
 .def("DrawStatusBar", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,const rgb_color & barColor,float progressPosition) {
     BRect  rect;
     self.DrawStatusBar(view, rect, updateRect, base, barColor, progressPosition);
@@ -635,12 +712,12 @@ BRect  rect2;
     return rect;
 }
 , "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("orientation"))
-.def("DrawScrollViewFrame", [](BControlLook& self,BView * view,const BRect & updateRect,BRect verticalScrollBarFrame,BRect horizontalScrollBarFrame,const rgb_color & base,border_style borderStyle,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+.def("DrawScrollViewFrame", [](BControlLook& self,BView * view,const BRect & updateRect,BRect verticalScrollBarFrame,BRect horizontalScrollBarFrame,const rgb_color & base,border_style borderStyle,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawScrollViewFrame(view, rect, updateRect, verticalScrollBarFrame, horizontalScrollBarFrame, base, borderStyle, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("verticalScrollBarFrame"), py::arg("horizontalScrollBarFrame"), py::arg("base"), py::arg("borderStyle"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("verticalScrollBarFrame"), py::arg("horizontalScrollBarFrame"), py::arg("base"), py::arg("borderStyle"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
 .def("DrawArrowShape", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int direction,unsigned int flags=0,float tint=B_DARKEN_MAX_TINT) {
     BRect  rect;
     self.DrawArrowShape(view, rect, updateRect, base, direction, flags, tint);
@@ -674,48 +751,48 @@ BRect  rect2;
     return rect;
 }
 , "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("count"), py::arg("location"), py::arg("flags"), py::arg("orientation"))
-.def("DrawActiveTab", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,unsigned int side=BControlLook::B_TOP_BORDER,int index=0,int selected=- 1,int first=0,int last=0) {
+.def("DrawActiveTab", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,unsigned int side=MyClass::various::B_TOP_BORDER,int index=0,int selected=- 1,int first=0,int last=0) {
     BRect  rect;
     self.DrawActiveTab(view, rect, updateRect, base, flags, borders, side, index, selected, first, last);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("side")=BControlLook::B_TOP_BORDER, py::arg("index")=0, py::arg("selected")=- 1, py::arg("first")=0, py::arg("last")=0)
-.def("DrawInactiveTab", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,unsigned int side=BControlLook::B_TOP_BORDER,int index=0,int selected=- 1,int first=0,int last=0) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("side")=MyClass::various::B_TOP_BORDER, py::arg("index")=0, py::arg("selected")=- 1, py::arg("first")=0, py::arg("last")=0)
+.def("DrawInactiveTab", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,unsigned int side=MyClass::various::B_TOP_BORDER,int index=0,int selected=- 1,int first=0,int last=0) {
     BRect  rect;
     self.DrawInactiveTab(view, rect, updateRect, base, flags, borders, side, index, selected, first, last);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("side")=BControlLook::B_TOP_BORDER, py::arg("index")=0, py::arg("selected")=- 1, py::arg("first")=0, py::arg("last")=0)
-.def("DrawSplitter", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,orientation orientation,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("side")=MyClass::various::B_TOP_BORDER, py::arg("index")=0, py::arg("selected")=- 1, py::arg("first")=0, py::arg("last")=0)
+.def("DrawSplitter", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,orientation orientation,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawSplitter(view, rect, updateRect, base, orientation, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("orientation"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,border_style borderStyle,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("orientation"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,border_style borderStyle,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawBorder(view, rect, updateRect, base, borderStyle, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("borderStyle"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawRaisedBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("borderStyle"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawRaisedBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawRaisedBorder(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawGroupFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawGroupFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawGroupFrame(view, rect, updateRect, base, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("borders")=BControlLook::B_ALL_BORDERS)
-.def("DrawTextControlBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("borders")=MyClass::various::B_ALL_BORDERS)
+.def("DrawTextControlBorder", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS) {
     BRect  rect;
     self.DrawTextControlBorder(view, rect, updateRect, base, flags, borders);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS)
 .def("DrawLabel", py::overload_cast<BView *, const char *, BRect, const BRect &, const rgb_color &, unsigned int, const rgb_color *>(&BControlLook::DrawLabel), "", py::arg("view"), py::arg("label"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("textColor")=NULL)
 .def("DrawLabel", py::overload_cast<BView *, const char *, BRect, const BRect &, const rgb_color &, unsigned int, const BAlignment &, const rgb_color *>(&BControlLook::DrawLabel), "", py::arg("view"), py::arg("label"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("alignment"), py::arg("textColor")=NULL)
 .def("DrawLabel", py::overload_cast<BView *, const char *, const rgb_color &, unsigned int, const BPoint &, const rgb_color *>(&BControlLook::DrawLabel), "", py::arg("view"), py::arg("label"), py::arg("base"), py::arg("flags"), py::arg("where"), py::arg("textColor")=NULL)
@@ -748,38 +825,38 @@ float  _bottom;
     return std::make_tuple(_left,_top,_right,_bottom);
 }
 , "", py::arg("frameType"), py::arg("backgroundType"), py::arg("flags"))
-.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonWithPopUpBackground(view, rect, updateRect, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
-.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float radius,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonWithPopUpBackground(view, rect, updateRect, radius, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
-.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
+, "", py::arg("view"), py::arg("updateRect"), py::arg("radius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+.def("DrawButtonWithPopUpBackground", [](BControlLook& self,BView * view,const BRect & updateRect,float leftTopRadius,float rightTopRadius,float leftBottomRadius,float rightBottomRadius,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,orientation orientation=B_HORIZONTAL) {
     BRect  rect;
     self.DrawButtonWithPopUpBackground(view, rect, updateRect, leftTopRadius, rightTopRadius, leftBottomRadius, rightBottomRadius, base, flags, borders, orientation);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("leftTopRadius"), py::arg("rightTopRadius"), py::arg("leftBottomRadius"), py::arg("rightBottomRadius"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("orientation")=B_HORIZONTAL)
 .def("SetBackgroundInfo", &BControlLook::SetBackgroundInfo, "", py::arg("backgroundInfo"))
-.def("DrawTabFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=BControlLook::B_ALL_BORDERS,border_style borderStyle=B_FANCY_BORDER,unsigned int side=BControlLook::B_TOP_BORDER) {
+.def("DrawTabFrame", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags=0,unsigned int borders=MyClass::various::B_ALL_BORDERS,border_style borderStyle=B_FANCY_BORDER,unsigned int side=MyClass::various::B_TOP_BORDER) {
     BRect  rect;
     self.DrawTabFrame(view, rect, updateRect, base, flags, borders, borderStyle, side);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=BControlLook::B_ALL_BORDERS, py::arg("borderStyle")=B_FANCY_BORDER, py::arg("side")=BControlLook::B_TOP_BORDER)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("borderStyle")=B_FANCY_BORDER, py::arg("side")=MyClass::various::B_TOP_BORDER)
 .def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
-.def("DrawScrollBarThumb", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags,orientation orientation,unsigned int knobStyle=BControlLook::B_KNOB_NONE) {
+.def("DrawScrollBarThumb", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,unsigned int flags,orientation orientation,unsigned int knobStyle=MyClass::various::B_KNOB_NONE) {
     BRect  rect;
     self.DrawScrollBarThumb(view, rect, updateRect, base, flags, orientation, knobStyle);
     return rect;
 }
-, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("orientation"), py::arg("knobStyle")=BControlLook::B_KNOB_NONE)
+, "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("orientation"), py::arg("knobStyle")=MyClass::various::B_KNOB_NONE)
 .def("DrawScrollBarBorder", &BControlLook::DrawScrollBarBorder, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("orientation"))
 .def("GetScrollBarWidth", &BControlLook::GetScrollBarWidth, "", py::arg("orientation")=B_VERTICAL)
 .def_static("ShouldDraw", &BControlLook::ShouldDraw, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"))
