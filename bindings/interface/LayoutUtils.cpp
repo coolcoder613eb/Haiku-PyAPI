@@ -8,6 +8,8 @@
 #include <Rect.h>
 #include <Size.h>
 #include <String.h>
+#include <View.h>
+#include <LayoutItem.h>
 
 namespace py = pybind11;
 
@@ -17,24 +19,26 @@ PYBIND11_MODULE(LayoutUtils,m)
 py::class_<BLayoutUtils>(m, "BLayoutUtils")
 .def_static("AddDistances", py::overload_cast<float, float>(&BLayoutUtils::AddDistances), "", py::arg("a"), py::arg("b"))
 .def_static("AddDistances", py::overload_cast<float, float, float>(&BLayoutUtils::AddDistances), "", py::arg("a"), py::arg("b"), py::arg("c"))
-.def_static("AddSizesInt32", py::overload_cast<int, int>(&BLayoutUtils::AddSizesInt32), "", py::arg("a"), py::arg("b"))
-.def_static("AddSizesInt32", py::overload_cast<int, int, int>(&BLayoutUtils::AddSizesInt32), "", py::arg("a"), py::arg("b"), py::arg("c"))
+.def_static("AddSizesInt32", py::overload_cast<int32, int32>(&BLayoutUtils::AddSizesInt32), "", py::arg("a"), py::arg("b"))
+.def_static("AddSizesInt32", py::overload_cast<int32, int32, int32>(&BLayoutUtils::AddSizesInt32), "", py::arg("a"), py::arg("b"), py::arg("c"))
 .def_static("SubtractSizesInt32", &BLayoutUtils::SubtractSizesInt32, "", py::arg("a"), py::arg("b"))
 .def_static("SubtractDistances", &BLayoutUtils::SubtractDistances, "", py::arg("a"), py::arg("b"))
 .def_static("FixSizeConstraints", [](BLayoutUtils& self) {
     float  min;
 float  max;
 float  preferred;
-    static void r = self.FixSizeConstraints(min, max, preferred);
-    return std::make_tuple(r,min,max,preferred);
+    //static void r = self.FixSizeConstraints(min, max, preferred);
+    self.FixSizeConstraints(min, max, preferred);
+    return std::make_tuple(min,max,preferred);
 }
 , "")
 .def_static("FixSizeConstraints", [](BLayoutUtils& self) {
     BSize  min;
 BSize  max;
 BSize  preferred;
-    static void r = self.FixSizeConstraints(min, max, preferred);
-    return std::make_tuple(r,min,max,preferred);
+    //static void r = self.FixSizeConstraints(min, max, preferred);
+    self.FixSizeConstraints(min, max, preferred);
+    return std::make_tuple(min,max,preferred);
 }
 , "")
 .def_static("ComposeSize", &BLayoutUtils::ComposeSize, "", py::arg("size"), py::arg("layoutSize"))
