@@ -9,10 +9,44 @@
 
 namespace py = pybind11;
 
+class PyBGroupLayout : public BGroupLayout{
+	public:
+        using BGroupLayout::BGroupLayout;
+        BLayoutItem*		AddView(BView* child) override {
+        	PYBIND11_OVERLOAD(BLayoutItem*, BGroupLayout, AddView, child);
+        }
+        BLayoutItem*		AddView(int32 index, BView* child) override {
+        	PYBIND11_OVERLOAD(BLayoutItem*, BGroupLayout, AddView, index, child);
+        }
+        BLayoutItem*		AddView(BView* child, float weight) override {
+        	PYBIND11_OVERLOAD(BLayoutItem*, BGroupLayout, AddView, child, weight);
+        }
+        BLayoutItem*		AddView(int32 index, BView* child, float weight) override {
+        	PYBIND11_OVERLOAD(BLayoutItem*, BGroupLayout, AddView, index, child, weight);
+        }
+        bool				AddItem(BLayoutItem* item) override {
+        	PYBIND11_OVERLOAD(bool, BGroupLayout, AddItem, item);
+        }
+        bool				AddItem(int32 index, BLayoutItem* item) override {
+        	PYBIND11_OVERLOAD(bool, BGroupLayout, AddItem, index, item);
+        }
+        bool				AddItem(BLayoutItem* item, float weight) override {
+        	PYBIND11_OVERLOAD(bool, BGroupLayout, AddItem, item, weight);
+        }
+        bool				AddItem(int32 index, BLayoutItem* item, float weight) override {
+        	PYBIND11_OVERLOAD(bool, BGroupLayout, AddItem, index, item, weight);
+        }
+        status_t			Archive(BMessage* into, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BGroupLayout, Archive, into, deep);
+        }
+        status_t			Perform(perform_code d, void* arg) override {
+        	PYBIND11_OVERLOAD(status_t, BGroupLayout, Perform, d, arg);
+        }
+};
 
 PYBIND11_MODULE(GroupLayout,m)
 {
-py::class_<BGroupLayout, BTwoDimensionalLayout>(m, "BGroupLayout")
+py::class_<BGroupLayout, PyBGroupLayout, BTwoDimensionalLayout>(m, "BGroupLayout")
 //.def(py::init<orientation, float>(), "", py::arg("orientation"), py::arg("spacing")=B_USE_DEFAULT_SPACING)
 .def(py::init<orientation, float>(), "", py::arg("orientation"), py::arg("spacing")=-1002)
 .def(py::init<BMessage *>(), "", py::arg("from"))
