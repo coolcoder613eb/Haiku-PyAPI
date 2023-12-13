@@ -77,7 +77,7 @@ from .GradientDiamond import *
 from .GradientLinear import *
 from .GradientRadial import *
 from .GradientRadialFocus import *
-
+from .GridView import *
 
 from .Beep import *
 from .Architecture import *
