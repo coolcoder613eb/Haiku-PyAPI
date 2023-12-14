@@ -234,6 +234,9 @@ for sourceFile  in $(sourceFiles) {
 	SharedLibrary $(sourceFile:S=.so) : $(sourceFile) ;
 }
 
+# FilePanel.so needs to be linked with libtracker.so
+LINKLIBS on FilePanel.so = $(LINKLIBS) -ltracker ;
+
 # __init__.py can be built by simply copying the file
 MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
 File __init__.py : bindings/__init__.py ;
