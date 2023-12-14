@@ -232,44 +232,37 @@ py::enum_<coordinate_space>(m, "coordinate_space", "")
 .export_values();
 
 m.attr("B_FULL_UPDATE_ON_RESIZE") = B_FULL_UPDATE_ON_RESIZE;
-
 m.attr("_B_RESERVED1_") = _B_RESERVED1_;
-
 m.attr("B_WILL_DRAW") = B_WILL_DRAW;
-
 m.attr("B_PULSE_NEEDED") = B_PULSE_NEEDED;
-
 m.attr("B_NAVIGABLE_JUMP") = B_NAVIGABLE_JUMP;
-
 m.attr("B_FRAME_EVENTS") = B_FRAME_EVENTS;
-
 m.attr("B_NAVIGABLE") = B_NAVIGABLE;
-
 m.attr("B_SUBPIXEL_PRECISE") = B_SUBPIXEL_PRECISE;
-
 m.attr("B_DRAW_ON_CHILDREN") = B_DRAW_ON_CHILDREN;
-
 m.attr("B_INPUT_METHOD_AWARE") = B_INPUT_METHOD_AWARE;
-
 m.attr("B_SCROLL_VIEW_AWARE") = B_SCROLL_VIEW_AWARE;
-
 m.attr("B_SUPPORTS_LAYOUT") = B_SUPPORTS_LAYOUT;
-
 m.attr("B_INVALIDATE_AFTER_LAYOUT") = B_INVALIDATE_AFTER_LAYOUT;
-
 m.attr("B_TRANSPARENT_BACKGROUND") = B_TRANSPARENT_BACKGROUND;
-
 m.attr("_VIEW_TOP_") = _VIEW_TOP_;
-
 m.attr("_VIEW_LEFT_") = _VIEW_LEFT_;
-
 m.attr("_VIEW_BOTTOM_") = _VIEW_BOTTOM_;
-
 m.attr("_VIEW_RIGHT_") = _VIEW_RIGHT_;
-
 m.attr("_VIEW_CENTER_") = _VIEW_CENTER_;
 
 //m.attr("ViewState") = ViewState;
+m.attr("B_FOLLOW_NONE") = B_FOLLOW_NONE;
+m.attr("B_FOLLOW_ALL_SIDES") = B_FOLLOW_ALL_SIDES;
+m.attr("B_FOLLOW_ALL") = B_FOLLOW_ALL_SIDES;
+m.attr("B_FOLLOW_LEFT") = B_FOLLOW_LEFT;
+m.attr("B_FOLLOW_RIGHT") = B_FOLLOW_RIGHT;
+m.attr("B_FOLLOW_LEFT_RIGHT") = B_FOLLOW_LEFT_RIGHT;
+m.attr("B_FOLLOW_H_CENTER") = B_FOLLOW_H_CENTER;
+m.attr("B_FOLLOW_TOP") = B_FOLLOW_TOP;
+m.attr("B_FOLLOW_BOTTOM") = B_FOLLOW_BOTTOM;
+m.attr("B_FOLLOW_TOP_BOTTOM") = B_FOLLOW_TOP_BOTTOM;
+m.attr("B_FOLLOW_V_CENTER") = B_FOLLOW_V_CENTER;
 
 py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
