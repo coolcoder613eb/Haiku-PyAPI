@@ -131,6 +131,7 @@ from .NodeInfo import *
 from .FilePanel import *
 
 from .TranslationDefs import *
+#from .Translator import *
 
 _BWindow=BWindow
 _BApplication=BApplication

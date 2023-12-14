@@ -228,6 +228,7 @@ local sourceFiles =
 	FilePanel.cpp
 	
 	TranslationDefs.cpp
+	#Translator.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
