@@ -10,7 +10,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(TranslationDefs, m)
 {
-m.attr("B_TRANSLATOR_MIME_TYPE") = py::cast(B_TRANSLATOR_MIME_TYPE);
+//m.attr("B_TRANSLATOR_MIME_TYPE") = py::cast(B_TRANSLATOR_MIME_TYPE);
 //m.attr("B_TRANSLATOR_MIME_TYPE") = B_TRANSLATOR_MIME_TYPE;
 
 py::class_<translation_format>(m, "translation_format")
