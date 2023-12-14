@@ -72,7 +72,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel bindings/translation ;
 
 # Where to look for header files
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
@@ -226,6 +226,8 @@ local sourceFiles =
 	#AppFileInfo.cpp
 	#DiskDeviceDefs.cpp
 	FilePanel.cpp
+	
+	TranslationDefs.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
