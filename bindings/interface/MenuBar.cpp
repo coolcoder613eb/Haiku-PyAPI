@@ -107,7 +107,13 @@ py::class_<BMenuBar, PyBMenuBar, BMenu, std::unique_ptr<BMenuBar, py::nodelete>>
 .def("WindowActivated", &BMenuBar::WindowActivated, "", py::arg("state"))
 .def("MakeFocus", &BMenuBar::MakeFocus, "", py::arg("state")=true)
 .def("ResizeToPreferred", &BMenuBar::ResizeToPreferred, "")
-.def("GetPreferredSize", &BMenuBar::GetPreferredSize, "", py::arg("_width"), py::arg("_height"))
+//.def("GetPreferredSize", &BMenuBar::GetPreferredSize, "", py::arg("_width"), py::arg("_height"))
+.def("GetPreferredSize", [](BMenuBar& self)->py::tuple {
+	float _width;//=0.0f;
+	float _height;//=0.0f;
+	self.GetPreferredSize(&_width,&_height);
+	return py::make_tuple(_width,_height);
+}, "")
 .def("MinSize", &BMenuBar::MinSize, "")
 .def("MaxSize", &BMenuBar::MaxSize, "")
 .def("PreferredSize", &BMenuBar::PreferredSize, "")
