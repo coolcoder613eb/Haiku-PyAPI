@@ -4,9 +4,6 @@
 #include <pybind11/operators.h>
 
 #include <FilePanel.h>
-//#include <Directory.h>
-//#include <Entry.h>
-//#include <Node.h>
 #include <Window.h>
 #include <Message.h>
 #include <Messenger.h>
