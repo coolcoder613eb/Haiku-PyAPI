@@ -230,7 +230,7 @@ py::enum_<coordinate_space>(m, "coordinate_space", "")
 .value("B_WINDOW_COORDINATES", coordinate_space::B_WINDOW_COORDINATES, "")
 .value("B_SCREEN_COORDINATES", coordinate_space::B_SCREEN_COORDINATES, "")
 .export_values();
-
+/*TODO: it seems that these values are faulted or not read properly*/
 m.attr("B_FULL_UPDATE_ON_RESIZE") = B_FULL_UPDATE_ON_RESIZE;
 m.attr("_B_RESERVED1_") = _B_RESERVED1_;
 m.attr("B_WILL_DRAW") = B_WILL_DRAW;
@@ -263,6 +263,38 @@ m.attr("B_FOLLOW_TOP") = B_FOLLOW_TOP;
 m.attr("B_FOLLOW_BOTTOM") = B_FOLLOW_BOTTOM;
 m.attr("B_FOLLOW_TOP_BOTTOM") = B_FOLLOW_TOP_BOTTOM;
 m.attr("B_FOLLOW_V_CENTER") = B_FOLLOW_V_CENTER;
+/* Hardcoded values
+m.attr("B_FULL_UPDATE_ON_RESIZE") = 0x80000000UL;
+m.attr("_B_RESERVED1_") = 0x40000000UL;
+m.attr("B_WILL_DRAW") = 0x20000000UL;
+m.attr("B_PULSE_NEEDED") = 0x10000000UL;
+m.attr("B_NAVIGABLE_JUMP") = 0x08000000UL;
+m.attr("B_FRAME_EVENTS") = 0x04000000UL;
+m.attr("B_NAVIGABLE") = 0x02000000UL;
+m.attr("B_SUBPIXEL_PRECISE") = 0x01000000UL;
+m.attr("B_DRAW_ON_CHILDREN") = 0x00800000UL;
+m.attr("B_INPUT_METHOD_AWARE") = 0x00400000UL;
+m.attr("B_SCROLL_VIEW_AWARE") = 0x00200000UL;
+m.attr("B_SUPPORTS_LAYOUT") = 0x00100000UL;
+m.attr("B_INVALIDATE_AFTER_LAYOUT") = 0x00080000UL;
+m.attr("B_TRANSPARENT_BACKGROUND") = 0x00040000UL;
+m.attr("_VIEW_TOP_") = 1UL;
+m.attr("_VIEW_LEFT_") = 2UL;
+m.attr("_VIEW_BOTTOM_") = 3UL;
+m.attr("_VIEW_RIGHT_") = 4UL;
+m.attr("_VIEW_CENTER_") = 5UL;
+#define _rule_(r1, r2, r3, r4) (((r1) << 12) | ((r2) << 8) | ((r3) << 4) | (r4))
+m.attr("B_FOLLOW_NONE") = 0;
+m.attr("B_FOLLOW_ALL_SIDES") = _rule_(1UL,2UL,3UL,4UL);
+m.attr("B_FOLLOW_ALL") = _rule_(1UL,2UL,3UL,4UL);
+m.attr("B_FOLLOW_LEFT") = _rule_(0, 2UL, 0, 2UL);
+m.attr("B_FOLLOW_RIGHT") = _rule_(0, 4UL, 0, 4UL);
+m.attr("B_FOLLOW_LEFT_RIGHT") = _rule_(0, 2UL, 0, 4UL);
+m.attr("B_FOLLOW_H_CENTER") = _rule_(0, 5UL, 0, 5UL);
+m.attr("B_FOLLOW_TOP") = _rule_(1UL, 0, 1UL, 0);
+m.attr("B_FOLLOW_BOTTOM") = _rule_(3UL, 0, 3UL, 0);
+m.attr("B_FOLLOW_TOP_BOTTOM") = _rule_(1UL, 0, 3UL, 0);
+m.attr("B_FOLLOW_V_CENTER") = _rule_(5UL, 0, 5UL, 0);*/
 
 py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
