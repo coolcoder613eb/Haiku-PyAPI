@@ -83,8 +83,8 @@ class PyBStringView : public BStringView{
 PYBIND11_MODULE(StringView,m)
 {
 py::class_<BStringView, PyBStringView, BView, std::unique_ptr<BStringView, py::nodelete>>(m, "BStringView")
-.def(py::init<BRect, const char *, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("text"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW)
-.def(py::init<const char *, const char *, unsigned int>(), "", py::arg("name"), py::arg("text"), py::arg("flags")=B_WILL_DRAW)
+.def(py::init<BRect, const char *, const char *, uint32, uint32>(), "", py::arg("frame"), py::arg("name"), py::arg("text"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW)
+.def(py::init<const char *, const char *, uint32>(), "", py::arg("name"), py::arg("text"), py::arg("flags")=B_WILL_DRAW)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BStringView::Instantiate, "", py::arg("archive"))
 .def("Archive", &BStringView::Archive, "", py::arg("archive"), py::arg("deep")=true)
