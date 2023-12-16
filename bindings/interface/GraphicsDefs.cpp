@@ -163,6 +163,7 @@ py::class_<pattern>(m, "pattern")
 ;
 
 py::class_<rgb_color>(m, "rgb_color")
+.def(py::init<>(), "")
 .def("set_to", &rgb_color::set_to, "", py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a")=255)
 .def("Brightness", &rgb_color::Brightness, "")
 .def("__eq__", &rgb_color::operator==, "", py::arg("other"))
