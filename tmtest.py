@@ -300,6 +300,9 @@ class Window(BWindow):
 				risp.Go()
 		BWindow.MessageReceived(self, msg)
 		
+	def FrameResized(self,x,y):
+		self.ResizeToPreferred()
+		
 	def QuitRequested(self):
 		print ("So long and thanks for all the fish")
 		return BWindow.QuitRequested(self)
