@@ -3,6 +3,7 @@
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
 
+#include <BeBuild.h>
 #include <interface/PictureButton.h>
 #include <Control.h>
 #include <Picture.h>

@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <BeBuild.h>
 
 #include <interface/View.h>
 #include <AffineTransform.h>

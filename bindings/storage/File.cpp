@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <BeBuild.h>
 
 #include <File.h>
 #include <DataIO.h>

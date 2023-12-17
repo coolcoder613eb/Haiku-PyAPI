@@ -2,7 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
-
+#include <BeBuild.h>
 #include <app/Roster.h>
 #include <Entry.h>
 #include <Messenger.h>
