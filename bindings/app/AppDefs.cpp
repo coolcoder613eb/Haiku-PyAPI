@@ -4,6 +4,8 @@
 #include <pybind11/operators.h>
 #include <vector>
 
+#include <BeBuild.h>
+
 #include <Cursor.h>
 #include <app/AppDefs.h>
 #include <BeBuild.h>
@@ -28,7 +30,8 @@ int cursor_array_size(const unsigned char cursor[]) {
 PYBIND11_MODULE(AppDefs,m)
 {
 py::module_::import("Be.Cursor");
-/*
+
+#if (B_HAIKU_VERSION == B_HAIKU_VERSION_1_BETA_4) 
 m.attr("B_ABOUT_REQUESTED") = py::int_('_ABR');
 m.attr("B_WINDOW_ACTIVATED") = py::int_('_ACT');
 m.attr("B_APP_ACTIVATED") = py::int_('_ACT');
@@ -91,8 +94,7 @@ m.attr("_UPDATE_IF_NEEDED_") = py::int_('_UPN');
 m.attr("_PRINTER_INFO_") = py::int_('_PIN');
 m.attr("_SETUP_PRINTER_") = py::int_('_SUP');
 m.attr("_SELECT_PRINTER_") = py::int_('_PSL');
-*/
-/*
+
 m.attr("B_SET_PROPERTY") = py::int_('PSET');
 m.attr("B_GET_PROPERTY") = py::int_('PGET');
 m.attr("B_CREATE_PROPERTY") = py::int_('PCRT');
@@ -130,7 +132,8 @@ m.attr("B_SILENT_RELAUNCH") = py::int_('AREL');
 m.attr("B_OBSERVER_NOTICE_CHANGE") = py::int_('NTCH');
 m.attr("B_CONTROL_INVOKED") = py::int_('CIVK');
 m.attr("B_CONTROL_MODIFIED") = py::int_('CMOD');
-*/
+
+#else 
 py::enum_<system_message_code>(m, "system_message_code", "")
 .value("B_ABOUT_REQUESTED", system_message_code::B_ABOUT_REQUESTED, "")
 .value("B_WINDOW_ACTIVATED", system_message_code::B_WINDOW_ACTIVATED, "")
@@ -235,7 +238,7 @@ py::enum_<command_code>(m, "command_code", "")
 .value("B_CONTROL_INVOKED", command_code::B_CONTROL_INVOKED, "")
 .value("B_CONTROL_MODIFIED", command_code::B_CONTROL_MODIFIED, "")
 .export_values();
-
+#endif
 // old-style cursors
 m.attr("B_HAND_CURSOR") = std::vector<unsigned char>(
 	B_HAND_CURSOR, B_HAND_CURSOR + cursor_array_size(B_HAND_CURSOR));

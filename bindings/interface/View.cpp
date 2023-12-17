@@ -189,13 +189,26 @@ m.attr("B_SUSPEND_VIEW_FOCUS") = 2;
 m.attr("B_NO_POINTER_HISTORY") = 4;
 m.attr("B_FULL_POINTER_HISTORY") = 8;
 
+#if (B_HAIKU_VERSION == B_HAIKU_VERSION_1_BETA_4)
+m.attr("B_TRACK_WHOLE_RECT") = 0;
+m.attr("B_TRACK_RECT_CORNER") = 1;
 
+m.attr("B_FONT_FAMILY_AND_STYLE") = 1;
+m.attr("B_FONT_SIZE") = 2;
+m.attr("B_FONT_SHEAR") = 4;
+m.attr("B_FONT_ROTATION") = 8;
+m.attr("B_FONT_SPACING") = 16;
+m.attr("B_FONT_ENCODING") = 32;
+m.attr("B_FONT_FACE") = 64;
+m.attr("B_FONT_FLAGS") = 128;
+m.attr("B_FONT_FALSE_BOLD_WIDTH") = 256;
+m.attr("B_FONT_ALL") = 511;
+#else
 py::enum_<rect_tracking_style> (m, "rect_tracking_style", "")
 .value("B_TRACK_WHOLE_RECT", rect_tracking_style::B_TRACK_WHOLE_RECT, "")
 .value("B_TRACK_RECT_CORNER", rect_tracking_style::B_TRACK_RECT_CORNER, "")
 .export_values();
-//m.attr("B_TRACK_WHOLE_RECT") = 0;
-//m.attr("B_TRACK_RECT_CORNER") = 1;
+
 py::enum_<set_font_mask> (m, "set_font_mask", "")
 .value("B_FONT_FAMILY_AND_STYLE", set_font_mask::B_FONT_FAMILY_AND_STYLE, "")
 .value("B_FONT_SIZE", set_font_mask::B_FONT_SIZE, "")
@@ -208,18 +221,7 @@ py::enum_<set_font_mask> (m, "set_font_mask", "")
 .value("B_FONT_FALSE_BOLD_WIDTH", set_font_mask::B_FONT_FALSE_BOLD_WIDTH, "")
 .value("B_FONT_ALL", set_font_mask::B_FONT_ALL, "")
 .export_values();
-/*
-m.attr("B_FONT_FAMILY_AND_STYLE") = 1;
-m.attr("B_FONT_SIZE") = 2;
-m.attr("B_FONT_SHEAR") = 4;
-m.attr("B_FONT_ROTATION") = 8;
-m.attr("B_FONT_SPACING") = 16;
-m.attr("B_FONT_ENCODING") = 32;
-m.attr("B_FONT_FACE") = 64;
-m.attr("B_FONT_FLAGS") = 128;
-m.attr("B_FONT_FALSE_BOLD_WIDTH") = 256;
-m.attr("B_FONT_ALL") = 511;
-*/
+#endif
 
 py::enum_<coordinate_space>(m, "coordinate_space", "")
 .value("B_CURRENT_STATE_COORDINATES", coordinate_space::B_CURRENT_STATE_COORDINATES, "")
@@ -297,8 +299,8 @@ m.attr("B_FOLLOW_TOP_BOTTOM") = _rule_(1UL, 0, 3UL, 0);
 m.attr("B_FOLLOW_V_CENTER") = _rule_(5UL, 0, 5UL, 0);*/
 
 py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
-.def(py::init<const char *, unsigned int, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
-.def(py::init<BRect, const char *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode"), py::arg("flags"))
+.def(py::init<const char *, uint32, BLayout *>(), "", py::arg("name"), py::arg("flags"), py::arg("layout")=NULL)
+.def(py::init<BRect, const char *, uint32, uint32>(), "", py::arg("frame"), py::arg("name"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BView::Instantiate, "", py::arg("archive"))
 .def("Archive", &BView::Archive, "", py::arg("archive"), py::arg("deep")=true)
@@ -381,8 +383,8 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("ViewColor", &BView::ViewColor, "")
 .def("SetViewUIColor", &BView::SetViewUIColor, "", py::arg("which"), py::arg("tint")=B_NO_TINT)
 .def("ViewUIColor", &BView::ViewUIColor, "", py::arg("tint")=NULL)
-.def("SetViewBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32, unsigned int32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("srcRect"), py::arg("dstRect"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
-.def("SetViewBitmap", py::overload_cast<const BBitmap *, unsigned int32, unsigned int32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
+.def("SetViewBitmap", py::overload_cast<const BBitmap *, BRect, BRect, uint32, uint32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("srcRect"), py::arg("dstRect"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
+.def("SetViewBitmap", py::overload_cast<const BBitmap *, uint32, uint32>(&BView::SetViewBitmap), "", py::arg("bitmap"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=B_TILE_BITMAP)
 .def("ClearViewBitmap", &BView::ClearViewBitmap, "")
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, BRect, BRect, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("srcRect"), py::arg("dstRect"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
 .def("SetViewOverlay", py::overload_cast<const BBitmap *, rgb_color *, uint32, uint32>(&BView::SetViewOverlay), "", py::arg("overlay"), py::arg("colorKey"), py::arg("followFlags")=B_FOLLOW_LEFT_TOP, py::arg("options")=0)
@@ -466,12 +468,12 @@ py::class_<BView,PyBView,std::unique_ptr<BView, py::nodelete>>(m, "BView")
 .def("FillShape", py::overload_cast<BShape *, ::pattern>(&BView::FillShape), "", py::arg("shape"), py::arg("pattern")=B_SOLID_HIGH)
 .def("FillShape", py::overload_cast<BShape *, const BGradient &>(&BView::FillShape), "", py::arg("shape"), py::arg("gradient"))
 .def("CopyBits", &BView::CopyBits, "", py::arg("src"), py::arg("dst"))
-.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect, uint32>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"), py::arg("where"))
 .def("DrawBitmapAsync", py::overload_cast<const BBitmap *>(&BView::DrawBitmapAsync), "", py::arg("aBitmap"))
-.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, unsigned int32>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
+.def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect, uint32>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"), py::arg("options"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("bitmapRect"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BRect>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("viewRect"))
 .def("DrawBitmap", py::overload_cast<const BBitmap *, BPoint>(&BView::DrawBitmap), "", py::arg("aBitmap"), py::arg("where"))
