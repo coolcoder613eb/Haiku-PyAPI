@@ -140,7 +140,7 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
 				break;
 			case B_BOOL_TYPE:
-				ret = py::bool_(PyBool_FromLong(*reinterpret_cast<int32*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp)))));
+				ret = py::bool_(*reinterpret_cast<bool*>(tmp));
 				break;
 			case B_FLOAT_TYPE:
 				ret = py::float_(*reinterpret_cast<float*>(tmp));
