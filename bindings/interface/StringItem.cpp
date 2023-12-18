@@ -28,7 +28,6 @@ class PyStringItem : public BStringItem{
         status_t			Perform(perform_code code, void* arg) override {
             PYBIND11_OVERLOAD(status_t, BStringItem, Perform, code, arg);
         }
-        // TODO: there may be more methods that we should allow overloading
 private:
     BStringItem* item_;
 };
@@ -36,7 +35,7 @@ private:
 PYBIND11_MODULE(StringItem,m)
 {
 py::class_<BStringItem, BListItem,std::unique_ptr<BStringItem, py::nodelete>>(m, "BStringItem")
-.def(py::init<const char *, unsigned int, bool>(), "", py::arg("text"), py::arg("outlineLevel")=0, py::arg("expanded")=true)
+.def(py::init<const char *, uint32, bool>(), "", py::arg("text"), py::arg("outlineLevel")=0, py::arg("expanded")=true)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BStringItem::Instantiate, "", py::arg("archive"))
 .def("Archive", &BStringItem::Archive, "", py::arg("archive"), py::arg("deep")=true)
