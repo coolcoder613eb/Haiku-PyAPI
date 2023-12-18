@@ -208,7 +208,7 @@ class Window(BWindow):
 		self.list.lv.AddItem(strano)
 		print(self.list.lv.Items())
 		print(self.list.lv.IndexOf(self.elementolista))
-		self.list.sv.Show()
+		#self.list.sv.Show()
 		#self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.box,None)
 		self.panel.AddChild(self.sixradio,None)
