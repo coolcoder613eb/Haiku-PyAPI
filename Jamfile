@@ -228,6 +228,8 @@ local sourceFiles =
 	FilePanel.cpp
 	
 	TranslationDefs.cpp
+	#TranslatorRoster.cpp
+	#TranslationUtils.cpp
 	#Translator.cpp
 	;
 
