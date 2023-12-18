@@ -42,7 +42,7 @@ private:
 PYBIND11_MODULE(ListItem,m)
 {
 //py::class_<BListItem, BArchivable>(m, "BListItem")
-py::class_<BListItem, PyBListItem, std::unique_ptr<BListItem, py::nodelete>>(m, "BListItem")
+py::class_<BListItem, PyBListItem, BArchivable, std::unique_ptr<BListItem, py::nodelete>>(m, "BListItem")
 .def(py::init<uint32, bool>(), "", py::arg("outlineLevel")=0, py::arg("expanded")=true)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def("Archive", &BListItem::Archive, "", py::arg("archive"), py::arg("deep")=true)
