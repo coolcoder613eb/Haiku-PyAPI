@@ -91,22 +91,26 @@ py::class_<unicode_block_range>(m, "unicode_block_range")
 ;
 
 py::class_<edge_info>(m, "edge_info")
+.def(py::init(), "")
 .def_readwrite("left", &edge_info::left, "")
 .def_readwrite("right", &edge_info::right, "")
 ;
 
 py::class_<font_height>(m, "font_height")
+.def(py::init(), "")
 .def_readwrite("ascent", &font_height::ascent, "")
 .def_readwrite("descent", &font_height::descent, "")
 .def_readwrite("leading", &font_height::leading, "")
 ;
 
 py::class_<escapement_delta>(m, "escapement_delta")
+.def(py::init(), "")
 .def_readwrite("nonspace", &escapement_delta::nonspace, "")
 .def_readwrite("space", &escapement_delta::space, "")
 ;
 
 py::class_<font_cache_info>(m, "font_cache_info")
+.def(py::init(), "")
 .def_readwrite("sheared_font_penalty", &font_cache_info::sheared_font_penalty, "")
 .def_readwrite("rotated_font_penalty", &font_cache_info::rotated_font_penalty, "")
 .def_readwrite("oversize_threshold", &font_cache_info::oversize_threshold, "")
@@ -116,6 +120,7 @@ py::class_<font_cache_info>(m, "font_cache_info")
 ;
 
 py::class_<tuned_font_info>(m, "tuned_font_info")
+.def(py::init(), "")
 .def_readwrite("size", &tuned_font_info::size, "")
 .def_readwrite("shear", &tuned_font_info::shear, "")
 .def_readwrite("rotation", &tuned_font_info::rotation, "")
