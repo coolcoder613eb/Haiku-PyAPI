@@ -57,14 +57,25 @@ py::class_<BFile, BNode, BPositionIO>(m, "BFile")
 .def("SetTo", py::overload_cast<const BDirectory *, const char *, uint32>(&BFile::SetTo), "", py::arg("dir"), py::arg("path"), py::arg("openMode"))
 .def("IsReadable", &BFile::IsReadable, "")
 .def("IsWritable", &BFile::IsWritable, "")
-.def("Read", &BFile::Read, "", py::arg("buffer"), py::arg("size"))
+//.def("Read", &BFile::Read, "", py::arg("buffer"), py::arg("size"))
+.def("Read",[](BFile& self, size_t size)->py::tuple{
+	std::vector<char>buffer(size);
+	ssize_t bytesRead = self.Read(buffer.data(), size);
+	py::bytes pyBytes(buffer.data(),bytesRead);
+	return py::make_tuple(pyBytes, bytesRead);
+},"", py::arg("size"))
 .def("ReadAt", &BFile::ReadAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
 .def("Write", &BFile::Write, "", py::arg("buffer"), py::arg("size"))
 .def("WriteAt", &BFile::WriteAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
 .def("Seek", &BFile::Seek, "", py::arg("offset"), py::arg("seekMode"))
 .def("Position", &BFile::Position, "")
 .def("SetSize", &BFile::SetSize, "", py::arg("size"))
-.def("GetSize", &BFile::GetSize, "", py::arg("size"))
+//.def("GetSize", &BFile::GetSize, "", py::arg("size"))
+.def("GetSize", [](BFile& self)->py::tuple{
+	off_t size;
+	status_t ret = self.GetSize(&size);
+	return py::make_tuple(ret,size);
+}, "")
 .def("operator=", &BFile::operator=, "", py::arg("file"))
 ;
 
