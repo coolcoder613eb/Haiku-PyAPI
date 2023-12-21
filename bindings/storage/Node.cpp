@@ -47,7 +47,15 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 .def("Lock", &BNode::Lock, "")
 .def("Unlock", &BNode::Unlock, "")
 .def("Sync", &BNode::Sync, "")
-.def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+//.def("WriteAttr", &BNode::WriteAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
+.def("WriteAttr", [](BNode& self, const char* name, type_code type, off_t offset, py::buffer buffer) {
+        // Estrai i dati dal buffer
+        py::buffer_info info = buffer.request(); //use var = bytearray(b"Hello, World!")
+        const void* data = info.ptr;
+        size_t length = info.size;
+        // Chiamare il metodo WriteAttr con i dati estratti
+        return self.WriteAttr(name, type, offset, data, length);
+}, "",py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"))//, py::arg("length"))
 //.def("ReadAttr", &BNode::ReadAttr, "", py::arg("name"), py::arg("type"), py::arg("offset"), py::arg("buffer"), py::arg("length"))
 /*
 .def("ReadAttr", [](BNode& self, const char* name, type_code type, off_t offset, void* buffer, size_t length)->py::object{
@@ -136,8 +144,13 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 			case B_STRING_TYPE:
 			case B_MIME_STRING_TYPE:
 			case B_ASCII_TYPE:
-				ret = py::str(static_cast<const char*>(tmp));
-				//ret = PyUnicode_FromString(static_cast<const char*>(tmp));
+				{
+				py::bytes bytes_obj(reinterpret_cast<const char*>(tmp),length);
+				ret = py::str(bytes_obj);
+				}
+				//ret = py::str(static_cast<const char*>(tmp));
+				//ret = py::str(reinterpret_cast<const char *>(tmp));
+				//ret = PyUnicode_FromString(reinterpret_cast<const char*>(tmp));
 				break;
 			case B_BOOL_TYPE:
 				ret = py::bool_(*reinterpret_cast<bool*>(tmp));
@@ -214,11 +227,6 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 }, py::arg("buffer")="")//, py::return_value_policy::reference_internal*/
 .def("GetNextAttrName", [](BNode& self, char* buffer){
 	status_t result = self.GetNextAttrName(buffer);
-	//if (result == 0) {
-	//	return std::string(buffer);
-	//} else {
-	//	throw std::runtime_error("Errore durante la chiamata a GetNextAttrName");
-	//}
 	return std::make_tuple(std::string(buffer),result);
 }, py::arg("buffer")="")
 .def("RewindAttrs", &BNode::RewindAttrs, "")
