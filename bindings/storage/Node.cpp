@@ -11,7 +11,7 @@
 #include <Statable.h>
 #include <Entry.h>
 #include <Directory.h>
-
+#include <String.h>
 
 namespace py = pybind11;
 
@@ -145,8 +145,10 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 			case B_MIME_STRING_TYPE:
 			case B_ASCII_TYPE:
 				{
-				py::bytes bytes_obj(reinterpret_cast<const char*>(tmp),length);
-				ret = py::str(bytes_obj);
+				//py::bytes bytes_obj(reinterpret_cast<const char*>(tmp),length);
+				//ret = py::str(bytes_obj);
+				BString bstring(reinterpret_cast<const char*>(tmp),length);
+				ret = py::str(bstring.String());
 				}
 				//ret = py::str(static_cast<const char*>(tmp));
 				//ret = py::str(reinterpret_cast<const char *>(tmp));
