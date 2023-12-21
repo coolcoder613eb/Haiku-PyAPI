@@ -84,7 +84,7 @@ class PyBScrollBar : public BScrollBar{
 
 PYBIND11_MODULE(ScrollBar,m)
 {
-py::class_<BScrollBar, PyBScrollBar, BView>(m, "BScrollBar")
+py::class_<BScrollBar, PyBScrollBar, BView, std::unique_ptr<BScrollBar, py::nodelete>>(m, "BScrollBar")
 .def(py::init<BRect, const char *, BView *, float, float, orientation>(), "", py::arg("frame"), py::arg("name"), py::arg("target"), py::arg("min"), py::arg("max"), py::arg("direction"))
 .def(py::init<const char *, BView *, float, float, orientation>(), "", py::arg("name"), py::arg("target"), py::arg("min"), py::arg("max"), py::arg("orientation"))
 .def(py::init<BMessage *>(), "", py::arg("archive"))
