@@ -65,7 +65,13 @@ py::class_<BFile, BNode, BPositionIO>(m, "BFile")
 	return py::make_tuple(pyBytes, bytesRead);
 },"", py::arg("size"))
 .def("ReadAt", &BFile::ReadAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
-.def("Write", &BFile::Write, "", py::arg("buffer"), py::arg("size"))
+//.def("Write", &BFile::Write, "", py::arg("buffer"), py::arg("size"))
+.def("Write", [](BFile& self, py::buffer buffer){
+	py::buffer_info info = buffer.request();
+	const void* data = info.ptr;
+	size_t length = info.size;
+	return self.Write(data,length);
+}, "",py::arg("buffer"))
 .def("WriteAt", &BFile::WriteAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
 .def("Seek", &BFile::Seek, "", py::arg("offset"), py::arg("seekMode"))
 .def("Position", &BFile::Position, "")
