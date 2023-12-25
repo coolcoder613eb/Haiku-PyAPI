@@ -190,21 +190,6 @@ m.attr("B_SUSPEND_VIEW_FOCUS") = 2;
 m.attr("B_NO_POINTER_HISTORY") = 4;
 m.attr("B_FULL_POINTER_HISTORY") = 8;
 
-#if (B_HAIKU_VERSION == B_HAIKU_VERSION_1_BETA_4)
-m.attr("B_TRACK_WHOLE_RECT") = 0;
-m.attr("B_TRACK_RECT_CORNER") = 1;
-
-m.attr("B_FONT_FAMILY_AND_STYLE") = 1;
-m.attr("B_FONT_SIZE") = 2;
-m.attr("B_FONT_SHEAR") = 4;
-m.attr("B_FONT_ROTATION") = 8;
-m.attr("B_FONT_SPACING") = 16;
-m.attr("B_FONT_ENCODING") = 32;
-m.attr("B_FONT_FACE") = 64;
-m.attr("B_FONT_FLAGS") = 128;
-m.attr("B_FONT_FALSE_BOLD_WIDTH") = 256;
-m.attr("B_FONT_ALL") = 511;
-#else
 py::enum_<rect_tracking_style> (m, "rect_tracking_style", "")
 .value("B_TRACK_WHOLE_RECT", rect_tracking_style::B_TRACK_WHOLE_RECT, "")
 .value("B_TRACK_RECT_CORNER", rect_tracking_style::B_TRACK_RECT_CORNER, "")
@@ -222,7 +207,6 @@ py::enum_<set_font_mask> (m, "set_font_mask", "")
 .value("B_FONT_FALSE_BOLD_WIDTH", set_font_mask::B_FONT_FALSE_BOLD_WIDTH, "")
 .value("B_FONT_ALL", set_font_mask::B_FONT_ALL, "")
 .export_values();
-#endif
 
 py::enum_<coordinate_space>(m, "coordinate_space", "")
 .value("B_CURRENT_STATE_COORDINATES", coordinate_space::B_CURRENT_STATE_COORDINATES, "")

@@ -1,0 +1,7 @@
+This folder contains copies of some of Haiku's header files from versions of Haiku after
+R1B4.
+
+Currently, we need this so that we can reference some structs that were named
+after R1B4 was released. Wes hould be able to delete this folder once R1B5 is
+released, as the named structs will be included in the default header files
+that come with R1B5.

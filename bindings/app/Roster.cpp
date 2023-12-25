@@ -2,7 +2,6 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
-#include <BeBuild.h>
 #include <app/Roster.h>
 #include <Entry.h>
 #include <Messenger.h>
@@ -31,17 +30,11 @@ void GetRecentDocumentsWrapper(BRoster& self, BMessage* refList, int32 maxCount,
 PYBIND11_MODULE(Roster,m)
 {
 
-#if (B_HAIKU_VERSION == B_HAIKU_VERSION_1_BETA_4) 
-m.attr("B_REQUEST_LAUNCHED") = 1;
-m.attr("B_REQUEST_QUIT") = 2;
-m.attr("B_REQUEST_ACTIVATED") = 4;
-#else
 py::enum_<watching_request_flags>(m, "watching_request_flags", "")
 .value("B_REQUEST_LAUNCHED", watching_request_flags::B_REQUEST_LAUNCHED, "")
 .value("B_REQUEST_QUIT", watching_request_flags::B_REQUEST_QUIT, "")
 .value("B_REQUEST_ACTIVATED", watching_request_flags::B_REQUEST_ACTIVATED, "")
 .export_values();
-#endif
 
 m.attr("B_SOME_APP_LAUNCHED") = py::int_('BRAS');
 m.attr("B_SOME_APP_QUIT") = py::int_('BRAQ');
