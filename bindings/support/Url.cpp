@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void define_Url(py::module_& m)
+PYBIND11_MODULE(Url, m)
 {
 py::class_<BUrl, BArchivable>(m, "BUrl")
 .def(py::init<const char *>(), "", py::arg("url"))
@@ -53,8 +53,8 @@ py::class_<BUrl, BArchivable>(m, "BUrl")
 .def("UrlDecode", py::overload_cast<bool>(&BUrl::UrlDecode), "", py::arg("strict")=false)
 .def("IDNAToAscii", &BUrl::IDNAToAscii, "")
 .def("IDNAToUnicode", &BUrl::IDNAToUnicode, "")
-.def_static("UrlEncode", py::overload_cast<const BString &, bool, bool>(&BUrl::UrlEncode), "", py::arg("url"), py::arg("strict")=false, py::arg("directory")=false)
-.def_static("UrlDecode", py::overload_cast<const BString &, bool>(&BUrl::UrlDecode), "", py::arg("url"), py::arg("strict")=false)
+.def_static("UrlEncodeStatic", py::overload_cast<const BString &, bool, bool>(&BUrl::UrlEncode), "", py::arg("url"), py::arg("strict")=false, py::arg("directory")=false)
+.def_static("UrlDecodeStatic", py::overload_cast<const BString &, bool>(&BUrl::UrlDecode), "", py::arg("url"), py::arg("strict")=false)
 .def("HasPreferredApplication", &BUrl::HasPreferredApplication, "")
 .def("PreferredApplication", &BUrl::PreferredApplication, "")
 .def("OpenWithPreferredApplication", &BUrl::OpenWithPreferredApplication, "", py::arg("onProblemAskUser")=true)
@@ -75,7 +75,7 @@ py::class_<BUrl, BArchivable>(m, "BUrl")
 .def("operator=", py::overload_cast<const BUrl &>(&BUrl::operator=), "", py::arg("other"))
 .def("operator=", py::overload_cast<const BString &>(&BUrl::operator=), "", py::arg("string"))
 .def("operator=", py::overload_cast<const char *>(&BUrl::operator=), "", py::arg("string"))
-.def("operatorconstchar*", &BUrl::operatorconstchar*, "")
+//.def("operatorconstchar*", &BUrl::operatorconstchar*, "")
 ;
 
 

@@ -198,6 +198,7 @@ local sourceFiles =
 	Flattenable.cpp
 	StringList.cpp
 	DataIO.cpp
+	Url.cpp
 	
 	#Kernel
 	fs_attr.cpp
