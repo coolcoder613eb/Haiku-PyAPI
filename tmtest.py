@@ -1,3 +1,4 @@
+
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
 from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap
 from Be.PictureButton import picture_button_behavior
@@ -272,7 +273,38 @@ class Window(BWindow):
 		#m = stuff.find('This')
 		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
+		tra=self.typtap.RunArray(0,len(self.typtap.Text()))
+		print("runarray count",tra.count)
+		print("tra.runs è\n",tra.runs)
+		print(tra.runs[0].offset,tra.runs[0].font,tra.runs[0].color)
 		self.panel.AddChild(self.list.topview(),None)
+		pittura=rgb_color()
+		pittura.red=255
+		pittura.green=0
+		pittura.blue=0
+		pittura.alpha=255
+		pictura=rgb_color()
+		pictura.red=0
+		pictura.green=255
+		pictura.blue=0
+		pictura.alpha=255
+		from Be.TextView import text_run
+		tr1=text_run()
+		tr1.offset=0
+		tr1.font=be_plain_font
+		tr1.color=pittura
+		tr2=text_run()
+		tr2.offset=10
+		tr2.font=be_bold_font
+		tr2.color=pictura
+		mytralist=[tr1,tr2]
+		#this is the way to write text_run_arrays
+		tra.count=2 #increase the count
+		print("ora tra.count è 2")
+		print("e ora tra.runs è\n",tra.runs) #now you have 2 text_runs
+		tra.runs[1] = tr2 #assign the second one
+		print(tra.runs[1].color.green)
+		###################### add other text_runs
 		###### Example handling refs / BEntry #####
 		a=entry_ref()
 		get_ref_for_path("/boot/home",a)

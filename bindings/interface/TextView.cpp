@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <interface/TextView.h>
 #include <stdint.h>
@@ -120,15 +121,31 @@ py::enum_<undo_state>(m, "undo_state", "")
 //m.attr("TextGapBuffer") = TextGapBuffer;
 
 py::class_<text_run>(m, "text_run")
+.def(py::init<>())
 .def_readwrite("offset", &text_run::offset, "")
 .def_readwrite("font", &text_run::font, "")
 .def_readwrite("color", &text_run::color, "")
 ;
 
 py::class_<text_run_array>(m, "text_run_array")
+.def(py::init<>())
+.def_readwrite("count", &text_run_array::count, "")
+//.def_readonly("runs", &text_run_array::runs, "")
+.def_property("runs",[](const text_run_array& self){
+		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
+	},[](text_run_array& self, const  std::vector<text_run>& new_values) {
+		if (new_values.size() != self.count){
+			throw std::runtime_error("Invalid buffer size or dimensions");
+		}
+		std::copy(new_values.begin(),new_values.end(),self.runs);
+		})
+;
+
+/*
+py::class_<text_run_array>(m, "text_run_array")
 .def_readwrite("count", &text_run_array::count, "")
 .def_readonly("runs", &text_run_array::runs, "")
-;
+;*/
 
 py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete>>(m, "BTextView")
 .def(py::init<BRect, const char *, BRect, uint32, uint32>(), "", py::arg("frame"), py::arg("name"), py::arg("textRect"), py::arg("resizeMask"), py::arg("flags")=B_WILL_DRAW | B_PULSE_NEEDED)
