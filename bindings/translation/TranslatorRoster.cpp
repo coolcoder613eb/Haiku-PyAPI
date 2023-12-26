@@ -10,6 +10,44 @@
 
 namespace py = pybind11;
 
+class PyBTranslatorRoster : public BTranslatorRoster{
+	public:
+        using BTranslatorRoster::BTranslatorRoster;
+        status_t			Archive(BMessage* into, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, Archive, into, deep);
+        }
+        status_t			Identify(BPositionIO* source, BMessage* ioExtension, translator_info* _info, uint32 hintType = 0, const char* hintMIME = NULL, uint32 wantType = 0) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, Identify, source, ioExtension, _info, hintType, hintMIME, wantType);
+        }
+        /*status_t			GetTranslators(BPositionIO* source, BMessage* ioExtension, translator_info** _info, int32* _numInfo, uint32 hintType = 0, const char* hintMIME = NULL, uint32 wantType = 0) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetTranslators, source, ioExtension, _info, _numInfo, hintType, hintMIME, wantType);
+        }*/
+        /*status_t			GetAllTranslators(translator_id** _list, int32* _count) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetAllTranslators, _list, _count);
+        }*/
+        /*status_t			GetTranslatorInfo(translator_id translatorID, const char** _name, const char** _info, int32* _version) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetTranslatorInfo, translatorID, _name, _info, _version);
+        }*/
+        /*status_t			GetInputFormats(translator_id translatorID, const translation_format** _formats, int32* _numFormats) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetInputFormats, translatorID, _formats, _numFormats);
+        }*/
+        /*status_t			GetOutputFormats(translator_id translatorID, const translation_format** _formats, int32* _numFormats) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetOutputFormats, translatorID, _formats, _numFormats);
+        }*/
+        status_t			Translate(BPositionIO* source, const translator_info* info, BMessage* ioExtension, BPositionIO* destination, uint32 wantOutType, uint32 hintType = 0, const char* hintMIME = NULL) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, Translate, source, info, ioExtension, destination, wantOutType, hintType, hintMIME);
+        }
+        status_t			Translate(translator_id translatorID, BPositionIO* source, BMessage* ioExtension, BPositionIO* destination, uint32 wantOutType) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, Translate, translatorID, source, ioExtension, destination, wantOutType);
+        }
+        /*status_t			MakeConfigurationView(translator_id translatorID, BMessage* ioExtension, BView** _view, BRect* _extent) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, MakeConfigurationView, translatorID, ioExtension, _view, _extent);
+        }*/
+        status_t			GetConfigurationMessage(translator_id translatorID, BMessage* ioExtension) override {
+        	PYBIND11_OVERLOAD(status_t, BTranslatorRoster, GetConfigurationMessage, translatorID, ioExtension);
+        }
+        
+};
 
 PYBIND11_MODULE(TranslatorRoster, m)
 {
@@ -18,7 +56,7 @@ py::class_<BTranslatorReleaseDelegate>(m, "BTranslatorReleaseDelegate")
 .def("Release", &BTranslatorReleaseDelegate::Release, "")
 ;
 
-py::class_<BTranslatorRoster, BArchivable>(m, "BTranslatorRoster")
+py::class_<BTranslatorRoster, PyBTranslatorRoster, BArchivable>(m, "BTranslatorRoster")
 .def(py::init(), "")
 .def(py::init<BMessage *>(), "", py::arg("model"))
 .def_static("Default", &BTranslatorRoster::Default, "")
