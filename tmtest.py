@@ -153,10 +153,15 @@ class Window(BWindow):
 		self.nineradio = BRadioButton(BRect(8,260,28,280),'coolradio', 'cool', BMessage(9))
 		scrn = BScreen(self)
 		img1,retu = scrn.GetBitmap(True,BRect(0,0,200,200))
-		if not retu:
+		#if not retu:
 			#print(img1.Bits())
-			print(img1.Flags())
-			print(img1.BitsLength())
+			#bitti = img1.Bits()
+			#img1.SetBits(bitti,0,color_space.B_RGBA32)
+			#bitto = img1.Bits()
+			#if bitti == bitto:
+			#	print("le immagini sono uguali")
+			#print(img1.Flags())
+			#print(img1.BitsLength())
 		img2=BBitmap(self.panel2.Bounds(),color_space.B_RGBA32)
 		#img2.ImportBits(img1)
 		img2,reto = scrn.GetBitmap(True,self.panel3.Bounds())
@@ -200,15 +205,15 @@ class Window(BWindow):
 		self.elementolista=BStringItem("Questo è un BStringItem")
 		#global strano
 		strano = StrangeItem("Questo è uno StrangeItem",(0,200,0,0))
-		print("strano gcolor è:",strano.gcolor)
+		#print("strano gcolor è:",strano.gcolor)
 		#print(type(self.list.lv))
 		#print(self.list.lv.Items())
 		#print(self.list.lv.CountItems())
 		self.list.lv.AddItem(newsitem)
 		self.list.lv.AddItem(self.elementolista)
 		self.list.lv.AddItem(strano)
-		print(self.list.lv.Items())
-		print(self.list.lv.IndexOf(self.elementolista))
+		#print(self.list.lv.Items())
+		#print(self.list.lv.IndexOf(self.elementolista))
 		#self.list.sv.Show()
 		#self.panel.AddChild(self.list.topview(),None)
 		self.panel.AddChild(self.box,None)
@@ -274,9 +279,9 @@ class Window(BWindow):
 		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
 		tra=self.typtap.RunArray(0,len(self.typtap.Text()))
-		print("runarray count",tra.count)
-		print("tra.runs è\n",tra.runs)
-		print(tra.runs[0].offset,tra.runs[0].font,tra.runs[0].color)
+		#print("runarray count",tra.count)
+		#print("tra.runs è\n",tra.runs)
+		#print(tra.runs[0].offset,tra.runs[0].font,tra.runs[0].color)
 		self.panel.AddChild(self.list.topview(),None)
 		pittura=rgb_color()
 		pittura.red=255
@@ -300,10 +305,10 @@ class Window(BWindow):
 		mytralist=[tr1,tr2]
 		#this is the way to write text_run_arrays
 		tra.count=2 #increase the count
-		print("ora tra.count è 2")
-		print("e ora tra.runs è\n",tra.runs) #now you have 2 text_runs
+		#print("ora tra.count è 2")
+		#print("e ora tra.runs è\n",tra.runs) #now you have 2 text_runs
 		tra.runs[1] = tr2 #assign the second one
-		print(tra.runs[1].color.green)
+		#print(tra.runs[1].color.green)
 		###################### add other text_runs
 		###### Example handling refs / BEntry #####
 		a=entry_ref()
