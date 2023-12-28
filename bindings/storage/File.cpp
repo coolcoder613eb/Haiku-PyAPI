@@ -64,7 +64,13 @@ py::class_<BFile, BNode, BPositionIO>(m, "BFile")
 	py::bytes pyBytes(buffer.data(),bytesRead);
 	return py::make_tuple(pyBytes, bytesRead);
 },"", py::arg("size"))
-.def("ReadAt", &BFile::ReadAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
+//.def("ReadAt", &BFile::ReadAt, "", py::arg("location"), py::arg("buffer"), py::arg("size"))
+.def("ReadAt", [](BFile& self, off_t location, size_t size)->py::tuple{
+	std::vector<char>buffer(size);
+	ssize_t bytesRead = self.ReadAt(location, buffer.data(), size);
+	py::bytes pyBytes(buffer.data(),bytesRead);
+	return py::make_tuple(pyBytes, bytesRead);
+},"", py::arg("location"),py::arg("size"))
 //.def("Write", &BFile::Write, "", py::arg("buffer"), py::arg("size"))
 .def("Write", [](BFile& self, py::buffer buffer){
 	py::buffer_info info = buffer.request();
