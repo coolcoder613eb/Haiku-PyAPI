@@ -233,6 +233,8 @@ local sourceFiles =
 	#TranslatorRoster.cpp
 	#TranslationUtils.cpp
 	#Translator.cpp
+	
+	stat.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to

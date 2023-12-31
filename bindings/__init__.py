@@ -135,6 +135,7 @@ from .TranslationDefs import *
 #from .TranslatorRoster import *
 #from .TranslationUtils import *
 #from .Translator import *
+from .stat import *
 
 _BWindow=BWindow
 _BApplication=BApplication
