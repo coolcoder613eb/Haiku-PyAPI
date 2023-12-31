@@ -4,13 +4,20 @@ Python bindings for the Haiku API.
 
 This lets you build apps for Haiku using the Haiku API directly from Python.
 
+For the most part, Haiku-PyAPI tries to copy the C++ API. There are some places
+where we have had to deviate from the C++ API, however.
+
 ## Current status
 
-The API is not stable and subject to change. The bindings for the app kit
-are mostly complete, but a couple of functions are missing. The interface
-kit has the essentials (buttons, text boxes, etc.), but many items are
-missing. The other kits have not been ported yet. Expect a lot of
-use-after-frees, double frees, and memory leaks.
+Almost everything in the app and interface kits have been ported. The storage
+kit has mostly been ported. The support kit has only partially been ported.
+The other kits haven't been ported yet.
+
+Of the kits that have been ported, many of the functions haven't been tested
+yet. You should, therefore, expect to encounter problems when using some of the
+functions. Besides this, you can expect memory leaks, as little work has been
+done on getting memory freed correctly once it is no longer needed. And, of
+course, you should expect many miscellaneous bugs.
 
 ## Installing
 
