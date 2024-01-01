@@ -39,7 +39,7 @@ py::class_<BEntry, BStatable>(m, "BEntry")
 .def("Exists", &BEntry::Exists, "")
 .def("Name", &BEntry::Name, "")
 .def("GetStat", &BEntry::GetStat, "", py::arg("stat")) /*
-TODO: GetStat writes the rusult into stat, a struct stat variable we should define before calling this function
+TODO: GetStat writes the result into stat argument, a struct stat variable we should define before calling this function.
 this is a C++ struct and we should provide a way for python to read it. So we wrote stat.cpp. In stat struct we have also some
 timespec variables, which type is unknow to python, so we should provide a way to read a timespec. This is actually undone.
 */
