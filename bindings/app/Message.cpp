@@ -143,7 +143,12 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("AddMessage", &BMessage::AddMessage, "", py::arg("name"), py::arg("message"))
 .def("AddFlat", py::overload_cast<const char *, BFlattenable *, int32>(&BMessage::AddFlat), "", py::arg("name"), py::arg("object"), py::arg("count")=1)
 .def("AddFlat", py::overload_cast<const char *, const BFlattenable *, int32>(&BMessage::AddFlat), "", py::arg("name"), py::arg("object"), py::arg("count")=1)
-.def("AddData", &BMessage::AddData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
+//.def("AddData", &BMessage::AddData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
+.def("AddData", [](BMessage& self, const char* name, type_code type, py::buffer data, ssize_t numBytes, bool isFixedSize, int32 count) { //const void* data 
+	py::buffer_info info = data.request();
+	const void* buffer = info.ptr;
+	return self.AddData(name,type,buffer,numBytes,isFixedSize,count);
+}, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
 .def("Append", &BMessage::Append, "", py::arg("message"))
 .def("RemoveData", &BMessage::RemoveData, "", py::arg("name"), py::arg("index")=0)
 .def("RemoveName", &BMessage::RemoveName, "", py::arg("name"))
