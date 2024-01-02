@@ -1,6 +1,6 @@
 
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap
+from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap, TypeConstants
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -317,6 +317,17 @@ class Window(BWindow):
 		b.Exists()
 		#to complete
 		###########################################
+		### Test Message AddData e FindData ####
+		message=BMessage(100253)
+		ads="Tçaded00\nlol0".encode('utf-8')
+		asd="addizionale".encode("utf-8")
+		message.AddData("bytes",TypeConstants.B_RAW_TYPE,ads,len(ads),False,1)
+		message.AddData("bytes",TypeConstants.B_RAW_TYPE,asd,len(asd),False,1)
+		message.PrintToStream()
+		tret,tdata=message.FindData("bytes",TypeConstants.B_RAW_TYPE,1)
+		print(tret)
+		if tret == 0:
+			print(tdata.decode('utf-8'))
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
