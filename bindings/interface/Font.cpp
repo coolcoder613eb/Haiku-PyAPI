@@ -207,6 +207,21 @@ py::class_<BFont>(m, "BFont")
 .def("GetBoundingBoxesAsGlyphs", &BFont::GetBoundingBoxesAsGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("boundingBoxArray"))
 .def("GetBoundingBoxesAsString", &BFont::GetBoundingBoxesAsString, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("delta"), py::arg("boundingBoxArray"))
 //.def("GetBoundingBoxesForStrings", &BFont::GetBoundingBoxesForStrings, "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("deltas"), py::arg("boundingBoxArray"))
+// TODO TEST THIS, unchecked
+.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
+                                       int32 numStrings, font_metric_mode mode,
+                                       std::vector<escapement_delta> &deltas,
+                                       std::vector<BRect> &boundingBoxArray) {
+    std::vector<const char*> cStrings;
+    for (const auto &str : stringArray) {
+        cStrings.push_back(str.c_str());
+    }
+
+    std::vector<escapement_delta>& constDeltas = deltas;
+    std::vector<BRect>& constBoundingBoxArray = boundingBoxArray;
+
+    self.GetBoundingBoxesForStrings(cStrings.data(), numStrings, mode, constDeltas.data(), constBoundingBoxArray.data());
+},"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"),py::arg("boundingBoxArray"))
 //.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
 .def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
 .def("operator=", &BFont::operator=, "", py::arg("font"))
