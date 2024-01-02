@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <app/Message.h>
 #include <new>
@@ -210,8 +211,35 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("object"))
 .def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("object"))
 //.def("FindData", py::overload_cast<const char *, type_code, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"))
-//.def("FindData", py::overload_cast<const char *, type_code, int32, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"), py::arg("numBytes"))
+.def("FindData", [](BMessage &self, const char *name, type_code type) -> py::tuple {
+    const void *vdata = nullptr;
+    ssize_t numBytes;
+    status_t ret = self.FindData(name, type, &vdata, &numBytes);
 
+    if (ret == B_OK && vdata != nullptr) {
+        // Converte i dati in un oggetto py::bytes
+        const unsigned char *dataPtr = static_cast<const unsigned char *>(vdata);
+        py::bytes result(reinterpret_cast<const char *>(dataPtr), numBytes);
+        return py::make_tuple(ret, result);
+    }
+
+    return py::make_tuple(ret, py::none());
+}, "", py::arg("name"), py::arg("type"))
+//.def("FindData", py::overload_cast<const char *, type_code, int32, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"), py::arg("numBytes"))
+.def("FindData", [](BMessage &self, const char *name, type_code type, int32 index) -> py::tuple {
+    const void *vdata = nullptr;
+    ssize_t numBytes;
+    status_t ret = self.FindData(name, type, index, &vdata, &numBytes);
+
+    if (ret == B_OK && vdata != nullptr) {
+        // Converte i dati in un oggetto py::bytes
+        const unsigned char *dataPtr = static_cast<const unsigned char *>(vdata);
+        py::bytes result(reinterpret_cast<const char *>(dataPtr), numBytes);
+        return py::make_tuple(ret, result);
+    }
+
+    return py::make_tuple(ret, py::none());
+}, "", py::arg("name"), py::arg("type"), py::arg("index"))
 .def("ReplaceAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::ReplaceAlignment), "", py::arg("name"), py::arg("alignment"))
 .def("ReplaceAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::ReplaceAlignment), "", py::arg("name"), py::arg("index"), py::arg("alignment"))
 .def("ReplaceRect", py::overload_cast<const char *, BRect>(&BMessage::ReplaceRect), "", py::arg("name"), py::arg("rect"))
