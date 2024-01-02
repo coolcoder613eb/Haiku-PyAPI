@@ -328,6 +328,12 @@ class Window(BWindow):
 		print(tret)
 		if tret == 0:
 			print(tdata.decode('utf-8'))
+		## test BFont.GetFamilyAndStyle and SetFamilyAndStyle
+		fen=BFont(be_plain_font)
+		a,b=fen.GetFamilyAndStyle()
+		print(a,b)
+		fen.SetFamilyAndStyle(a,b)
+
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
