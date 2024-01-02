@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <interface/Font.h>
 #include <SupportDefs.h>
@@ -144,6 +145,33 @@ py::class_<BFont>(m, "BFont")
 .def("SetFace", &BFont::SetFace, "", py::arg("face"))
 .def("SetFlags", &BFont::SetFlags, "", py::arg("flags"))
 //.def("GetFamilyAndStyle", &BFont::GetFamilyAndStyle, "", py::arg("family"), py::arg("style"))
+/*
+.def("GetFamilyAndStyle", [](BFont &self) -> py::tuple {
+    font_family family;
+    font_style style;
+
+    // Chiamata alla funzione GetFamilyAndStyle della classe BFont
+    self.GetFamilyAndStyle(&family, &style);
+
+    // Converte i dati in stringhe Python
+    //std::string familyStr(family);
+    //std::string styleStr(style);
+
+    // Restituisci una tupla di stringhe
+    //return std::make_tuple(familyStr, styleStr);
+    return py::make_tuple(family, style);
+})*/
+.def("GetFamilyAndStyle", [](BFont &self, std::string &family, std::string &style) -> py::tuple {
+    font_family famil;
+    font_style styl;
+
+    self.GetFamilyAndStyle(&famil, &styl);
+
+    family = std::string(famil, strnlen(famil, B_FONT_FAMILY_LENGTH));
+    style = std::string(styl, strnlen(styl, B_FONT_STYLE_LENGTH));
+
+    return py::make_tuple(family, style);
+}, "", py::arg("family"), py::arg("style"))
 .def("FamilyAndStyle", &BFont::FamilyAndStyle, "")
 .def("Size", &BFont::Size, "")
 .def("Shear", &BFont::Shear, "")
