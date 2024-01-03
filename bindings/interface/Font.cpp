@@ -7,6 +7,7 @@
 #include <interface/Font.h>
 #include <SupportDefs.h>
 #include <InterfaceDefs.h>
+#include <Point.h>
 #include <Rect.h>
 #include <Shape.h>
 
@@ -197,9 +198,14 @@ py::class_<BFont>(m, "BFont")
 .def("StringWidth", py::overload_cast<const char *>(&BFont::StringWidth, py::const_), "", py::arg("string"))
 .def("StringWidth", py::overload_cast<const char *, int32>(&BFont::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))
 //.def("GetStringWidths", &BFont::GetStringWidths, "", py::arg("stringArray"), py::arg("lengthArray"), py::arg("numStrings"), py::arg("widthArray"))
-/*
-.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
-.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
+
+//.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
+.def("GetEscapements", [](BFont& self, const std::string& charArray, std::vector<float>& escapementArray) {
+// TODO: this function does not return the escapement array, or returns it empty, DON'T WORK
+    self.GetEscapements(charArray.c_str(), charArray.size(), escapementArray.data());
+    //return escapementArray;
+}, "", py::arg("charArray"), py::arg("escapementArray"))
+/*.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
 .def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
 .def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"), py::arg("offsetArray"))
 */
@@ -208,7 +214,7 @@ py::class_<BFont>(m, "BFont")
 .def("GetBoundingBoxesAsGlyphs", &BFont::GetBoundingBoxesAsGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("boundingBoxArray"))
 .def("GetBoundingBoxesAsString", &BFont::GetBoundingBoxesAsString, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("delta"), py::arg("boundingBoxArray"))
 //.def("GetBoundingBoxesForStrings", &BFont::GetBoundingBoxesForStrings, "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("deltas"), py::arg("boundingBoxArray"))
-// TODO TEST THIS, unchecked
+// TODO TEST THIS, it returns empty boundingBox array  DON'T WORK
 .def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
                                        int32 numStrings, font_metric_mode mode,
                                        std::vector<escapement_delta> &deltas,
@@ -223,6 +229,21 @@ py::class_<BFont>(m, "BFont")
 
     self.GetBoundingBoxesForStrings(cStrings.data(), numStrings, mode, constDeltas.data(), constBoundingBoxArray.data());
 },"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"),py::arg("boundingBoxArray"))
+/*.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
+                                       int32 numStrings, font_metric_mode mode,
+                                       std::vector<escapement_delta> &deltas) {
+    std::vector<BRect> boundingBoxArray;
+    std::vector<const char*> cStrings;
+    for (const auto &str : stringArray) {
+        cStrings.push_back(str.c_str());
+    }
+
+    std::vector<escapement_delta>& constDeltas = deltas;
+//    std::vector<BRect>& constBoundingBoxArray = boundingBoxArray;
+
+    self.GetBoundingBoxesForStrings(cStrings.data(), numStrings, mode, constDeltas.data(), boundingBoxArray.data());
+    return boundingBoxArray;
+},"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"))*/
 //.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
 .def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
 .def("operator=", &BFont::operator=, "", py::arg("font"))
