@@ -266,15 +266,15 @@ class Window(BWindow):
 		from Be.Font import be_plain_font
 		from Be.Font import be_bold_font
 		#from Be.View import set_font_mask		
-		self.typtap=BTextView(BRect(10,45,self.panel2.Bounds().Width()-20,self.panel2.Bounds().Height()-20-self.maintabview.TabHeight()), 'TxTView', BRect(5,5,self.panel2.Bounds().Width()-35,self.panel2.Bounds().Height()-30-self.maintabview.TabHeight()), 0x1234, 20000000)
+		self.typtap=BTextView(BRect(10,45,self.panel2.Bounds().Width()-20,self.panel2.Bounds().Height()-20-self.maintabview.TabHeight()), 'TxTView', BRect(5,5,self.panel2.Bounds().Width()-35,self.panel2.Bounds().Height()-30-self.maintabview.TabHeight()), 0x1234)
 		self.typtap.SetStylable(1)
 		self.panel2.AddChild(self.typtap,None)
 		colore=self.panel.HighColor()
 		#print(colore.red,colore.green,colore.blue,colore.alpha)
 		
 		colore.red=180
-		self.typtap.SetFontAndColor(be_plain_font,511,colore)#B_FONT_ALL = 511
-		stuff = '\n\t\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\t\t\t\tZardshard and coolcoder613'
+		self.typtap.SetFontAndColor(be_bold_font,511,colore)#B_FONT_ALL = 511
+		stuff = '\n\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\tZardshard and coolcoder613'
 		#n = stuff.find('Bulletin Gator')
 		#m = stuff.find('This')
 		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
@@ -346,6 +346,11 @@ class Window(BWindow):
 		resesc=[]
 		retesc=fen.GetEscapements("gnû gno",resesc)
 		print(resesc,retesc)
+		### test gettruncatedstrings
+		out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)
+		print(out1)
+		for sturinga in out1:
+			print(sturinga.String())
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
