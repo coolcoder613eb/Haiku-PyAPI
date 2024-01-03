@@ -194,6 +194,18 @@ py::class_<BFont>(m, "BFont")
 .def("GetTunedInfo", &BFont::GetTunedInfo, "", py::arg("index"), py::arg("info"))
 .def("TruncateString", &BFont::TruncateString, "", py::arg("inOut"), py::arg("mode"), py::arg("width"))
 //.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, BString>(&BFont::GetTruncatedStrings, py::const_), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
+.def("GetTruncatedStrings", [](BFont& self, std::vector<const char *> stringArray, uint32 mode,float width)->std::vector<BString>{
+	//BString resArray[stringArray.size()];
+	std::vector<BString> resArray(stringArray.size());
+	self.GetTruncatedStrings(stringArray.data(),stringArray.size(),mode,width,resArray.data());
+	return resArray;
+},"", py::arg("stringArray"),py::arg("mode"), py::arg("width"))
+/*This below works but don't returns values we should return as function return value like "return resultArray;"
+.def("GetTruncatedStrings", [](BFont& self, std::vector<const char *> stringArray, uint32 mode, float width, std::vector<BString>& resultArray) {
+    // Chiamata alla funzione GetTruncatedStrings senza creare un array locale
+    resultArray.resize(stringArray.size());  // Assicurati che resultArray abbia la dimensione corretta
+    self.GetTruncatedStrings(stringArray.data(), stringArray.size(), mode, width, resultArray.data());
+}, "", py::arg("stringArray"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))*/
 //.def("GetTruncatedStrings", py::overload_cast<const char *, int, unsigned int, float, char *>(&BFont::GetTruncatedStrings, py::const_), "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("width"), py::arg("resultArray"))
 .def("StringWidth", py::overload_cast<const char *>(&BFont::StringWidth, py::const_), "", py::arg("string"))
 .def("StringWidth", py::overload_cast<const char *, int32>(&BFont::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))
