@@ -145,7 +145,7 @@ py::class_<BFont>(m, "BFont")
 .def("SetFace", &BFont::SetFace, "", py::arg("face"))
 .def("SetFlags", &BFont::SetFlags, "", py::arg("flags"))
 //.def("GetFamilyAndStyle", &BFont::GetFamilyAndStyle, "", py::arg("family"), py::arg("style"))
-/*
+
 .def("GetFamilyAndStyle", [](BFont &self) -> py::tuple {
     font_family family;
     font_style style;
@@ -160,7 +160,8 @@ py::class_<BFont>(m, "BFont")
     // Restituisci una tupla di stringhe
     //return std::make_tuple(familyStr, styleStr);
     return py::make_tuple(family, style);
-})*/
+},"")
+/*
 .def("GetFamilyAndStyle", [](BFont &self, std::string &family, std::string &style) -> py::tuple {
     font_family famil;
     font_style styl;
@@ -171,7 +172,7 @@ py::class_<BFont>(m, "BFont")
     style = std::string(styl, strnlen(styl, B_FONT_STYLE_LENGTH));
 
     return py::make_tuple(family, style);
-}, "", py::arg("family"), py::arg("style"))
+}, "", py::arg("family"), py::arg("style"))*/
 .def("FamilyAndStyle", &BFont::FamilyAndStyle, "")
 .def("Size", &BFont::Size, "")
 .def("Shear", &BFont::Shear, "")
