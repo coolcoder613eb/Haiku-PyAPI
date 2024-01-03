@@ -9,6 +9,7 @@ from Be.ColorControl import color_control_layout
 from Be import InterfaceDefs
 from Be.InterfaceDefs import border_style
 from Be import AppDefs
+from Be.Font import *
 
 from Be import BEntry
 from Be.Entry import entry_ref
@@ -333,7 +334,18 @@ class Window(BWindow):
 		a,b=fen.GetFamilyAndStyle()
 		print(a,b)
 		fen.SetFamilyAndStyle(a,b)
-
+		#### test getboundingboxesforStrings
+		arstr=["test1","prova2","attempt3"]
+		boxarr=[]
+		esc1=escapement_delta()
+		esc1.nonspace=0
+		esc1.space=0
+		fen.GetBoundingBoxesForStrings(arstr,len(arstr),font_metric_mode.B_SCREEN_METRIC,[esc1],boxarr)
+		print(boxarr)
+		### test getescapements
+		resesc=[]
+		retesc=fen.GetEscapements("gnû gno",resesc)
+		print(resesc,retesc)
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
