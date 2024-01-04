@@ -210,7 +210,12 @@ py::class_<BFont>(m, "BFont")
 .def("StringWidth", py::overload_cast<const char *>(&BFont::StringWidth, py::const_), "", py::arg("string"))
 .def("StringWidth", py::overload_cast<const char *, int32>(&BFont::StringWidth, py::const_), "", py::arg("string"), py::arg("length"))
 //.def("GetStringWidths", &BFont::GetStringWidths, "", py::arg("stringArray"), py::arg("lengthArray"), py::arg("numStrings"), py::arg("widthArray"))
-
+.def("GetStringWidths", [](BFont& self, std::vector<const char *> stringArray, std::vector<int32> lengthArray){
+	std::vector<float> widthArray;
+	widthArray.resize(stringArray.size());
+	self.GetStringWidths(stringArray.data(),lengthArray.data(),stringArray.size(),widthArray.data());
+	return widthArray;
+},"", py::arg("stringArray"), py::arg("lengthArray"))
 //.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
 .def("GetEscapements", [](BFont& self, const std::string& charArray, std::vector<float>& escapementArray) {
 // TODO: this function does not return the escapement array, or returns it empty, DON'T WORK
