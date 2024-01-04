@@ -351,6 +351,11 @@ class Window(BWindow):
 		print(out1)
 		for sturinga in out1:
 			print(sturinga.String())
+		larstr=[]
+		for s in arstr:
+			larstr.append(len(s))
+		sw=fen.GetStringWidths(arstr,larstr)
+		print(sw)
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
