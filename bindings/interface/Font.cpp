@@ -200,7 +200,7 @@ py::class_<BFont>(m, "BFont")
 	self.GetTruncatedStrings(stringArray.data(),stringArray.size(),mode,width,resArray.data());
 	return resArray;
 },"", py::arg("stringArray"),py::arg("mode"), py::arg("width"))
-/*This below works but don't returns values we should return as function return value like "return resultArray;"
+/*This below compiles but don't returns values we should return as function return value like "return resultArray;"
 .def("GetTruncatedStrings", [](BFont& self, std::vector<const char *> stringArray, uint32 mode, float width, std::vector<BString>& resultArray) {
     // Chiamata alla funzione GetTruncatedStrings senza creare un array locale
     resultArray.resize(stringArray.size());  // Assicurati che resultArray abbia la dimensione corretta
@@ -262,6 +262,27 @@ py::class_<BFont>(m, "BFont")
     return boundingBoxArray;
 },"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"))*/
 //.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
+.def("GetGlyphShapes", [](BFont& self, const std::string& charArray){
+    py::list glyphShapeList;
+    std::vector<BShape*> glyphShapeArray(charArray.size());
+
+    // Since Each BShape object corresponds to the glyph of one character (this is written in Haiku-Book)
+    for (size_t i = 0; i < glyphShapeArray.size(); ++i) {
+        glyphShapeArray[i] = new BShape();
+    }
+
+    self.GetGlyphShapes(charArray.data(), charArray.size(), glyphShapeArray.data());
+
+    for (size_t i = 0; i < glyphShapeArray.size(); ++i) {
+        glyphShapeList.append(py::cast(*glyphShapeArray[i]));
+    }
+
+    for (size_t i = 0; i < glyphShapeArray.size(); ++i) {
+        delete glyphShapeArray[i];
+    }
+
+    return glyphShapeList;
+},"",py::arg("charArray"))
 .def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
 .def("operator=", &BFont::operator=, "", py::arg("font"))
 .def("__eq__", &BFont::operator==, "", py::arg("font"))

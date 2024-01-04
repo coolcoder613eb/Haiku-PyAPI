@@ -1,6 +1,6 @@
 
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap, TypeConstants
+from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap, TypeConstants,BShape
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -26,6 +26,36 @@ class PBox(BBox):
 		BBox.Draw(self, rect)
 		inset = BRect(4, 4, self.frame.Width()-4, self.frame.Height()-4)
 		self.DrawBitmap(self.immagine, inset)
+
+class ShapeView(BView):
+	def __init__(self,frame,name,shape):
+		self.shape=shape
+		self.frame=frame
+		#trgb=rgb_color()
+		#trgb.red=255
+		#trgb.blue=0
+		#trgb.green=0
+		#trgb.alpha=0
+		#print(self.HighColor())
+		BView.__init__(self,self.frame,name,8, 20000000)
+	def UpdateGlyph(self,glyph):
+		self.Draw(self.frame)
+		self.shape=glyph
+		self.SetHighColor(255,0,0,0)
+		self.SetLowColor(0,255,0,0)
+		self.FillRect(self.frame)
+		self.StrokeShape(glyph)
+		self.FillShape(glyph)
+	def Draw(self,rect):
+		BView.Draw(self,rect)
+		self.SetHighColor(255,0,0,0)
+		self.SetLowColor(0,255,0,0)
+		self.FillRect(rect)
+		print("Disegno lo shape")
+		#rect=BRect(0,0,self.frame.Width(),self.frame.Height())
+		
+		self.StrokeShape(self.shape)
+		self.FillShape(self.shape)
 		
 class PView(BView):
 	def __init__(self,frame,name,immagine):
@@ -104,7 +134,14 @@ class NewsItem(BListItem):
 	def Text(self):
 		return self.name
 
-
+class MyView(BView):
+	def __init__(self, rect,name,resizingMode,flags):
+		BView.__init__(self,rect,name,resizingMode,flags)
+		
+	def MouseDown(self, where):
+		where.PrintToStream()
+		BView.MouseDown(self,where)
+		
 class ScrollView:
 	HiWhat = 32 #Doppioclick
 	def __init__(self, rect, name):
@@ -127,11 +164,11 @@ class Window(BWindow):
 	def __init__(self):
 		BWindow.__init__(self, BRect(100,100,600,750), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE)
 		bounds=self.Bounds()
-		self.bckgnd = BView(self.Bounds(), "background", 8, 20000000)
+		self.bckgnd = MyView(self.Bounds(), "background", 8, 20000000)
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
-		self.panel = BView(self.Bounds(), "panel", 8, 20000000)
-		self.panel2 = BView(self.Bounds(), "panel2", 8, 20000000)
-		self.panel3 = BView(self.Bounds(), "panel2", 8, 20000000)
+		self.panel = MyView(self.Bounds(), "panel", 8, 20000000)
+		self.panel2 = MyView(self.Bounds(), "panel2", 8, 20000000)
+		self.panel3 = MyView(self.Bounds(), "panel2", 8, 20000000)
 		self.box = BBox(BRect(200,30,280,55),"MYBox",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.box2 = BBox(BRect(10,10,self.panel2.Bounds().Width()-20,40),"MYBox2",0x0202|0x0404,InterfaceDefs.border_style.B_FANCY_BORDER)
 		self.panel2.AddChild(self.box2,None)
@@ -356,6 +393,14 @@ class Window(BWindow):
 			larstr.append(len(s))
 		sw=fen.GetStringWidths(arstr,larstr)
 		print(sw)
+		sh=fen.GetGlyphShapes("çÛiao")
+		print(sh)
+		for shapi in sh:
+			shapi.Bounds().PrintToStream()
+		#shview=ShapeView(BRect(0,0,480,292),"Shapiro",sh[1])
+		#self.panel.AddChild(shview,None)
+		#shview.UpdateGlyph(sh[2])
+
 		
 	def MessageReceived(self, msg):
 		if msg.what == 1:
