@@ -217,11 +217,16 @@ py::class_<BFont>(m, "BFont")
 	return widthArray;
 },"", py::arg("stringArray"), py::arg("lengthArray"))
 //.def("GetEscapements", py::overload_cast<const char, int, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("escapementArray"))
-.def("GetEscapements", [](BFont& self, const std::string& charArray, std::vector<float>& escapementArray) {
+/*.def("GetEscapements", [](BFont& self, const std::string& charArray, std::vector<float>& escapementArray) {
 // TODO: this function does not return the escapement array, or returns it empty, DON'T WORK
     self.GetEscapements(charArray.c_str(), charArray.size(), escapementArray.data());
     //return escapementArray;
-}, "", py::arg("charArray"), py::arg("escapementArray"))
+}, "", py::arg("charArray"), py::arg("escapementArray"))*/
+.def("GetEscapements", [](BFont& self, const char * charArray, int32 numChars){
+	std::vector<float> escapementArray(numChars);
+	self.GetEscapements(charArray, numChars, escapementArray.data());
+	return escapementArray;
+}, "", py::arg("charArray"),py::arg("numChars"))
 /*.def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, float>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
 .def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"))
 .def("GetEscapements", py::overload_cast<const char, int, escapement_delta *, BPoint, BPoint>(&BFont::GetEscapements,py::const_), "", py::arg("charArray"), py::arg("numChars"), py::arg("delta"), py::arg("escapementArray"), py::arg("offsetArray"))
