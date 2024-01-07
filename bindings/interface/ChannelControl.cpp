@@ -4,6 +4,7 @@
 #include <pybind11/operators.h>
 
 #include <interface/ChannelControl.h>
+#include <View.h>
 #include <Control.h>
 #include <String.h>
 #include <AppDefs.h>

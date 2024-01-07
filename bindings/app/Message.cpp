@@ -369,8 +369,15 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("GetPointer", py::overload_cast<const char *, const void *>(&BMessage::GetPointer, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
 .def("GetString", py::overload_cast<const char *, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
 .def("GetString", py::overload_cast<const char *, int32, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+
+// These two don't seem to be available on Haiku R1B4. Maybe they are, but just
+// not in libbe.so? That would be strange... But it's also strange that the
+// header files that come with R1B4 mention them.
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
 .def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("defaultValue"))
+#endif
+
 .def("GetRect", py::overload_cast<const char *, int32, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetRect", py::overload_cast<const char *, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("defaultValue"))
 .def("GetPoint", py::overload_cast<const char *, int32, const BPoint &>(&BMessage::GetPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
@@ -394,7 +401,9 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("SetString", py::overload_cast<const char *, const BString &>(&BMessage::SetString), "", py::arg("name"), py::arg("string"))
 .def("SetFloat", &BMessage::SetFloat, "", py::arg("name"), py::arg("value"))
 .def("SetDouble", &BMessage::SetDouble, "", py::arg("name"), py::arg("value"))
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4) // see comment for GetAlignment
 .def("SetAlignment", &BMessage::SetAlignment, "", py::arg("name"), py::arg("value"))
+#endif
 .def("SetPoint", &BMessage::SetPoint, "", py::arg("name"), py::arg("value"))
 .def("SetRect", &BMessage::SetRect, "", py::arg("name"), py::arg("value"))
 .def("SetSize", &BMessage::SetSize, "", py::arg("name"), py::arg("value"))

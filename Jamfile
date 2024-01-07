@@ -76,6 +76,8 @@ SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/stora
 
 # Where to look for header files
 SubDirHdrs headers ;
+SubDirHdrs headers/app ;
+SubDirHdrs headers/interface ;
 SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/ ;
 SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 

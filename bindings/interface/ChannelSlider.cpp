@@ -4,6 +4,7 @@
 #include <pybind11/operators.h>
 
 #include <interface/ChannelSlider.h>
+#include <View.h>
 #include <ChannelControl.h>
 #include <Bitmap.h>
 
