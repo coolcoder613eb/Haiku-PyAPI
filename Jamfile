@@ -232,9 +232,9 @@ local sourceFiles =
 	FilePanel.cpp
 	
 	TranslationDefs.cpp
-	#TranslatorRoster.cpp
-	#TranslationUtils.cpp
-	#Translator.cpp
+	TranslatorRoster.cpp
+	TranslationUtils.cpp
+	Translator.cpp
 	
 	stat.cpp
 	;
