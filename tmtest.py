@@ -372,13 +372,19 @@ class Window(BWindow):
 		print(a,b)
 		fen.SetFamilyAndStyle(a,b)
 		#### test getboundingboxesforStrings
-		arstr=["test1","prova2","attempt3"]
-		boxarr=[]
+		arstr=["test 1","prova  2","attempt   3"]
+		#boxarr=[]
 		esc1=escapement_delta()
 		esc1.nonspace=0
 		esc1.space=0
-		fen.GetBoundingBoxesForStrings(arstr,len(arstr),font_metric_mode.B_SCREEN_METRIC,[esc1],boxarr)
-		print(boxarr)
+		#fen.GetBoundingBoxesForStrings(arstr,len(arstr),font_metric_mode.B_SCREEN_METRIC,[esc1],boxarr)
+		o,u=fen.GetBoundingBoxesForStrings(arstr,font_metric_mode.B_SCREEN_METRIC)
+		print(o,u)
+		for kld in o:
+			print(kld.nonspace,kld.space)
+		for z in u:
+			print(z.PrintToStream())
+		#print(boxarr)
 		### test getescapements
 		#resesc=[]
 		#retesc=fen.GetEscapements("gnû gno",3,resesc)
@@ -388,7 +394,7 @@ class Window(BWindow):
 		### test gettruncatedstrings
 		#out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)
 		out2=[]
-		out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100,out2)
+		out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)#,out2)
 		print(out1,out2)
 		for sturinga in out1:
 			print("Stringa:",sturinga.String())

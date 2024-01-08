@@ -14,6 +14,7 @@
 namespace py = pybind11;
 
 
+
 PYBIND11_MODULE(Font,m)
 {
 m.attr("B_CHAR_SPACING") = 0;
@@ -236,8 +237,8 @@ py::class_<BFont>(m, "BFont")
 .def("GetBoundingBoxesAsGlyphs", &BFont::GetBoundingBoxesAsGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("boundingBoxArray"))
 .def("GetBoundingBoxesAsString", &BFont::GetBoundingBoxesAsString, "", py::arg("charArray"), py::arg("numChars"), py::arg("mode"), py::arg("delta"), py::arg("boundingBoxArray"))
 //.def("GetBoundingBoxesForStrings", &BFont::GetBoundingBoxesForStrings, "", py::arg("stringArray"), py::arg("numStrings"), py::arg("mode"), py::arg("deltas"), py::arg("boundingBoxArray"))
-// TODO TEST THIS, it returns empty boundingBox array  DON'T WORK
-.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
+// TODO TEST THIS, it returns empty boundingBox array COMPILES BUT DON'T WORK
+/*.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
                                        int32 numStrings, font_metric_mode mode,
                                        std::vector<escapement_delta> &deltas,
                                        std::vector<BRect> &boundingBoxArray) {
@@ -250,22 +251,22 @@ py::class_<BFont>(m, "BFont")
     std::vector<BRect>& constBoundingBoxArray = boundingBoxArray;
 
     self.GetBoundingBoxesForStrings(cStrings.data(), numStrings, mode, constDeltas.data(), constBoundingBoxArray.data());
-},"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"),py::arg("boundingBoxArray"))
-/*.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray,
-                                       int32 numStrings, font_metric_mode mode,
-                                       std::vector<escapement_delta> &deltas) {
-    std::vector<BRect> boundingBoxArray;
-    std::vector<const char*> cStrings;
-    for (const auto &str : stringArray) {
-        cStrings.push_back(str.c_str());
+},"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"),py::arg("boundingBoxArray"))*/
+.def("GetBoundingBoxesForStrings", [](const BFont &self, const std::vector<std::string> &stringArray, font_metric_mode mode) {
+    std::vector<escapement_delta> deltas(stringArray.size());
+    std::vector<BRect> boundingBoxArray(stringArray.size());
+
+    // Converte i vettori Python in array C
+    const char** cStringArray = new const char*[stringArray.size()];
+    for (size_t i = 0; i < stringArray.size(); ++i) {
+        cStringArray[i] = stringArray[i].c_str();
     }
 
-    std::vector<escapement_delta>& constDeltas = deltas;
-//    std::vector<BRect>& constBoundingBoxArray = boundingBoxArray;
+    self.GetBoundingBoxesForStrings(cStringArray, stringArray.size(), mode, deltas.data(), boundingBoxArray.data());
 
-    self.GetBoundingBoxesForStrings(cStrings.data(), numStrings, mode, constDeltas.data(), boundingBoxArray.data());
-    return boundingBoxArray;
-},"",py::arg("stringArray"),py::arg("numStrings"),py::arg("mode"),py::arg("deltas"))*/
+    delete[] cStringArray;
+    return std::make_tuple(std::move(deltas), std::move(boundingBoxArray));
+},"",py::arg("stringArray"),py::arg("mode"))
 //.def("GetGlyphShapes", &BFont::GetGlyphShapes, "", py::arg("charArray"), py::arg("numChars"), py::arg("glyphShapeArray"))
 .def("GetGlyphShapes", [](BFont& self, const std::string& charArray){
     py::list glyphShapeList;
