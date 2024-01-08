@@ -380,14 +380,18 @@ class Window(BWindow):
 		fen.GetBoundingBoxesForStrings(arstr,len(arstr),font_metric_mode.B_SCREEN_METRIC,[esc1],boxarr)
 		print(boxarr)
 		### test getescapements
-		resesc=[]
-		retesc=fen.GetEscapements("gnû gno",resesc)
-		print(resesc,retesc)
+		#resesc=[]
+		#retesc=fen.GetEscapements("gnû gno",3,resesc)
+		retesc=fen.GetEscapements("gnû gno",5)
+		print(retesc)
+		#print(resesc,retesc)
 		### test gettruncatedstrings
-		out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)
-		print(out1)
+		#out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)
+		out2=[]
+		out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100,out2)
+		print(out1,out2)
 		for sturinga in out1:
-			print(sturinga.String())
+			print("Stringa:",sturinga.String())
 		larstr=[]
 		for s in arstr:
 			larstr.append(len(s))
