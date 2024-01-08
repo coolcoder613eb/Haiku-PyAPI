@@ -389,7 +389,7 @@ class Window(BWindow):
 		#resesc=[]
 		#retesc=fen.GetEscapements("gnû gno",3,resesc)
 		retesc=fen.GetEscapements("gnû gno",5)
-		print(retesc)
+		print("GetEscapements",retesc)
 		#print(resesc,retesc)
 		### test gettruncatedstrings
 		#out1 = fen.GetTruncatedStrings(arstr,B_TRUNCATE_MIDDLE,100)
