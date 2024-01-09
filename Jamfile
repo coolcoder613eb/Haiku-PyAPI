@@ -231,6 +231,9 @@ local sourceFiles =
 	#DiskDeviceDefs.cpp
 	FilePanel.cpp
 	
+	# TranslationKit
+	# NOTE: When adding a new file to this list, you will likely also want to
+	# tell the compiler to link it with libtranslation.so below.
 	TranslationDefs.cpp
 	TranslatorRoster.cpp
 	TranslationUtils.cpp
@@ -247,6 +250,12 @@ for sourceFile  in $(sourceFiles) {
 
 # FilePanel.so needs to be linked with libtracker.so
 LINKLIBS on FilePanel.so = $(LINKLIBS) -ltracker ;
+
+# Some/all files in the translation kit need libtranslation.so
+LINKLIBS on TranslationDefs.so = $(LINKLIBS) -ltranslation ;
+LINKLIBS on TranslatorRoster.so = $(LINKLIBS) -ltranslation ;
+LINKLIBS on TranslationUtils.so = $(LINKLIBS) -ltranslation ;
+LINKLIBS on Translator.so = $(LINKLIBS) -ltranslation ;
 
 # __init__.py can be built by simply copying the file
 MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
