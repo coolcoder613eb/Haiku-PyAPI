@@ -82,7 +82,9 @@ SubDirHdrs /system/lib/python$(python_version)/vendor-packages/pybind11/include/
 SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 
 # Additional C++ flags to use when compiling
-SubDirC++Flags -std=c++14 -pipe -fPIC ;
+# TODO: only run -Os for release builds. Development builds should prioritize
+# build time
+SubDirC++Flags -std=c++14 -pipe -fPIC -Os -fvisibility=hidden ;
 
 # Flags to use when linking
 LINKLIBS = -lbe ;
