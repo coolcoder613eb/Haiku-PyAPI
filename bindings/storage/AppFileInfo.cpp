@@ -8,7 +8,7 @@
 
 namespace py = pybind11;
 
-struct version_info {
+/*struct version_info {
     uint32_t major;
     uint32_t middle;
     uint32_t minor;
@@ -16,7 +16,7 @@ struct version_info {
     uint32_t internal;
     char short_info[64];
     char long_info[256];
-};
+};*/
 
 PYBIND11_MODULE(AppFileInfo, m)
 {
@@ -39,16 +39,7 @@ py::enum_<version_kind>(m, "version_kind", "")
 .value("B_APP_VERSION_KIND", version_kind::B_APP_VERSION_KIND, "")
 .value("B_SYSTEM_VERSION_KIND", version_kind::B_SYSTEM_VERSION_KIND, "")
 .export_values();
-/*
-py::class_<version_info>(m, "version_info")
-.def_readwrite("major", &version_info::major, "")
-.def_readwrite("middle", &version_info::middle, "")
-.def_readwrite("minor", &version_info::minor, "")
-.def_readwrite("variety", &version_info::variety, "")
-.def_readwrite("internal", &version_info::internal, "")
-.def_readwrite("short_info", &version_info::short_info, "")
-.def_readwrite("long_info", &version_info::long_info, "")
-;*/
+
 py::class_<version_info>(m, "version_info")
 .def(py::init<>())
 .def_readwrite("major", &version_info::major, "")
@@ -56,8 +47,9 @@ py::class_<version_info>(m, "version_info")
 .def_readwrite("minor", &version_info::minor, "")
 .def_readwrite("variety", &version_info::variety, "")
 .def_readwrite("internal", &version_info::internal, "")
-.def_readwrite("short_info", &version_info::short_info, "")
-.def_readwrite("long_info", &version_info::long_info, "");
+//.def_readwrite("short_info", &version_info::short_info, "")
+//.def_readwrite("long_info", &version_info::long_info, "")
+;
 
 py::class_<BAppFileInfo, BNodeInfo>(m, "BAppFileInfo")
 .def(py::init(), "")

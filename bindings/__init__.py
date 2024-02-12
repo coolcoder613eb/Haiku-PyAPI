@@ -121,6 +121,8 @@ from .PathFinder import *
 
 from .Mime import *
 from .MimeType import *
+from .NodeInfo import *
+from .AppFileInfo import *
 from .Resources import *
 from .ResourceStrings import *
 from .EntryList import *

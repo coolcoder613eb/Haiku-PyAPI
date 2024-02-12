@@ -229,7 +229,7 @@ local sourceFiles =
 	Query.cpp
 	NodeMonitor.cpp
 	NodeInfo.cpp
-	#AppFileInfo.cpp
+	AppFileInfo.cpp
 	#DiskDeviceDefs.cpp
 	FilePanel.cpp
 	
