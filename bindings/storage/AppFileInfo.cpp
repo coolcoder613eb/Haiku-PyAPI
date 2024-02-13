@@ -8,7 +8,9 @@
 
 namespace py = pybind11;
 
-/*struct version_info {
+/*
+// promemoria
+struct version_info {
     uint32_t major;
     uint32_t middle;
     uint32_t minor;
@@ -47,8 +49,52 @@ py::class_<version_info>(m, "version_info")
 .def_readwrite("minor", &version_info::minor, "")
 .def_readwrite("variety", &version_info::variety, "")
 .def_readwrite("internal", &version_info::internal, "")
+// TODO Test short_info & long_info
 //.def_readwrite("short_info", &version_info::short_info, "")
+.def_property(
+            "short_info",
+            [](const version_info &info) {
+                return py::cast(info.short_info);
+            },
+            	//tentativo non provato n.1
+                /*py::array_t<char> result(){
+                	char data[64];
+                	return py::array_t<char>{64},{1},data
+                };
+                }.
+                std::memcpy(result.mutable_data(), &info.short_info, sizeof(info.short_info));
+                return result;
+            },
+            [](version_info &info, py::array_t<char> value) {
+                if (value.size() != 64) { //check how write minor
+                    throw std::runtime_error("Array must have size 64");
+                }
+                std::memcpy(&info.short_info, value.data(), sizeof(info.short_info));
+            }*/
+            [](version_info &info, const std::string &value) {
+            	if (value.size()<sizeof(info.short_info)) {
+            		std::copy(value.begin(), value.end(), info.short_info);
+            		info.short_info[value.size()] = '\0';
+            	} else { 
+            		throw std::invalid_argument("Wrong short_info dimension, it exceeds 64 chars");
+            	}
+            }
+        , "")
 //.def_readwrite("long_info", &version_info::long_info, "")
+.def_property(
+            "long_info",
+            [](const version_info &info) {
+                return py::cast(info.long_info);
+            },
+            [](version_info &info, const std::string &value) {
+            	if (value.size()<sizeof(info.long_info)) {
+            		std::copy(value.begin(), value.end(), info.long_info);
+            		info.long_info[value.size()] = '\0';
+            	} else { 
+            		throw std::invalid_argument("Wrong long_info dimension, it exceeds 256 chars");
+            	}
+            }
+        , "")
 ;
 
 py::class_<BAppFileInfo, BNodeInfo>(m, "BAppFileInfo")
