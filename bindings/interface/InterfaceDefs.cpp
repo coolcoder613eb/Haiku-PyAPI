@@ -286,7 +286,7 @@ m.attr("B_DISABLED_MARK_TINT") = B_DISABLED_MARK_TINT;
 
 py::class_<key_info>(m, "key_info")
 .def_readwrite("modifiers", &key_info::modifiers, "")
-.def_readonly("key_states", &key_info::key_states, "")
+.def_readonly("key_states", &key_info::key_states, "") //TODO is this really Read-Only?
 ;
 
 py::class_<key_map>(m, "key_map")
@@ -304,6 +304,7 @@ py::class_<key_map>(m, "key_map")
 .def_readwrite("right_option_key", &key_map::right_option_key, "")
 .def_readwrite("menu_key", &key_map::menu_key, "")
 .def_readwrite("lock_settings", &key_map::lock_settings, "")
+// TODO are these read-only?
 .def_readonly("control_map", &key_map::control_map, "")
 .def_readonly("option_caps_shift_map", &key_map::option_caps_shift_map, "")
 .def_readonly("option_caps_map", &key_map::option_caps_map, "")
