@@ -175,7 +175,7 @@ py::class_<rgb_color>(m, "rgb_color")
 .def_readwrite("alpha", &rgb_color::alpha, "")
 ;
 
-py::class_<color_map>(m, "color_map")
+py::class_<color_map>(m, "color_map")//TODO: color_list,inversion_map,index_map are writable
 .def_readwrite("id", &color_map::id, "")
 //.def_readwrite("color_list", &color_map::color_list, "")
 .def_readonly("color_list", &color_map::color_list, "")
