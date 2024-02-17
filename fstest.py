@@ -84,6 +84,8 @@ class App(BApplication):
 		vi = version_info()
 		bafi = BAppFileInfo(bf)
 		bafi.GetVersionInfo(vi,version_kind.B_APP_VERSION_KIND)
+		#vi.short_info="File system tests"
+		#bafi.SetVersionInfo(vi,version_kind.B_APP_VERSION_KIND)
 		try:
 			print(vi.short_info)
 		except:
