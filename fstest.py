@@ -1,7 +1,8 @@
 import os, sys, struct#, ctypes
-from Be import BApplication,BNode,BEntry,BBitmap,BNodeInfo
+from Be import BApplication,BNode,BEntry,BBitmap,BNodeInfo,BFile,BAppFileInfo
 from Be.Entry import entry_ref
 from Be import BMimeType,BRect,BPathFinder,BStringList
+from Be.AppFileInfo import version_info,version_kind
 from Be.Mime import icon_size
 from Be.GraphicsDefs import *
 from Be.FindDirectory import directory_which,path_base_directory
@@ -79,6 +80,18 @@ class App(BApplication):
 		#f=os.path.abspath("/boot/system/Tracker")#Haiku-friûl.png")#fstest.py")
 		carta=card(f)
 		#print(f)
+		bf = BFile(f,0)
+		vi = version_info()
+		bafi = BAppFileInfo(bf)
+		bafi.GetVersionInfo(vi,version_kind.B_APP_VERSION_KIND)
+		try:
+			print(vi.short_info)
+		except:
+			print("no short_info")
+		try:
+			print(vi.long_info)
+		except:
+			print("no long_info")
 		nf = BNode(f)
 		Ni = BNodeInfo(nf)
 		icondata=[]
