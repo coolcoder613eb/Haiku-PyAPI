@@ -69,7 +69,7 @@ void QuitWrapper(BLooper& self) {
 
 PYBIND11_MODULE(Looper,m)
 {
-py::class_<BLooper, PyBLooper, BHandler>(m, "BLooper")
+py::class_<BLooper, PyBLooper, BHandler, std::unique_ptr<BLooper,py::nodelete>>(m, "BLooper")
 .def(py::init<const char *, int, int>(), "", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BLooper::Instantiate, "", py::arg("data"))
