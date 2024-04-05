@@ -1,4 +1,4 @@
-#include <pybind11/pybind11.h>
+#include <pybind11/smart_holder.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -103,6 +103,8 @@ void QuitWrapper(BWindow& self) {
 	self.Quit();
 }
 
+PYBIND11_SMART_HOLDER_TYPE_CASTERS(BWindow);
+
 PYBIND11_MODULE(Window,m)
 {
 py::enum_<window_type>(m, "window_type", "")
@@ -163,7 +165,7 @@ m.attr("B_MOVE_IF_PARTIALLY_OFFSCREEN") = 2;
 
 //m.attr("PortLink") = PortLink;
 
-py::class_<BWindow,PyBWindow,BLooper, std::unique_ptr<BWindow,py::nodelete>>(m, "BWindow")
+py::class_<BWindow,PyBWindow,BLooper, py::smart_holder>(m, "BWindow")
 .def(py::init<BRect, const char *, window_type, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("type"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
 .def(py::init<BRect, const char *, window_look, window_feel, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("look"), py::arg("feel"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))

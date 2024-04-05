@@ -1,4 +1,4 @@
-#include <pybind11/pybind11.h>
+#include <pybind11/smart_holder.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -13,6 +13,8 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+
+PYBIND11_SMART_HOLDER_TYPE_CASTERS(BHandler);
 
 class PyBHandler : public BHandler{
 	public:
@@ -53,7 +55,7 @@ PYBIND11_MODULE(Handler,m)
 {
 m.attr("B_OBSERVER_OBSERVE_ALL") = B_OBSERVER_OBSERVE_ALL;
 
-py::class_<BHandler, PyBHandler>(m, "BHandler")
+py::class_<BHandler, PyBHandler, py::smart_holder>(m, "BHandler")
 .def(py::init<const char *>(), "", py::arg("name")=NULL)
 .def(py::init<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BHandler::Instantiate, "", py::arg("data"))

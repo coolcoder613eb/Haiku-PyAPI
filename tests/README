@@ -1,0 +1,3 @@
+This directory holds tests for Haiku-PyAPI. Currently, the tests are informal,
+since we do not have any testing framework setup yet. (Help would be
+appreciated!)

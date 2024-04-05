@@ -1,4 +1,4 @@
-#include <pybind11/pybind11.h>
+#include <pybind11/smart_holder.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -88,11 +88,13 @@ void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv
 	self.ArgvReceived(argc, argv.data());
 }
 
+PYBIND11_SMART_HOLDER_TYPE_CASTERS(BApplication);
+
 PYBIND11_MODULE(Application,m)
 {
 py::module_::import("Be.Messenger");
 
-py::class_<BApplication,PyBApplication,BLooper>(m, "BApplication")
+py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplication")
 .def(py::init<const char *>(), "", py::arg("signature"))
 .def(py::init<const char *, status_t *>(), "", py::arg("signature"), py::arg("error"))
 .def(py::init<BMessage *>(), "", py::arg("data"))
