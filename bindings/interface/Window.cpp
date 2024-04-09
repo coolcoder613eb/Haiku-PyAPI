@@ -39,7 +39,18 @@ class PyBWindow : public BWindow{
         	PYBIND11_OVERLOAD(status_t, BWindow, Archive, archive, deep);
         }
         void			Quit() override {
-        	PYBIND11_OVERLOAD(void, BWindow, Quit);
+			// limit the scope of py::gil_scoped_acquire, otherwise there may
+			// be a deadlock, likely due to us holding the lock even after
+			// the window thread has terminated.
+			{
+				py::gil_scoped_acquire acquire;
+
+				// FIXME: What if the Python overload never actually calls
+				// BWindow::Quit?
+				do_not_delete.release();
+			}
+
+			PYBIND11_OVERLOAD(void, BWindow, Quit);
         }
         void			DispatchMessage(BMessage* message, BHandler* handler) override {
         	PYBIND11_OVERLOAD(void, BWindow, DispatchMessage, message, handler);
@@ -90,11 +101,21 @@ class PyBWindow : public BWindow{
         	PYBIND11_OVERLOAD(status_t, BWindow, Perform, code, data);
         }
         thread_id		Run() override {
-        	PYBIND11_OVERLOAD(thread_id, BWindow, Run);
+			py::gil_scoped_acquire acquire;
+
+			// FIXME: What if the Python overload never actually calls
+			// BWindow::Run?
+			do_not_delete = py::cast(this);
+
+			PYBIND11_OVERLOAD(thread_id, BWindow, Run);
         }
         void			SetLayout(BLayout* layout) override {
         	PYBIND11_OVERLOAD(void, BWindow, SetLayout, layout);
         }
+
+	private:
+		// For an explanation, see do_not_delete in Looper.cpp
+		py::object do_not_delete;
 };
 
 void QuitWrapper(BWindow& self) {
@@ -166,9 +187,9 @@ m.attr("B_MOVE_IF_PARTIALLY_OFFSCREEN") = 2;
 //m.attr("PortLink") = PortLink;
 
 py::class_<BWindow,PyBWindow,BLooper, py::smart_holder>(m, "BWindow")
-.def(py::init<BRect, const char *, window_type, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("type"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
-.def(py::init<BRect, const char *, window_look, window_feel, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("look"), py::arg("feel"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
-.def(py::init<BMessage *>(), "", py::arg("archive"))
+.def(py::init_alias<BRect, const char *, window_type, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("type"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
+.def(py::init_alias<BRect, const char *, window_look, window_feel, uint32, uint32>(), "", py::arg("frame"), py::arg("title"), py::arg("look"), py::arg("feel"), py::arg("flags"), py::arg("workspace")=B_CURRENT_WORKSPACE)
+.def(py::init_alias<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BWindow::Instantiate, "", py::arg("archive"))
 .def("Archive", &BWindow::Archive, "", py::arg("archive"), py::arg("deep")=true)
 .def("Quit", &QuitWrapper, "")
