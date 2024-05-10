@@ -9,15 +9,17 @@ where we have had to deviate from the C++ API, however.
 
 ## Current status
 
+Currently, Haiku-PyAPI is best suited to scripts and small, simple
+applications.
+
 Almost everything in the app and interface kits have been ported. The storage
 kit has mostly been ported. The support kit has only partially been ported.
 The other kits haven't been ported yet.
 
 Of the kits that have been ported, many of the functions haven't been tested
-yet. You should, therefore, expect to encounter problems when using some of the
-functions. Besides this, you can expect memory leaks, as little work has been
-done on getting memory freed correctly once it is no longer needed. And, of
-course, you should expect many miscellaneous bugs.
+yet. You should, therefore, expect to encounter problems occasionally. Besides
+this, you can expect memory leaks, as little work has been done on getting
+memory freed correctly once it is no longer needed.
 
 ## Installing
 
