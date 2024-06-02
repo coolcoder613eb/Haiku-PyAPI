@@ -101,6 +101,12 @@ class PyBButton : public BButton{
 
 PYBIND11_MODULE(Button,m)
 {
+py::enum_<BButton::BBehavior>(m, "BBehavior", "")
+.value("B_BUTTON_BEHAVIOR", BButton::BBehavior::B_BUTTON_BEHAVIOR, "")
+.value("B_TOGGLE_BEHAVIOR", BButton::BBehavior::B_TOGGLE_BEHAVIOR, "")
+.value("B_POP_UP_BEHAVIOR", BButton::BBehavior::B_POP_UP_BEHAVIOR, "")
+.export_values();
+
 py::class_<BButton,PyBButton,BControl,BView,std::unique_ptr<BButton, py::nodelete>>(m, "BButton")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags")=B_WILL_DRAW | B_NAVIGABLE | B_FULL_UPDATE_ON_RESIZE)
