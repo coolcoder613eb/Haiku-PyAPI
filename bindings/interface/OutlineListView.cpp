@@ -89,7 +89,7 @@ class PyBOutlineListView : public BOutlineListView{
 	
 PYBIND11_MODULE(OutlineListView,m)
 {
-py::class_<BOutlineListView, BListView>(m, "BOutlineListView")
+py::class_<BOutlineListView,PyBOutlineListView, BListView>(m, "BOutlineListView")
 .def(py::init<BRect, const char *, list_view_type, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("type")=B_SINGLE_SELECTION_LIST, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<const char *, list_view_type, unsigned int>(), "", py::arg("name"), py::arg("type")=B_SINGLE_SELECTION_LIST, py::arg("flags")=B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
