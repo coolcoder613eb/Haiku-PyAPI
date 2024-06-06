@@ -34,7 +34,7 @@ private:
 
 PYBIND11_MODULE(StringItem,m)
 {
-py::class_<BStringItem, BListItem,std::unique_ptr<BStringItem, py::nodelete>>(m, "BStringItem")
+py::class_<BStringItem, PyStringItem, BListItem,std::unique_ptr<BStringItem, py::nodelete>>(m, "BStringItem")
 .def(py::init<const char *, uint32, bool>(), "", py::arg("text"), py::arg("outlineLevel")=0, py::arg("expanded")=true)
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def_static("Instantiate", &BStringItem::Instantiate, "", py::arg("archive"))
