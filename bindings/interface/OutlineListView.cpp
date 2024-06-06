@@ -8,7 +8,85 @@
 
 namespace py = pybind11;
 
-
+class PyBOutlineListView : public BOutlineListView{
+	public:
+        using BOutlineListView::BOutlineListView;
+        status_t	Archive(BMessage* archive, bool deep = true) const override {
+        	PYBIND11_OVERLOAD(status_t, BOutlineListView, Archive, archive, deep);
+        }
+        void				MouseDown(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BOutlineListView, MouseDown, where);
+        }
+        void				KeyDown(const char* bytes, int32 numBytes) override {
+            PYBIND11_OVERLOAD(void, BOutlineListView, KeyDown, bytes, numBytes);
+        }
+        void				MouseUp(BPoint where) override {
+            PYBIND11_OVERLOAD(void, BOutlineListView, MouseUp, where);
+        }
+        bool				AddUnder(BListItem* item, BListItem* superItem) override{
+        	PYBIND11_OVERLOAD(bool, BOutlineListView, AddUnder, item, superItem);
+        }
+        bool				AddItem(BListItem* item) override {
+        	PYBIND11_OVERLOAD(bool, BOutlineListView, AddItem, item);
+        }
+		bool				AddItem(BListItem* item, int32 fullListIndex) override {
+			PYBIND11_OVERLOAD(bool, BOutlineListView, AddItem, item, fullListIndex);
+		}
+		bool				AddList(BList* newItems) override {
+			PYBIND11_OVERLOAD(bool, BOutlineListView, AddList, newItems);
+		}
+		bool				AddList(BList* newItems, int32 fullListIndex) override {
+			PYBIND11_OVERLOAD(bool, BOutlineListView, AddList, newItems, fullListIndex);
+		}
+		bool				RemoveItem(BListItem* item) override {
+			PYBIND11_OVERLOAD(bool, BOutlineListView, RemoveItem, item);
+		}
+		BListItem*			RemoveItem(int32 fullListIndex) override {
+			PYBIND11_OVERLOAD(BListItem*, BOutlineListView, RemoveItem, fullListIndex);
+		}
+		bool				RemoveItems(int32 fullListIndex, int32 count) override {
+			PYBIND11_OVERLOAD(bool, BOutlineListView, RemoveItems, fullListIndex, count);
+		}
+		void				FrameMoved(BPoint newPosition) override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, FrameMoved, newPosition);
+		}
+		void				FrameResized(float newWidth, float newHeight) override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, FrameResized, newWidth, newHeight);
+		}
+		void				MakeEmpty() override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, MakeEmpty);
+		}
+		BHandler*			ResolveSpecifier(BMessage* message,
+									int32 index, BMessage* specifier,
+									int32 what, const char* property) override {
+			PYBIND11_OVERLOAD(BHandler*, BOutlineListView, ResolveSpecifier, message, index, specifier, what, property);
+		}
+		status_t			GetSupportedSuites(BMessage* data) override {
+			PYBIND11_OVERLOAD(status_t, BOutlineListView, GetSupportedSuites, data);
+		}
+		status_t			Perform(perform_code code, void* data) override {
+			PYBIND11_OVERLOAD(status_t, BOutlineListView, Perform, code, data);
+		}
+		void				ResizeToPreferred() override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, ResizeToPreferred);
+		}
+		void				GetPreferredSize(float* _width, float* _height) override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, GetPreferredSize, _width, _height);
+		}
+		void				MakeFocus(bool focus = true) override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, MakeFocus, focus);
+		}
+		void				AllAttached() override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, AllAttached);
+		}
+		void				AllDetached() override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, AllDetached);
+		}
+		void				DetachedFromWindow() override {
+			PYBIND11_OVERLOAD(void, BOutlineListView, DetachedFromWindow);
+		}
+};
+	
 PYBIND11_MODULE(OutlineListView,m)
 {
 py::class_<BOutlineListView, BListView>(m, "BOutlineListView")
