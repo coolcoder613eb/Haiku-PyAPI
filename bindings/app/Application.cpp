@@ -18,6 +18,25 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+void RunWrapper(BApplication& self) {
+	// Why release the gil (global interpreter lock) here? Because its a long-
+	// running function (it usually runs for the lifetime of the application).
+	// See https://pybind11.readthedocs.io/en/stable/advanced/misc.html#global-interpreter-lock-gil
+	// for more details.
+	py::gil_scoped_release release;
+	self.Run();
+}
+
+void QuitWrapper(BApplication& self) {
+	// For an explanation, see QuitWrapper in Looper.cpp
+	py::gil_scoped_release release;
+	self.Quit();
+}
+
+void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
+	self.ArgvReceived(argc, argv.data());
+}
+
 class PyBApplication : public BApplication{
 	public:
         using BApplication::BApplication;
@@ -42,10 +61,17 @@ class PyBApplication : public BApplication{
         void				MessageReceived(BMessage* message) override {
             PYBIND11_OVERLOAD(void, BApplication, MessageReceived, message);
         }
-        //void				ArgvReceived(int32 argc, char** argv) override {
-        	//ArgvReceivedWrapper(argc, argv);
-            //PYBIND11_OVERLOAD(void, BApplication, ArgvReceived, argc, argv); //look at this
-        //}
+        void ArgvReceived(int32 argc, std::vector<char*> argv) {
+        	pybind11::gil_scoped_acquire gil;
+        	pybind11::function override = pybind11::get_override(static_cast<const BApplication*>(this), "ArgvReceived");
+        	if (override) {
+				// It exists! Let's call it.
+				override(argc, argv);
+			} else {
+				// Doesn't exist. Let's call our wrapper instead
+				ArgvReceivedWrapper(*this, argc, argv);
+			}
+        }
         void				AppActivated(bool active) override {
             PYBIND11_OVERLOAD(void, BApplication, AppActivated, active);
         }
@@ -69,24 +95,6 @@ class PyBApplication : public BApplication{
         }
 };
 
-void RunWrapper(BApplication& self) {
-	// Why release the gil (global interpreter lock) here? Because its a long-
-	// running function (it usually runs for the lifetime of the application).
-	// See https://pybind11.readthedocs.io/en/stable/advanced/misc.html#global-interpreter-lock-gil
-	// for more details.
-	py::gil_scoped_release release;
-	self.Run();
-}
-
-void QuitWrapper(BApplication& self) {
-	// For an explanation, see QuitWrapper in Looper.cpp
-	py::gil_scoped_release release;
-	self.Quit();
-}
-
-void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
-	self.ArgvReceived(argc, argv.data());
-}
 
 PYBIND11_SMART_HOLDER_TYPE_CASTERS(BApplication);
 
@@ -108,6 +116,7 @@ py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplicati
 .def("ReadyToRun", &BApplication::ReadyToRun, "")
 .def("MessageReceived", &BApplication::MessageReceived, "", py::arg("message"))
 .def("ArgvReceived", &ArgvReceivedWrapper, "", py::arg("argc"), py::arg("argv"))
+//.def("ArgvReceivedWrapper", &PyBApplication::ArgvReceivedWrapper, "", py::arg("args"))  // Usare il metodo wrapper qui
 .def("AppActivated", &BApplication::AppActivated, "", py::arg("active"))
 .def("RefsReceived", &BApplication::RefsReceived, "", py::arg("message"))
 .def("AboutRequested", &BApplication::AboutRequested, "")
