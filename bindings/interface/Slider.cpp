@@ -202,7 +202,7 @@ py::enum_<thumb_style>(m, "thumb_style", "")
 .value("B_TRIANGLE_THUMB", thumb_style::B_TRIANGLE_THUMB, "")
 .export_values();
 
-py::class_<BSlider, PyBSlider, BControl>(m, "BSlider")
+py::class_<BSlider, PyBSlider, BControl, std::unique_ptr<BSlider, py::nodelete>>(m, "BSlider")
 .def(py::init<BRect, const char *, const char *, BMessage *, int, int, thumb_style, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
 .def(py::init<BRect, const char *, const char *, BMessage *, int, int, orientation, thumb_style, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("posture"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("resizingMode")=B_FOLLOW_LEFT_TOP, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
 .def(py::init<const char *, const char *, BMessage *, int, int, orientation, thumb_style, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("minValue"), py::arg("maxValue"), py::arg("posture"), py::arg("thumbType")=B_BLOCK_THUMB, py::arg("flags")=B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS)
