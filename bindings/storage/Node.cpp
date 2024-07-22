@@ -136,6 +136,8 @@ py::class_<BNode>(m, "BNode") //Commented out BStatable verify if needed
 		switch (type) {
 			//test Int64 for reinterpretation in int32*
 			case B_INT64_TYPE:
+				ret = py::int_(*reinterpret_cast<int64_t*>(PyLong_AsVoidPtr(PyLong_FromVoidPtr(tmp))));
+				break;
 			case B_INT32_TYPE:
 			case B_INT16_TYPE:
 			case B_INT8_TYPE:
