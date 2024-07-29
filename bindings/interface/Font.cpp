@@ -12,8 +12,42 @@
 #include <Shape.h>
 
 namespace py = pybind11;
+/*
+py::list GetHasGlyphsWrapper1(BFont& self, std::vector<char> charArray, int32 numChars) {
+    py::list hasArray;
+    std::vector<bool> boolArray(numChars);
+    std::unique_ptr<bool[]> tempArray(new bool[numChars]);
 
+    self.GetHasGlyphs(charArray.data(), numChars, tempArray.get());
 
+    for (int32 i = 0; i < numChars; ++i) {
+        boolArray[i] = tempArray[i];
+    }
+
+    for (size_t i = 0; i < boolArray.size(); ++i) {
+        hasArray.append(boolArray[i]);
+    }
+
+    return hasArray;
+}
+
+py::list GetHasGlyphsWrapper2(BFont& self, std::vector<char> charArray, int32 numChars, bool useFallbacks){
+    py::list hasArray;
+    std::vector<bool> boolArray(numChars);
+    std::unique_ptr<bool[]> tempArray(new bool[numChars]);
+
+    self.GetHasGlyphs(charArray.data(), numChars, tempArray.get(), useFallbacks);
+
+    for (int32 i = 0; i < numChars; ++i) {
+        boolArray[i] = tempArray[i];
+    }
+
+    for (size_t i = 0; i < boolArray.size(); ++i) {
+        hasArray.append(boolArray[i]);
+    }
+
+    return hasArray;
+}*/
 
 PYBIND11_MODULE(Font,m)
 {
@@ -289,7 +323,45 @@ py::class_<BFont>(m, "BFont")
 
     return glyphShapeList;
 },"",py::arg("charArray"))
-.def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
+//.def("GetHasGlyphs", &BFont::GetHasGlyphs, "", py::arg("charArray"), py::arg("numChars"), py::arg("hasArray"))
+//.def("GetHasGlyphs",&GetHasGlyphsWrapper1, "", py::arg("charArray"), py::arg("numChars")) //this works
+//.def("GetHasGlyphs",&GetHasGlyphsWrapper2, "", py::arg("charArray"), py::arg("numChars"), py::arg("useFallbacks")) //this works
+.def("GetHasGlyphs",[](BFont& self,std::vector<char> charArray, int32 numChars){
+	py::list hasArray;
+	std::vector<bool> boolArray(numChars);
+	std::unique_ptr<bool[]> tempArray(new bool[numChars]);
+
+	self.GetHasGlyphs(charArray.data(), numChars, tempArray.get());
+
+	for (int32 i = 0; i < numChars; ++i) {
+		boolArray[i] = tempArray[i];
+	}
+
+	for (size_t i = 0; i < boolArray.size(); ++i) {
+		hasArray.append(boolArray[i]);
+	}
+
+	return hasArray;
+},"", py::arg("charArray"), py::arg("numChars"))
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+.def("GetHasGlyphs", [](BFont& self,std::vector<char> charArray, int32 numChars, bool useFallbacks){
+	py::list hasArray;
+	std::vector<bool> boolArray(numChars);
+	std::unique_ptr<bool[]> tempArray(new bool[numChars]);
+
+	self.GetHasGlyphs(charArray.data(), numChars, tempArray.get(), useFallbacks);
+
+	for (int32 i = 0; i < numChars; ++i) {
+		boolArray[i] = tempArray[i];
+	}
+
+	for (size_t i = 0; i < boolArray.size(); ++i) {
+		hasArray.append(boolArray[i]);
+	}
+
+	return hasArray;
+},"", py::arg("charArray"), py::arg("numChars"), py::arg("useFallbacks"))
+#endif
 .def("operator=", &BFont::operator=, "", py::arg("font"))
 .def("__eq__", &BFont::operator==, "", py::arg("font"))
 .def("__ne__", &BFont::operator!=, "", py::arg("font"))
