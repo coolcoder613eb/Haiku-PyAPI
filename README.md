@@ -55,6 +55,8 @@ specify a build parameter, add `-sPARAMETER=VALUE` to the build command line.
 | ---------------- | --------------------------------------------- |
 | python_version   | Version of python to build for. Default: 3.10 |
 | py               | Alias of `python_version`                     |
+| type             | Debug or release build. Default: release      |
+| build_location   | Location to put build files. Default: build/python$(python_version)_$(type) |
 | install_location | Where to install build files to. Default: /boot/system/non-packaged/lib/python$(python_version)/site-packages |
 
 ## Example projects

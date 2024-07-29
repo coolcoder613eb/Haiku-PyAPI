@@ -68,6 +68,8 @@ rule Symlink
 # Set user configurable variables to default value if user did not specify value
 py ?= 3.10 ;
 python_version ?= $(py) ;
+type ?= release ;
+build_location ?= build/python$(python_version)_$(type) ;
 install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
@@ -82,15 +84,24 @@ SubDirHdrs pybind11/include/ ;
 SubDirHdrs /system/develop/headers/python$(python_version)/ ;
 
 # Additional C++ flags to use when compiling
-# TODO: only run -Os for release builds. Development builds should prioritize
-# build time
-SubDirC++Flags -std=c++14 -pipe -fPIC -Os -fvisibility=hidden ;
+SubDirC++Flags -std=c++14 -pipe -fPIC -fvisibility=hidden ;
+if $(type) = release {
+	# Optimize for build size when making a release build
+	SubDirC++Flags -Os ;
+} else if $(type) = debug {
+	# Include debug symbols when making a debug build
+	# It seems Haiku's debugger still doesn't fully support dwarf-5 (the
+	# default), so we'll tell it to use dwarf-4.
+	SubDirC++Flags -gdwarf-4 ;
+} else {
+	Exit "Bad type given. Valid options are \"release\" and \"debug\"" ;
+}
 
 # Flags to use when linking
 LINKLIBS = -lbe ;
 
 # Where to put the generated build files
-LOCATE_TARGET = bin/x86_64/python$(python_version) ; # TODO: hardcoded arch
+LOCATE_TARGET = $(build_location) ;
 
 # The source files that we want to compile:
 local sourceFiles =
