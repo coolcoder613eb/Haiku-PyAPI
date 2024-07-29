@@ -61,22 +61,22 @@ class PyBApplication : public BApplication{
         void				MessageReceived(BMessage* message) override {
             PYBIND11_OVERLOAD(void, BApplication, MessageReceived, message);
         }
-        void ArgvReceived(int32 argc, char** argv) {
-        	std::vector<char*> args;
-			for (int32 i = 0; i < argc; ++i) {
-				args.push_back(argv[i]);
-			}
-        	pybind11::gil_scoped_acquire gil;
-        	pybind11::function override = pybind11::get_override(static_cast<const BApplication*>(this), "ArgvReceived");
-        	if (override) {
-				// It exists! Let's call it.
-				override(argc, args);
-			} else {
-				
-				// Doesn't exist. Let's call our wrapper instead
-				ArgvReceivedWrapper(*this, argc, args);
-			}
-		}
+        void ArgvReceived(int32 argc, char** argv) override {
+            pybind11::gil_scoped_acquire gil;
+            pybind11::function override = pybind11::get_override(static_cast<const BApplication*>(this), "ArgvReceived");
+            if (override) {
+		        // It exists! Let's call it.
+	            std::vector<char*> args;
+			    for (int32 i = 0; i < argc; ++i) {
+                    args.push_back(argv[i]);
+                }
+
+                override(argc, args);
+            } else {
+                // Doesn't exist. Let's call the default ArgvReceived instead
+                BApplication::ArgvReceived(argc, argv);
+            }
+        }
 
         void				AppActivated(bool active) override {
             PYBIND11_OVERLOAD(void, BApplication, AppActivated, active);
