@@ -347,29 +347,49 @@ m.def("get_scroll_bar_info", &get_scroll_bar_info, "", py::arg("info"));
 
 m.def("set_scroll_bar_info", &set_scroll_bar_info, "", py::arg("info"));
 
-//m.def("get_mouse_type", py::overload_cast<int>(&get_mouse_type, py::const_), "", py::arg("type"));
 
-//m.def("get_mouse_type", py::overload_cast<const char *, int>(&get_mouse_type, py::const_), "", py::arg("mouse_name"), py::arg("type"));
+//#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+m.def("get_mouse_type", py::overload_cast<int32*>(&get_mouse_type), "", py::arg("type"));
+m.def("get_mouse_type", py::overload_cast<const char *, int32*>(&get_mouse_type), "", py::arg("mouse_name"), py::arg("type"));
+//#endif
 
 m.def("set_mouse_type", &set_mouse_type, "", py::arg("mouse_name"), py::arg("type"));
 
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+m.def("get_mouse_map", py::overload_cast<mouse_map*>(&get_mouse_map), "", py::arg("map"));
+m.def("get_mouse_map", py::overload_cast<const char* ,mouse_map*>(&get_mouse_map), "",py::arg("mouse_name"), py::arg("map"));
+#else
 m.def("get_mouse_map", &get_mouse_map, "", py::arg("map"));
+#endif
 
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+m.def("set_mouse_map", py::overload_cast<mouse_map*>(&set_mouse_map), "", py::arg("map"));
+m.def("set_mouse_map", py::overload_cast<const char* ,mouse_map*>(&set_mouse_map), "", py::arg("mouse_name"), py::arg("map"));
+#else
 m.def("set_mouse_map", &set_mouse_map, "", py::arg("map"));
+#endif
 
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+m.def("get_click_speed", py::overload_cast<bigtime_t*>(&get_click_speed), "", py::arg("speed"));
+m.def("get_click_speed", py::overload_cast<const char*, bigtime_t*>(&get_click_speed), "", py::arg("mouse_name"), py::arg("speed"));
+#else
 m.def("get_click_speed", &get_click_speed, "", py::arg("speed"));
+#endif
 
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
+m.def("set_click_speed", py::overload_cast<bigtime_t>(&set_click_speed), "", py::arg("speed"));
+m.def("set_click_speed", py::overload_cast<const char*, bigtime_t>(&set_click_speed), "", py::arg("mouse_name"), py::arg("speed"));
+#else
 m.def("set_click_speed", &set_click_speed, "", py::arg("speed"));
+#endif
 
-//m.def("get_mouse_speed", py::overload_cast<int>(&get_mouse_speed, py::const_), "", py::arg("speed"));
-
-//m.def("get_mouse_speed", py::overload_cast<const char *, int>(&get_mouse_speed, py::const_), "", py::arg("mouse_name"), py::arg("speed"));
+m.def("get_mouse_speed", py::overload_cast<int32*>(&get_mouse_speed), "", py::arg("speed"));
+m.def("get_mouse_speed", py::overload_cast<const char *, int32*>(&get_mouse_speed), "", py::arg("mouse_name"), py::arg("speed"));
 
 m.def("set_mouse_speed", &set_mouse_speed, "", py::arg("mouse_name"), py::arg("speed"));
 
-//m.def("get_mouse_acceleration", py::overload_cast<int>(&get_mouse_acceleration, py::const_), "", py::arg("speed"));
-
-//m.def("get_mouse_acceleration", py::overload_cast<const char *, int>(&get_mouse_acceleration, py::const_), "", py::arg("mouse_name"), py::arg("speed"));
+m.def("get_mouse_acceleration", py::overload_cast<int32*>(&get_mouse_acceleration), "", py::arg("speed"));
+m.def("get_mouse_acceleration", py::overload_cast<const char *, int32*>(&get_mouse_acceleration), "", py::arg("mouse_name"), py::arg("speed"));
 
 m.def("set_mouse_acceleration", &set_mouse_acceleration, "", py::arg("mouse_name"), py::arg("speed"));
 
