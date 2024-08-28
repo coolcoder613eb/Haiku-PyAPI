@@ -139,6 +139,20 @@ from .TranslationUtils import *
 from .Translator import *
 from .stat import *
 
+#from .ScreenSaver import *
+#from .MimeSnifferAddon import *
+#from .Accelerant import *
+#from .GraphicsCard import *
+#from .InputServerDevice import *
+#from .InputServerFilter import *
+#from .InputServerMethod import *
+#from .MailFilter import *
+#from .MailSettingsView import *
+#from .MailProtocol import *
+#from .NetworkProfile import *
+#from .NetworkSettings import *
+#from .NetworkSettingsAddOn import *
+
 _BWindow=BWindow
 _BApplication=BApplication
 def MessageReceived(self, msg, parent):
