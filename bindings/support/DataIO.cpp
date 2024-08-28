@@ -103,7 +103,7 @@ py::class_<BDataIO, PyBDataIO>(m, "BDataIO")
 ;
 
 
-py::class_<BPositionIO, BDataIO>(m, "BLayout");
+py::class_<BPositionIO, BDataIO>(m, "BPositionIO");
 py::class_<BMemoryIO, BPositionIO>(m, "BMemoryIO");
 py::class_<BMallocIO, BPositionIO>(m, "BMallocIO");
 /*
