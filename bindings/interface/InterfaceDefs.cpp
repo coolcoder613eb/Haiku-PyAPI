@@ -16,7 +16,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(InterfaceDefs,m)
 {
-m.attr("B_BACKSPACE") = 8;
+/*m.attr("B_BACKSPACE") = 8;
 m.attr("B_RETURN") = 10;
 m.attr("B_ENTER") = 10;
 m.attr("B_SPACE") = 32;
@@ -36,6 +36,28 @@ m.attr("B_PAGE_DOWN") = 12;
 m.attr("B_FUNCTION_KEY") = 16;
 m.attr("B_KATAKANA_HIRAGANA") = 242;
 m.attr("B_HANKAKU_ZENKAKU") = 243;
+m.attr("B_HANGUL") = 240;
+m.attr("B_HANGUL_HANJA") = 241;*/
+m.attr("B_BACKSPACE") = 0x08;
+m.attr("B_RETURN") = 0x0a;
+m.attr("B_ENTER") = 0x0a;
+m.attr("B_SPACE") = 0x20;
+m.attr("B_TAB") = 0x09;
+m.attr("B_ESCAPE") = 0x1b;
+m.attr("B_SUBSTITUTE") = 0x1a;
+m.attr("B_LEFT_ARROW") = 0x1c;
+m.attr("B_RIGHT_ARROW") = 0x1d;
+m.attr("B_UP_ARROW") = 0x1e;
+m.attr("B_DOWN_ARROW") = 0x1f;
+m.attr("B_INSERT") = 0x05;
+m.attr("B_DELETE") = 0x7f;
+m.attr("B_HOME") = 0x01;
+m.attr("B_END") = 0x04;
+m.attr("B_PAGE_UP") = 0x0b;
+m.attr("B_PAGE_DOWN") = 0x0c;
+m.attr("B_FUNCTION_KEY") = 0x10;
+m.attr("B_KATAKANA_HIRAGANA") = 0xf2;
+m.attr("B_HANKAKU_ZENKAKU") = 0xf3;
 m.attr("B_HANGUL") = 240;
 m.attr("B_HANGUL_HANJA") = 241;
 
