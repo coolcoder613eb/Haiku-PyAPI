@@ -106,6 +106,7 @@ from .DataIO import *
 from .Url import *
 
 from .fs_attr import *
+from .OS import *
 
 from .StorageDefs import *
 from .Statable import *
@@ -147,11 +148,20 @@ from .stat import *
 #from .InputServerFilter import *
 #from .InputServerMethod import *
 #from .MailFilter import *
-#from .MailSettingsView import *
+from .MailSettingsView import *
 #from .MailProtocol import *
 #from .NetworkProfile import *
-#from .NetworkSettings import *
+from .NetworkSettings import *
 #from .NetworkSettingsAddOn import *
+
+#from .bus_manager import *
+
+#from .SerialPort import *
+#from .Joystick import *
+#from .USBKit import *
+#from .A2D import *
+#from .D2A import *
+#from .DigitalPort import *
 
 _BWindow=BWindow
 _BApplication=BApplication
