@@ -80,6 +80,12 @@ area_id clone_area_wrapper(const std::string &name, py::capsule &destAddress,
     void *destAddressPtr = destAddress.get_pointer(); // Converte il py::capsule in void*
     return clone_area(name.c_str(), &destAddressPtr, addressSpec, protection, source);
 }
+
+status_t get_cpu_info_wrapper(uint32 firstCPU, uint32 cpuCount, cpu_info* info) {
+	return _get_cpu_info_etc((firstCPU), (cpuCount), (info), sizeof(*(info)));
+}
+
+
 PYBIND11_MODULE(OS,m)
 {
 /*m.attr("B_TIMEOUT") = py::cast(B_TIMEOUT);
@@ -547,6 +553,7 @@ m.def("ktrace_vprintf", &ktrace_vprintf, "", py::arg("format"), py::arg("args"))
 m.def("get_system_info", &get_system_info, "", py::arg("info"));
 
 m.def("_get_cpu_info_etc", &_get_cpu_info_etc, "", py::arg("firstCPU"), py::arg("cpuCount"), py::arg("info"), py::arg("size"));
+m.def("get_cpu_info", &get_cpu_info_wrapper, "", py::arg("firstCPU"), py::arg("cpuCount"), py::arg("info"));
 
 m.def("get_cpu_topology_info", &get_cpu_topology_info, "", py::arg("topologyInfos"), py::arg("topologyInfoCount"));
 
