@@ -85,6 +85,53 @@ status_t get_cpu_info_wrapper(uint32 firstCPU, uint32 cpuCount, cpu_info* info) 
 	return _get_cpu_info_etc((firstCPU), (cpuCount), (info), sizeof(*(info)));
 }
 
+status_t get_thread_info_wrapper(thread_id id, thread_info *info) {
+	return _get_thread_info((id), (info), sizeof(*(info)));
+}
+
+status_t get_next_thread_info_wrapper(team_id team, int32 *cookie, thread_info *info) {
+	return _get_next_thread_info((team), (cookie), (info), sizeof(*(info)));
+}
+
+status_t get_team_usage_info_wrapper(team_id team, int32 who, team_usage_info *info) {
+	return _get_team_usage_info((team), (who), (info), sizeof(*(info)));
+}
+
+status_t get_team_info_wrapper(team_id id, team_info *info) {
+	return _get_team_info((id), (info), sizeof(*(info)));
+}
+
+status_t get_next_team_info_wrapper(int32 *cookie, team_info *info) {
+	return _get_next_team_info((cookie), (info), sizeof(*(info)));
+}
+
+status_t get_sem_info_wrapper(sem_id id, struct sem_info *info) {
+	return _get_sem_info((id), (info), sizeof(*(info)));
+}
+
+status_t get_next_sem_info_wrapper(team_id team, int32 *cookie, struct sem_info *info) {
+	return _get_next_sem_info((team), (cookie), (info), sizeof(*(info)));
+}
+
+status_t get_port_message_info_etc_wrapper(port_id port, port_message_info *info, uint32 flags, bigtime_t timeout) {
+	return _get_port_message_info_etc((port), (info), sizeof(*(info)), flags, timeout);
+}
+
+status_t get_next_port_info_wrapper(team_id team, int32 *cookie, port_info *info) {
+	return _get_next_port_info((team), (cookie), (info), sizeof(*(info)));
+}
+
+status_t get_port_info_wrapper(port_id port, port_info *info) {
+	return _get_port_info((port), (info), sizeof(*(info)));
+}
+
+status_t get_next_area_info_wrapper(team_id team, ssize_t *cookie, area_info *areaInfo){
+	return _get_next_area_info((team), (cookie), (areaInfo), sizeof(*(areaInfo)));
+}
+
+status_t get_area_info_wrapper(area_id id, area_info *areaInfo){
+	return _get_area_info((id), (areaInfo),sizeof(*(areaInfo)));
+}
 
 PYBIND11_MODULE(OS,m)
 {
@@ -417,8 +464,10 @@ m.def("resize_area", &resize_area, "", py::arg("id"), py::arg("newSize"));
 m.def("set_area_protection", &set_area_protection, "", py::arg("id"), py::arg("newProtection"));
 
 m.def("_get_area_info", &_get_area_info, "", py::arg("id"), py::arg("areaInfo"), py::arg("size"));
+m.def("get_area_info", &get_area_info_wrapper, "", py::arg("id"), py::arg("areaInfo"));
 
 m.def("_get_next_area_info", &_get_next_area_info, "", py::arg("team"), py::arg("cookie"), py::arg("areaInfo"), py::arg("size"));
+m.def("get_next_area_info", &get_next_area_info_wrapper, "", py::arg("team"), py::arg("cookie"), py::arg("areaInfo"));
 
 m.def("create_port", &create_port, "", py::arg("capacity"), py::arg("name"));
 
@@ -445,10 +494,13 @@ m.def("port_count", &port_count, "", py::arg("port"));
 m.def("set_port_owner", &set_port_owner, "", py::arg("port"), py::arg("team"));
 
 m.def("_get_port_info", &_get_port_info, "", py::arg("port"), py::arg("portInfo"), py::arg("portInfoSize"));
+m.def("get_port_info", &get_port_info_wrapper, "", py::arg("port"), py::arg("portInfo"));
 
 m.def("_get_next_port_info", &_get_next_port_info, "", py::arg("team"), py::arg("cookie"), py::arg("portInfo"), py::arg("portInfoSize"));
+m.def("get_next_port_info", &get_next_port_info_wrapper, "", py::arg("team"), py::arg("cookie"), py::arg("portInfo"));
 
 m.def("_get_port_message_info_etc", &_get_port_message_info_etc, "", py::arg("port"), py::arg("info"), py::arg("infoSize"), py::arg("flags"), py::arg("timeout"));
+m.def("get_port_message_info_etc", &get_port_message_info_etc_wrapper, "", py::arg("port"), py::arg("info"), py::arg("flags"), py::arg("timeout"));
 
 m.def("create_sem", &create_sem, "", py::arg("count"), py::arg("name"));
 
@@ -471,16 +523,21 @@ m.def("get_sem_count", &get_sem_count, "", py::arg("id"), py::arg("threadCount")
 m.def("set_sem_owner", &set_sem_owner, "", py::arg("id"), py::arg("team"));
 
 m.def("_get_sem_info", &_get_sem_info, "", py::arg("id"), py::arg("info"), py::arg("infoSize"));
+m.def("get_sem_info", &get_sem_info_wrapper, "", py::arg("id"), py::arg("info"));
 
 m.def("_get_next_sem_info", &_get_next_sem_info, "", py::arg("team"), py::arg("cookie"), py::arg("info"), py::arg("infoSize"));
+m.def("get_next_sem_info", &get_next_sem_info_wrapper, "", py::arg("team"), py::arg("cookie"), py::arg("info"));
 
 m.def("kill_team", &kill_team, "", py::arg("team"));
 
 m.def("_get_team_info", &_get_team_info, "", py::arg("id"), py::arg("info"), py::arg("size"));
+m.def("get_team_info", &get_team_info_wrapper, "", py::arg("id"), py::arg("info"));
 
 m.def("_get_next_team_info", &_get_next_team_info, "", py::arg("cookie"), py::arg("info"), py::arg("size"));
+m.def("get_next_team_info", &get_next_team_info_wrapper, "", py::arg("cookie"), py::arg("info"));
 
 m.def("_get_team_usage_info", &_get_team_usage_info, "", py::arg("team"), py::arg("who"), py::arg("info"), py::arg("size"));
+m.def("get_team_usage_info", &get_team_usage_info_wrapper, "", py::arg("team"), py::arg("who"), py::arg("info"));
 
 m.def("spawn_thread", &spawn_thread, "", py::arg(""), py::arg("name"), py::arg("priority"), py::arg("data"));
 
@@ -517,8 +574,10 @@ m.def("snooze_etc", &snooze_etc, "", py::arg("amount"), py::arg("timeBase"), py:
 m.def("snooze_until", &snooze_until, "", py::arg("time"), py::arg("timeBase"));
 
 m.def("_get_thread_info", &_get_thread_info, "", py::arg("id"), py::arg("info"), py::arg("size"));
+m.def("get_thread_info", &get_thread_info_wrapper, "",py::arg("id"), py::arg("info"));
 
 m.def("_get_next_thread_info", &_get_next_thread_info, "", py::arg("team"), py::arg("cookie"), py::arg("info"), py::arg("size"));
+m.def("get_next_thread_info", &get_next_thread_info_wrapper, "", py::arg("team"), py::arg("cookie"), py::arg("info"));
 
 //m.def("get_pthread_thread_id", &get_pthread_thread_id, "", py::arg("thread"));
 
