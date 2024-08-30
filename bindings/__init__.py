@@ -104,6 +104,7 @@ from .AffineTransform import *
 from .StringList import *
 from .DataIO import *
 from .Url import *
+from .UTF8 import *
 
 from .fs_attr import *
 from .OS import *
@@ -162,6 +163,8 @@ from .NetworkSettings import *
 #from .A2D import *
 #from .D2A import *
 #from .DigitalPort import *
+from .Email import *
+from .MailDaemon import *
 
 _BWindow=BWindow
 _BApplication=BApplication
