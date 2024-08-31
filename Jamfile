@@ -253,6 +253,7 @@ local sourceFiles =
 	TranslatorRoster.cpp
 	TranslationUtils.cpp
 	Translator.cpp
+	BitmapStream.cpp
 	
 	stat.cpp
 	
@@ -310,6 +311,8 @@ LINKLIBS on TranslationDefs.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslatorRoster.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslationUtils.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on Translator.so = $(LINKLIBS) -ltranslation ;
+LINKLIBS on BitmapStream.so = $(LINKLIBS) -ltranslation ;
+
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;
 #LINKLIBS on MimeSnifferAddon.so = $(LINKLIBS) -lstoragekit ;
