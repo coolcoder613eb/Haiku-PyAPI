@@ -164,6 +164,7 @@ from .NetworkSettings import *
 #from .D2A import *
 #from .DigitalPort import *
 from .Email import *
+from .mail_encoding import *
 from .MailDaemon import *
 
 _BWindow=BWindow

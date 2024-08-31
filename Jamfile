@@ -286,6 +286,7 @@ local sourceFiles =
 
 	#mail
 	Email.cpp
+	mail_encoding.cpp
 	MailDaemon.cpp
 	;
 
@@ -314,6 +315,7 @@ LINKLIBS on MailFilter.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailSettingsView.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailProtocol.so = $(LINKLIBS) -lmail ;
 LINKLIBS on Email.so = $(LINKLIBS) -lmail ;
+LINKLIBS on mail_encoding.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailDaemon.so = $(LINKLIBS) -lmail ;
 LINKLIBS on NetworkSettings.so = $(LINKLIBS) -lbnetapi ;
 
