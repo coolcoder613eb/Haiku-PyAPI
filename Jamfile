@@ -288,6 +288,8 @@ local sourceFiles =
 	Email.cpp
 	mail_encoding.cpp
 	MailDaemon.cpp
+	MailComponent.cpp
+	MailAttachment.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
@@ -317,6 +319,8 @@ LINKLIBS on MailProtocol.so = $(LINKLIBS) -lmail ;
 LINKLIBS on Email.so = $(LINKLIBS) -lmail ;
 LINKLIBS on mail_encoding.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailDaemon.so = $(LINKLIBS) -lmail ;
+LINKLIBS on MailComponent.so = $(LINKLIBS) -lmail ;
+LINKLIBS on MailAttachment.so = $(LINKLIBS) -lmail ;
 LINKLIBS on NetworkSettings.so = $(LINKLIBS) -lbnetapi ;
 
 

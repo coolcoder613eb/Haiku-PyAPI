@@ -165,7 +165,10 @@ from .NetworkSettings import *
 #from .DigitalPort import *
 from .Email import *
 from .mail_encoding import *
+from .MailComponent import *
 from .MailDaemon import *
+
+from .MailAttachment import *
 
 _BWindow=BWindow
 _BApplication=BApplication

@@ -4,11 +4,14 @@
 #include <pybind11/operators.h>
 
 #include <mail/MailAttachment.h>
+#include <mail/MailComponent.h>
+#include <File.h>
+#include <MimeType.h>
 
 namespace py = pybind11;
 
 
-void define_MailAttachment(py::module_& m)
+PYBIND11_MODULE(MailAttachment, m)
 {
 py::class_<BMailAttachment, BMailComponent>(m, "BMailAttachment")
 .def("SetFileName", &BMailAttachment::SetFileName, "", py::arg("name"))
