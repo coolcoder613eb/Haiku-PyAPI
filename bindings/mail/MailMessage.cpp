@@ -4,11 +4,12 @@
 #include <pybind11/operators.h>
 
 #include <mail/MailMessage.h>
+#include <Directory.h>
 
 namespace py = pybind11;
 
 
-void define_MailMessage(py::module_& m)
+PYBIND11_MODULE(MailMessage, m)
 {
 py::enum_<mail_reply_to_mode>(m, "mail_reply_to_mode", "")
 .value("B_MAIL_REPLY_TO", mail_reply_to_mode::B_MAIL_REPLY_TO, "")
@@ -37,8 +38,8 @@ py::class_<BEmailMessage, BMailContainer>(m, "BEmailMessage")
 .def("SetCC", &BEmailMessage::SetCC, "", py::arg("to"), py::arg("charset")=B_MAIL_NULL_CONVERSION, py::arg("encoding")=null_encoding)
 .def("SetBCC", &BEmailMessage::SetBCC, "", py::arg("to"))
 .def("SetPriority", &BEmailMessage::SetPriority, "", py::arg("to"))
-.def("GetName", py::overload_cast<char *, int>(&BEmailMessage::GetName), "", py::arg("name"), py::arg("maxLength"))
-.def("GetName", py::overload_cast<BString *>(&BEmailMessage::GetName), "", py::arg("name"))
+.def("GetName", py::overload_cast<char *, int32>(&BEmailMessage::GetName,py::const_), "", py::arg("name"), py::arg("maxLength"))
+.def("GetName", py::overload_cast<BString *>(&BEmailMessage::GetName,py::const_), "", py::arg("name"))
 .def("SendViaAccountFrom", &BEmailMessage::SendViaAccountFrom, "", py::arg("message"))
 .def("SendViaAccount", py::overload_cast<const char *>(&BEmailMessage::SendViaAccount), "", py::arg("accountName"))
 .def("SendViaAccount", py::overload_cast<int>(&BEmailMessage::SendViaAccount), "", py::arg("account"))

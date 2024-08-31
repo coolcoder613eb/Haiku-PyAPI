@@ -167,7 +167,8 @@ from .Email import *
 from .mail_encoding import *
 from .MailComponent import *
 from .MailDaemon import *
-
+from .MailContainer import *
+from .MailMessage import *
 from .MailAttachment import *
 
 _BWindow=BWindow

@@ -7,10 +7,29 @@
 
 namespace py = pybind11;
 
+class PyBMailContainer : public BMailContainer{
+	public:
+        using BMailContainer::BMailContainer;
+        status_t AddComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD_PURE(status_t, BMailContainer, AddComponent, component);
+        }
+        status_t RemoveComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD_PURE(status_t, BMailContainer, RemoveComponent, component);
+        }
+        status_t RemoveComponent(int32 index) override {
+            PYBIND11_OVERLOAD_PURE(status_t, BMailContainer, RemoveComponent, index);
+        }
+        BMailComponent *GetComponent(int32 index, bool parse_now = false) override {
+            PYBIND11_OVERLOAD_PURE(BMailComponent*, BMailContainer, GetComponent, index, parse_now);
+        }
+        int32 CountComponents() const override {
+            PYBIND11_OVERLOAD_PURE(int32, BMailContainer, CountComponents);
+        }
+};
 
-void define_MailContainer(py::module_& m)
+PYBIND11_MODULE(MailContainer, m)
 {
-py::class_<BMailContainer, BMailComponent>(m, "BMailContainer")
+py::class_<BMailContainer, PyBMailContainer, BMailComponent>(m, "BMailContainer")
 .def(py::init<unsigned int>(), "", py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def("AddComponent", &BMailContainer::AddComponent, "", py::arg("component"))
 .def("RemoveComponent", py::overload_cast<BMailComponent *>(&BMailContainer::RemoveComponent), "", py::arg("component"))
