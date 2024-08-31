@@ -170,6 +170,7 @@ from .MailDaemon import *
 from .MailContainer import *
 from .MailMessage import *
 from .MailAttachment import *
+from .MailSettings import *
 
 _BWindow=BWindow
 _BApplication=BApplication

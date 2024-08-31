@@ -292,6 +292,7 @@ local sourceFiles =
 	MailContainer.cpp
 	MailMessage.cpp
 	MailAttachment.cpp
+	MailSettings.cpp
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
@@ -325,6 +326,7 @@ LINKLIBS on MailComponent.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailAttachment.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailContainer.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailMessage.so = $(LINKLIBS) -lmail ;
+LINKLIBS on MailSettings.so = $(LINKLIBS) -lmail ;
 LINKLIBS on NetworkSettings.so = $(LINKLIBS) -lbnetapi ;
 
 
