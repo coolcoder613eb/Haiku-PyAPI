@@ -7,8 +7,7 @@
 
 namespace py = pybind11;
 
-
-void define_StopWatch(py::module_& m)
+PYBIND11_MODULE(StopWatch, m)
 {
 py::class_<BStopWatch>(m, "BStopWatch")
 .def(py::init<const char *, bool>(), "", py::arg("name"), py::arg("silent")=false)

@@ -91,6 +91,7 @@ from .Dragger import *
 from .Input import *
 from .PrintJob import *
 
+from .StopWatch import *
 from .Beep import *
 from .Architecture import *
 from .Locker import *

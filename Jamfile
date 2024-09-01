@@ -199,6 +199,7 @@ local sourceFiles =
 	PrintJob.cpp
 	
 	#SupportKit
+	StopWatch.cpp
 	Beep.cpp
 	Locker.cpp
 	Autolock.cpp
