@@ -218,6 +218,7 @@ local sourceFiles =
 	BufferedDataIO.cpp
 	Url.cpp
 	UTF8.cpp
+	TLS.cpp
 	
 	#Kernel
 	fs_attr.cpp

@@ -6,11 +6,10 @@
 #include <support/TLS.h>
 
 namespace py = pybind11;
-
-
-void define_TLS(py::module_& m)
+//TODO: Please, test this module
+PYBIND11_MODULE(TLS, m)
 {
-m.def("tls_allocate", &tls_allocate, "", py::arg(""));
+m.def("tls_allocate", &tls_allocate, "");
 
 m.def("tls_get", &tls_get, "", py::arg("index"));
 
