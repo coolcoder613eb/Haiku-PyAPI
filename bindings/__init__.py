@@ -104,6 +104,7 @@ from .Flattenable import *
 from .AffineTransform import *
 from .StringList import *
 from .DataIO import *
+from .BufferedDataIO import *
 from .Url import *
 from .UTF8 import *
 
