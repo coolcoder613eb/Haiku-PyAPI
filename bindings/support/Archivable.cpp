@@ -28,27 +28,15 @@ py::class_<BArchivable>(m, "BArchivable")
 py::class_<BArchiver>(m, "BArchiver")
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def("AddArchivable", &BArchiver::AddArchivable, "", py::arg("name"), py::arg("archivable"), py::arg("deep")=true)
-//.def("GetTokenForArchivable", py::overload_cast<BArchivable *, int32>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("_token"))
-//.def("GetTokenForArchivable", py::overload_cast<BArchivable *, bool, int32>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("deep"), py::arg("_token"))
+.def("GetTokenForArchivable", py::overload_cast<BArchivable *, int32&>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("_token")) //TODO Check this function
+.def("GetTokenForArchivable", py::overload_cast<BArchivable *, bool, int32&>(&BArchiver::GetTokenForArchivable), "", py::arg("archivable"), py::arg("deep"), py::arg("_token")) //TODO Check this function
 .def("IsArchived", &BArchiver::IsArchived, "", py::arg("archivable"))
 .def("Finish", &BArchiver::Finish, "", py::arg("err")=B_OK)
 .def("ArchiveMessage", &BArchiver::ArchiveMessage, "")
 ;
 
-/* my attempt to import ownership_policy
-py::enum_<BUnarchiver::ownership_policy>(m, "ownership_policy")
-.value("B_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_ASSUME_OWNERSHIP, "")
-.value("B_DONT_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_DONT_ASSUME_OWNERSHIP, "")
-.export_values();
-*/
 py::class_<BUnarchiver>(m, "BUnarchiver")
 .def(py::init<const BMessage *>(), "", py::arg("archive"))
-/*
-.def("ownership_policy", py::enum_<BUnarchiver::ownership_policy>(m,"ownership_policy")
-	.value("B_ASSUME_OWNERSHIP",BUnarchiver::ownership_policy::B_ASSUME_OWNERSHIP)
-	.value("B_DONT_ASSUME_OWNERSHIP", BUnarchiver::ownership_policy::B_DONT_ASSUME_OWNERSHIP)
-)
-*/
 /*.def("GetObject", [](BUnarchiver& self,int token) {
     T *  object;
     inline status_t r = self.GetObject(token, object);
@@ -101,20 +89,50 @@ py::class_<BUnarchiver>(m, "BUnarchiver")
 }, "", py::arg("archive"))*/
 ;
 
-/* these do not generate errors on compile-time
+///* these do not generate errors on compile-time
 
 m.def("instantiate_object", py::overload_cast<BMessage *, image_id *>(&instantiate_object), "", py::arg("from"), py::arg("id"));
 
 m.def("instantiate_object", py::overload_cast<BMessage *>(&instantiate_object), "", py::arg("from"));
 
 m.def("validate_instantiation", &validate_instantiation, "", py::arg("from"), py::arg("className"));
-*/
+//*/
 
 //m.def("find_instantiation_func", py::overload_cast<const char *, const char *>(&find_instantiation_func), "", py::arg("className"), py::arg("signature"));
+//TODO: check these 3 functions
+m.def("find_instantiation_func", [](const char* className, const char* signature) -> py::object {
+        instantiation_func func = find_instantiation_func(className, signature);
+        if (func == nullptr) {
+            return py::none();
+        }
+        return py::cpp_function([func](BMessage* msg) -> BArchivable* {
+            return func(msg);
+        });
+}, py::arg("className"), py::arg("signature"));
 
 //m.def("find_instantiation_func", py::overload_cast<const char *>(&find_instantiation_func), "", py::arg("className"));
+m.def("find_instantiation_func", [](const char* className) -> py::object {
+        instantiation_func func = find_instantiation_func(className);
+        if (func == nullptr) {
+            return py::none();
+        }
+
+        return py::cpp_function([func](BMessage* msg) -> BArchivable* {
+            return func(msg);
+        });
+}, py::arg("className"));
 
 //m.def("find_instantiation_func", py::overload_cast<BMessage *>(&find_instantiation_func), "", py::arg("archive"));
+m.def("find_instantiation_func", [](BMessage* archive) -> py::object {
+        instantiation_func func = find_instantiation_func(archive);
+        if (func == nullptr) {
+            return py::none();
+        }
+        
+        return py::cpp_function([func](BMessage* msg) -> BArchivable* {
+            return func(msg);
+        });
+}, py::arg("archive"));
 /*
 m.def(">", [](const char * name,int index,ownership_policy owning) {
     BArchivable *  archivable;
@@ -147,4 +165,10 @@ m.def(">", [](BMessage * from) {
 //m.attr("BArchiveManager") = py::cast(BArchiveManager);
 
 //m.attr("BUnarchiveManager") = py::cast(BUnarchiveManager);
+
+//my attempt to add ownership_policy:
+//m.attr("B_ASSUME_OWNERSHIP") = py::cast(BUnarchiver::ownership_policy::B_ASSUME_OWNERSHIP);
+m.attr("B_ASSUME_OWNERSHIP") = 0;
+//m.attr("B_DONT_ASSUME_OWNERSHIP") = py::cast(BUnarchiver::ownership_policy::B_DONT_ASSUME_OWNERSHIP);
+m.attr("B_DONT_ASSUME_OWNERSHIP") = 1;
 }
