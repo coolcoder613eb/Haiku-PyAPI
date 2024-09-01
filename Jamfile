@@ -254,6 +254,7 @@ local sourceFiles =
 	TranslationUtils.cpp
 	Translator.cpp
 	BitmapStream.cpp
+	TranslatorFormats.cpp
 	
 	stat.cpp
 	
@@ -311,6 +312,7 @@ LINKLIBS on TranslationDefs.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslatorRoster.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslationUtils.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on Translator.so = $(LINKLIBS) -ltranslation ;
+LINKLIBS on TranslatorFormats.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on BitmapStream.so = $(LINKLIBS) -ltranslation ;
 
 

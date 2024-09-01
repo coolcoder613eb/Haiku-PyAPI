@@ -140,6 +140,7 @@ from .TranslatorRoster import *
 from .TranslationUtils import *
 from .Translator import *
 from .BitmapStream import *
+from .TranslatorFormats import *
 from .stat import *
 
 #from .ScreenSaver import *
