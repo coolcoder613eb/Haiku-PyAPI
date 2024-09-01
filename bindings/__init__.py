@@ -178,6 +178,17 @@ from .MailMessage import *
 from .MailAttachment import *
 from .MailSettings import *
 
+from .Country import *
+from .Language import *
+from .Format import *
+from .FormattingConventions import *
+from .DateFormat import *
+from .DateTimeFormat import *
+from .TimeUnitFormat import *
+from .DurationFormat import *
+from .TimeFormat import *
+from .UnicodeChar import *
+
 _BWindow=BWindow
 _BApplication=BApplication
 def MessageReceived(self, msg, parent):

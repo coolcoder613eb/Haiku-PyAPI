@@ -74,7 +74,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel bindings/translation bindings/add-ons/screen_saver bindings/add-ons/registrar bindings/add-ons/graphics bindings/add-ons/input_server bindings/add-ons/mail_daemon bindings/add-ons/network_settings bindings/drivers bindings/device bindings/mail ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel bindings/translation bindings/add-ons/screen_saver bindings/add-ons/registrar bindings/add-ons/graphics bindings/add-ons/input_server bindings/add-ons/mail_daemon bindings/add-ons/network_settings bindings/drivers bindings/device bindings/mail bindings/locale ;
 
 # Where to look for header files
 SubDirHdrs headers ;
@@ -299,6 +299,19 @@ local sourceFiles =
 	MailMessage.cpp
 	MailAttachment.cpp
 	MailSettings.cpp
+	
+	#locale
+	Country.cpp
+	Language.cpp
+	Format.cpp
+	FormattingConventions.cpp
+	DateFormat.cpp
+	DateTimeFormat.cpp
+	TimeUnitFormat.cpp
+	DurationFormat.cpp
+	TimeFormat.cpp
+	UnicodeChar.cpp
+	
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
@@ -319,6 +332,8 @@ LINKLIBS on Translator.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslatorFormats.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on BitmapStream.so = $(LINKLIBS) -ltranslation ;
 
+#LINKLIBS on FormattingConventions.so = $(LINKLIBS) -llocalestub ;
+#LINKLIBS on TimeFormat.so = $(LINKLIBS) -lsupport ;
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;
 #LINKLIBS on MimeSnifferAddon.so = $(LINKLIBS) -lstoragekit ;
