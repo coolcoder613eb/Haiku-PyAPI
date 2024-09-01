@@ -8,6 +8,43 @@
 
 namespace py = pybind11;
 
+class PyBMailComponent : public BMailComponent{
+	public:
+        using BMailComponent::BMailComponent;
+        status_t GetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BMailComponent, GetDecodedData, data);
+        }
+        status_t SetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BMailComponent, SetDecodedData, data);
+        }
+        status_t SetToRFC822(BPositionIO *data, size_t length, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(status_t, BMailComponent, SetToRFC822, data, length, parse_now);
+        }
+        status_t RenderToRFC822(BPositionIO *render_to) override {
+            PYBIND11_OVERLOAD(status_t, BMailComponent, RenderToRFC822, render_to);
+        }
+        status_t MIMEType(BMimeType *mime) override {
+            PYBIND11_OVERLOAD(status_t, BMailComponent, MIMEType, mime);
+        }
+};
+
+class PyBTextMailComponent : public BTextMailComponent{
+	public:
+        using BTextMailComponent::BTextMailComponent;
+        status_t GetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BTextMailComponent, GetDecodedData, data);
+        }
+        status_t SetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BTextMailComponent, SetDecodedData, data);
+        }
+        status_t SetToRFC822(BPositionIO *data, size_t length, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(status_t, BTextMailComponent, SetToRFC822, data, length, parse_now);
+        }
+        status_t RenderToRFC822(BPositionIO *render_to) override {
+            PYBIND11_OVERLOAD(status_t, BTextMailComponent, RenderToRFC822, render_to);
+        }
+};
+
 PYBIND11_MODULE(MailComponent, m)
 {
 py::enum_<component_type>(m, "component_type", "")
@@ -21,7 +58,7 @@ m.attr("kHeaderCharsetString") = py::cast(kHeaderCharsetString);
 
 m.attr("kHeaderEncodingString") = py::cast(kHeaderEncodingString);
 
-py::class_<BMailComponent>(m, "BMailComponent")
+py::class_<BMailComponent,PyBMailComponent>(m, "BMailComponent")
 .def(py::init<uint32>(), "", py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def("ComponentType", &BMailComponent::ComponentType, "")
 .def("WhatIsThis", &BMailComponent::WhatIsThis, "")
@@ -39,7 +76,7 @@ py::class_<BMailComponent>(m, "BMailComponent")
 .def("MIMEType", &BMailComponent::MIMEType, "", py::arg("mime"))
 ;
 
-py::class_<BTextMailComponent, BMailComponent>(m, "BTextMailComponent")
+py::class_<BTextMailComponent, PyBTextMailComponent, BMailComponent>(m, "BTextMailComponent")
 .def(py::init<const char *, uint32>(), "", py::arg("text")=NULL, py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def("SetEncoding", &BTextMailComponent::SetEncoding, "", py::arg("encoding"), py::arg("charset"))
 .def("SetText", &BTextMailComponent::SetText, "", py::arg("text"))
