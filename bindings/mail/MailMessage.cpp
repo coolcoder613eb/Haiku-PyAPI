@@ -8,6 +8,31 @@
 
 namespace py = pybind11;
 
+class PyBEmailMessage : public BEmailMessage{
+	public:
+        using BEmailMessage::BEmailMessage;
+        status_t			AddComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD(status_t, BEmailMessage, AddComponent, component);
+        }
+        status_t			RemoveComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD(status_t, BEmailMessage, RemoveComponent, component);
+        }
+        status_t			RemoveComponent(int32 index) override {
+            PYBIND11_OVERLOAD(status_t, BEmailMessage, RemoveComponent, index);
+        }
+        BMailComponent*		GetComponent(int32 index, bool parseNow = false) override {
+            PYBIND11_OVERLOAD(BMailComponent*, BEmailMessage, GetComponent, index, parseNow);
+        }
+        int32				CountComponents() const override {
+            PYBIND11_OVERLOAD(int32, BEmailMessage, CountComponents);
+        }
+        status_t			SetToRFC822(BPositionIO* data, size_t length, bool parseNow = false) override {
+            PYBIND11_OVERLOAD(status_t, BEmailMessage, SetToRFC822, data, length, parseNow);
+        }
+        status_t			RenderToRFC822(BPositionIO* renderTo) override {
+            PYBIND11_OVERLOAD(status_t, BEmailMessage, RenderToRFC822, renderTo);
+        }
+};
 
 PYBIND11_MODULE(MailMessage, m)
 {
@@ -17,7 +42,7 @@ py::enum_<mail_reply_to_mode>(m, "mail_reply_to_mode", "")
 .value("B_MAIL_REPLY_TO_SENDER", mail_reply_to_mode::B_MAIL_REPLY_TO_SENDER, "")
 .export_values();
 
-py::class_<BEmailMessage, BMailContainer>(m, "BEmailMessage")
+py::class_<BEmailMessage, PyBEmailMessage, BMailContainer>(m, "BEmailMessage")
 .def(py::init<BPositionIO *, bool, unsigned int>(), "", py::arg("stream")=NULL, py::arg("ownStream")=false, py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def(py::init<const entry_ref *, unsigned int>(), "", py::arg("ref"), py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def("InitCheck", &BEmailMessage::InitCheck, "")
