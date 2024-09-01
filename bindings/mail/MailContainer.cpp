@@ -27,6 +27,38 @@ class PyBMailContainer : public BMailContainer{
         }
 };
 
+class PyBMIMEMultipartMailContainer : public BMIMEMultipartMailContainer{
+	public:
+        using BMIMEMultipartMailContainer::BMIMEMultipartMailContainer;
+        status_t AddComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, AddComponent, component);
+        }
+        status_t RemoveComponent(BMailComponent *component) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, RemoveComponent, component);
+        }
+        status_t RemoveComponent(int32 index) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, RemoveComponent, index);
+        }
+        BMailComponent *GetComponent(int32 index, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(BMailComponent* , BMIMEMultipartMailContainer, GetComponent, index, parse_now);
+        }
+        int32 CountComponents() const override {
+            PYBIND11_OVERLOAD(int32, BMIMEMultipartMailContainer, CountComponents);
+        }
+        status_t GetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, GetDecodedData, data);
+        }
+        status_t SetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, SetDecodedData, data);
+        }
+        status_t SetToRFC822(BPositionIO *data, size_t length, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, SetToRFC822, data, length, parse_now);
+        }
+        status_t RenderToRFC822(BPositionIO *render_to) override {
+            PYBIND11_OVERLOAD(status_t, BMIMEMultipartMailContainer, RenderToRFC822, render_to);
+        }
+};
+
 PYBIND11_MODULE(MailContainer, m)
 {
 py::class_<BMailContainer, PyBMailContainer, BMailComponent>(m, "BMailContainer")
@@ -38,7 +70,7 @@ py::class_<BMailContainer, PyBMailContainer, BMailComponent>(m, "BMailContainer"
 .def("CountComponents", &BMailContainer::CountComponents, "")
 ;
 
-py::class_<BMIMEMultipartMailContainer, BMailContainer>(m, "BMIMEMultipartMailContainer")
+py::class_<BMIMEMultipartMailContainer, PyBMIMEMultipartMailContainer, BMailContainer>(m, "BMIMEMultipartMailContainer")
 .def(py::init<const char *, const char *, unsigned int>(), "", py::arg("boundary")=NULL, py::arg("this_is_an_MIME_message_text")=NULL, py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def(py::init(), "")
 .def("SetBoundary", &BMIMEMultipartMailContainer::SetBoundary, "", py::arg("boundary"))
