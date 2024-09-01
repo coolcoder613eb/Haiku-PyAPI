@@ -10,6 +10,78 @@
 
 namespace py = pybind11;
 
+class PyBSimpleMailAttachment : public BSimpleMailAttachment{
+	public:
+        using BSimpleMailAttachment::BSimpleMailAttachment;
+        status_t SetTo(BFile *file, bool delete_file_when_done = false) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, SetTo, file, delete_file_when_done);
+        }
+        status_t SetTo(entry_ref *ref) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, SetTo, ref);
+        }
+        status_t InitCheck() override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, InitCheck);
+        }
+        void SetFileName(const char *name) override {
+            PYBIND11_OVERLOAD(void, BSimpleMailAttachment, SetFileName, name);
+        }
+        status_t FileName(char *name) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, FileName, name);
+        }
+        status_t GetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, GetDecodedData, data);
+        }
+        status_t SetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, SetDecodedData, data);
+        }
+        BPositionIO *GetDecodedData() override {
+            PYBIND11_OVERLOAD(BPositionIO*, BSimpleMailAttachment, GetDecodedData);
+        }
+        status_t SetDecodedData(const void *data, size_t length /* data to attach */) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, SetDecodedData, data, length);
+        }
+        status_t SetToRFC822(BPositionIO *data, size_t length, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, SetToRFC822, data, length, parse_now);
+        }
+        status_t RenderToRFC822(BPositionIO *render_to) override {
+            PYBIND11_OVERLOAD(status_t, BSimpleMailAttachment, RenderToRFC822, render_to);
+        }
+};
+
+class PyBAttributedMailAttachment : public BAttributedMailAttachment{
+	public:
+        using BAttributedMailAttachment::BAttributedMailAttachment;
+        status_t SetTo(BFile *file, bool delete_file_when_done = false) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, SetTo, file, delete_file_when_done);
+        }
+        status_t SetTo(entry_ref *ref) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, SetTo, ref);
+        }
+        status_t InitCheck() override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, InitCheck);
+        }
+        void SetFileName(const char *name) override {
+            PYBIND11_OVERLOAD(void, BAttributedMailAttachment, SetFileName, name);
+        }
+        status_t FileName(char *name) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, FileName, name);
+        }
+        status_t GetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, GetDecodedData, data);
+        }
+        status_t SetDecodedData(BPositionIO *data) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, SetDecodedData, data);
+        }
+        status_t SetToRFC822(BPositionIO *data, size_t length, bool parse_now = false) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, SetToRFC822, data, length, parse_now);
+        }
+        status_t RenderToRFC822(BPositionIO *render_to) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, RenderToRFC822, render_to);
+        }
+        status_t MIMEType(BMimeType *mime) override {
+            PYBIND11_OVERLOAD(status_t, BAttributedMailAttachment, MIMEType, mime);
+        }
+};
 
 PYBIND11_MODULE(MailAttachment, m)
 {
@@ -21,7 +93,7 @@ py::class_<BMailAttachment, BMailComponent>(m, "BMailAttachment")
 .def("InitCheck", &BMailAttachment::InitCheck, "")
 ;
 
-py::class_<BSimpleMailAttachment, BMailAttachment>(m, "BSimpleMailAttachment")
+py::class_<BSimpleMailAttachment, PyBSimpleMailAttachment, BMailAttachment>(m, "BSimpleMailAttachment")
 .def(py::init<BPositionIO *, mail_encoding>(), "", py::arg("dataToAttach"), py::arg("encoding")=base64)
 .def(py::init<const void *, size_t, mail_encoding>(), "", py::arg("dataToAttach"), py::arg("lengthOfData"), py::arg("encoding")=base64)
 .def(py::init<BFile *, bool>(), "", py::arg("file"), py::arg("delete_when_done"))
@@ -43,7 +115,7 @@ py::class_<BSimpleMailAttachment, BMailAttachment>(m, "BSimpleMailAttachment")
 .def("RenderToRFC822", &BSimpleMailAttachment::RenderToRFC822, "", py::arg("render_to"))
 ;
 
-py::class_<BAttributedMailAttachment, BMailAttachment>(m, "BAttributedMailAttachment")
+py::class_<BAttributedMailAttachment, PyBAttributedMailAttachment, BMailAttachment>(m, "BAttributedMailAttachment")
 .def(py::init<BFile *, bool>(), "", py::arg("file"), py::arg("delete_when_done"))
 .def(py::init<entry_ref *>(), "", py::arg("ref"))
 .def(py::init(), "")
