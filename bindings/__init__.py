@@ -198,6 +198,7 @@ from .Locale import *
 from .Collator import *
 from .CatalogData import *
 from .Catalog import *
+from .TimeZone import *
 
 _BWindow=BWindow
 _BApplication=BApplication

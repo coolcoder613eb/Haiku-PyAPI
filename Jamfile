@@ -321,6 +321,7 @@ local sourceFiles =
 	Collator.cpp
 	CatalogData.cpp
 	Catalog.cpp
+	TimeZone.cpp
 	
 	;
 

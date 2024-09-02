@@ -4,15 +4,16 @@
 #include <pybind11/operators.h>
 
 #include <locale/TimeZone.h>
+#include <locale/Locale.h>
 
 namespace py = pybind11;
 using namespace U_ICU_NAMESPACE;
 
-void define_TimeZone(py::module_& m)
+PYBIND11_MODULE(TimeZone, m)
 {
-m.attr("Locale") = py::cast(Locale);
+//m.attr("Locale") = py::cast(Locale);
 
-m.attr("TimeZone") = py::cast(TimeZone);
+//m.attr("TimeZone") = py::cast(TimeZone);
 
 py::class_<BTimeZone>(m, "BTimeZone")
 .def(py::init<const char *, const BLanguage *>(), "", py::arg("zoneID")=NULL, py::arg("language")=NULL)
@@ -28,9 +29,9 @@ py::class_<BTimeZone>(m, "BTimeZone")
 .def("InitCheck", &BTimeZone::InitCheck, "")
 .def("SetTo", &BTimeZone::SetTo, "", py::arg("zoneID"), py::arg("language")=NULL)
 .def("SetLanguage", &BTimeZone::SetLanguage, "", py::arg("language"))
-.def_readwrite("kNameOfGmtZone", &BTimeZone::kNameOfGmtZone, "")
-.def_readwrite("Private", &BTimeZone::Private, "")
+//.def_readwrite("kNameOfGmtZone", &BTimeZone::kNameOfGmtZone, "")
+//.def_readwrite("Private", &BTimeZone::Private, "")
 ;
-
+m.attr("kNameOfGmtZone") = "GMT";
 
 }
