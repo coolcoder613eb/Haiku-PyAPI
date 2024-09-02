@@ -312,6 +312,7 @@ local sourceFiles =
 	TimeFormat.cpp
 	UnicodeChar.cpp
 	StringFormat.cpp
+	TextEncoding.cpp
 	
 	;
 

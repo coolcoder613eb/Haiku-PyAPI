@@ -8,7 +8,7 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
-void define_TextEncoding(py::module_& m)
+PYBIND11_MODULE(TextEncoding, m)
 {
 py::class_<BTextEncoding>(m, "BTextEncoding")
 .def(py::init<BString>(), "", py::arg("name"))
