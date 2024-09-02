@@ -319,6 +319,8 @@ local sourceFiles =
 	LocaleRoster.cpp
 	Locale.cpp
 	Collator.cpp
+	CatalogData.cpp
+	Catalog.cpp
 	
 	;
 
@@ -341,6 +343,7 @@ LINKLIBS on TranslatorFormats.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on BitmapStream.so = $(LINKLIBS) -ltranslation ;
 
 LINKLIBS on LocaleRoster.so = $(LINKLIBS) -llocalestub ;
+#LINKLIBS on CatalogData.so = $(LINKLIBS) -llocalestub ;
 
 #LINKLIBS on TimeFormat.so = $(LINKLIBS) -lsupport ;
 

@@ -196,6 +196,8 @@ from .LocaleStrings import *
 from .LocaleRoster import *
 from .Locale import *
 from .Collator import *
+from .CatalogData import *
+from .Catalog import *
 
 _BWindow=BWindow
 _BApplication=BApplication
