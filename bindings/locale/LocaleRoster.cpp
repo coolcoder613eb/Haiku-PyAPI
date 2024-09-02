@@ -4,20 +4,40 @@
 #include <pybind11/operators.h>
 
 #include <locale/LocaleRoster.h>
+#include <locale/TimeZone.h>
+#include <locale/Language.h>
+#include <Message.h>
+#include <Bitmap.h>
+#include <locale/Catalog.h>
+#include <locale/Locale.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
-void define_LocaleRoster(py::module_& m)
-{
-m.attr("B_LOCALE_CHANGED") = py::cast(B_LOCALE_CHANGED);
 
-m.attr("LocaleRosterData") = py::cast(LocaleRosterData);
+PYBIND11_MODULE(LocaleRoster, m)
+{
+//m.attr("LocaleRosterData") = py::cast(LocaleRosterData);
 
 py::class_<BLocaleRoster>(m, "BLocaleRoster")
 .def_static("Default", &BLocaleRoster::Default, "")
 .def("GetDefaultTimeZone", &BLocaleRoster::GetDefaultTimeZone, "", py::arg("timezone"))
-.def("GetLanguage", &BLocaleRoster::GetLanguage, "", py::arg("languageCode"), py::arg("_language"))
+//.def("GetLanguage", &BLocaleRoster::GetLanguage, "", py::arg("languageCode"), py::arg("_language"))
+//.def("GetLanguage", &GetLanguage_wrapper, "", py::arg("languageCode"), py::arg("_language"))
+.def("GetLanguage", [](BLocaleRoster& self,const char* languageCode)-> py::tuple {
+	std::vector<BLanguage*> _language;
+	status_t r = self.GetLanguage(languageCode,_language.data());
+	/* if you want to return a py::list uncomment this and try it
+	py::list language;
+	for (size_t i = 0; i < _language.size(); ++i) {
+        language.append(py::cast(*_language[i]);
+    }
+    for (size_t i = 0; i < _language.size(); ++i) {
+        delete _language[i];
+    }
+    */
+	return py::make_tuple(r,_language);
+},"",py::arg("languageCode")) // TODO make a test, try this (returning a std::vector or better a py::list??)
 .def("GetPreferredLanguages", &BLocaleRoster::GetPreferredLanguages, "", py::arg("message"))
 .def("GetAvailableLanguages", &BLocaleRoster::GetAvailableLanguages, "", py::arg("message"))
 .def("GetAvailableCountries", &BLocaleRoster::GetAvailableCountries, "", py::arg("timeZones"))
@@ -37,12 +57,12 @@ py::class_<BLocaleRoster>(m, "BLocaleRoster")
     return std::make_tuple(r,localizedFileName);
 }
 , "", py::arg("ref"), py::arg("traverse")=false)
-.def_readwrite("kCatLangAttr", &BLocaleRoster::kCatLangAttr, "")
-.def_readwrite("kCatSigAttr", &BLocaleRoster::kCatSigAttr, "")
-.def_readwrite("kCatFingerprintAttr", &BLocaleRoster::kCatFingerprintAttr, "")
-.def_readwrite("kEmbeddedCatAttr", &BLocaleRoster::kEmbeddedCatAttr, "")
-.def_readwrite("kEmbeddedCatResId", &BLocaleRoster::kEmbeddedCatResId, "")
+//.def_readwrite("kCatLangAttr", &BLocaleRoster::kCatLangAttr, "")
+//.def_readwrite("kCatSigAttr", &BLocaleRoster::kCatSigAttr, "")
+//.def_readwrite("kCatFingerprintAttr", &BLocaleRoster::kCatFingerprintAttr, "")
+//.def_readwrite("kEmbeddedCatAttr", &BLocaleRoster::kEmbeddedCatAttr, "")
+//.def_readwrite("kEmbeddedCatResId", &BLocaleRoster::kEmbeddedCatResId, "")
 ;
 
-
+m.attr("B_LOCALE_CHANGED") = '_LCC';//py::cast(B_LOCALE_CHANGED);
 }

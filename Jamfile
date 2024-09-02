@@ -316,6 +316,9 @@ local sourceFiles =
 	RelativeDateTimeFormat.cpp
 	NumberFormat.cpp
 	LocaleStrings.cpp
+	LocaleRoster.cpp
+	Locale.cpp
+	Collator.cpp
 	
 	;
 
@@ -337,7 +340,8 @@ LINKLIBS on Translator.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on TranslatorFormats.so = $(LINKLIBS) -ltranslation ;
 LINKLIBS on BitmapStream.so = $(LINKLIBS) -ltranslation ;
 
-#LINKLIBS on FormattingConventions.so = $(LINKLIBS) -llocalestub ;
+LINKLIBS on LocaleRoster.so = $(LINKLIBS) -llocalestub ;
+
 #LINKLIBS on TimeFormat.so = $(LINKLIBS) -lsupport ;
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;

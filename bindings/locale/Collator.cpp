@@ -4,11 +4,12 @@
 #include <pybind11/operators.h>
 
 #include <locale/Collator.h>
+#include <String.h>
 
 namespace py = pybind11;
 using namespace U_ICU_NAMESPACE;
 
-void define_Collator(py::module_& m)
+PYBIND11_MODULE(Collator, m)
 {
 py::enum_<collator_strengths>(m, "collator_strengths", "")
 .value("B_COLLATE_DEFAULT", collator_strengths::B_COLLATE_DEFAULT, "")
@@ -19,7 +20,7 @@ py::enum_<collator_strengths>(m, "collator_strengths", "")
 .value("B_COLLATE_IDENTICAL", collator_strengths::B_COLLATE_IDENTICAL, "")
 .export_values();
 
-m.attr("Collator") = py::cast(Collator);
+//m.attr("Collator") = py::cast(Collator);
 
 py::class_<BCollator, BArchivable>(m, "BCollator")
 .def(py::init(), "")
