@@ -8,11 +8,11 @@
 namespace py = pybind11;
 using namespace U_ICU_NAMESPACE;
 
-void define_RelativeDateTimeFormat(py::module_& m)
+PYBIND11_MODULE(RelativeDateTimeFormat, m)
 {
-m.attr("GregorianCalendar") = py::cast(GregorianCalendar);
+//m.attr("GregorianCalendar") = py::cast(GregorianCalendar);
 
-m.attr("RelativeDateTimeFormatter") = py::cast(RelativeDateTimeFormatter);
+//m.attr("RelativeDateTimeFormatter") = py::cast(RelativeDateTimeFormatter);
 
 py::class_<BRelativeDateTimeFormat, BFormat>(m, "BRelativeDateTimeFormat")
 .def(py::init(), "")

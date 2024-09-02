@@ -313,6 +313,7 @@ local sourceFiles =
 	UnicodeChar.cpp
 	StringFormat.cpp
 	TextEncoding.cpp
+	RelativeDateTimeFormat.cpp
 	
 	;
 

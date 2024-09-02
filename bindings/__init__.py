@@ -190,6 +190,7 @@ from .TimeFormat import *
 from .UnicodeChar import *
 from .StringFormat import *
 from .TextEncoding import *
+from .RelativeDateTimeFormat import *
 
 _BWindow=BWindow
 _BApplication=BApplication
