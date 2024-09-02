@@ -4,11 +4,12 @@
 #include <pybind11/operators.h>
 
 #include <locale/NumberFormat.h>
+#include <locale/Locale.h>
 
 namespace py = pybind11;
 
 
-void define_NumberFormat(py::module_& m)
+PYBIND11_MODULE(NumberFormat, m)
 {
 py::enum_<BNumberElement>(m, "BNumberElement", "")
 .value("B_DECIMAL_SEPARATOR", BNumberElement::B_DECIMAL_SEPARATOR, "")

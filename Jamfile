@@ -314,6 +314,7 @@ local sourceFiles =
 	StringFormat.cpp
 	TextEncoding.cpp
 	RelativeDateTimeFormat.cpp
+	NumberFormat.cpp
 	
 	;
 
