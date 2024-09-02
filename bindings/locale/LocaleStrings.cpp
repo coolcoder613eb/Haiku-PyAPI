@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void define_LocaleStrings(py::module_& m)
+PYBIND11_MODULE(LocaleStrings, m)
 {
 py::enum_<country_strings>(m, "country_strings", "")
 .value("B_COUNTRY_STRINGS_BASE", country_strings::B_COUNTRY_STRINGS_BASE, "")

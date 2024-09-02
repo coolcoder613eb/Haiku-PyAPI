@@ -315,6 +315,7 @@ local sourceFiles =
 	TextEncoding.cpp
 	RelativeDateTimeFormat.cpp
 	NumberFormat.cpp
+	LocaleStrings.cpp
 	
 	;
 

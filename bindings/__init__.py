@@ -192,6 +192,7 @@ from .StringFormat import *
 from .TextEncoding import *
 from .RelativeDateTimeFormat import *
 from .NumberFormat import *
+from .LocaleStrings import *
 
 _BWindow=BWindow
 _BApplication=BApplication
