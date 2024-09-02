@@ -8,11 +8,11 @@
 namespace py = pybind11;
 using namespace U_ICU_NAMESPACE;
 
-void define_StringFormat(py::module_& m)
+PYBIND11_MODULE(StringFormat, m)
 {
-m.attr("MessageFormat") = py::cast(MessageFormat);
+//m.attr("MessageFormat") = py::cast(MessageFormat);
 
-m.attr("UnicodeString") = py::cast(UnicodeString);
+//m.attr("UnicodeString") = py::cast(UnicodeString);
 
 py::class_<BStringFormat, BFormat>(m, "BStringFormat")
 .def(py::init<const BLanguage &, const BString>(), "", py::arg("language"), py::arg("pattern"))

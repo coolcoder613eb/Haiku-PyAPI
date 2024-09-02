@@ -311,6 +311,7 @@ local sourceFiles =
 	DurationFormat.cpp
 	TimeFormat.cpp
 	UnicodeChar.cpp
+	StringFormat.cpp
 	
 	;
 

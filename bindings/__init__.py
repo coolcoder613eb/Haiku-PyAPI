@@ -188,6 +188,7 @@ from .TimeUnitFormat import *
 from .DurationFormat import *
 from .TimeFormat import *
 from .UnicodeChar import *
+from .StringFormat import *
 
 _BWindow=BWindow
 _BApplication=BApplication
