@@ -211,6 +211,7 @@ from .Controllable import *
 from .MediaAddOn import *
 from .MediaDecoder import *
 from .MediaDefs import *
+from .MediaEncoder import *
 
 _BWindow=BWindow
 _BApplication=BApplication
