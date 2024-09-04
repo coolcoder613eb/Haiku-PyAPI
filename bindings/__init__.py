@@ -200,6 +200,18 @@ from .CatalogData import *
 from .Catalog import *
 from .TimeZone import *
 
+#media
+from .Buffer import *
+from .MediaNode import *
+from .BufferConsumer import *
+from .TimeSource import *
+from .BufferGroup import *
+from .BufferProducer import *
+from .Controllable import *
+from .MediaAddOn import *
+from .MediaDecoder import *
+from .MediaDefs import *
+
 _BWindow=BWindow
 _BApplication=BApplication
 def MessageReceived(self, msg, parent):

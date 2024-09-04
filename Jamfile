@@ -74,7 +74,7 @@ install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
 
 # Where to search for .cpp files
-SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel bindings/translation bindings/add-ons/screen_saver bindings/add-ons/registrar bindings/add-ons/graphics bindings/add-ons/input_server bindings/add-ons/mail_daemon bindings/add-ons/network_settings bindings/drivers bindings/device bindings/mail bindings/locale ;
+SEARCH_SOURCE += bindings/interface bindings/app bindings/support bindings/storage bindings/kernel bindings/translation bindings/add-ons/screen_saver bindings/add-ons/registrar bindings/add-ons/graphics bindings/add-ons/input_server bindings/add-ons/mail_daemon bindings/add-ons/network_settings bindings/drivers bindings/device bindings/mail bindings/locale bindings/media ;
 
 # Where to look for header files
 SubDirHdrs headers ;
@@ -323,6 +323,18 @@ local sourceFiles =
 	Catalog.cpp
 	TimeZone.cpp
 	
+	#media
+	Buffer.cpp
+	MediaNode.cpp
+	BufferConsumer.cpp
+	TimeSource.cpp
+	BufferGroup.cpp
+	BufferProducer.cpp
+	Controllable.cpp
+	MediaAddOn.cpp
+	MediaDecoder.cpp
+	MediaDefs.cpp
+	
 	;
 
 # The .so files can be built from the .cpp files, each .cpp file mapping to
@@ -347,6 +359,16 @@ LINKLIBS on LocaleRoster.so = $(LINKLIBS) -llocalestub ;
 #LINKLIBS on CatalogData.so = $(LINKLIBS) -llocalestub ;
 
 #LINKLIBS on TimeFormat.so = $(LINKLIBS) -lsupport ;
+LINKLIBS on Buffer.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on BufferGroup.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on BufferProducer.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on Controllable.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaAddOn.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaDecoder.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaDefs.so = $(LINKLIBS) -lmedia ;
+#LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaNode.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;
 #LINKLIBS on MimeSnifferAddon.so = $(LINKLIBS) -lstoragekit ;
