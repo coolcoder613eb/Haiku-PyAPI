@@ -225,6 +225,7 @@ from .Sound import *
 from .SoundFile import *
 #from .SoundPlayer import *
 from .TimeCode import *
+from .TimedEventQueue import *
 
 _BWindow=BWindow
 _BApplication=BApplication

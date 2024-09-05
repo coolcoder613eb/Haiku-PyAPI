@@ -348,7 +348,7 @@ local sourceFiles =
 	SoundFile.cpp
 	#SoundPlayer.cpp
 	TimeCode.cpp
-	
+	TimedEventQueue.cpp
 	
 	;
 
@@ -397,6 +397,7 @@ LINKLIBS on SoundFile.so = $(LINKLIBS) -lmedia ;
 #LINKLIBS on SoundPlayer.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeCode.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on TimedEventQueue.so = $(LINKLIBS) -lmedia ;
 #LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;
