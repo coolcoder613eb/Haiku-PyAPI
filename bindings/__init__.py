@@ -212,6 +212,9 @@ from .MediaAddOn import *
 from .MediaDecoder import *
 from .MediaDefs import *
 from .MediaEncoder import *
+from .ParameterWeb import *
+from .MediaTrack import *
+from .MediaFile import *
 
 _BWindow=BWindow
 _BApplication=BApplication

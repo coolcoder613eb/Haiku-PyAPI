@@ -335,6 +335,9 @@ local sourceFiles =
 	MediaDecoder.cpp
 	MediaDefs.cpp
 	MediaEncoder.cpp
+	ParameterWeb.cpp
+	MediaTrack.cpp
+	MediaFile.cpp
 	
 	;
 
@@ -368,6 +371,9 @@ LINKLIBS on MediaAddOn.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaDecoder.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaDefs.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaEncoder.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on ParameterWeb.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaTrack.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaFile.so = $(LINKLIBS) -lmedia ;
 #LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaNode.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;

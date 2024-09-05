@@ -4,26 +4,30 @@
 #include <pybind11/operators.h>
 
 #include <media/MediaFile.h>
+#include <Url.h>
+#include <media/MediaTrack.h>
+#include <media/ParameterWeb.h>
+#include <View.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
-using namespace BPrivate::media;
+//using namespace BPrivate::media;
 
-void define_MediaFile(py::module_& m)
+PYBIND11_MODULE(MediaFile, m)
 {
-m.attr("B_MEDIA_FILE_REPLACE_MODE") = py::cast(B_MEDIA_FILE_REPLACE_MODE);
-m.attr("B_MEDIA_FILE_NO_READ_AHEAD") = py::cast(B_MEDIA_FILE_NO_READ_AHEAD);
-m.attr("B_MEDIA_FILE_UNBUFFERED") = py::cast(B_MEDIA_FILE_UNBUFFERED);
-m.attr("B_MEDIA_FILE_BIG_BUFFERS") = py::cast(B_MEDIA_FILE_BIG_BUFFERS);
+m.attr("B_MEDIA_FILE_REPLACE_MODE") = 0x00000001;//py::cast(B_MEDIA_FILE_REPLACE_MODE);
+m.attr("B_MEDIA_FILE_NO_READ_AHEAD") = 0x00000002;//py::cast(B_MEDIA_FILE_NO_READ_AHEAD);
+m.attr("B_MEDIA_FILE_UNBUFFERED") = 0x00000006;//py::cast(B_MEDIA_FILE_UNBUFFERED);
+m.attr("B_MEDIA_FILE_BIG_BUFFERS") = 0x00000008;//py::cast(B_MEDIA_FILE_BIG_BUFFERS);
 
-m.attr("MediaExtractor") = py::cast(MediaExtractor);
+//m.attr("MediaExtractor") = py::cast(MediaExtractor);
 
-m.attr("MediaStreamer") = py::cast(MediaStreamer);
+//m.attr("MediaStreamer") = py::cast(MediaStreamer);
 
-m.attr("MediaWriter") = py::cast(MediaWriter);
+//m.attr("MediaWriter") = py::cast(MediaWriter);
 
-m.attr("_AddonManager") = py::cast(_AddonManager);
-
+//m.attr("_AddonManager") = py::cast(_AddonManager);
+//TODO gestre dati void
 py::class_<BMediaFile>(m, "BMediaFile")
 .def(py::init<const entry_ref *>(), "", py::arg("ref"))
 .def(py::init<BDataIO *>(), "", py::arg("source"))
@@ -52,7 +56,12 @@ py::class_<BMediaFile>(m, "BMediaFile")
 .def("AddChunk", &BMediaFile::AddChunk, "", py::arg("type"), py::arg("data"), py::arg("size"))
 .def("CommitHeader", &BMediaFile::CommitHeader, "")
 .def("CloseFile", &BMediaFile::CloseFile, "")
-.def("GetParameterWeb", &BMediaFile::GetParameterWeb, "", py::arg("outWeb"))
+//.def("GetParameterWeb", &BMediaFile::GetParameterWeb, "", py::arg("outWeb"))
+.def("GetParameterWeb", [](BMediaFile &self) {
+	BParameterWeb* web = nullptr;
+	status_t status = self.GetParameterWeb(&web);
+	return std::make_tuple(status, web);
+	},"")
 .def("GetParameterValue", &BMediaFile::GetParameterValue, "", py::arg("id"), py::arg("value"), py::arg("size"))
 .def("SetParameterValue", &BMediaFile::SetParameterValue, "", py::arg("id"), py::arg("value"), py::arg("size"))
 .def("GetParameterView", &BMediaFile::GetParameterView, "")
