@@ -114,6 +114,14 @@ py::class_<media_node_attribute>(m, "media_node_attribute")
 .def_readwrite("data", &media_node_attribute::data, "")
 ;
 
+py::enum_<BMediaNode::run_mode>(m, "run_mode", "")
+.value("B_OFFLINE", BMediaNode::run_mode::B_OFFLINE, "")
+.value("B_DECREASE_PRECISION", BMediaNode::run_mode::B_DECREASE_PRECISION, "")
+.value("B_INCREASE_LATENCY", BMediaNode::run_mode::B_INCREASE_LATENCY, "")
+.value("B_DROP_DATA", BMediaNode::run_mode::B_DROP_DATA, "")
+.value("B_RECORDING", BMediaNode::run_mode::B_RECORDING, "")
+.export_values();
+
 py::class_<BMediaNode, std::unique_ptr<BMediaNode,py::nodelete>>(m, "BMediaNode")
 .def("Acquire", &BMediaNode::Acquire, "")
 .def("Release", &BMediaNode::Release, "")

@@ -340,6 +340,8 @@ local sourceFiles =
 	MediaFile.cpp
 	MediaFiles.cpp
 	MediaFormats.cpp
+	MediaRecorder.cpp
+	MediaRoster.cpp
 	
 	;
 
@@ -378,9 +380,11 @@ LINKLIBS on MediaTrack.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaFile.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaFiles.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaFormats.so = $(LINKLIBS) -lmedia ;
-#LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaNode.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaRecorder.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaRoster.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;
+#LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 
 LINKLIBS on ScreenSaver.so = $(LINKLIBS) -lscreensaver ;
 #LINKLIBS on MimeSnifferAddon.so = $(LINKLIBS) -lstoragekit ;

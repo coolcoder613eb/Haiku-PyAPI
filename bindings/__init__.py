@@ -217,6 +217,8 @@ from .MediaTrack import *
 from .MediaFile import *
 from .MediaFiles import *
 from .MediaFormats import *
+from .MediaRecorder import *
+from .MediaRoster import *
 
 _BWindow=BWindow
 _BApplication=BApplication
