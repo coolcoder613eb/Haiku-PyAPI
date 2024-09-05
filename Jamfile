@@ -346,6 +346,9 @@ local sourceFiles =
 	PlaySound.cpp
 	Sound.cpp
 	SoundFile.cpp
+	#SoundPlayer.cpp
+	TimeCode.cpp
+	
 	
 	;
 
@@ -391,6 +394,8 @@ LINKLIBS on MediaTheme.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on PlaySound.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on Sound.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on SoundFile.so = $(LINKLIBS) -lmedia ;
+#LINKLIBS on SoundPlayer.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on TimeCode.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;
 #LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 

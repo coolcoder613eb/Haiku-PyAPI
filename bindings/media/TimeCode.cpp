@@ -2,13 +2,31 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <media/TimeCode.h>
 
 namespace py = pybind11;
 
+std::string get_timecode_info_name(const timecode_info& self) {
+    return std::string(self.name);
+}
 
-void define_TimeCode(py::module_& m)
+void set_timecode_info_name(timecode_info& self, const std::string& name) {
+    std::strncpy(self.name, name.c_str(), 32 - 1);
+    self.name[32 - 1] = '\0';
+}
+
+std::string get_timecode_info_format(const timecode_info& self) {
+    return std::string(self.format);
+}
+
+void set_timecode_info_format(timecode_info& self, const std::string& format) {
+    std::strncpy(self.format, format.c_str(), 32 - 1);
+    self.name[32 - 1] = '\0';
+}
+
+PYBIND11_MODULE(TimeCode, m)
 {
 py::enum_<timecode_type>(m, "timecode_type", "")
 .value("B_TIMECODE_DEFAULT", timecode_type::B_TIMECODE_DEFAULT, "")
@@ -28,9 +46,24 @@ py::class_<timecode_info>(m, "timecode_info")
 .def_readwrite("every_nth", &timecode_info::every_nth, "")
 .def_readwrite("except_nth", &timecode_info::except_nth, "")
 .def_readwrite("fps_div", &timecode_info::fps_div, "")
-.def_readwrite("name", &timecode_info::name, "")
-.def_readwrite("format", &timecode_info::format, "")
-.def_readwrite("_reserved_", &timecode_info::_reserved_, "")
+//.def_readwrite("name", &timecode_info::name, "")
+.def_property("name", &get_timecode_info_name,&set_timecode_info_name,"")
+//.def_readwrite("format", &timecode_info::format, "")
+.def_property("format", &get_timecode_info_format,&set_timecode_info_format,"")
+//.def_readwrite("_reserved_", &timecode_info::_reserved_, "")
+.def_property(
+            "_reserved_",
+            [](const timecode_info &info) {
+                py::array_t<char> result(64);
+                std::memcpy(result.mutable_data(), &info._reserved_, sizeof(info._reserved_));
+                return result;
+            },
+            [](timecode_info &info, py::array_t<char> value) {
+                if (value.size() != 64) {
+                    throw std::runtime_error("Array must have size 64");
+                }
+                std::memcpy(&info._reserved_, value.data(), sizeof(info._reserved_));
+            },"")
 ;
 
 py::class_<BTimeCode>(m, "BTimeCode")

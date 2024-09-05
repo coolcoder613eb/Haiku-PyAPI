@@ -223,6 +223,8 @@ from .MediaTheme import *
 from .PlaySound import *
 from .Sound import *
 from .SoundFile import *
+#from .SoundPlayer import *
+from .TimeCode import *
 
 _BWindow=BWindow
 _BApplication=BApplication
