@@ -7,9 +7,9 @@
 
 namespace py = pybind11;
 using namespace BPrivate;
-using namespace BPrivate::media;
+//using namespace BPrivate::media;
 
-void define_MediaFiles(py::module_& m)
+PYBIND11_MODULE(MediaFiles, m)
 {
 py::class_<BMediaFiles>(m, "BMediaFiles")
 .def(py::init(), "")
@@ -23,7 +23,8 @@ py::class_<BMediaFiles>(m, "BMediaFiles")
 .def("SetAudioGainFor", &BMediaFiles::SetAudioGainFor, "", py::arg("type"), py::arg("item"), py::arg("gain"))
 .def("RemoveRefFor", &BMediaFiles::RemoveRefFor, "", py::arg("type"), py::arg("item"), py::arg("ref"))
 .def("RemoveItem", &BMediaFiles::RemoveItem, "", py::arg("type"), py::arg("item"))
-.def_readwrite("B_SOUNDS", &BMediaFiles::B_SOUNDS, "")
+//.def_readwrite("B_SOUNDS", &BMediaFiles::B_SOUNDS, "") //from media kit source const char BMediaFiles::B_SOUNDS[] = "Sounds";
+.def_static("B_SOUNDS", [](){return "Sounds";},"")
 ;
 
 

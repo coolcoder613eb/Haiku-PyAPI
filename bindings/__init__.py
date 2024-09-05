@@ -215,6 +215,8 @@ from .MediaEncoder import *
 from .ParameterWeb import *
 from .MediaTrack import *
 from .MediaFile import *
+from .MediaFiles import *
+from .MediaFormats import *
 
 _BWindow=BWindow
 _BApplication=BApplication

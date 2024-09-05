@@ -7,9 +7,9 @@
 
 namespace py = pybind11;
 using namespace BPrivate;
-using namespace BPrivate::media;
+//using namespace BPrivate::media;
 
-void define_MediaFormats(py::module_& m)
+PYBIND11_MODULE(MediaFormats, m)
 {
 py::enum_<media_file_accept_format_flags>(m, "media_file_accept_format_flags", "")
 .value("B_MEDIA_REJECT_WILDCARDS", media_file_accept_format_flags::B_MEDIA_REJECT_WILDCARDS, "")
