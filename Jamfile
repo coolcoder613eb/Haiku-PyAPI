@@ -342,6 +342,7 @@ local sourceFiles =
 	MediaFormats.cpp
 	MediaRecorder.cpp
 	MediaRoster.cpp
+	MediaTheme.cpp
 	
 	;
 
@@ -383,6 +384,7 @@ LINKLIBS on MediaFormats.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaNode.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaRecorder.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on MediaRoster.so = $(LINKLIBS) -lmedia ;
+LINKLIBS on MediaTheme.so = $(LINKLIBS) -lmedia ;
 LINKLIBS on TimeSource.so = $(LINKLIBS) -lmedia ;
 #LINKLIBS on BufferConsumer.so = $(LINKLIBS) -lmedia ;
 

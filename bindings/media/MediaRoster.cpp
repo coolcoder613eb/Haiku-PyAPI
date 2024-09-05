@@ -1,3 +1,4 @@
+#include <pybind11/smart_holder.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
@@ -16,6 +17,8 @@ namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::media;
 
+PYBIND11_SMART_HOLDER_TYPE_CASTERS(BMediaRoster);
+
 PYBIND11_MODULE(MediaRoster, m)
 {
 py::enum_<bus_type>(m, "bus_type", "//! The BMediaRoster is the main API to the Media Kit.")
@@ -29,7 +32,7 @@ py::enum_<bus_type>(m, "bus_type", "//! The BMediaRoster is the main API to the 
 
 //m.attr("BMediaRosterEx") = py::cast(BMediaRosterEx);
 
-py::class_<BMediaRoster, BLooper>(m, "BMediaRoster")
+py::class_<BMediaRoster, BLooper, py::smart_holder>(m, "BMediaRoster")
 .def_static("Roster", &BMediaRoster::Roster, "", py::arg("_error")=NULL)
 .def_static("CurrentRoster", &BMediaRoster::CurrentRoster, "")
 .def_static("IsRunning", &BMediaRoster::IsRunning, "")

@@ -219,6 +219,7 @@ from .MediaFiles import *
 from .MediaFormats import *
 from .MediaRecorder import *
 from .MediaRoster import *
+from .MediaTheme import *
 
 _BWindow=BWindow
 _BApplication=BApplication
