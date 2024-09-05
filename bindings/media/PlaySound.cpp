@@ -6,10 +6,10 @@
 #include <media/PlaySound.h>
 
 namespace py = pybind11;
-using namespace BPrivate;
-using namespace BPrivate::media;
+//using namespace BPrivate;
+//using namespace BPrivate::media;
 
-void define_PlaySound(py::module_& m)
+PYBIND11_MODULE(PlaySound, m)
 {
 m.def("play_sound", &play_sound, "", py::arg("soundRef"), py::arg("mix"), py::arg("queue"), py::arg("background"));
 

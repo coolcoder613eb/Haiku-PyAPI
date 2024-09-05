@@ -4,20 +4,22 @@
 #include <pybind11/operators.h>
 
 #include <media/SoundFile.h>
+#include <media/MediaFile.h>
+#include <media/MediaTrack.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
-void define_SoundFile(py::module_& m)
+PYBIND11_MODULE(SoundFile, m)
 {
-m.attr("B_UNKNOWN_FILE") = py::cast(B_UNKNOWN_FILE);
-m.attr("B_AIFF_FILE") = py::cast(B_AIFF_FILE);
-m.attr("B_WAVE_FILE") = py::cast(B_WAVE_FILE);
-m.attr("B_UNIX_FILE") = py::cast(B_UNIX_FILE);
+m.attr("B_UNKNOWN_FILE") = 0;//py::cast(B_UNKNOWN_FILE);
+m.attr("B_AIFF_FILE") = 1;//py::cast(B_AIFF_FILE);
+m.attr("B_WAVE_FILE") = 2;//py::cast(B_WAVE_FILE);
+m.attr("B_UNIX_FILE") = 3;//py::cast(B_UNIX_FILE);
 
 py::class_<BSoundFile>(m, "BSoundFile")
 .def(py::init(), "")
-.def(py::init<const entry_ref *, unsigned int>(), "", py::arg("ref"), py::arg("openMode"))
+.def(py::init<const entry_ref *, uint32>(), "", py::arg("ref"), py::arg("openMode"))
 .def("InitCheck", &BSoundFile::InitCheck, "")
 .def("SetTo", &BSoundFile::SetTo, "", py::arg("ref"), py::arg("openMode"))
 .def("FileFormat", &BSoundFile::FileFormat, "")

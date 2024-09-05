@@ -4,15 +4,18 @@
 #include <pybind11/operators.h>
 
 #include <media/Sound.h>
+#include <media/SoundPlayer.h>
+//#include <Entry.h>
+//#include <File.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
 
-void define_Sound(py::module_& m)
+PYBIND11_MODULE(Sound, m)
 {
-m.attr("BTrackReader") = py::cast(BTrackReader);
+//m.attr("BTrackReader") = py::cast(BTrackReader);
 
-py::class_<BSound>(m, "BSound")
+py::class_<BSound, std::unique_ptr<BSound,py::nodelete>>(m, "BSound")
 .def(py::init<void *, size_t, const media_raw_audio_format &, bool>(), "", py::arg("data"), py::arg("size"), py::arg("format"), py::arg("freeWhenDone")=false)
 .def(py::init<const entry_ref *, bool>(), "", py::arg("soundFile"), py::arg("loadIntoMemory")=false)
 .def("InitCheck", &BSound::InitCheck, "")

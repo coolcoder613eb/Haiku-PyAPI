@@ -220,6 +220,9 @@ from .MediaFormats import *
 from .MediaRecorder import *
 from .MediaRoster import *
 from .MediaTheme import *
+from .PlaySound import *
+from .Sound import *
+from .SoundFile import *
 
 _BWindow=BWindow
 _BApplication=BApplication
