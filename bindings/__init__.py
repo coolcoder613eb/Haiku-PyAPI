@@ -87,7 +87,7 @@ from .GradientRadial import *
 from .GradientRadialFocus import *
 from .GridView import *
 from .Dragger import *
-#from .IconUtils import *
+from .IconUtils import *
 from .Input import *
 from .PrintJob import *
 

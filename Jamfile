@@ -194,7 +194,7 @@ local sourceFiles =
 	GradientRadialFocus.cpp
 	GridView.cpp
 	Dragger.cpp
-	#IconUtils.cpp
+	IconUtils.cpp
 	Input.cpp
 	PrintJob.cpp
 	
