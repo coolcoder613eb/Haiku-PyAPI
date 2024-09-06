@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <interface/InterfaceDefs.h>
 #include <GraphicsDefs.h>
@@ -170,7 +171,7 @@ m.attr("B_USE_BIG_INSETS") = "B_USE_BIG_SPACING";
 m.attr("B_USE_BORDER_SPACING") = "- 1009";
 m.attr("B_USE_BORDER_INSETS") = "B_USE_BORDER_SPACING";
 */
-
+/*
 m.attr("B_USE_DEFAULT_SPACING") = -1002;
 m.attr("B_USE_ITEM_SPACING") = -1003;
 m.attr("B_USE_ITEM_INSETS") = -1003;
@@ -186,6 +187,25 @@ m.attr("B_USE_BIG_SPACING") = -1008;
 m.attr("B_USE_BIG_INSETS") = -1008;
 m.attr("B_USE_BORDER_SPACING") = -1009;
 m.attr("B_USE_BORDER_INSETS") = -1009;
+*/
+py::enum_<BSpacing>(m, "BSpacing", "")
+.value("B_USE_DEFAULT_SPACING", BSpacing::B_USE_DEFAULT_SPACING, "")
+.value("B_USE_ITEM_SPACING", BSpacing::B_USE_ITEM_SPACING, "")
+.value("B_USE_ITEM_INSETS", BSpacing::B_USE_ITEM_INSETS, "")
+.value("B_USE_HALF_ITEM_SPACING", BSpacing::B_USE_HALF_ITEM_SPACING, "")
+.value("B_USE_HALF_ITEM_INSETS", BSpacing::B_USE_HALF_ITEM_INSETS, "")
+.value("B_USE_WINDOW_SPACING", BSpacing::B_USE_WINDOW_SPACING, "")
+.value("B_USE_WINDOW_INSETS", BSpacing::B_USE_WINDOW_INSETS, "")
+.value("B_USE_SMALL_SPACING", BSpacing::B_USE_SMALL_SPACING, "")
+.value("B_USE_SMALL_INSETS", BSpacing::B_USE_SMALL_INSETS, "")
+.value("B_USE_CORNER_SPACING", BSpacing::B_USE_CORNER_SPACING, "")
+.value("B_USE_CORNER_INSETS", BSpacing::B_USE_CORNER_INSETS, "")
+.value("B_USE_BIG_SPACING", BSpacing::B_USE_BIG_SPACING, "")
+.value("B_USE_BIG_INSETS", BSpacing::B_USE_BIG_INSETS, "")
+.value("B_USE_BORDER_SPACING", BSpacing::B_USE_BORDER_SPACING, "")
+.value("B_USE_BORDER_INSETS", BSpacing::B_USE_BORDER_INSETS, "")
+.export_values();
+
 
 py::enum_<join_mode>(m, "join_mode", "")
 .value("B_ROUND_JOIN", join_mode::B_ROUND_JOIN, "")
@@ -326,7 +346,7 @@ py::class_<key_map>(m, "key_map")
 .def_readwrite("right_option_key", &key_map::right_option_key, "")
 .def_readwrite("menu_key", &key_map::menu_key, "")
 .def_readwrite("lock_settings", &key_map::lock_settings, "")
-// TODO are these read-only?
+// TODO are these read-only? //If no, look down at mouse_map and try that
 .def_readonly("control_map", &key_map::control_map, "")
 .def_readonly("option_caps_shift_map", &key_map::option_caps_shift_map, "")
 .def_readonly("option_caps_map", &key_map::option_caps_map, "")
@@ -349,7 +369,19 @@ py::class_<key_map>(m, "key_map")
 ;
 
 py::class_<mouse_map>(m, "mouse_map")
-.def_readonly("button", &mouse_map::button, "")
+//.def_readonly("button", &mouse_map::button, "")
+.def_property("button",
+            [](const mouse_map &mappa) {
+                py::array_t<uint32> result(16);//B_MAX_MOUSE_BUTTONS = 16
+                std::memcpy(result.mutable_data(), &mappa.button, sizeof(mappa.button));
+                return result;
+            },
+            [](mouse_map &mappa, py::array_t<uint32> value) {
+                if (value.size() != 16) {
+                    throw std::runtime_error("Array must have size 16");
+                }
+                std::memcpy(&mappa.button, value.data(), sizeof(mappa.button));
+            },"")
 ;
 
 py::class_<scroll_bar_info>(m, "scroll_bar_info")
