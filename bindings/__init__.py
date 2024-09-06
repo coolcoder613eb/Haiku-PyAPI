@@ -223,7 +223,7 @@ from .MediaTheme import *
 from .PlaySound import *
 from .Sound import *
 from .SoundFile import *
-#from .SoundPlayer import *
+from .SoundPlayer import *
 from .TimeCode import *
 from .TimedEventQueue import *
 
