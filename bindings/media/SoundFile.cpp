@@ -4,8 +4,8 @@
 #include <pybind11/operators.h>
 
 #include <media/SoundFile.h>
-#include <media/MediaFile.h>
-#include <media/MediaTrack.h>
+//#include <media/MediaFile.h>
+//#include <media/MediaTrack.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
