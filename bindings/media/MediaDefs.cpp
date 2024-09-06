@@ -223,6 +223,7 @@ py::class_<media_raw_audio_format>(m, "media_raw_audio_format")
 .def_readwrite("byte_order", &media_raw_audio_format::byte_order, "")
 .def_readwrite("buffer_size", &media_raw_audio_format::buffer_size, "")
 //.def_readwrite("wildcard", &media_raw_audio_format::wildcard, "")
+.def_static("wildcard", []() { return media_raw_audio_format::wildcard; })
 ;
 
 py::class_<media_audio_header>(m, "media_audio_header")
@@ -266,6 +267,7 @@ py::class_<media_multi_audio_info>(m, "media_multi_audio_info")
 
 py::class_<media_multi_audio_format, media_raw_audio_format, media_multi_audio_info>(m, "media_multi_audio_format")
 //.def_readwrite("wildcard", &media_multi_audio_format::wildcard, "")
+.def_static("wildcard", []() { return media_multi_audio_format::wildcard; })
 ;
 
 py::class_<media_encoded_audio_format>(m, "media_encoded_audio_format")
@@ -289,6 +291,7 @@ py::class_<media_encoded_audio_format>(m, "media_encoded_audio_format")
                 std::memcpy(&format._reserved_, value.data(), sizeof(format._reserved_));
             },"")
 //.def_readwrite("wildcard", &media_encoded_audio_format::wildcard, "")
+.def_static("wildcard", []() { return media_encoded_audio_format::wildcard; })
 ;
 
 py::class_<media_encoded_audio_header>(m, "media_encoded_audio_header")
@@ -347,6 +350,7 @@ py::class_<media_video_display_info>(m, "media_video_display_info")
                 std::memcpy(&info._reserved_, value.data(), sizeof(info._reserved_));
             },"")
 //.def_readwrite("wildcard", &media_video_display_info::wildcard, "")
+.def_static("wildcard", []() { return media_video_display_info::wildcard; })
 ;
 
 py::class_<media_raw_video_format>(m, "media_raw_video_format")
@@ -359,6 +363,7 @@ py::class_<media_raw_video_format>(m, "media_raw_video_format")
 .def_readwrite("pixel_height_aspect", &media_raw_video_format::pixel_height_aspect, "")
 .def_readwrite("display", &media_raw_video_format::display, "")
 //.def_readwrite("wildcard", &media_raw_video_format::wildcard, "")
+.def_static("wildcard", []() { return media_raw_video_format::wildcard; })
 ;
 
 py::class_<media_video_header>(m, "media_video_header")
@@ -412,6 +417,7 @@ py::class_<media_encoded_video_format>(m, "media_encoded_video_format")
                 std::memcpy(&format._reserved_, value.data(), sizeof(format._reserved_));
             },"")
 //.def_readwrite("wildcard", &media_encoded_video_format::wildcard, "")
+.def_static("wildcard", []() { return media_encoded_video_format::wildcard; })
 ;
 
 py::class_<media_encoded_video_header>(m, "media_encoded_video_header")
