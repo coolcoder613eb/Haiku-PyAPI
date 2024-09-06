@@ -247,7 +247,7 @@ local sourceFiles =
 	NodeMonitor.cpp
 	NodeInfo.cpp
 	AppFileInfo.cpp
-	#DiskDeviceDefs.cpp
+	DiskDeviceDefs.cpp
 	FilePanel.cpp
 	
 	# TranslationKit

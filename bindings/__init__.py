@@ -136,7 +136,7 @@ from .Directory import *
 from .Query import *
 from .NodeMonitor import *
 from .NodeInfo import *
-#from .DiskDeviceDefs import *
+from .DiskDeviceDefs import *
 from .FilePanel import *
 
 from .TranslationDefs import *
