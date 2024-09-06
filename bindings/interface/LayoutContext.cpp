@@ -20,9 +20,9 @@ public:
 
 PYBIND11_MODULE(LayoutContext,m)
 {
-py::class_<BLayoutContextListener>(m, "BLayoutContextListener")
-//.def(py::init(), "")
-//.def("LayoutContextLeft", &BLayoutContextListener::LayoutContextLeft, "", py::arg("context"))
+py::class_<BLayoutContextListener,PyBLayoutContextListener>(m, "BLayoutContextListener")
+.def(py::init(), "")
+.def("LayoutContextLeft", &BLayoutContextListener::LayoutContextLeft, "", py::arg("context"))
 ;
 
 py::class_<BLayoutContext>(m, "BLayoutContext")
