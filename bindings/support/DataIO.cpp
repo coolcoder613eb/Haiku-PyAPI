@@ -9,6 +9,7 @@ namespace py = pybind11;
 
 class PyBDataIO : public BDataIO {
 public:
+	using BDataIO::BDataIO;
     ssize_t				Read(void* buffer, size_t size) override {
         PYBIND11_OVERLOAD(ssize_t, BDataIO, Read, buffer, size);
     }
@@ -23,8 +24,8 @@ public:
 
 class PyBPositionIO : public BPositionIO {
 public:
-	using BPositionIO::Seek;
-    using BPositionIO::Position;
+//	using BPositionIO::Seek;
+//    using BPositionIO::Position;
     using BPositionIO::BPositionIO;
     ssize_t				Read(void* buffer, size_t size) override {
         PYBIND11_OVERLOAD(ssize_t, BPositionIO, Read, buffer, size);
@@ -54,6 +55,7 @@ public:
 
 class PyBMemoryIO : public BMemoryIO {
 public:
+	using BMemoryIO::BMemoryIO;
     ssize_t				ReadAt(off_t position, void* buffer, size_t size) override {
         PYBIND11_OVERLOAD(ssize_t, BMemoryIO, ReadAt, position, buffer, size);
     }
@@ -73,6 +75,7 @@ public:
 
 class PyBMallocIO : public BMallocIO {
 public:
+	using BMallocIO::BMallocIO;
     ssize_t				ReadAt(off_t position, void* buffer, size_t size) override {
         PYBIND11_OVERLOAD(ssize_t, BMallocIO, ReadAt, position, buffer, size);
     }
@@ -108,7 +111,6 @@ py::class_<BMemoryIO,PyBMemoryIO, BPositionIO>(m, "BMemoryIO");
 py::class_<BMallocIO,PyBMallocIO, BPositionIO>(m, "BMallocIO");
 */
 py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO")
-//py::class_<PyBPositionIO, std::shared_ptr<PyBPositionIO>>(m, "BPositionIO")
 .def(py::init(), "")
 .def("Read", &BPositionIO::Read, "", py::arg("buffer"), py::arg("size"))
 .def("Write", &BPositionIO::Write, "", py::arg("buffer"), py::arg("size"))
@@ -123,7 +125,6 @@ py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO")
 ;
 
 py::class_<BMemoryIO, PyBMemoryIO, BPositionIO>(m, "BMemoryIO")
-//py::class_<PyBMemoryIO, std::shared_ptr<PyBMemoryIO>>(m, "BMemoryIO")
 //.def(py::init<void *, size_t>(), "", py::arg("data"), py::arg("length"))
 //.def(py::init<const void *, size_t>(), "", py::arg("data"), py::arg("length"))
 .def("ReadAt", &BMemoryIO::ReadAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
