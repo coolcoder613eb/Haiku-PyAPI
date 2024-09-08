@@ -20,7 +20,7 @@ public:
     }
 };
 
-/*
+
 class PyBPositionIO : public BPositionIO {
 public:
 	using BPositionIO::Seek;
@@ -33,16 +33,16 @@ public:
         PYBIND11_OVERLOAD(ssize_t, BPositionIO, Write, buffer, size);
     }
     ssize_t ReadAt(off_t position, void* buffer, size_t size) override {
-        PYBIND11_OVERLOAD(ssize_t, BPositionIO, ReadAt, position, buffer, size);
+        PYBIND11_OVERLOAD_PURE(ssize_t, BPositionIO, ReadAt, position, buffer, size);
     }
     ssize_t WriteAt(off_t position, const void* buffer, size_t size) override {
-        PYBIND11_OVERLOAD(ssize_t, BPositionIO, WriteAt, position, buffer, size);
+        PYBIND11_OVERLOAD_PURE(ssize_t, BPositionIO, WriteAt, position, buffer, size);
     }
     off_t Seek(off_t position, uint32 seekMode) override {
-        PYBIND11_OVERLOAD(off_t, BPositionIO, Seek, position, seekMode);
+        PYBIND11_OVERLOAD_PURE(off_t, BPositionIO, Seek, position, seekMode);
     }
     off_t Position() const override {
-        PYBIND11_OVERLOAD(off_t, BPositionIO, Position);
+        PYBIND11_OVERLOAD_PURE(off_t, BPositionIO, Position);
     }
     status_t SetSize(off_t size) override {
         PYBIND11_OVERLOAD(status_t, BPositionIO, SetSize, size);
@@ -88,7 +88,7 @@ public:
     status_t			SetSize(off_t size) override {
     	PYBIND11_OVERLOAD(status_t, BMallocIO, SetSize, size);
     }
-};*/
+};
 
 
 PYBIND11_MODULE(DataIO, m)
@@ -102,13 +102,13 @@ py::class_<BDataIO, PyBDataIO>(m, "BDataIO")
 .def("WriteExactly", &BDataIO::WriteExactly, "", py::arg("buffer"), py::arg("size"), py::arg("_bytesWritten")=NULL)
 ;
 
-
-py::class_<BPositionIO, BDataIO>(m, "BPositionIO");
-py::class_<BMemoryIO, BPositionIO>(m, "BMemoryIO");
-py::class_<BMallocIO, BPositionIO>(m, "BMallocIO");
 /*
-//py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO")
-py::class_<PyBPositionIO, std::shared_ptr<PyBPositionIO>>(m, "BPositionIO")
+py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO");
+py::class_<BMemoryIO,PyBMemoryIO, BPositionIO>(m, "BMemoryIO");
+py::class_<BMallocIO,PyBMallocIO, BPositionIO>(m, "BMallocIO");
+*/
+py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO")
+//py::class_<PyBPositionIO, std::shared_ptr<PyBPositionIO>>(m, "BPositionIO")
 .def(py::init(), "")
 .def("Read", &BPositionIO::Read, "", py::arg("buffer"), py::arg("size"))
 .def("Write", &BPositionIO::Write, "", py::arg("buffer"), py::arg("size"))
@@ -122,8 +122,8 @@ py::class_<PyBPositionIO, std::shared_ptr<PyBPositionIO>>(m, "BPositionIO")
 .def("GetSize", &BPositionIO::GetSize, "", py::arg("size"))
 ;
 
-//py::class_<BMemoryIO, PyBMemoryIO, BPositionIO>(m, "BMemoryIO")
-py::class_<PyBMemoryIO, std::shared_ptr<PyBMemoryIO>>(m, "BMemoryIO")
+py::class_<BMemoryIO, PyBMemoryIO, BPositionIO>(m, "BMemoryIO")
+//py::class_<PyBMemoryIO, std::shared_ptr<PyBMemoryIO>>(m, "BMemoryIO")
 //.def(py::init<void *, size_t>(), "", py::arg("data"), py::arg("length"))
 //.def(py::init<const void *, size_t>(), "", py::arg("data"), py::arg("length"))
 .def("ReadAt", &BMemoryIO::ReadAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
@@ -133,8 +133,8 @@ py::class_<PyBMemoryIO, std::shared_ptr<PyBMemoryIO>>(m, "BMemoryIO")
 .def("SetSize", &BMemoryIO::SetSize, "", py::arg("size"))
 ;
 
-py::class_<PyBMallocIO, BMallocIO, BPositionIO>(m, "BMallocIO")
-//.def(py::init(), "")
+py::class_<BMallocIO,PyBMallocIO, BPositionIO>(m, "BMallocIO")
+.def(py::init(), "")
 .def("ReadAt", &BMallocIO::ReadAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
 .def("WriteAt", &BMallocIO::WriteAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
 .def("Seek", &BMallocIO::Seek, "", py::arg("position"), py::arg("seekMode"))
@@ -144,6 +144,5 @@ py::class_<PyBMallocIO, BMallocIO, BPositionIO>(m, "BMallocIO")
 .def("Buffer", &BMallocIO::Buffer, "")
 .def("BufferLength", &BMallocIO::BufferLength, "")
 ;
-*/
 
 }
