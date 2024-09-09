@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
+#include <pybind11/numpy.h>
 
 #include <USBKit.h>
 
@@ -48,7 +49,13 @@ py::class_<BUSBDevice>(m, "BUSBDevice")
 .def("Descriptor", &BUSBDevice::Descriptor, "")
 .def("GetStringDescriptor", &BUSBDevice::GetStringDescriptor, "", py::arg("index"), py::arg("descriptor"), py::arg("length"))
 .def("DecodeStringDescriptor", &BUSBDevice::DecodeStringDescriptor, "", py::arg("index"))
-.def("GetDescriptor", &BUSBDevice::GetDescriptor, "", py::arg("type"), py::arg("index"), py::arg("languageID"), py::arg("data"), py::arg("length"))
+//.def("GetDescriptor", &BUSBDevice::GetDescriptor, "", py::arg("type"), py::arg("index"), py::arg("languageID"), py::arg("data"), py::arg("length")) //todo: void *data -> in py::bytes
+.def("GetDescriptor", [](const BUSBDevice& self, uint8 type, uint8 index, uint16 languageID, py::bytes data) {
+	size_t length = py::len(data);
+	std::vector<uint8_t> buffer(length);
+	size_t resultLength = self.GetDescriptor(type, index, languageID, buffer.data(), length);
+	return py::bytes(reinterpret_cast<const char*>(buffer.data()), resultLength);
+},"", py::arg("type"), py::arg("index"), py::arg("languageID"), py::arg("data"))
 .def("CountConfigurations", &BUSBDevice::CountConfigurations, "")
 .def("ConfigurationAt", &BUSBDevice::ConfigurationAt, "", py::arg("index"))
 .def("ActiveConfiguration", &BUSBDevice::ActiveConfiguration, "")
@@ -98,10 +105,34 @@ py::class_<BUSBEndpoint, std::unique_ptr<BUSBEndpoint,py::nodelete>>(m, "BUSBEnd
 .def("MaxPacketSize", &BUSBEndpoint::MaxPacketSize, "")
 .def("Interval", &BUSBEndpoint::Interval, "")
 .def("Descriptor", &BUSBEndpoint::Descriptor, "")
-.def("ControlTransfer", &BUSBEndpoint::ControlTransfer, "", py::arg("requestType"), py::arg("request"), py::arg("value"), py::arg("index"), py::arg("length"), py::arg("data"))
-.def("InterruptTransfer", &BUSBEndpoint::InterruptTransfer, "", py::arg("data"), py::arg("length"))
-.def("BulkTransfer", &BUSBEndpoint::BulkTransfer, "", py::arg("data"), py::arg("length"))
-.def("IsochronousTransfer", &BUSBEndpoint::IsochronousTransfer, "", py::arg("data"), py::arg("length"), py::arg("packetDescriptors"), py::arg("packetCount"))
+//.def("ControlTransfer", &BUSBEndpoint::ControlTransfer, "", py::arg("requestType"), py::arg("request"), py::arg("value"), py::arg("index"), py::arg("length"), py::arg("data"))
+.def("ControlTransfer", [](const BUSBEndpoint& self, uint8 requestType, uint8 request, uint16 value, uint16 index, uint16 length, py::bytes data) {
+	size_t dataLength = py::len(data);
+	std::vector<uint8_t> buffer(dataLength);
+	ssize_t result = self.ControlTransfer(requestType, request, value, index, length, buffer.data());
+	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
+},"", py::arg("requestType"), py::arg("request"), py::arg("value"), py::arg("index"), py::arg("length"), py::arg("data")) .def("InterruptTransfer", [](const MyDevice& self, py::bytes data) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); ssize_t result = self.InterruptTransfer(buffer.data(), dataLength); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data")) .def("BulkTransfer", [](const MyDevice& self, py::bytes data) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); ssize_t result = self.BulkTransfer(buffer.data(), dataLength); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data")) .def("IsochronousTransfer", [](const MyDevice& self, py::bytes data, py::list packetDescriptors) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); // Converti packetDescriptors da lista Python a un array C++ std::vector<usb_iso_packet_descriptor> descriptors; for (auto item : packetDescriptors) { descriptors.push_back(item.cast<usb_iso_packet_descriptor>()); } ssize_t result = self.IsochronousTransfer(buffer.data(), dataLength, descriptors.data(), descriptors.size()); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data"), py::arg("packetDescriptors"))
+//.def("InterruptTransfer", &BUSBEndpoint::InterruptTransfer, "", py::arg("data"), py::arg("length"))
+.def("InterruptTransfer", [](const BUSBEndpoint& self, py::bytes data) {
+	size_t dataLength = py::len(data);
+	std::vector<uint8_t> buffer(dataLength);
+	ssize_t result = self.InterruptTransfer(buffer.data(), dataLength);
+	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
+},"", py::arg("data"))
+//.def("BulkTransfer", &BUSBEndpoint::BulkTransfer, "", py::arg("data"), py::arg("length"))
+.def("BulkTransfer", [](const BUSBEndpoint& self, py::bytes data) {
+	size_t dataLength = py::len(data);
+	std::vector<uint8_t> buffer(dataLength);
+	ssize_t result = self.BulkTransfer(buffer.data(), dataLength);
+	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
+},"", py::arg("data"))
+//.def("IsochronousTransfer", &BUSBEndpoint::IsochronousTransfer, "", py::arg("data"), py::arg("length"), py::arg("packetDescriptors"), py::arg("packetCount"))
+.def("IsochronousTransfer", [](const BUSBEndpoint& self, py::bytes data, usb_iso_packet_descriptor *packetDescriptors, uint32 packetCount) {
+	size_t dataLength = py::len(data);
+	std::vector<uint8_t> buffer(dataLength);
+	ssize_t result = self.IsochronousTransfer(buffer.data(), dataLength,packetDescriptors,packetCount);
+	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
+},"", py::arg("data"))
 .def("IsStalled", &BUSBEndpoint::IsStalled, "")
 .def("ClearStall", &BUSBEndpoint::ClearStall, "")
 ;
