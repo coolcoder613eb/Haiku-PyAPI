@@ -125,8 +125,8 @@ py::class_<BPositionIO, PyBPositionIO, BDataIO>(m, "BPositionIO")
 ;
 
 py::class_<BMemoryIO, PyBMemoryIO, BPositionIO>(m, "BMemoryIO")
-//.def(py::init<void *, size_t>(), "", py::arg("data"), py::arg("length"))
-//.def(py::init<const void *, size_t>(), "", py::arg("data"), py::arg("length"))
+.def(py::init<void *, size_t>(), "", py::arg("data"), py::arg("length"))
+.def(py::init<const void *, size_t>(), "", py::arg("data"), py::arg("length"))
 .def("ReadAt", &BMemoryIO::ReadAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
 .def("WriteAt", &BMemoryIO::WriteAt, "", py::arg("position"), py::arg("buffer"), py::arg("size"))
 .def("Seek", &BMemoryIO::Seek, "", py::arg("position"), py::arg("seekMode"))
