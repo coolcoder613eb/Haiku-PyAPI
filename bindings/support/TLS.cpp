@@ -15,6 +15,6 @@ m.def("tls_get", &tls_get, "", py::arg("index"));
 
 m.def("tls_address", &tls_address, "", py::arg("index"));
 
-m.def("tls_set", &tls_set, "", py::arg("index"), py::arg("value"));
+m.def("tls_set", &tls_set, "", py::arg("index"), py::arg("value")); //todo value is a void*
 
 }
