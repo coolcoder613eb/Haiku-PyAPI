@@ -8,7 +8,19 @@
 namespace py = pybind11;
 using namespace BSupportKit;
 
-void define_Job(py::module_& m)
+class PyBJob : public BJob{
+	public:
+        using BJob::BJob;
+        status_t			Run() override {
+            PYBIND11_OVERLOAD(status_t, BJob, Run);
+        }
+        status_t			Execute() override {
+            PYBIND11_OVERLOAD_PURE(status_t, BJob, Execute);
+        }
+};
+
+
+PYBIND11_MODULE(Job, m)
 {
 py::enum_<BJobState>(m, "BJobState", "")
 .value("B_JOB_STATE_WAITING_TO_RUN", BJobState::B_JOB_STATE_WAITING_TO_RUN, "")
@@ -27,7 +39,7 @@ py::class_<BJobStateListener>(m, "BJobStateListener")
 .def("JobAborted", &BJobStateListener::JobAborted, "", py::arg("job"))
 ;
 
-py::class_<BJob>(m, "BJob")
+py::class_<BJob,PyBJob>(m, "BJob")
 .def(py::init<const BString &>(), "", py::arg("title"))
 .def("InitCheck", &BJob::InitCheck, "")
 .def("Run", &BJob::Run, "")
@@ -43,7 +55,7 @@ py::class_<BJob>(m, "BJob")
 .def("RemoveDependency", &BJob::RemoveDependency, "", py::arg("job"))
 .def("CountDependencies", &BJob::CountDependencies, "")
 .def("DependantJobAt", &BJob::DependantJobAt, "", py::arg("index"))
-.def_readwrite("Private", &BJob::Private, "")
+//.def_readwrite("Private", &BJob::Private, "")
 ;
 
 
