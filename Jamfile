@@ -215,6 +215,7 @@ local sourceFiles =
 	Flattenable.cpp
 	StringList.cpp
 	DataIO.cpp
+	BufferIO.cpp
 	BufferedDataIO.cpp
 	Url.cpp
 	UTF8.cpp
