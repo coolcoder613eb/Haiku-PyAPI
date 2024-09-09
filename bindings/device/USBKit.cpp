@@ -111,7 +111,7 @@ py::class_<BUSBEndpoint, std::unique_ptr<BUSBEndpoint,py::nodelete>>(m, "BUSBEnd
 	std::vector<uint8_t> buffer(dataLength);
 	ssize_t result = self.ControlTransfer(requestType, request, value, index, length, buffer.data());
 	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
-},"", py::arg("requestType"), py::arg("request"), py::arg("value"), py::arg("index"), py::arg("length"), py::arg("data")) .def("InterruptTransfer", [](const MyDevice& self, py::bytes data) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); ssize_t result = self.InterruptTransfer(buffer.data(), dataLength); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data")) .def("BulkTransfer", [](const MyDevice& self, py::bytes data) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); ssize_t result = self.BulkTransfer(buffer.data(), dataLength); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data")) .def("IsochronousTransfer", [](const MyDevice& self, py::bytes data, py::list packetDescriptors) { size_t dataLength = py::len(data); std::vector<uint8_t> buffer(dataLength); // Converti packetDescriptors da lista Python a un array C++ std::vector<usb_iso_packet_descriptor> descriptors; for (auto item : packetDescriptors) { descriptors.push_back(item.cast<usb_iso_packet_descriptor>()); } ssize_t result = self.IsochronousTransfer(buffer.data(), dataLength, descriptors.data(), descriptors.size()); return py::bytes(reinterpret_cast<const char*>(buffer.data()), result); }, py::arg("data"), py::arg("packetDescriptors"))
+},"", py::arg("requestType"), py::arg("request"), py::arg("value"), py::arg("index"), py::arg("length"), py::arg("data")) 
 //.def("InterruptTransfer", &BUSBEndpoint::InterruptTransfer, "", py::arg("data"), py::arg("length"))
 .def("InterruptTransfer", [](const BUSBEndpoint& self, py::bytes data) {
 	size_t dataLength = py::len(data);
@@ -132,7 +132,7 @@ py::class_<BUSBEndpoint, std::unique_ptr<BUSBEndpoint,py::nodelete>>(m, "BUSBEnd
 	std::vector<uint8_t> buffer(dataLength);
 	ssize_t result = self.IsochronousTransfer(buffer.data(), dataLength,packetDescriptors,packetCount);
 	return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
-},"", py::arg("data"))
+},"", py::arg("data"),py::arg("packetDescriptors"),py::arg("packetCount"))
 .def("IsStalled", &BUSBEndpoint::IsStalled, "")
 .def("ClearStall", &BUSBEndpoint::ClearStall, "")
 ;
