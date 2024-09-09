@@ -42,7 +42,7 @@ py::enum_<swap_action>(m, "swap_action", "")
 .value("B_SWAP_ALWAYS", swap_action::B_SWAP_ALWAYS, "")
 .export_values();
 
-m.def("swap_data", &swap_data, "", py::arg("type"), py::arg("data"), py::arg("length"), py::arg("action"));
+m.def("swap_data", &swap_data, "", py::arg("type"), py::arg("data"), py::arg("length"), py::arg("action")); //todo data is a void* convert to py::buffer or py::bytes
 
 m.def("is_type_swapped", &is_type_swapped, "", py::arg("type"));
 
