@@ -91,6 +91,7 @@ from .IconUtils import *
 from .Input import *
 from .PrintJob import *
 
+from .ByteOrder import *
 from .StopWatch import *
 from .Beep import *
 from .Architecture import *
