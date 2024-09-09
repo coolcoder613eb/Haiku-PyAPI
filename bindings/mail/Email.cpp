@@ -53,6 +53,13 @@ void set_reply_to(mail_pop_account& self, const std::string& name) {
     self.reply_to[128 - 1] = '\0';
 }
 
+status_t	AddEnclosure_wrapper(BMailMessage& self, const char* MIME_type, py::buffer data, int32 len, bool clobber = false) {
+	py::buffer_info info = data.request();
+	void* buffer = info.ptr;
+	return self.AddEnclosure(MIME_type, buffer, len, clobber);
+}
+
+
 PYBIND11_MODULE(Email, m)
 {
 py::enum_<read_flags>(m, "read_flags", "")
@@ -95,7 +102,8 @@ py::class_<BMailMessage>(m, "BMailMessage")
 .def("AddContent", py::overload_cast<const char *, int32, const char *, bool>(&BMailMessage::AddContent), "", py::arg("text"), py::arg("length"), py::arg("encoding"), py::arg("clobber")=false)
 .def("AddEnclosure", py::overload_cast<entry_ref *, bool>(&BMailMessage::AddEnclosure), "", py::arg("ref"), py::arg("clobber")=false)
 .def("AddEnclosure", py::overload_cast<const char *, bool>(&BMailMessage::AddEnclosure), "", py::arg("path"), py::arg("clobber")=false)
-.def("AddEnclosure", py::overload_cast<const char *, void *, int32, bool>(&BMailMessage::AddEnclosure), "", py::arg("MIME_type"), py::arg("data"), py::arg("len"), py::arg("clobber")=false)
+//.def("AddEnclosure", py::overload_cast<const char *, void *, int32, bool>(&BMailMessage::AddEnclosure), "", py::arg("MIME_type"), py::arg("data"), py::arg("len"), py::arg("clobber")=false)
+.def("AddEnclosure", &AddEnclosure_wrapper, "", py::arg("MIME_type"), py::arg("data"), py::arg("len"), py::arg("clobber")=false)
 .def("AddHeaderField", py::overload_cast<uint32, const char *, const char *, bool>(&BMailMessage::AddHeaderField), "", py::arg("encoding"), py::arg("field_name"), py::arg("str"), py::arg("clobber")=false)
 .def("AddHeaderField", py::overload_cast<const char *, const char *, bool>(&BMailMessage::AddHeaderField), "", py::arg("field_name"), py::arg("str"), py::arg("clobber")=false)
 .def("Send", &BMailMessage::Send, "", py::arg("sendNow")=false, py::arg("removeAfterSending")=false)
