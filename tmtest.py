@@ -14,7 +14,9 @@ from Be.Font import *
 from Be import BEntry
 from Be.Entry import entry_ref
 from Be.Entry import get_ref_for_path
-
+from Be.TextView import text_run,text_run_array
+from Be.View import set_font_mask
+B_FONT_ALL = set_font_mask.B_FONT_ALL
 
 class PBox(BBox):
 	def __init__(self,frame,name,immagine):
@@ -317,9 +319,6 @@ class Window(BWindow):
 		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
 		tra=self.typtap.RunArray(0,len(self.typtap.Text()))
-		#print("runarray count",tra.count)
-		#print("tra.runs è\n",tra.runs)
-		#print(tra.runs[0].offset,tra.runs[0].font,tra.runs[0].color)
 		self.panel.AddChild(self.list.topview(),None)
 		pittura=rgb_color()
 		pittura.red=255
@@ -331,21 +330,23 @@ class Window(BWindow):
 		pictura.green=255
 		pictura.blue=0
 		pictura.alpha=255
-		from Be.TextView import text_run
+		
 		tr1=text_run()
 		tr1.offset=0
-		tr1.font=be_plain_font
+		tr1.font=BFont(be_plain_font)
 		tr1.color=pittura
 		tr2=text_run()
-		tr2.offset=10
-		tr2.font=be_bold_font
+		tr2.offset=20
+		tr2.font=BFont(be_bold_font)
 		tr2.color=pictura
 		mytralist=[tr1,tr2]
-		#this is the way to write text_run_arrays
-		tra.count=2 #increase the count
-		#print("ora tra.count è 2")
-		#print("e ora tra.runs è\n",tra.runs) #now you have 2 text_runs
+		tra.count=2 #now you have 2 text_runs
 		tra.runs[1] = tr2 #assign the second one
+		self.typtap.SetRunArray(0,len(self.typtap.Text()),tra) #this doesn't work
+		trb=text_run_array()
+		trb.count=2
+		trb.runs=mytralist
+		self.typtap.SetRunArray(0,len(self.typtap.Text()),trb) #this works, why error exiting and why does trb need tra (or it won't work)
 		#print(tra.runs[1].color.green)
 		###################### add other text_runs
 		###### Example handling refs / BEntry #####

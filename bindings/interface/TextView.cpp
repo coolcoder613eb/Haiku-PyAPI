@@ -15,6 +15,20 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+/*
+struct text_run {
+	int32_t offset;
+	BFont font;
+	rgb_color color;
+};
+
+struct text_run_array {
+	int32_t count;
+	std::vector<text_run> runs;
+	text_run_array(int32_t count) : count(count), runs(count) {}
+};
+*/
+
 class PyBTextView : public BTextView{
 	public:
         using BTextView::BTextView;
@@ -131,6 +145,7 @@ py::class_<text_run_array>(m, "text_run_array")
 .def(py::init<>())
 .def_readwrite("count", &text_run_array::count, "")
 //.def_readonly("runs", &text_run_array::runs, "")
+/*first attempt
 .def_property("runs",[](const text_run_array& self){
 		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
 	},[](text_run_array& self, const  std::vector<text_run>& new_values) {
@@ -139,8 +154,43 @@ py::class_<text_run_array>(m, "text_run_array")
 		}
 		std::copy(new_values.begin(),new_values.end(),self.runs);
 		})
+;*/
+/*
+.def_property("runs",[](const text_run_array& self){
+		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
+	},[](text_run_array& self, const  std::vector<text_run>& new_values) {
+		if (new_values.size() != self.count){
+			throw std::runtime_error("Invalid buffer size or dimensions");
+		}
+		std::memcpy(self.runs, new_values.data(), new_values.size() * sizeof(text_run));
+		//std::copy(new_values.begin(),new_values.end(),self.runs);
+		})
+;*/
+.def_property("runs",[](const text_run_array& self){
+		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
+	},[](text_run_array& self, const  py::list &new_values) {
+		std::vector<text_run> newruns;
+		for (auto item : new_values) {
+                newruns.push_back(item.cast<text_run>());
+            }
+		std::memcpy(self.runs, newruns.data(), newruns.size() * sizeof(text_run));
+	})
 ;
-
+/*  look at this
+/*suggested attempt
+py::class_<text_run_array>(m, "text_run_array")
+.def(py::init<int32_t>(), py::arg("count") = 1)
+.def_readwrite("count", &text_run_array::count)
+.def_property("runs", [](const text_run_array& self) {
+	return self.runs;
+	},
+	[](text_run_array& self, const std::vector<text_run>& new_values) {
+		if (new_values.size() != self.count) {
+			throw std::runtime_error("Invalid buffer size or dimensions");
+		}
+		self.runs = new_values;
+		})
+;*/
 /*
 py::class_<text_run_array>(m, "text_run_array")
 .def_readwrite("count", &text_run_array::count, "")
