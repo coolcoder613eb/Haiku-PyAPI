@@ -303,8 +303,8 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def_static("AllocRunArray", &BTextView::AllocRunArray, "", py::arg("entryCount"), py::arg("outSize")=NULL)
 .def_static("CopyRunArray", &BTextView::CopyRunArray, "", py::arg("orig"), py::arg("countDelta")=0)
 .def_static("FreeRunArray", &BTextView::FreeRunArray, "", py::arg("array"))
-.def_static("FlattenRunArray", &BTextView::FlattenRunArray, "", py::arg("runArray"), py::arg("_size")=NULL)
-.def_static("UnflattenRunArray", &BTextView::UnflattenRunArray, "", py::arg("data"), py::arg("_size")=NULL)
+.def_static("FlattenRunArray", &BTextView::FlattenRunArray, "", py::arg("runArray"), py::arg("_size")=NULL)// return py::bytes or py::buffer?
+.def_static("UnflattenRunArray", &BTextView::UnflattenRunArray, "", py::arg("data"), py::arg("_size")=NULL)// data should be py::bytes or py::buffer?
 .def("Undo", &BTextView::Undo, "", py::arg("clipboard"))
 .def("UndoState", &BTextView::UndoState, "", py::arg("isRedo"))
 .def("MinSize", &BTextView::MinSize, "")
