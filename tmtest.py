@@ -316,10 +316,10 @@ class Window(BWindow):
 		stuff = '\n\t\t\t\t\t\tHello Haiku!\n\n\t\t\t\t\t\t\t\tA simple test program\n\t\t\t\t\t\t\t\tfor Haiku, version 1.0\n\t\t\t\t\t\t\t\tsample code included!\n\n\t\t\t\t\t\t\t\tby Fabio Tomat aka TmTFx\n\t\t\t\t\t\t\t\tand others\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\tspecial thanks to:\n\t\t\t\t\t\t\t\tZardshard and coolcoder613'
 		#n = stuff.find('Bulletin Gator')
 		#m = stuff.find('This')
-		self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
+		#self.typtap.SetText(stuff,None)#, [(0, be_plain_font, (0, 0, 0, 0)), (n, be_bold_font, (0, 150, 0, 0)), (n + 14, be_plain_font, (0, 0, 0, 0)),(m,be_plain_font,(100,150,0,0))])
 		self.AddChild(self.bckgnd,None)
-		tra=self.typtap.RunArray(0,len(self.typtap.Text()))
 		self.panel.AddChild(self.list.topview(),None)
+		##self.tra=self.typtap.RunArray(0,len(self.typtap.Text()))
 		pittura=rgb_color()
 		pittura.red=255
 		pittura.green=0
@@ -340,14 +340,18 @@ class Window(BWindow):
 		tr2.font=BFont(be_bold_font)
 		tr2.color=pictura
 		mytralist=[tr1,tr2]
-		tra.count=2 #now you have 2 text_runs
-		tra.runs[1] = tr2 #assign the second one
-		self.typtap.SetRunArray(0,len(self.typtap.Text()),tra) #this doesn't work
-		trb=text_run_array()
-		trb.count=2
-		trb.runs=mytralist
-		self.typtap.SetRunArray(0,len(self.typtap.Text()),trb) #this works, why error exiting and why does trb need tra (or it won't work)
+		##tra.count=2 #now you have 2 text_runs
+		##tra.runs[1] = tr2 #assign the second one
+		##print("tra runs modified",tra.runs)
+		##self.typtap.SetRunArray(0,len(self.typtap.Text()),tra) #this doesn't work
+		self.trb=text_run_array()
+		#trb=self.typtap.RunArray(0,len(self.typtap.Text()))#this crashes
+		self.trb.count=2
+		self.trb.runs=mytralist
+		self.typtap.SetText(stuff,self.trb)
+		#self.typtap.SetRunArray(0,len(self.typtap.Text()),trb) #this works, why error exiting and why does trb need tra (or it won't work)
 		#print(tra.runs[1].color.green)
+		#self.typtap.SetText(stuff,trb)
 		###################### add other text_runs
 		###### Example handling refs / BEntry #####
 		a=entry_ref()
