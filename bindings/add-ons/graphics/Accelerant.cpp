@@ -82,6 +82,7 @@ m.attr("B_2D_ACCELERATION") = 1 << 0;//py::cast(B_2D_ACCELERATION);
 m.attr("B_3D_ACCELERATION") = 1 << 1;//py::cast(B_3D_ACCELERATION);
 
 py::class_<accelerant_device_info>(m, "accelerant_device_info")
+.def(py::init(), "")
 .def_readwrite("version", &accelerant_device_info::version, "")
 //.def_readwrite("name", &accelerant_device_info::name, "")
 //.def_readwrite("chipset", &accelerant_device_info::chipset, "")
@@ -133,6 +134,7 @@ py::class_<accelerant_device_info>(m, "accelerant_device_info")
 ;
 
 py::class_<display_timing>(m, "display_timing")
+.def(py::init(), "")
 .def_readwrite("pixel_clock", &display_timing::pixel_clock, "")
 .def_readwrite("h_display", &display_timing::h_display, "")
 .def_readwrite("h_sync_start", &display_timing::h_sync_start, "")
@@ -146,6 +148,7 @@ py::class_<display_timing>(m, "display_timing")
 ;
 
 py::class_<display_mode>(m, "display_mode")
+.def(py::init(), "")
 .def_readwrite("timing", &display_mode::timing, "")
 .def_readwrite("space", &display_mode::space, "")
 .def_readwrite("virtual_width", &display_mode::virtual_width, "")
@@ -156,12 +159,14 @@ py::class_<display_mode>(m, "display_mode")
 ;
 
 py::class_<frame_buffer_config>(m, "frame_buffer_config")
+.def(py::init(), "")
 .def_readwrite("frame_buffer", &frame_buffer_config::frame_buffer, "")
 .def_readwrite("frame_buffer_dma", &frame_buffer_config::frame_buffer_dma, "")
 .def_readwrite("bytes_per_row", &frame_buffer_config::bytes_per_row, "")
 ;
 
 py::class_<display_timing_constraints>(m, "display_timing_constraints")
+.def(py::init(), "")
 .def_readwrite("h_res", &display_timing_constraints::h_res, "")
 .def_readwrite("h_sync_min", &display_timing_constraints::h_sync_min, "")
 .def_readwrite("h_sync_max", &display_timing_constraints::h_sync_max, "")
@@ -184,6 +189,7 @@ py::enum_<MyClass::production>(m, "production")
 //;
 
 py::class_<monitor_info>(m, "monitor_info")
+.def(py::init(), "")
 .def_readwrite("version", &monitor_info::version, "")
 //.def_readwrite("vendor", &monitor_info::vendor, "")
 .def_property(
@@ -242,6 +248,7 @@ py::class_<monitor_info>(m, "monitor_info")
 ;
 
 py::class_<blit_params>(m, "blit_params")
+.def(py::init(), "")
 .def_readwrite("src_left", &blit_params::src_left, "")
 .def_readwrite("src_top", &blit_params::src_top, "")
 .def_readwrite("dest_left", &blit_params::dest_left, "")
@@ -251,6 +258,7 @@ py::class_<blit_params>(m, "blit_params")
 ;
 
 py::class_<scaled_blit_params>(m, "scaled_blit_params")
+.def(py::init(), "")
 .def_readwrite("src_left", &scaled_blit_params::src_left, "")
 .def_readwrite("src_top", &scaled_blit_params::src_top, "")
 .def_readwrite("src_width", &scaled_blit_params::src_width, "")
@@ -262,6 +270,7 @@ py::class_<scaled_blit_params>(m, "scaled_blit_params")
 ;
 
 py::class_<fill_rect_params>(m, "fill_rect_params")
+.def(py::init(), "")
 .def_readwrite("left", &fill_rect_params::left, "")
 .def_readwrite("top", &fill_rect_params::top, "")
 .def_readwrite("right", &fill_rect_params::right, "")
@@ -269,12 +278,14 @@ py::class_<fill_rect_params>(m, "fill_rect_params")
 ;
 
 py::class_<engine_token>(m, "engine_token")
+.def(py::init(), "")
 .def_readwrite("engine_id", &engine_token::engine_id, "")
 .def_readwrite("capability_mask", &engine_token::capability_mask, "")
 .def_readwrite("opaque", &engine_token::opaque, "")
 ;
 
 py::class_<sync_token>(m, "sync_token")
+.def(py::init(), "")
 .def_readwrite("counter", &sync_token::counter, "")
 .def_readwrite("engine_id", &sync_token::engine_id, "")
 //.def_readwrite("opaque", &sync_token::opaque, "")
