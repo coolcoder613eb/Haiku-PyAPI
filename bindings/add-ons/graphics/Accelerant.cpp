@@ -17,69 +17,69 @@ enum production {
 
 PYBIND11_MODULE(Accelerant, m)
 {
-m.attr("B_INIT_ACCELERANT") = py::cast(B_INIT_ACCELERANT);
-m.attr("B_ACCELERANT_CLONE_INFO_SIZE") = py::cast(B_ACCELERANT_CLONE_INFO_SIZE);
-m.attr("B_GET_ACCELERANT_CLONE_INFO") = py::cast(B_GET_ACCELERANT_CLONE_INFO);
-m.attr("B_CLONE_ACCELERANT") = py::cast(B_CLONE_ACCELERANT);
-m.attr("B_UNINIT_ACCELERANT") = py::cast(B_UNINIT_ACCELERANT);
-m.attr("B_GET_ACCELERANT_DEVICE_INFO") = py::cast(B_GET_ACCELERANT_DEVICE_INFO);
-m.attr("B_ACCELERANT_RETRACE_SEMAPHORE") = py::cast(B_ACCELERANT_RETRACE_SEMAPHORE);
-m.attr("B_ACCELERANT_MODE_COUNT") = py::cast(B_ACCELERANT_MODE_COUNT);
-m.attr("B_GET_MODE_LIST") = py::cast(B_GET_MODE_LIST);
-m.attr("B_PROPOSE_DISPLAY_MODE") = py::cast(B_PROPOSE_DISPLAY_MODE);
-m.attr("B_SET_DISPLAY_MODE") = py::cast(B_SET_DISPLAY_MODE);
-m.attr("B_GET_DISPLAY_MODE") = py::cast(B_GET_DISPLAY_MODE);
-m.attr("B_GET_FRAME_BUFFER_CONFIG") = py::cast(B_GET_FRAME_BUFFER_CONFIG);
-m.attr("B_GET_PIXEL_CLOCK_LIMITS") = py::cast(B_GET_PIXEL_CLOCK_LIMITS);
-m.attr("B_GET_TIMING_CONSTRAINTS") = py::cast(B_GET_TIMING_CONSTRAINTS);
-m.attr("B_MOVE_DISPLAY") = py::cast(B_MOVE_DISPLAY);
-m.attr("B_SET_INDEXED_COLORS") = py::cast(B_SET_INDEXED_COLORS);
-m.attr("B_DPMS_CAPABILITIES") = py::cast(B_DPMS_CAPABILITIES);
-m.attr("B_DPMS_MODE") = py::cast(B_DPMS_MODE);
-m.attr("B_SET_DPMS_MODE") = py::cast(B_SET_DPMS_MODE);
-m.attr("B_GET_PREFERRED_DISPLAY_MODE") = py::cast(B_GET_PREFERRED_DISPLAY_MODE);
-m.attr("B_GET_MONITOR_INFO") = py::cast(B_GET_MONITOR_INFO);
-m.attr("B_GET_EDID_INFO") = py::cast(B_GET_EDID_INFO);
-m.attr("B_SET_BRIGHTNESS") = py::cast(B_SET_BRIGHTNESS);
-m.attr("B_GET_BRIGHTNESS") = py::cast(B_GET_BRIGHTNESS);
-m.attr("B_MOVE_CURSOR") = py::cast(B_MOVE_CURSOR);
-m.attr("B_SET_CURSOR_SHAPE") = py::cast(B_SET_CURSOR_SHAPE);
-m.attr("B_SHOW_CURSOR") = py::cast(B_SHOW_CURSOR);
-m.attr("B_SET_CURSOR_BITMAP") = py::cast(B_SET_CURSOR_BITMAP);
-m.attr("B_ACCELERANT_ENGINE_COUNT") = py::cast(B_ACCELERANT_ENGINE_COUNT);
-m.attr("B_ACQUIRE_ENGINE") = py::cast(B_ACQUIRE_ENGINE);
-m.attr("B_RELEASE_ENGINE") = py::cast(B_RELEASE_ENGINE);
-m.attr("B_WAIT_ENGINE_IDLE") = py::cast(B_WAIT_ENGINE_IDLE);
-m.attr("B_GET_SYNC_TOKEN") = py::cast(B_GET_SYNC_TOKEN);
-m.attr("B_SYNC_TO_TOKEN") = py::cast(B_SYNC_TO_TOKEN);
-m.attr("B_SCREEN_TO_SCREEN_BLIT") = py::cast(B_SCREEN_TO_SCREEN_BLIT);
-m.attr("B_FILL_RECTANGLE") = py::cast(B_FILL_RECTANGLE);
-m.attr("B_INVERT_RECTANGLE") = py::cast(B_INVERT_RECTANGLE);
-m.attr("B_FILL_SPAN") = py::cast(B_FILL_SPAN);
-m.attr("B_SCREEN_TO_SCREEN_TRANSPARENT_BLIT") = py::cast(B_SCREEN_TO_SCREEN_TRANSPARENT_BLIT);
-m.attr("B_SCREEN_TO_SCREEN_SCALED_FILTERED_BLIT") = py::cast(B_SCREEN_TO_SCREEN_SCALED_FILTERED_BLIT);
-m.attr("B_ACCELERANT_PRIVATE_START") = py::cast(B_ACCELERANT_PRIVATE_START);
+m.attr("B_INIT_ACCELERANT") = 0;//py::cast(B_INIT_ACCELERANT);
+m.attr("B_ACCELERANT_CLONE_INFO_SIZE") = 1;//py::cast(B_ACCELERANT_CLONE_INFO_SIZE);
+m.attr("B_GET_ACCELERANT_CLONE_INFO") = 2;//py::cast(B_GET_ACCELERANT_CLONE_INFO);
+m.attr("B_CLONE_ACCELERANT") = 3;//py::cast(B_CLONE_ACCELERANT);
+m.attr("B_UNINIT_ACCELERANT") = 4;//py::cast(B_UNINIT_ACCELERANT);
+m.attr("B_GET_ACCELERANT_DEVICE_INFO") = 5;//py::cast(B_GET_ACCELERANT_DEVICE_INFO);
+m.attr("B_ACCELERANT_RETRACE_SEMAPHORE") = 6;//py::cast(B_ACCELERANT_RETRACE_SEMAPHORE);
+m.attr("B_ACCELERANT_MODE_COUNT") = 0x100;//py::cast(B_ACCELERANT_MODE_COUNT);
+m.attr("B_GET_MODE_LIST") = 0x101;//py::cast(B_GET_MODE_LIST);
+m.attr("B_PROPOSE_DISPLAY_MODE") = 0x102;//py::cast(B_PROPOSE_DISPLAY_MODE);
+m.attr("B_SET_DISPLAY_MODE") = 0x103;//py::cast(B_SET_DISPLAY_MODE);
+m.attr("B_GET_DISPLAY_MODE") = 0x104;//py::cast(B_GET_DISPLAY_MODE);
+m.attr("B_GET_FRAME_BUFFER_CONFIG") = 0x105;//py::cast(B_GET_FRAME_BUFFER_CONFIG);
+m.attr("B_GET_PIXEL_CLOCK_LIMITS") = 0x106;//py::cast(B_GET_PIXEL_CLOCK_LIMITS);
+m.attr("B_GET_TIMING_CONSTRAINTS") = 0x107;//py::cast(B_GET_TIMING_CONSTRAINTS);
+m.attr("B_MOVE_DISPLAY") = 0x108;//py::cast(B_MOVE_DISPLAY);
+m.attr("B_SET_INDEXED_COLORS") = 0x109;//py::cast(B_SET_INDEXED_COLORS);
+m.attr("B_DPMS_CAPABILITIES") = 0x10A;//py::cast(B_DPMS_CAPABILITIES);
+m.attr("B_DPMS_MODE") = 0x10B;//py::cast(B_DPMS_MODE);
+m.attr("B_SET_DPMS_MODE") = 0x10C;//py::cast(B_SET_DPMS_MODE);
+m.attr("B_GET_PREFERRED_DISPLAY_MODE") = 0x10D;//py::cast(B_GET_PREFERRED_DISPLAY_MODE);
+m.attr("B_GET_MONITOR_INFO") = 0x10E;//py::cast(B_GET_MONITOR_INFO);
+m.attr("B_GET_EDID_INFO") = 0x10F;//py::cast(B_GET_EDID_INFO);
+m.attr("B_SET_BRIGHTNESS") = 0x110;//py::cast(B_SET_BRIGHTNESS);
+m.attr("B_GET_BRIGHTNESS") = 0x111;//py::cast(B_GET_BRIGHTNESS);
+m.attr("B_MOVE_CURSOR") = 0x200;//py::cast(B_MOVE_CURSOR);
+m.attr("B_SET_CURSOR_SHAPE") = 0x201;//py::cast(B_SET_CURSOR_SHAPE);
+m.attr("B_SHOW_CURSOR") = 0x202;//py::cast(B_SHOW_CURSOR);
+m.attr("B_SET_CURSOR_BITMAP") = 0x203;//py::cast(B_SET_CURSOR_BITMAP);
+m.attr("B_ACCELERANT_ENGINE_COUNT") = 0x300;//py::cast(B_ACCELERANT_ENGINE_COUNT);
+m.attr("B_ACQUIRE_ENGINE") = 0x301;//py::cast(B_ACQUIRE_ENGINE);
+m.attr("B_RELEASE_ENGINE") = 0x302;//py::cast(B_RELEASE_ENGINE);
+m.attr("B_WAIT_ENGINE_IDLE") = 0x303;//py::cast(B_WAIT_ENGINE_IDLE);
+m.attr("B_GET_SYNC_TOKEN") = 0x304;//py::cast(B_GET_SYNC_TOKEN);
+m.attr("B_SYNC_TO_TOKEN") = 0x305;//py::cast(B_SYNC_TO_TOKEN);
+m.attr("B_SCREEN_TO_SCREEN_BLIT") = 0x400;//py::cast(B_SCREEN_TO_SCREEN_BLIT);
+m.attr("B_FILL_RECTANGLE") = 0x401;//py::cast(B_FILL_RECTANGLE);
+m.attr("B_INVERT_RECTANGLE") = 0x402;//py::cast(B_INVERT_RECTANGLE);
+m.attr("B_FILL_SPAN") = 0x403;//py::cast(B_FILL_SPAN);
+m.attr("B_SCREEN_TO_SCREEN_TRANSPARENT_BLIT") = 0x404;//py::cast(B_SCREEN_TO_SCREEN_TRANSPARENT_BLIT);
+m.attr("B_SCREEN_TO_SCREEN_SCALED_FILTERED_BLIT") = 0x405;//py::cast(B_SCREEN_TO_SCREEN_SCALED_FILTERED_BLIT);
+m.attr("B_ACCELERANT_PRIVATE_START") = (int)0x80000000;//py::cast(B_ACCELERANT_PRIVATE_START);
 
-m.attr("B_SCROLL") = py::cast(B_SCROLL);
-m.attr("B_8_BIT_DAC") = py::cast(B_8_BIT_DAC);
-m.attr("B_HARDWARE_CURSOR") = py::cast(B_HARDWARE_CURSOR);
-m.attr("B_PARALLEL_ACCESS") = py::cast(B_PARALLEL_ACCESS);
-m.attr("B_DPMS") = py::cast(B_DPMS);
-m.attr("B_IO_FB_NA") = py::cast(B_IO_FB_NA);
+m.attr("B_SCROLL") = 1 << 0;//py::cast(B_SCROLL);
+m.attr("B_8_BIT_DAC") = 1 << 1;//py::cast(B_8_BIT_DAC);
+m.attr("B_HARDWARE_CURSOR") = 1 << 2;//py::cast(B_HARDWARE_CURSOR);
+m.attr("B_PARALLEL_ACCESS") = 1 << 3;//py::cast(B_PARALLEL_ACCESS);
+m.attr("B_DPMS") = 1 << 4;//py::cast(B_DPMS);
+m.attr("B_IO_FB_NA") = 1 << 5;//py::cast(B_IO_FB_NA);
 
-m.attr("B_DPMS_ON") = py::cast(B_DPMS_ON);
-m.attr("B_DPMS_STAND_BY") = py::cast(B_DPMS_STAND_BY);
-m.attr("B_DPMS_SUSPEND") = py::cast(B_DPMS_SUSPEND);
-m.attr("B_DPMS_OFF") = py::cast(B_DPMS_OFF);
+m.attr("B_DPMS_ON") = 1 << 0;//py::cast(B_DPMS_ON);
+m.attr("B_DPMS_STAND_BY") = 1 << 1;//py::cast(B_DPMS_STAND_BY);
+m.attr("B_DPMS_SUSPEND") = 1 << 2;//py::cast(B_DPMS_SUSPEND);
+m.attr("B_DPMS_OFF") = 1 << 3;//py::cast(B_DPMS_OFF);
 
-m.attr("B_BLANK_PEDESTAL") = py::cast(B_BLANK_PEDESTAL);
-m.attr("B_TIMING_INTERLACED") = py::cast(B_TIMING_INTERLACED);
-m.attr("B_POSITIVE_HSYNC") = py::cast(B_POSITIVE_HSYNC);
-m.attr("B_POSITIVE_VSYNC") = py::cast(B_POSITIVE_VSYNC);
-m.attr("B_SYNC_ON_GREEN") = py::cast(B_SYNC_ON_GREEN);
+m.attr("B_BLANK_PEDESTAL") = 1 << 27;//py::cast(B_BLANK_PEDESTAL);
+m.attr("B_TIMING_INTERLACED") = 1 << 28;//py::cast(B_TIMING_INTERLACED);
+m.attr("B_POSITIVE_HSYNC") = 1 << 29;//py::cast(B_POSITIVE_HSYNC);
+m.attr("B_POSITIVE_VSYNC") = 1 << 30;//py::cast(B_POSITIVE_VSYNC);
+m.attr("B_SYNC_ON_GREEN") = 1 << 31;//py::cast(B_SYNC_ON_GREEN);
 
-m.attr("B_2D_ACCELERATION") = py::cast(B_2D_ACCELERATION);
-m.attr("B_3D_ACCELERATION") = py::cast(B_3D_ACCELERATION);
+m.attr("B_2D_ACCELERATION") = 1 << 0;//py::cast(B_2D_ACCELERATION);
+m.attr("B_3D_ACCELERATION") = 1 << 1;//py::cast(B_3D_ACCELERATION);
 
 py::class_<accelerant_device_info>(m, "accelerant_device_info")
 .def_readwrite("version", &accelerant_device_info::version, "")
@@ -294,6 +294,6 @@ py::class_<sync_token>(m, "sync_token")
         , "")
 ;
 
-m.def("get_accelerant_hook", &get_accelerant_hook, "", py::arg("feature"), py::arg("data"));
+//m.def("get_accelerant_hook", &get_accelerant_hook, "", py::arg("feature"), py::arg("data"));
 
 }

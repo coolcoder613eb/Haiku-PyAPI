@@ -152,7 +152,7 @@ from .stat import *
 
 #from .ScreenSaver import *
 #from .MimeSnifferAddon import *
-#from .Accelerant import *
+from .Accelerant import *
 #from .GraphicsCard import *
 #from .InputServerDevice import *
 #from .InputServerFilter import *
