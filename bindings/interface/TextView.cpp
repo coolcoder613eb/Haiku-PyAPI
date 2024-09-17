@@ -254,7 +254,12 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def("RunArray", &BTextView::RunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("_size")=NULL)
 .def("LineAt", py::overload_cast<int32>(&BTextView::LineAt,py::const_), "", py::arg("offset"))
 .def("LineAt", py::overload_cast<BPoint>(&BTextView::LineAt,py::const_), "", py::arg("point"))
-.def("PointAt", &BTextView::PointAt, "", py::arg("offset"), py::arg("_height")=NULL)
+//.def("PointAt", &BTextView::PointAt, "", py::arg("offset"), py::arg("_height")=NULL)
+.def("PointAt", [](BTextView& self, int32 offset) -> std::tuple<BPoint,float> {
+	float height;
+	BPoint ret = self.PointAt(offset,&height);
+	return std::make_tuple(ret,height);
+},"",py::arg("offset"))
 .def("OffsetAt", py::overload_cast<BPoint>(&BTextView::OffsetAt,py::const_), "", py::arg("point"))
 .def("OffsetAt", py::overload_cast<int32>(&BTextView::OffsetAt,py::const_), "", py::arg("line"))
 .def("FindWord", &BTextView::FindWord, "", py::arg("offset"), py::arg("_fromOffset"), py::arg("_toOffset"))
