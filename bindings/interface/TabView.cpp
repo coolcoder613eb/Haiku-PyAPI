@@ -252,6 +252,14 @@ py::class_<BTabView, PyBTabView, BView,std::unique_ptr<BTabView, py::nodelete>>(
 .def("ViewForTab", &BTabView::ViewForTab, "", py::arg("tabIndex"))
 .def("IndexOf", &BTabView::IndexOf, "", py::arg("tab"))
 ;
-
-
+py::enum_<BTabView::tab_side>(m, "tab_side", "")
+//				kLeftSide	= 1 << 0,
+//				kRightSide	= 1 << 1,
+//				kTopSide	= 1 << 2,
+//				kBottomSide	= 1 << 3
+.value("kLeftSide", BTabView::tab_side::kLeftSide, "")
+.value("kRightSide", BTabView::tab_side::kRightSide, "")
+.value("kTopSide", BTabView::tab_side::kTopSide, "")
+.value("kBottomSide", BTabView::tab_side::kBottomSide, "")
+.export_values();
 }
