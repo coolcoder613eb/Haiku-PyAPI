@@ -243,7 +243,13 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def("AcceptsDrop", &BTextView::AcceptsDrop, "", py::arg("message"))
 .def("Select", &BTextView::Select, "", py::arg("startOffset"), py::arg("endOffset"))
 .def("SelectAll", &BTextView::SelectAll, "")
-.def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
+//.def("GetSelection", &BTextView::GetSelection, "", py::arg("_start"), py::arg("_end"))
+.def("GetSelection", [](BTextView& self)-> std::tuple<int32,int32>{
+	int32 start;
+	int32 end;
+	self.GetSelection(&start,&end);
+	return std::make_tuple(start,end);
+}, "")
 //.def("SetFontAndColor", static_cast<void (BTextView::*)(const BFont*, uint32, const rgb_color*)>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 .def("SetFontAndColor", py::overload_cast<const BFont *, uint32, const rgb_color *>(&BTextView::SetFontAndColor), "", py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
 //.def("SetFontAndColor", static_cast<void (BTextView::*)(int32, int32, const BFont *, uint32, const rgb_color *)>(&BTextView::SetFontAndColor), "", py::arg("startOffset"), py::arg("endOffset"), py::arg("font"), py::arg("mode")=B_FONT_ALL, py::arg("color")=NULL)
