@@ -268,7 +268,13 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 },"",py::arg("offset"))
 .def("OffsetAt", py::overload_cast<BPoint>(&BTextView::OffsetAt,py::const_), "", py::arg("point"))
 .def("OffsetAt", py::overload_cast<int32>(&BTextView::OffsetAt,py::const_), "", py::arg("line"))
-.def("FindWord", &BTextView::FindWord, "", py::arg("offset"), py::arg("_fromOffset"), py::arg("_toOffset"))
+//.def("FindWord", &BTextView::FindWord, "", py::arg("offset"), py::arg("_fromOffset"), py::arg("_toOffset"))
+.def("FindWord", [](BTextView& self, int32 offset) -> std::tuple<int32,int32>{
+	int32 _fromOffset;
+	int32 _toOffset;
+	self.FindWord(offset,&_fromOffset,&_toOffset);
+	return std::make_tuple(_fromOffset,_toOffset);
+},"", py::arg("offset"))
 .def("CanEndLine", &BTextView::CanEndLine, "", py::arg("offset"))
 .def("LineWidth", &BTextView::LineWidth, "", py::arg("lineNumber")=0)
 .def("LineHeight", &BTextView::LineHeight, "", py::arg("lineNumber")=0)
