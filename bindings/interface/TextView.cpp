@@ -15,20 +15,6 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
-/*
-struct text_run {
-	int32_t offset;
-	BFont font;
-	rgb_color color;
-};
-
-struct text_run_array {
-	int32_t count;
-	std::vector<text_run> runs;
-	text_run_array(int32_t count) : count(count), runs(count) {}
-};
-*/
-
 class PyBTextView : public BTextView{
 	public:
         using BTextView::BTextView;
@@ -140,33 +126,18 @@ py::class_<text_run>(m, "text_run")
 .def_readwrite("font", &text_run::font, "")
 .def_readwrite("color", &text_run::color, "")
 ;
+//tentativo di creare text_run gestito da python, produce lo stesso errori
+/*m.def("create_text_run", []() { return new text_run(); // Python prende proprietà
+}, py::return_value_policy::take_ownership);*/
 
 py::class_<text_run_array>(m, "text_run_array")
-.def(py::init<>())
+//.def(py::init<>())
+/*init has been commented out because it's safer creating a text_run_array with
+AllocRunArray static function*/
 .def_readwrite("count", &text_run_array::count, "")
 //.def_readonly("runs", &text_run_array::runs, "")
-/*first attempt
-.def_property("runs",[](const text_run_array& self){
-		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
-	},[](text_run_array& self, const  std::vector<text_run>& new_values) {
-		if (new_values.size() != self.count){
-			throw std::runtime_error("Invalid buffer size or dimensions");
-		}
-		std::copy(new_values.begin(),new_values.end(),self.runs);
-		})
-;*/
-/*
-.def_property("runs",[](const text_run_array& self){
-		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
-	},[](text_run_array& self, const  std::vector<text_run>& new_values) {
-		if (new_values.size() != self.count){
-			throw std::runtime_error("Invalid buffer size or dimensions");
-		}
-		std::memcpy(self.runs, new_values.data(), new_values.size() * sizeof(text_run));
-		//std::copy(new_values.begin(),new_values.end(),self.runs);
-		})
-;*/
-.def_property("runs",[](const text_run_array& self){
+//this method works but gives error on delete(rewrite draw?)
+/*.def_property("runs",[](const text_run_array& self){
 		return std::vector<text_run>(self.runs, self.runs + self.text_run_array::count);
 	},[](text_run_array& self, const  py::list &new_values) {
 		std::vector<text_run> newruns;
@@ -174,23 +145,19 @@ py::class_<text_run_array>(m, "text_run_array")
                 newruns.push_back(item.cast<text_run>());
             }
 		std::memcpy(self.runs, newruns.data(), newruns.size() * sizeof(text_run));
-	})
+	})*/
+//also this one works but gives errors as above
+.def_property("runs", [](const text_run_array& self) -> py::list { 
+	py::list result; for (int i = 0; i < self.count; ++i) {
+		result.append(self.runs[i]); 
+	} return result;
+}, [](text_run_array& self, const py::list& new_values) {
+	int i = 0; for (auto item : new_values) {
+		if (i >= self.count) break; // Evita overflow
+		self.runs[i] = item.cast<text_run>(); ++i; 
+	} 
+}) 
 ;
-/*  look at this
-/*suggested attempt
-py::class_<text_run_array>(m, "text_run_array")
-.def(py::init<int32_t>(), py::arg("count") = 1)
-.def_readwrite("count", &text_run_array::count)
-.def_property("runs", [](const text_run_array& self) {
-	return self.runs;
-	},
-	[](text_run_array& self, const std::vector<text_run>& new_values) {
-		if (new_values.size() != self.count) {
-			throw std::runtime_error("Invalid buffer size or dimensions");
-		}
-		self.runs = new_values;
-		})
-;*/
 /*
 py::class_<text_run_array>(m, "text_run_array")
 .def_readwrite("count", &text_run_array::count, "")
@@ -223,6 +190,18 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def("SetText", py::overload_cast<const char *, const text_run_array *>(&BTextView::SetText), "", py::arg("text"), py::arg("runs")=NULL)
 .def("SetText", py::overload_cast<const char *, int32, const text_run_array *>(&BTextView::SetText), "", py::arg("text"), py::arg("length"), py::arg("runs")=NULL)
 .def("SetText", py::overload_cast<BFile *, int32, int32, const text_run_array *>(&BTextView::SetText), "", py::arg("file"), py::arg("offset"), py::arg("length"), py::arg("runs")=NULL)
+.def("SetText", [](BTextView& self, const char* text, const py::list& runs){//&SetTextWrapper, "", py::arg("text"), py::arg("runs")=NULL)
+	if (!runs.is_none()) {
+		auto len = runs.size();
+		text_run_array* tra = BTextView::AllocRunArray(len);
+		int i = 0; for (auto item : runs) {
+			if (i >= len) break; // Evita overflow
+			tra->runs[i] = item.cast<text_run>(); ++i; 
+		}
+		self.SetText(text, tra);
+		BTextView::FreeRunArray(tra);
+	}
+}, "", py::arg("text"), py::arg("runs"))
 .def("Insert", py::overload_cast<const char *, const text_run_array *>(&BTextView::Insert), "", py::arg("text"), py::arg("runs")=NULL)
 .def("Insert", py::overload_cast<const char *, int32, const text_run_array *>(&BTextView::Insert), "", py::arg("text"), py::arg("length"), py::arg("runs")=NULL)
 .def("Insert", py::overload_cast<int32, const char *, int32, const text_run_array *>(&BTextView::Insert), "", py::arg("offset"), py::arg("text"), py::arg("length"), py::arg("runs")=NULL)

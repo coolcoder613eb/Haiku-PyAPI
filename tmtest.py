@@ -340,15 +340,16 @@ class Window(BWindow):
 		tr2.font=BFont(be_bold_font)
 		tr2.color=pictura
 		mytralist=[tr1,tr2]
+		self.typtap.SetText(stuff,mytralist)
 		##tra.count=2 #now you have 2 text_runs
 		##tra.runs[1] = tr2 #assign the second one
 		##print("tra runs modified",tra.runs)
 		##self.typtap.SetRunArray(0,len(self.typtap.Text()),tra) #this doesn't work
-		self.trb=text_run_array()
+#		self.trb=text_run_array()
 		#trb=self.typtap.RunArray(0,len(self.typtap.Text()))#this crashes
-		self.trb.count=2
-		self.trb.runs=mytralist
-		self.typtap.SetText(stuff,self.trb)
+#		self.trb.count=2
+#		self.trb.runs=mytralist
+#		self.typtap.SetText(stuff,self.trb)
 		#self.typtap.SetRunArray(0,len(self.typtap.Text()),trb) #this works, why error exiting and why does trb need tra (or it won't work)
 		#print(tra.runs[1].color.green)
 		#self.typtap.SetText(stuff,trb)
@@ -420,7 +421,19 @@ class Window(BWindow):
 	def MessageReceived(self, msg):
 		if msg.what == 1:
 			self.startimer.SetValue(not(self.startimer.Value()))
+			
+			
 		elif msg.what == 2:
+			tr1=text_run()
+			tr1.offset=0
+			tr1.font=be_bold_font
+			tr1.color=rgb_color()
+			tr2=text_run()
+			tr2.offset=2
+			tr2.font=be_plain_font
+			tr2.color=rgb_color()
+			tr2.color.blue=255
+			self.typtap.SetText("Ciao",[tr1,tr2])
 			x=round(self.statbar.CurrentValue())
 			if x<100:
 				outtxt=str(x+1)+"%"
