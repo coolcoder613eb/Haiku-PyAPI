@@ -96,7 +96,7 @@ from .StopWatch import *
 from .Beep import *
 from .Architecture import *
 from .Locker import *
-from .BlockCache import *
+#from .BlockCache import *
 from .Autolock import *
 from .DateTime import *
 from .parsedate import *
