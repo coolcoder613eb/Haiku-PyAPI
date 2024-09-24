@@ -202,6 +202,30 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 		BTextView::FreeRunArray(tra);
 	}
 }, "", py::arg("text"), py::arg("runs"))
+.def("SetText", [](BTextView& self, const char* text, int32 length, const py::list& runs){//&SetTextWrapper, "", py::arg("text"), py::arg("runs")=NULL)
+	if (!runs.is_none()) {
+		auto len = runs.size();
+		text_run_array* tra = BTextView::AllocRunArray(len);
+		int i = 0; for (auto item : runs) {
+			if (i >= len) break; // Evita overflow
+			tra->runs[i] = item.cast<text_run>(); ++i; 
+		}
+		self.SetText(text, length, tra);
+		BTextView::FreeRunArray(tra);
+	}
+}, "", py::arg("text"), py::arg("length"), py::arg("runs"))
+.def("SetText", [](BTextView& self, BFile* file, int32 offset, int32 length, const py::list& runs){//&SetTextWrapper, "", py::arg("text"), py::arg("runs")=NULL)
+	if (!runs.is_none()) {
+		auto len = runs.size();
+		text_run_array* tra = BTextView::AllocRunArray(len);
+		int i = 0; for (auto item : runs) {
+			if (i >= len) break; // Evita overflow
+			tra->runs[i] = item.cast<text_run>(); ++i; 
+		}
+		self.SetText(file, offset, length, tra);
+		BTextView::FreeRunArray(tra);
+	}
+}, "", py::arg("file"), py::arg("offset"), py::arg("length"), py::arg("runs"))
 .def("Insert", py::overload_cast<const char *, const text_run_array *>(&BTextView::Insert), "", py::arg("text"), py::arg("runs")=NULL)
 .def("Insert", py::overload_cast<const char *, int32, const text_run_array *>(&BTextView::Insert), "", py::arg("text"), py::arg("length"), py::arg("runs")=NULL)
 .def("Insert", py::overload_cast<int32, const char *, int32, const text_run_array *>(&BTextView::Insert), "", py::arg("offset"), py::arg("text"), py::arg("length"), py::arg("runs")=NULL)
