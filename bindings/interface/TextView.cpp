@@ -260,6 +260,18 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def("GetFontAndColor", py::overload_cast<int32, BFont *, rgb_color *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("offset"), py::arg("_font"), py::arg("_color")=NULL)
 .def("GetFontAndColor", py::overload_cast<BFont *, uint32 *, rgb_color *, bool *>(&BTextView::GetFontAndColor,py::const_), "", py::arg("_font"), py::arg("_mode"), py::arg("_color")=NULL, py::arg("_sameColor")=NULL)
 .def("SetRunArray", &BTextView::SetRunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("runs"))
+.def("SetRunArray", [](BTextView& self, int32 startOffset, int32 endOffset, const py::list& runs) {
+	if (!runs.is_none()) {
+		auto len = runs.size();
+		text_run_array* tra = BTextView::AllocRunArray(len);
+		int i = 0; for (auto item : runs) {
+			if (i >= len) break; // Evita overflow
+			tra->runs[i] = item.cast<text_run>(); ++i; 
+		}
+		self.SetRunArray(startOffset, endOffset, tra);
+		BTextView::FreeRunArray(tra);
+	}
+},"",py::arg("startOffset"),py::arg("endOffset"),py::arg("runs"))
 .def("RunArray", &BTextView::RunArray, "", py::arg("startOffset"), py::arg("endOffset"), py::arg("_size")=NULL)
 .def("LineAt", py::overload_cast<int32>(&BTextView::LineAt,py::const_), "", py::arg("offset"))
 .def("LineAt", py::overload_cast<BPoint>(&BTextView::LineAt,py::const_), "", py::arg("point"))

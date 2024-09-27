@@ -7,7 +7,7 @@ from .Invoker import *
 from .Key import *
 from .KeyStore import *
 from .Looper import *
-from .Application import * # has to be after looper
+from .Application import * # should to be loaded after looper
 from .Message import *
 from .MessageFilter import *
 from .MessageQueue import *
