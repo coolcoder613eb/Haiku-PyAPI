@@ -266,19 +266,19 @@ local sourceFiles =
 	stat.cpp
 	
 	#add-ons
-	ScreenSaver.cpp
-	MimeSnifferAddon.cpp
+	#ScreenSaver.cpp
+	#MimeSnifferAddon.cpp
 	Accelerant.cpp
-	GraphicsCard.cpp
-	InputServerDevice.cpp
-	InputServerFilter.cpp
-	InputServerMethod.cpp
-	MailProtocol.cpp
-	MailFilter.cpp
+	#GraphicsCard.cpp
+	#InputServerDevice.cpp
+	#InputServerFilter.cpp
+	#InputServerMethod.cpp
+	#MailProtocol.cpp
+	#MailFilter.cpp
 	MailSettingsView.cpp
-	NetworkProfile.cpp
+	#NetworkProfile.cpp
 	NetworkSettings.cpp
-	NetworkSettingsAddOn.cpp
+	#NetworkSettingsAddOn.cpp
 	
 	#drivers
 	#bios.cpp
@@ -286,12 +286,12 @@ local sourceFiles =
 	#bus_manager.cpp
 	
 	#device
-	SerialPort.cpp
-	Joystick.cpp
-	USBKit.cpp
-	A2D.cpp
-	D2A.cpp
-	DigitalPort.cpp
+	#SerialPort.cpp
+	#Joystick.cpp
+	#USBKit.cpp
+	#A2D.cpp
+	#D2A.cpp
+	#DigitalPort.cpp
 
 	#mail
 	Email.cpp
