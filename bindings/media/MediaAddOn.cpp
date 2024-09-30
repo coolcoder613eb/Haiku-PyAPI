@@ -131,7 +131,7 @@ py::class_<BMediaAddOn>(m, "BMediaAddOn")
 //.def("AutoStart", &BMediaAddOn::AutoStart, "", py::arg("index"), py::arg("_node"), py::arg("_internalID"), py::arg("_hasMore"))
 .def("AutoStart", [](BMediaAddOn& self, int index) { 
 	BMediaNode* node = nullptr;
-	int32_t internalID = 0;
+	int32 internalID = 0;
 	bool hasMore = false;
 	status_t result = self.AutoStart(index, &node, &internalID, &hasMore);
 	return std::make_tuple(result, node, internalID, hasMore);

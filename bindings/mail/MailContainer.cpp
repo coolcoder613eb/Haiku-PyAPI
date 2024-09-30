@@ -65,7 +65,7 @@ py::class_<BMailContainer, PyBMailContainer, BMailComponent>(m, "BMailContainer"
 .def(py::init<unsigned int>(), "", py::arg("defaultCharSet")=B_MAIL_NULL_CONVERSION)
 .def("AddComponent", &BMailContainer::AddComponent, "", py::arg("component"))
 .def("RemoveComponent", py::overload_cast<BMailComponent *>(&BMailContainer::RemoveComponent), "", py::arg("component"))
-.def("RemoveComponent", py::overload_cast<int>(&BMailContainer::RemoveComponent), "", py::arg("index"))
+.def("RemoveComponent", py::overload_cast<int32>(&BMailContainer::RemoveComponent), "", py::arg("index"))
 .def("GetComponent", &BMailContainer::GetComponent, "", py::arg("index"), py::arg("parse_now")=false)
 .def("CountComponents", &BMailContainer::CountComponents, "")
 ;
@@ -77,7 +77,7 @@ py::class_<BMIMEMultipartMailContainer, PyBMIMEMultipartMailContainer, BMailCont
 .def("SetThisIsAnMIMEMessageText", &BMIMEMultipartMailContainer::SetThisIsAnMIMEMessageText, "", py::arg("text"))
 .def("AddComponent", &BMIMEMultipartMailContainer::AddComponent, "", py::arg("component"))
 .def("RemoveComponent", py::overload_cast<BMailComponent *>(&BMIMEMultipartMailContainer::RemoveComponent), "", py::arg("component"))
-.def("RemoveComponent", py::overload_cast<int>(&BMIMEMultipartMailContainer::RemoveComponent), "", py::arg("index"))
+.def("RemoveComponent", py::overload_cast<int32>(&BMIMEMultipartMailContainer::RemoveComponent), "", py::arg("index"))
 .def("GetComponent", &BMIMEMultipartMailContainer::GetComponent, "", py::arg("index"), py::arg("parse_now")=false)
 .def("CountComponents", &BMIMEMultipartMailContainer::CountComponents, "")
 .def("GetDecodedData", &BMIMEMultipartMailContainer::GetDecodedData, "", py::arg("data"))

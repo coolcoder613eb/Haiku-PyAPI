@@ -21,14 +21,14 @@ py::class_<BNumberFormat, BFormat>(m, "BNumberFormat")
 .def(py::init<const BLocale *>(), "", py::arg("locale"))
 .def("Format", py::overload_cast<char *, size_t, const double>(&BNumberFormat::Format), "", py::arg("string"), py::arg("maxSize"), py::arg("value"))
 .def("Format", [](BNumberFormat& self,const double value) {
-    BString  string;
+    BString string;
     status_t r = self.Format(string, value);
     return std::make_tuple(r,string);
 }
 , "", py::arg("value"))
-.def("Format", py::overload_cast<char *, size_t, int>(&BNumberFormat::Format), "", py::arg("string"), py::arg("maxSize"), py::arg("value"))
-.def("Format", [](BNumberFormat& self,int value) {
-    BString  string;
+.def("Format", py::overload_cast<char *, size_t, int32>(&BNumberFormat::Format), "", py::arg("string"), py::arg("maxSize"), py::arg("value"))
+.def("Format", [](BNumberFormat& self, int32 value) {
+    BString string;
     status_t r = self.Format(string, value);
     return std::make_tuple(r,string);
 }
