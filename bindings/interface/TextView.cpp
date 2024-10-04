@@ -233,7 +233,12 @@ py::class_<BTextView, PyBTextView, BView, std::unique_ptr<BTextView,py::nodelete
 .def("Delete", py::overload_cast<int32, int32>(&BTextView::Delete), "", py::arg("startOffset"), py::arg("endOffset"))
 .def("Text", &BTextView::Text, "")
 .def("TextLength", &BTextView::TextLength, "")
-.def("GetText", &BTextView::GetText, "", py::arg("offset"), py::arg("length"), py::arg("buffer"))
+//.def("GetText", &BTextView::GetText, "", py::arg("offset"), py::arg("length"), py::arg("buffer"))
+.def("GetText", [](BTextView& self,int32 offset,int32 length) {
+	std::vector<char> buffer(length); 
+	self.GetText(offset, length, buffer.data());
+	return std::string(buffer.data(), length);
+}, "", py::arg("offset"), py::arg("length"))
 .def("ByteAt", &BTextView::ByteAt, "", py::arg("offset"))
 .def("CountLines", &BTextView::CountLines, "")
 .def("CurrentLine", &BTextView::CurrentLine, "")
