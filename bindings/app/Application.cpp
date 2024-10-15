@@ -50,6 +50,11 @@ class PyBApplication : public BApplication{
             PYBIND11_OVERLOAD(status_t, BApplication, Archive, data, deep);
         }
         thread_id			Run() override {
+            // There is no need to release the GIL here like RunWrapper. Here,
+            // the GIL starts off unacquired, whereas in RunWrapper, the GIL
+            // starts off acquired. Here, only if pybind sees that there
+            // is a Python function overriding Run that needs to be run will
+            // it acquire the GIL. Otherwise, it stays unacquired.
             PYBIND11_OVERLOAD(thread_id, BApplication, Run);
         }
         void				Quit() override {

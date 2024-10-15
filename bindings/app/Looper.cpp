@@ -55,13 +55,15 @@ class PyBLooper : public BLooper{
 			PYBIND11_OVERLOAD(thread_id, BLooper, Run);
 		}
 		void		Quit() override {
-			py::gil_scoped_acquire acquire;
+			{
+				py::gil_scoped_acquire acquire;
 
-			// Not sure if it's actually necessary to release the reference
-			// to ourselves, since we will delete ourselves anyway.
-			// FIXME: What if the Python overload never actually calls
-			// BLooper::Quit?
-			do_not_delete.release();
+				// Not sure if it's actually necessary to release the reference
+				// to ourselves, since we will delete ourselves anyway.
+				// FIXME: What if the Python overload never actually calls
+				// BLooper::Quit?
+				do_not_delete.release();
+			}
 
 			PYBIND11_OVERLOAD(void, BLooper, Quit);
 		}
