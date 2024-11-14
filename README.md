@@ -70,5 +70,11 @@ specify a build parameter, add `-sPARAMETER=VALUE` to the build command line.
 ## Example projects
 
 This repository contains `test.py`, which is a simple "Hello world" program.
-The matching game [BeMatched](https://github.com/coolcoder613eb/BeMatched)
-provides another example of the library in use.
+Other examples:
+- https://github.com/coolcoder613eb/Bemini
+- https://github.com/coolcoder613eb/BeMatched
+- https://github.com/tmtfx/HaiQR
+- https://github.com/tmtfx/FeedGator
+- https://github.com/tmtfx/HTPBZ2
+- https://github.com/tmtfx/HaikuPO
+- https://github.com/robante15/Haiku-PyAPI_Examples
