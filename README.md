@@ -9,28 +9,24 @@ where we have had to deviate from the C++ API, however.
 
 ## Current status
 
-Currently, Haiku-PyAPI is best suited to scripts and small, simple
-applications.
+Virtually everything from Haiku's API is available. It is likely that you will
+run into some bugs if you try to make an application. Please report them! Also,
+there's a good chance we can give you a workaround to use until it is fixed.
 
-Almost everything in the app and interface kits have been ported. The storage
-kit has mostly been ported. The support kit has only partially been ported.
-The other kits haven't been ported yet.
-
-Of the kits that have been ported, many of the functions haven't been tested
-yet. You should, therefore, expect to encounter problems occasionally. Besides
-this, you can expect memory leaks, as little work has been done on getting
-memory freed correctly once it is no longer needed.
+Probably, the biggest bug is memory leaks. Unless memory management for a class
+was simple for us to do, it is likely that we opted to never free the memory
+so that we could worry about memory management later!
 
 ## Installing
+
 ### From HaikuPorts
+
 Installation on Haiku is easy, just run
+
 ```
 pkgman install haiku_pyapi_python310
 ```
-or
-```
-pkgman install haiku_pyapi_python39
-```
+
 If you need the latest widgets and bugfixes, then you should compile from source, see below.
 
 ### From source
