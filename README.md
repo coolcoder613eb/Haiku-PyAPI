@@ -65,7 +65,7 @@ specify a build parameter, add `-sPARAMETER=VALUE` to the build command line.
 
 ## Example projects
 
-This repository contains `test.py`, which is a simple "Hello world" program.
+This repository contains `example.py`, which is a simple "Hello world" program.
 Other examples:
 - https://github.com/coolcoder613eb/Bemini
 - https://github.com/coolcoder613eb/BeMatched
