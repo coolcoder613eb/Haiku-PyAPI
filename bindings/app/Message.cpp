@@ -24,11 +24,26 @@
 
 namespace py = pybind11;
 
-
+/*
 status_t GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index,
 		std::vector<char*> nameFound, type_code* typeFound, int32* countFound) {
+			
 	return self.GetInfo(typeRequested, index,
 		nameFound.data(), typeFound, countFound);
+}*/
+py::tuple GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index) {
+	char *namefound_local = nullptr;
+	type_code typefound_local = 0;
+    int32 countfound_local = 0;
+
+    status_t status = self.GetInfo(typeRequested, index, 
+                                   &namefound_local, 
+                                   &typefound_local, 
+                                   &countfound_local);
+    return py::make_tuple(status, 
+                          (namefound_local ? namefound_local : ""), // Gestisce il caso nullptr
+                          typefound_local, 
+                          countfound_local);
 }
 
 status_t GetCurrentSpecifierWrapper(BMessage& self, int32* index,
@@ -72,7 +87,7 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def(py::init<uint32>(), "", py::arg("what"))
 .def(py::init<const BMessage &>(), "", py::arg("other"))
 .def("operator=", &BMessage::operator=, "", py::arg("other"))
-.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
+.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"))
 .def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
 .def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
 .def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
