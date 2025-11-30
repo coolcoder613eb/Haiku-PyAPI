@@ -35,7 +35,7 @@ py::class_<media_timed_event>(m, "media_timed_event")
 //.def_readwrite("user_data", &media_timed_event::user_data, "")
 .def_property("user_data", &get_media_timed_event_user_data,&set_media_timed_event_user_data,"")
 //.def_readwrite("_reserved_media_timed_event_", &media_timed_event::_reserved_media_timed_event_, "")
-.def_property(
+/*.def_property(
             "_reserved_media_timed_event_",
             [](const media_timed_event &event) {
                 py::array_t<uint32> result(8);
@@ -47,7 +47,7 @@ py::class_<media_timed_event>(m, "media_timed_event")
                     throw std::runtime_error("Array must have size 8");
                 }
                 std::memcpy(&event._reserved_media_timed_event_, value.data(), sizeof(event._reserved_media_timed_event_));
-            },"")
+            },"")*/
 ;
 
 py::enum_<BTimedEventQueue::event_type>(m, "event_type", "")
