@@ -216,6 +216,7 @@ local sourceFiles =
 	PrintJob.cpp
 	
 	#SupportKit
+	Errors.cpp
 	ByteOrder.cpp
 	StopWatch.cpp
 	Beep.cpp
