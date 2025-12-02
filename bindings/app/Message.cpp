@@ -41,7 +41,7 @@ namespace py = pybind11;
 	return status;
 }*/
 
-py::tuple GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index) {
+py::tuple GetInfoWrapper(const BMessage& self, type_code typeRequested, int32 index) {
 	char *namefound_local = nullptr;
 	type_code typefound_local = 0;
     int32 countfound_local = 0;
@@ -56,29 +56,239 @@ py::tuple GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index) {
                           countfound_local);
 }
 
-status_t GetCurrentSpecifierWrapper(BMessage& self, int32* index,
-		BMessage* specifier, int32* _what, std::string* property) {
-	const char* p;
-	status_t status = self.GetCurrentSpecifier(index, specifier, _what, &p);
-	*property = p;
-	return status;
+py::tuple GetInfoFixedSizeWrapper(const BMessage& self, const char* name) {
+	type_code typeFound = 0;
+	int32 countFound = 0;
+	bool fixedSize;
+	status_t status = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
+	return py::make_tuple(status, typeFound, countFound, fixedSize);
 }
 
+py::tuple GetInfoNameWrapper(const BMessage& self, const char* name) {
+       type_code typeFound = 0;
+       int32 countFound = 0;
+       status_t status = self.GetInfo(name, &typeFound, &countFound);
+       return py::make_tuple(status, typeFound, countFound);
+}
+
+/* both in one
+py::tuple GetInfoNameWrapper2(const BMessage& self, const char* name) {
+	type_code typeFound = 0;
+	int32 countFound = 0;
+	bool fixedSize;
+	status_t status0 = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
+	status_t status = self.GetInfo(name, &typeFound, &countFound);
+	return py::make_tuple(status, typeFound, countFound, fixedSize);
+}
+oppure:
+
+py::tuple GetInfoUnifiedWrapper(const BMessage& self, const char* name, bool includeFixedSize = false) {
+    type_code typeFound = 0;
+    int32 countFound = 0;
+    status_t status;
+    bool fixedSize = false; 
+
+    if (includeFixedSize) {
+        status = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
+        return py::make_tuple(status, typeFound, countFound, fixedSize);
+    } else {
+        status = self.GetInfo(name, &typeFound, &countFound);
+        return py::make_tuple(status, typeFound, countFound);
+    }
+}
+
+
+
+
+
+*/
+
+
+/* int32 is immutable we should return a tuple
+status_t GetCurrentSpecifierWrapper(BMessage& self, int32* index,
+              BMessage* specifier, int32* _what, std::string* property) {
+      const char* p;
+      status_t status = self.GetCurrentSpecifier(index, specifier, _what, &p);
+      *property = p;
+      return status;
+}
+*/
+
+py::tuple GetCurrentSpecifierFullWrapper(const BMessage& self) {
+    int32 indexFound = 0;
+    BMessage specifierFound;
+    int32 whatFound = 0;
+    const char* propertyFound = nullptr;
+    status_t status = self.GetCurrentSpecifier(&indexFound,&specifierFound,&whatFound,&propertyFound);
+    py::object py_property;
+    if (status == B_OK && propertyFound != nullptr) {
+        py_property = py::cast(std::string(propertyFound));//<-for security
+    } else {
+        py_property = py::none();
+    }
+    return py::make_tuple(status,indexFound,specifierFound,whatFound,py_property);
+}
+
+/* string is immutable
 status_t FindStringWrapper(BMessage& self, const char* name,
 		std::string* string) {
 	const char* s;
 	status_t status = self.FindString(name, &s);
 	*string = s;
 	return status;
+}*/
+
+py::tuple PythonicFindStringsWrapper(const BMessage& self, const char* name){
+	BStringList sl;
+	status_t status = self.FindStrings(name,&sl);
+	return py::make_tuple(status, sl);
 }
 
+py::tuple PythonicFindStringWrapper(const BMessage& self, const char* name, int32 n=0){
+	const char* s;
+	status_t status = self.FindString(name, n, &s);
+	//return py::make_tuple(status, s); more secure below
+	if (status == B_OK) {
+        std::string safe_string(s);
+        return py::make_tuple(status, safe_string);
+    }
+    return py::make_tuple(status, std::string("")); 
+}
+
+py::tuple PythonicFindBStringWrapper(const BMessage& self, const char* name, int32 n=0){
+	BString s;
+	status_t status = self.FindString(name,n, &s);
+	return py::make_tuple(status, s); 
+}
+/*
 status_t FindStringWrapper(BMessage& self, const char* name,
 		int32 index, std::string* string) {
 	const char* s;
 	status_t status = self.FindString(name, index, &s);
 	*string = s;
 	return status;
+}*/
+
+py::tuple PythonicFindAlignmentWrapper(const BMessage& self, const char* name, int32 n=0){
+	BAlignment a;
+	status_t status = self.FindAlignment(name,n,&a);
+	return py::make_tuple(status, a);
 }
+
+py::tuple PythonicFindRectWrapper(const BMessage& self, const char* name, int32 n=0){
+	BRect r;
+	status_t status = self.FindRect(name,n,&r);
+	return py::make_tuple(status, r);
+}
+
+py::tuple PythonicFindSizeWrapper(const BMessage& self, const char* name, int32 n=0){
+	BSize sz;
+	status_t status = self.FindSize(name,n,&sz);
+	return py::make_tuple(status, sz);
+}
+
+py::tuple PythonicFindPointWrapper(const BMessage& self, const char* name, int32 n=0){
+	BPoint p;
+	status_t status = self.FindPoint(name,n,&p);
+	return py::make_tuple(status, p);
+}
+
+py::tuple PythonicFindInt8Wrapper(const BMessage& self, const char* name, int32 n=0){
+	int8 i = 0;
+	status_t status = self.FindInt8(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindUInt8Wrapper(const BMessage& self, const char* name, int32 n=0){
+	uint8 i = 0;
+	status_t status = self.FindUInt8(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindInt16Wrapper(const BMessage& self, const char* name, int32 n=0){
+	int16 i = 0;
+	status_t status = self.FindInt16(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindUInt16Wrapper(const BMessage& self, const char* name, int32 n=0){
+	uint16 i = 0;
+	status_t status = self.FindUInt16(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindInt32Wrapper(const BMessage& self, const char* name, int32 n=0){
+	int32 i = 0;
+	status_t status = self.FindInt32(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindUInt32Wrapper(const BMessage& self, const char* name, int32 n=0){
+	uint32 i = 0;
+	status_t status = self.FindUInt32(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindInt64Wrapper(const BMessage& self, const char* name, int32 n=0){
+	int64 i = 0;
+	status_t status = self.FindInt64(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindUInt64Wrapper(const BMessage& self, const char* name, int32 n=0){
+	uint64 i = 0;
+	status_t status = self.FindUInt64(name, n, &i);
+	return py::make_tuple(status, i);
+}
+
+py::tuple PythonicFindBoolWrapper(const BMessage& self, const char* name, int32 n=0){
+	bool b;
+	status_t status = self.FindBool(name, n, &b);
+	return py::make_tuple(status, b);
+}
+
+py::tuple PythonicFindFloatWrapper(const BMessage& self, const char* name, int32 n=0){
+	float f;
+	status_t status = self.FindFloat(name, n, &f);
+	return py::make_tuple(status, f);
+}
+
+py::tuple PythonicFindDoubleWrapper(const BMessage& self, const char* name, int32 n=0){
+	double d;
+	status_t status = self.FindDouble(name, n, &d);
+	return py::make_tuple(status, d);
+}
+
+py::tuple PythonicFindColorWrapper(const BMessage& self, const char* name, int32 n=0){
+	rgb_color col;
+	status_t status = self.FindColor(name,n,&col);
+	return py::make_tuple(status, col);
+}
+
+py::tuple PythonicFindMessengerWrapper(const BMessage& self, const char* name, int32 n=0){
+	BMessenger msgr;
+	status_t status = self.FindMessenger(name,n,&msgr);
+	return py::make_tuple(status, msgr);
+}
+
+py::tuple PythonicFindRefWrapper(const BMessage& self, const char* name, int32 n=0){
+	entry_ref entr;
+	status_t status = self.FindRef(name,n,&entr);
+	return py::make_tuple(status, entr);
+}
+
+py::tuple PythonicFindNodeRefWrapper(const BMessage& self, const char* name, int32 n=0){
+	node_ref nr;
+	status_t status = self.FindNodeRef(name,n,&nr);
+	return py::make_tuple(status, nr);
+}
+
+py::tuple PythonicFindMessageWrapper(const BMessage& self, const char* name, int32 n=0){
+	BMessage m;
+	status_t status = self.FindMessage(name,n,&m);
+	return py::make_tuple(status, m);
+}
+
 
 PYBIND11_MODULE(Message,m)
 {
@@ -99,9 +309,12 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("operator=", &BMessage::operator=, "", py::arg("other"))
 //.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
 .def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"))
-.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
-.def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
-.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
+//.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
+//.def("GetInfo", &GetInfoNameWrapper, "", py::arg("name")) //<----- this is the specific version but we use FixedSizeWrapper because it returns the same infosplus fixedSize
+.def("GetInfo", &GetInfoFixedSizeWrapper, "", py::arg("name"))
+//.def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
+//.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
+//.def("GetInfoFixedSize", &GetInfoFixedSizeWrapper, "", py::arg("name")) //<--- comment this and use this function for GetInfo(name)
 .def("CountNames", &BMessage::CountNames, "", py::arg("type"))
 .def("IsEmpty", &BMessage::IsEmpty, "")
 .def("IsSystem", &BMessage::IsSystem, "")
@@ -137,7 +350,8 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("AddSpecifier", py::overload_cast<const BMessage *>(&BMessage::AddSpecifier), "", py::arg("specifier"))
 
 .def("SetCurrentSpecifier", &BMessage::SetCurrentSpecifier, "", py::arg("index"))
-.def("GetCurrentSpecifier", &GetCurrentSpecifierWrapper, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
+//.def("GetCurrentSpecifier", &GetCurrentSpecifierWrapper, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
+.def("GetCurrentSpecifier", &GetCurrentSpecifierFullWrapper, "")
 .def("HasSpecifiers", &BMessage::HasSpecifiers, "")
 .def("PopSpecifier", &BMessage::PopSpecifier, "")
 .def("AddAlignment", &BMessage::AddAlignment, "", py::arg("name"), py::arg("alignment"))
@@ -183,57 +397,78 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 
 .def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("alignment"))
 .def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("alignment"))
+.def("FindAlignment", &PythonicFindAlignmentWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("rect"))
 .def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("rect"))
+.def("FindRect", &PythonicFindRectWrapper, "", py::arg("name"), py::arg("n")=0)
+
 .def("FindPoint", py::overload_cast<const char *, BPoint *>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("point"))
 .def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("point"))
+.def("FindPoint", &PythonicFindPointWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("size"))
 .def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("index"), py::arg("size"))
-.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
-.def("FindString", py::overload_cast<BMessage &, const char *, int32, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("index"), py::arg("string"))
+.def("FindSize", &PythonicFindSizeWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
+//.def("FindString", py::overload_cast<BMessage &, const char *, int32, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("index"), py::arg("string"))
+.def("FindString", &PythonicFindStringWrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindBString", &PythonicFindBStringWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("string"))
 .def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("string"))
 
 .def("FindStrings", &BMessage::FindStrings, "", py::arg("name"), py::arg("list"))
-.def("FindInt8", py::overload_cast<const char *, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt8", py::overload_cast<const char *, int32, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt8", py::overload_cast<const char *, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt8", py::overload_cast<const char *, int32, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt16", py::overload_cast<const char *, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt16", py::overload_cast<const char *, int32, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt16", py::overload_cast<const char *, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt16", py::overload_cast<const char *, int32, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt32", py::overload_cast<const char *, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt32", py::overload_cast<const char *, int32, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt32", py::overload_cast<const char *, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt32", py::overload_cast<const char *, int32, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt64", py::overload_cast<const char *, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindInt64", py::overload_cast<const char *, int32, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindUInt64", py::overload_cast<const char *, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindUInt64", py::overload_cast<const char *, int32, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-
-.def("FindBool", py::overload_cast<const char *, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindBool", py::overload_cast<const char *, int32, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindFloat", py::overload_cast<const char *, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindFloat", py::overload_cast<const char *, int32, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindDouble", py::overload_cast<const char *, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindDouble", py::overload_cast<const char *, int32, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindStrings", &PythonicFindStringsWrapper, "", py::arg("name"))
+//.def("FindInt8", py::overload_cast<const char *, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindInt8", py::overload_cast<const char *, int32, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+//.def("FindUInt8", py::overload_cast<const char *, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindUInt8", py::overload_cast<const char *, int32, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt8",  &PythonicFindInt8Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindUInt8",  &PythonicFindUInt8Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt16", py::overload_cast<const char *, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindInt16", py::overload_cast<const char *, int32, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+//.def("FindUInt16", py::overload_cast<const char *, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindUInt16", py::overload_cast<const char *, int32, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt16", &PythonicFindInt16Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindUInt16", &PythonicFindUInt16Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt32", py::overload_cast<const char *, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindInt32", py::overload_cast<const char *, int32, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+//.def("FindUInt32", py::overload_cast<const char *, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindUInt32", py::overload_cast<const char *, int32, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt32", &PythonicFindInt32Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindUInt32", &PythonicFindUInt32Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt64", py::overload_cast<const char *, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindInt64", py::overload_cast<const char *, int32, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+//.def("FindUInt64", py::overload_cast<const char *, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindUInt64", py::overload_cast<const char *, int32, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindInt64", &PythonicFindInt64Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindUInt64", &PythonicFindUInt64Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindBool", py::overload_cast<const char *, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindBool", py::overload_cast<const char *, int32, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindBool", &PythonicFindBoolWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindFloat", py::overload_cast<const char *, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindFloat", py::overload_cast<const char *, int32, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindFloat", &PythonicFindFloatWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindDouble", py::overload_cast<const char *, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("value"))
+//.def("FindDouble", py::overload_cast<const char *, int32, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindDouble", &PythonicFindDoubleWrapper, "", py::arg("name"), py::arg("n")=0)
 
 .def("FindColor", py::overload_cast<const char *, rgb_color *>(&BMessage::FindColor, py::const_), "", py::arg("name"), py::arg("value"))
 .def("FindColor", py::overload_cast<const char *, int32, rgb_color *>(&BMessage::FindColor, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindColor", &PythonicFindColorWrapper, "", py::arg("name"), py::arg("n")=0)
 //.def("FindPointer", py::overload_cast<const char *, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("pointer"))
 //.def("FindPointer", py::overload_cast<const char *, int32, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 
 .def("FindMessenger", py::overload_cast<const char *, BMessenger *>(&BMessage::FindMessenger, py::const_), "", py::arg("name"), py::arg("messenger"))
 .def("FindMessenger", py::overload_cast<const char *, int32, BMessenger *>(&BMessage::FindMessenger, py::const_), "", py::arg("name"), py::arg("index"), py::arg("messenger"))
+.def("FindMessenger", &PythonicFindMessengerWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindRef", py::overload_cast<const char *, entry_ref *>(&BMessage::FindRef, py::const_), "", py::arg("name"), py::arg("ref"))
 .def("FindRef", py::overload_cast<const char *, int32, entry_ref *>(&BMessage::FindRef, py::const_), "", py::arg("name"), py::arg("index"), py::arg("ref"))
-
+.def("FindRef", &PythonicFindRefWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindNodeRef", py::overload_cast<const char *, node_ref *>(&BMessage::FindNodeRef, py::const_), "", py::arg("name"), py::arg("ref"))
 .def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), "", py::arg("name"), py::arg("index"), py::arg("ref"))
+.def("FindNodeRef", &PythonicFindNodeRefWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindMessage", py::overload_cast<const char *, BMessage *>(&BMessage::FindMessage, py::const_), "", py::arg("name"), py::arg("message"))
 .def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), "", py::arg("name"), py::arg("index"), py::arg("message"))
-
+.def("FindMessage", &PythonicFindMessageWrapper, "", py::arg("name"), py::arg("n")=0)
 .def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("object"))
 .def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("object"))
 //.def("FindData", py::overload_cast<const char *, type_code, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"))
@@ -355,17 +590,27 @@ py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("object"))
 .def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("n"), py::arg("object"))
 .def("HasData", &BMessage::HasData, "", py::arg("name"), py::arg(""), py::arg("n")=0)
-.def("FindRect", py::overload_cast<const char *, int32>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindPoint", py::overload_cast<const char *, int32>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindString", py::overload_cast<const char *, int32>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindRect", py::overload_cast<const char *, int32>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindRectWithStatus", &PythonicFindRectWrapper, "", py::arg("name"), py::arg("n")=0)
 
-.def("FindInt8", py::overload_cast<const char *, int32>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindInt16", py::overload_cast<const char *, int32>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindInt32", py::overload_cast<const char *, int32>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindInt64", py::overload_cast<const char *, int32>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindBool", py::overload_cast<const char *, int32>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindFloat", py::overload_cast<const char *, int32>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("n")=0)
-.def("FindDouble", py::overload_cast<const char *, int32>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindPoint", py::overload_cast<const char *, int32>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindPointWithStatus", &PythonicFindPointWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindString", py::overload_cast<const char *, int32>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindStringWithStatus", &PythonicFindStringWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt8", py::overload_cast<const char *, int32>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt8WithStatus",  &PythonicFindInt8Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt16", py::overload_cast<const char *, int32>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt16WithStatus", &PythonicFindInt16Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt32", py::overload_cast<const char *, int32>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt32WithStatus", &PythonicFindInt32Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt64", py::overload_cast<const char *, int32>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindInt64WithStatus", &PythonicFindInt64Wrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindBool", py::overload_cast<const char *, int32>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindBoolWithStatus", &PythonicFindBoolWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindFloat", py::overload_cast<const char *, int32>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindFloatWithStatus", &PythonicFindFloatWrapper, "", py::arg("name"), py::arg("n")=0)
+//.def("FindDouble", py::overload_cast<const char *, int32>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("n")=0)
+//.def("FindDoubleWithStatus", &PythonicFindDoubleWrapper, "", py::arg("name"), py::arg("n")=0)
 
 .def("GetBool", py::overload_cast<const char *, bool>(&BMessage::GetBool, py::const_), "", py::arg("name"), py::arg("defaultValue")=false)
 .def("GetBool", py::overload_cast<const char *, int32, bool>(&BMessage::GetBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
