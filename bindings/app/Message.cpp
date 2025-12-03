@@ -303,101 +303,764 @@ m.attr("B_ID_SPECIFIER") = 7;
 m.attr("B_SPECIFIERS_END") = 128;
 
 py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
-.def(py::init(), "")
-.def(py::init<uint32>(), "", py::arg("what"))
-.def(py::init<const BMessage &>(), "", py::arg("other"))
-.def("operator=", &BMessage::operator=, "", py::arg("other"))
+.def(py::init(), R"doc(
+Create an empty BMessage.
+
+The message will have no fields and a `what` code equal to zero.
+)doc")
+.def(py::init<uint32>(), R"doc(
+Create a BMessage with a specific `what` code.
+
+:param what: The 'what' command identifier associated with this message.
+:type what: int
+)doc", py::arg("what"))
+.def(py::init<const BMessage &>(), R"doc(
+Create a copy of an existing BMessage.
+
+This performs a deep copy of all fields and metadata.
+
+:param other: The message to copy.
+:type other: BMessage
+)doc", py::arg("other"))
+.def("operator=", &BMessage::operator=, R"doc(
+Assign the contents of another BMessage to this one.
+
+This performs the same deep copy as the copy constructor.
+
+:param other: The message to copy from.
+:type other: BMessage
+:return: Reference to this BMessage.
+:rtype: BMessage
+)doc", py::arg("other"))
 //.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
-.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"))
+.def("GetInfo", &GetInfoWrapper, R"doc(
+Retrieve information about the N-th field of a given type.
+
+This version queries the *N-th field* (by index) of a specific type.
+It returns four values, including the original status code from Haiku's API.
+
+:param typeRequested: The type code of the fields to inspect.
+:type typeRequested: int
+:param index: Index of the field within the group of that type.
+:type index: int
+:return: A tuple ``(status, name, type_code, count)``:
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
+         - ``name`` (str): name of the field  
+         - ``type_code`` (int): the type of the field  
+         - ``count`` (int): number of items stored under that name  
+:rtype: tuple
+)doc", py::arg("typeRequested"), py::arg("index"))
 //.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
 //.def("GetInfo", &GetInfoNameWrapper, "", py::arg("name")) //<----- this is the specific version but we use FixedSizeWrapper because it returns the same infosplus fixedSize
-.def("GetInfo", &GetInfoFixedSizeWrapper, "", py::arg("name"))
+.def("GetInfo", &GetInfoFixedSizeWrapper, R"doc(
+Retrieve information about a field by its name.
+
+This function wraps all overloads of Haiku's ``BMessage::GetInfo(const char*)``.
+It provides complete information in a single call, including item count and
+whether items stored under the field are of fixed size.
+
+:param name: The name of the field.
+:type name: str
+:return: A tuple ``(status, type_code, count, fixedSize)``:
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
+         - ``type_code`` (int): the type of the field  
+         - ``count`` (int): number of items stored under this name  
+         - ``fixedSize`` (bool): whether items have fixed size  
+:rtype: tuple
+)doc", py::arg("name"))
 //.def("GetInfo", py::overload_cast<const char *, type_code *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("fixedSize"))
 //.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
 //.def("GetInfoFixedSize", &GetInfoFixedSizeWrapper, "", py::arg("name")) //<--- comment this and use this function for GetInfo(name)
-.def("CountNames", &BMessage::CountNames, "", py::arg("type"))
-.def("IsEmpty", &BMessage::IsEmpty, "")
-.def("IsSystem", &BMessage::IsSystem, "")
-.def("IsReply", &BMessage::IsReply, "")
-.def("PrintToStream", &BMessage::PrintToStream, "")
-.def("Rename", &BMessage::Rename, "", py::arg("oldEntry"), py::arg("newEntry"))
-.def("WasDelivered", &BMessage::WasDelivered, "")
-.def("IsSourceWaiting", &BMessage::IsSourceWaiting, "")
-.def("IsSourceRemote", &BMessage::IsSourceRemote, "")
-.def("ReturnAddress", &BMessage::ReturnAddress, "")
-.def("Previous", &BMessage::Previous, "")
-.def("WasDropped", &BMessage::WasDropped, "")
-.def("DropPoint", &BMessage::DropPoint, "", py::arg("offset")=NULL)
+.def("CountNames", &BMessage::CountNames, R"doc(
+Count how many field names exist for a given type.
 
-.def("SendReply", py::overload_cast<uint32, BHandler *>(&BMessage::SendReply), "", py::arg("command"), py::arg("replyTo")=NULL)
-.def("SendReply", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
-.def("SendReply", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
-.def("SendReply", py::overload_cast<uint32, BMessage *>(&BMessage::SendReply), "", py::arg("command"), py::arg("replyToReply"))
-.def("SendReply", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessage::SendReply), "", py::arg("reply"), py::arg("replyToReply"), py::arg("sendTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
+:param type: The type code of the fields to count.
+:type type: int
+:return: Number of field names defined for that type.
+:rtype: int
+)doc", py::arg("type"))
+.def("IsEmpty", &BMessage::IsEmpty, R"doc(
+Check whether the message has no fields.
 
-.def("FlattenedSize", &BMessage::FlattenedSize, "")
+:return: ``True`` if the message contains no fields.
+:rtype: bool
+)doc")
+.def("IsSystem", &BMessage::IsSystem, R"doc(
+Check whether this message is a system-defined message.
 
-.def("Flatten", py::overload_cast<char *, ssize_t>(&BMessage::Flatten, py::const_), "", py::arg("buffer"), py::arg("size"))
-.def("Flatten", py::overload_cast<BDataIO *, ssize_t *>(&BMessage::Flatten, py::const_), "", py::arg("stream"), py::arg("size")=NULL)
+:return: ``True`` if this message was generated internally by the OS.
+:rtype: bool
+)doc")
+.def("IsReply", &BMessage::IsReply, R"doc(
+Check whether this message is a reply to another message.
 
-.def("Unflatten", py::overload_cast<const char *>(&BMessage::Unflatten), "", py::arg("flatBuffer"))
-.def("Unflatten", py::overload_cast<BDataIO *>(&BMessage::Unflatten), "", py::arg("stream"))
+:return: ``True`` if this is a reply message.
+:rtype: bool
+)doc")
+.def("PrintToStream", &BMessage::PrintToStream, R"doc(
+Print the contents of the message to the standard output.
 
-.def("AddSpecifier", py::overload_cast<const char *>(&BMessage::AddSpecifier), "", py::arg("property"))
-.def("AddSpecifier", py::overload_cast<const char *, int32>(&BMessage::AddSpecifier), "", py::arg("property"), py::arg("index"))
-.def("AddSpecifier", py::overload_cast<const char *, int32, int32>(&BMessage::AddSpecifier), "", py::arg("property"), py::arg("index"), py::arg("range"))
-.def("AddSpecifier", py::overload_cast<const char *, const char *>(&BMessage::AddSpecifier), "", py::arg("property"), py::arg("name"))
-.def("AddSpecifier", py::overload_cast<const BMessage *>(&BMessage::AddSpecifier), "", py::arg("specifier"))
+Useful for debugging.
+)doc")
+.def("Rename", &BMessage::Rename, R"doc(
+Rename an existing field.
 
-.def("SetCurrentSpecifier", &BMessage::SetCurrentSpecifier, "", py::arg("index"))
+:param oldEntry: Current field name.
+:type oldEntry: str
+:param newEntry: New name for the field.
+:type newEntry: str
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("oldEntry"), py::arg("newEntry"))
+.def("WasDelivered", &BMessage::WasDelivered, R"doc(
+Check whether this message was delivered through a message loop.
+
+:return: ``True`` if the message was delivered (posted,sent or dropped).
+:rtype: bool
+)doc")
+.def("IsSourceWaiting", &BMessage::IsSourceWaiting, R"doc(
+Check whether the sender is waiting for a reply.
+
+:return: ``True`` if the sender is blocked waiting.
+:rtype: bool
+)doc")
+.def("IsSourceRemote", &BMessage::IsSourceRemote, R"doc(
+Check whether the sender of this message is a remote application.
+
+:return: ``True`` if the source is remote.
+:rtype: bool
+)doc")
+.def("ReturnAddress", &BMessage::ReturnAddress, R"doc(
+Retrieve the reply handler/address for this message.
+
+:return: A BMessenger object representing the return address.
+:rtype: BMessenger
+)doc")
+.def("Previous", &BMessage::Previous, R"doc(
+Get the previous message in the message chain, if any.
+
+:return: The previous BMessage, or ``None``.
+:rtype: BMessage or None
+)doc")
+.def("WasDropped", &BMessage::WasDropped, R"doc(
+Check whether this message was delivered as a drag-and-drop message.
+
+:return: ``True`` if the message was dropped.
+:rtype: bool
+)doc")
+.def("DropPoint", &BMessage::DropPoint, R"doc(
+Return the point where this message was dropped.
+
+:param offset: Optional point offset to apply.
+:type offset: BPoint or None
+:return: The drop location as a BPoint.
+:rtype: BPoint
+)doc", py::arg("offset")=NULL)
+
+.def("SendReply", py::overload_cast<uint32, BHandler *>(&BMessage::SendReply), R"doc(
+Send a reply message with the given command code.
+
+This overload constructs a new BMessage whose ``what`` field is set to
+``command`` and sends it as a reply to the message currently being handled.
+
+Whether the reply is delivered synchronously or asynchronously depends on
+how the original message was sent:
+
+* If the original sender is waiting for a reply, this function blocks
+  until the reply is delivered.
+* Otherwise the reply is delivered asynchronously. If ``replyTo`` is
+  provided, it designates the target BHandler for the asynchronous reply.
+  If ``replyTo`` is ``None``, the target chosen when the original message
+  was sent (or the BApplication object) will receive the reply.
+
+This overload uses an infinite timeout and blocks until the reply is
+delivered or an error occurs.
+
+:param command: The ``what`` command identifier for the generated reply.
+:type command: int
+:param replyTo: Optional BHandler to receive an asynchronous reply.
+:type replyTo: BHandler or None
+:return: ``B_OK`` on success, or an error code on failure.
+:rtype: int
+)doc", py::arg("command"), py::arg("replyTo")=NULL)
+.def("SendReply", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessage::SendReply), R"doc(
+Send the given BMessage as a reply to the message currently being handled.
+
+Delivery is synchronous if the sender of the original message is waiting
+for a reply; otherwise it is asynchronous. If ``replyTo`` is provided, it
+specifies the BHandler that will receive the asynchronous reply (if any).
+
+If the reply message itself requests a synchronous reply, this function
+blocks until that reply arrives.
+
+The ``timeout`` parameter limits how long this function waits to place
+the reply in the target port queue. If the timeout expires before the
+message is delivered, the function fails with ``B_TIMED_OUT``.
+
+:param reply: The reply message to send.
+:type reply: BMessage
+:param replyTo: Optional BHandler to receive an asynchronous reply.
+:type replyTo: BHandler or None
+:param timeout: Maximum time (in microseconds) allowed for sending.
+:type timeout: int
+:return: ``B_OK`` on success, or an error code on failure.
+:rtype: int
+)doc", py::arg("reply"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
+.def("SendReply", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessage::SendReply), R"doc(
+Send the given BMessage as a reply, optionally directing asynchronous
+delivery to the specified BMessenger.
+
+This behaves like the other SendReply() overloads:
+
+* Delivery is synchronous if the original sender is waiting for a reply.
+* Otherwise the reply is asynchronous; ``replyTo`` designates the target
+  BMessenger that will receive it.
+
+The ``timeout`` parameter limits the time allowed to deliver the reply to
+the recipient's message port.
+
+:param reply: The reply message to send.
+:type reply: BMessage
+:param replyTo: Target messenger for asynchronous replies.
+:type replyTo: BMessenger
+:param timeout: Maximum send time in microseconds.
+:type timeout: int
+:return: ``B_OK`` on success, or an error code on failure.
+:rtype: int
+)doc", py::arg("reply"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
+.def("SendReply", py::overload_cast<uint32, BMessage *>(&BMessage::SendReply), R"doc(
+Send a reply message constructed from the given command code, and
+optionally wait for a synchronous reply to that reply.
+
+A BMessage with ``what = command`` is created and sent to the sender of
+the current message. If ``replyToReply`` is provided, this function blocks
+until the sender returns the synchronous reply contained in
+``replyToReply``.
+
+This overload uses infinite timeouts for both sending the reply and
+waiting for the reply-to-reply.
+
+:param command: The command identifier for the generated reply.
+:type command: int
+:param replyToReply: A BMessage that will receive the synchronous reply.
+:type replyToReply: BMessage or None
+:return: ``B_OK`` on success, or an error code on failure.
+:rtype: int
+)doc", py::arg("command"), py::arg("replyToReply"))
+.def("SendReply", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessage::SendReply), R"doc(
+Send the given message as a reply and optionally wait for a synchronous
+reply to that reply, each step with its own timeout.
+
+If ``replyToReply`` is provided, this function blocks while waiting for
+the reply-to-reply message. The time spent sending the initial reply is
+limited by ``sendTimeout``; the time spent waiting for the reply-to-reply
+is limited by ``replyTimeout``.
+
+A timeout value of ``B_INFINITE_TIMEOUT`` disables time limiting for the
+corresponding phase. A timeout of 0 causes the function to return
+immediately if it would otherwise block.
+
+:param reply: The reply message to send.
+:type reply: BMessage
+:param replyToReply: A message object that will be filled with the reply-to-reply.
+:type replyToReply: BMessage or None
+:param sendTimeout: Maximum time for sending the reply.
+:type sendTimeout: int
+:param replyTimeout: Maximum time for waiting for the reply-to-reply.
+:type replyTimeout: int
+:return: ``B_OK`` on success, or an error code on failure.
+:rtype: int
+)doc", py::arg("reply"), py::arg("replyToReply"), py::arg("sendTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
+
+.def("FlattenedSize", &BMessage::FlattenedSize,  R"doc(
+Return the size, in bytes, required to flatten this message.
+
+:return: Number of bytes needed to store the flattened form.
+:rtype: int
+)doc")
+
+.def("Flatten", py::overload_cast<char *, ssize_t>(&BMessage::Flatten, py::const_), R"doc(
+Flatten the message into a preallocated buffer.
+
+:param buffer: The buffer where the flattened data will be stored.
+:type buffer: bytearray or writable buffer
+:param size: Size of the buffer in bytes.
+:type size: int
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("buffer"), py::arg("size"))
+.def("Flatten", py::overload_cast<BDataIO *, ssize_t *>(&BMessage::Flatten, py::const_), R"doc(
+Flatten the message and write it into a BDataIO stream.
+
+:param stream: The output stream.
+:type stream: BDataIO
+:param size: Optional variable that will store the number of bytes written.
+:type size: int or None
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("stream"), py::arg("size")=NULL)
+
+.def("Unflatten", py::overload_cast<const char *>(&BMessage::Unflatten), R"doc(
+Restore the contents of the message from a flattened buffer.
+
+:param flatBuffer: The buffer containing the flattened message.
+:type flatBuffer: bytes or bytearray
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("flatBuffer"))
+.def("Unflatten", py::overload_cast<BDataIO *>(&BMessage::Unflatten), R"doc(
+Restore the contents of the message from a BDataIO input stream.
+
+:param stream: The input stream.
+:type stream: BDataIO
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("stream"))
+
+.def("AddSpecifier", py::overload_cast<const char *>(&BMessage::AddSpecifier), R"doc(
+Add a specifier targeting the given property.
+
+:param property: The property name.
+:type property: str
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("property"))
+.def("AddSpecifier", py::overload_cast<const char *, int32>(&BMessage::AddSpecifier), R"doc(
+Add a specifier targeting the given property at a specific index.
+
+:param property: The property name.
+:type property: str
+:param index: Index of the item inside the property.
+:type index: int
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("property"), py::arg("index"))
+.def("AddSpecifier", py::overload_cast<const char *, int32, int32>(&BMessage::AddSpecifier), R"doc(
+Add a specifier targeting the given property at a specific index and range.
+
+:param property: The property name.
+:type property: str
+:param index: Starting index of the range.
+:type index: int
+:param range: Number of consecutive items in the range.
+:type range: int
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("property"), py::arg("index"), py::arg("range"))
+.def("AddSpecifier", py::overload_cast<const char *, const char *>(&BMessage::AddSpecifier), R"doc(
+Add a specifier targeting the given property and a specified name.
+
+:param property: The property name.
+:type property: str
+:param name: The name to target within the property.
+:type name: str
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("property"), py::arg("name"))
+.def("AddSpecifier", py::overload_cast<const BMessage *>(&BMessage::AddSpecifier), R"doc(
+Add the specifier message to the specifier stack.
+
+:param specifier: The specifier message to add.
+:type specifier: BMessage
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("message"))
+
+.def("SetCurrentSpecifier", &BMessage::SetCurrentSpecifier, R"doc(
+Sets the current specifier by its index.
+
+:param index: The index of the specifier to set as current.
+)doc", py::arg("index"))
 //.def("GetCurrentSpecifier", &GetCurrentSpecifierWrapper, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
-.def("GetCurrentSpecifier", &GetCurrentSpecifierFullWrapper, "")
-.def("HasSpecifiers", &BMessage::HasSpecifiers, "")
-.def("PopSpecifier", &BMessage::PopSpecifier, "")
-.def("AddAlignment", &BMessage::AddAlignment, "", py::arg("name"), py::arg("alignment"))
-.def("AddRect", &BMessage::AddRect, "", py::arg("name"), py::arg("rect"))
-.def("AddPoint", &BMessage::AddPoint, "", py::arg("name"), py::arg("point"))
-.def("AddSize", &BMessage::AddSize, "", py::arg("name"), py::arg("size"))
+.def("GetCurrentSpecifier", &GetCurrentSpecifierFullWrapper, R"doc(
+Retrieves the full details of the current specifier.
 
-.def("AddString", py::overload_cast<const char *, const char *>(&BMessage::AddString), "", py::arg("name"), py::arg("string"))
-.def("AddString", py::overload_cast<const char *, const BString &>(&BMessage::AddString), "", py::arg("name"), py::arg("string"))
-.def("AddStrings", &BMessage::AddStrings, "", py::arg("name"), py::arg("list"))
+:returns: A tuple ``(status,indexFound,specifierFound,whatFound,py_property)``:
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
+         - ``indexFound`` (int): the index of the current specifier 
+         - ``specifierFound`` (BMessage): a copy of the current specifier  
+         - ``whatFound`` (int): the what data member of the specifier  
+         - ``py_property`` (int): the property name in the property variable
+:rtype: tuple
+)doc")
+.def("HasSpecifiers", &BMessage::HasSpecifiers, R"doc(
+Checks whether the message has any specifiers.
 
-.def("AddInt8", &BMessage::AddInt8, "", py::arg("name"), py::arg("value"))
-.def("AddUInt8", &BMessage::AddUInt8, "", py::arg("name"), py::arg("value"))
-.def("AddInt16", &BMessage::AddInt16, "", py::arg("name"), py::arg("value"))
-.def("AddUInt16", &BMessage::AddUInt16, "", py::arg("name"), py::arg("value"))
-.def("AddInt32", &BMessage::AddInt32, "", py::arg("name"), py::arg("value"))
-.def("AddUInt32", &BMessage::AddUInt32, "", py::arg("name"), py::arg("value"))
-.def("AddInt64", &BMessage::AddInt64, "", py::arg("name"), py::arg("value"))
-.def("AddUInt64", &BMessage::AddUInt64, "", py::arg("name"), py::arg("value"))
+:returns: True if the message has specifiers, False otherwise.
+:rtype: bool
+)doc")
+.def("PopSpecifier", &BMessage::PopSpecifier, R"doc(
+Removes the top specifier from the specifier stack.
 
-.def("AddBool", &BMessage::AddBool, "", py::arg("name"), py::arg("value"))
-.def("AddFloat", &BMessage::AddFloat, "", py::arg("name"), py::arg("value"))
-.def("AddDouble", &BMessage::AddDouble, "", py::arg("name"), py::arg("value"))
-.def("AddColor", &BMessage::AddColor, "", py::arg("name"), py::arg("value"))
-.def("AddPointer", &BMessage::AddPointer, "", py::arg("name"), py::arg("pointer"))
-.def("AddMessenger", &BMessage::AddMessenger, "", py::arg("name"), py::arg("messenger"))
+:returns: B_OK on success, or an error code if the stack is empty.
+:rtype: int
+)doc")
+.def("AddAlignment", &BMessage::AddAlignment, R"doc(
+Add a BAlignment object to the message.
 
-.def("AddRef", &BMessage::AddRef, "", py::arg("name"), py::arg("ref"))
-.def("AddNodeRef", &BMessage::AddNodeRef, "", py::arg("name"), py::arg("ref"))
-.def("AddMessage", &BMessage::AddMessage, "", py::arg("name"), py::arg("message"))
-.def("AddFlat", py::overload_cast<const char *, BFlattenable *, int32>(&BMessage::AddFlat), "", py::arg("name"), py::arg("object"), py::arg("count")=1)
-.def("AddFlat", py::overload_cast<const char *, const BFlattenable *, int32>(&BMessage::AddFlat), "", py::arg("name"), py::arg("object"), py::arg("count")=1)
+:param name: The name associated with the BAlignment.
+:type name: str
+:param alignment: The alignment value to add.
+:type alignment: BAlignment
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("alignment"))
+.def("AddRect", &BMessage::AddRect, R"doc(
+Add a BRect object to the message.
+
+:param name: The name associated with the BRect.
+:type name: str
+:param rect: The BRect object to add.
+:type rect: BRect
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("rect"))
+.def("AddPoint", &BMessage::AddPoint, R"doc(
+Add a BPoint object to the message.
+
+:param name: The name associated with the BPoint.
+:type name: str
+:param point: The BPoint object to add.
+:type point: BPoint
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("point"))
+.def("AddSize", &BMessage::AddSize, R"doc(
+Add a BSize object to the message.
+
+:param name: The name associated with the BSize.
+:type name: str
+:param size: The BSize object to add.
+:type size: BSize
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("size"))
+
+.def("AddString", py::overload_cast<const char *, const char *>(&BMessage::AddString), R"doc(
+Add a string to the message.
+
+:param name: The name associated with the string.
+:type name: str
+:param string: The string to add.
+:type string: str
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("AddString", py::overload_cast<const char *, const BString &>(&BMessage::AddString), R"doc(
+Add a BString object to the message.
+
+:param name: The name associated with the BString.
+:type name: str
+:param string: The BString object to add.
+:type string: BString
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("AddStrings", &BMessage::AddStrings, R"doc(
+Add multiple strings as BStringList to the message.
+
+:param name: The name associated with the BStringList.
+:type name: str
+:param list: The BStringList containing the list of strings to add.
+:type list: BStringList
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("list"))
+
+.def("AddInt8", &BMessage::AddInt8, R"doc(
+Add an int8 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The int8 value to add.
+:type value: int8
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddUInt8", &BMessage::AddUInt8, R"doc(
+Add a uint8 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The uint8 value to add.
+:type value: uint8
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddInt16", &BMessage::AddInt16, R"doc(
+Add an int16 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The int16 value to add.
+:type value: int16
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddUInt16", &BMessage::AddUInt16, R"doc(
+Add a uint16 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The uint16 value to add.
+:type value: uint16
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddInt32", &BMessage::AddInt32, R"doc(
+Add an int32 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The int32 value to add.
+:type value: int32
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddUInt32", &BMessage::AddUInt32, R"doc(
+Add a uint32 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The uint32 value to add.
+:type value: uint32
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddInt64", &BMessage::AddInt64, R"doc(
+Add an int64 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The int64 value to add.
+:type value: int64
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddUInt64", &BMessage::AddUInt64, R"doc(
+Add a uint64 value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The uint64 value to add.
+:type value: uint64
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+
+.def("AddBool", &BMessage::AddBool, R"doc(
+Add a boolean value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The boolean value to add.
+:type value: bool
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddFloat", &BMessage::AddFloat, R"doc(
+Add a float value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The float value to add.
+:type value: float
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddDouble", &BMessage::AddDouble, R"doc(
+Add a double value to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The double value to add.
+:type value: double
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddColor", &BMessage::AddColor, R"doc(
+Add a rgb_color object to the message.
+
+:param name: The name associated with the value.
+:type name: str
+:param value: The rgb_color object to add.
+:type value: rgb_color
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("AddPointer", &BMessage::AddPointer, R"doc(
+Add a pointer to the message.
+
+:param name: The name associated with the pointer.
+:type name: str
+:param pointer: The pointer to add.
+:type pointer: const void*
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("pointer"))
+.def("AddMessenger", &BMessage::AddMessenger, R"doc(
+Add a BMessenger to the message.
+
+:param name: The name associated with the messenger.
+:type name: str
+:param messenger: The BMessenger object to add.
+:type messenger: BMessenger
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("messenger"))
+
+.def("AddRef", &BMessage::AddRef, R"doc(
+Add a entry_ref to the message.
+
+:param name: The name associated with the reference.
+:type name: str
+:param ref: The entry_ref to add.
+:type ref: entry_ref
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("ref"))
+.def("AddNodeRef", &BMessage::AddNodeRef, R"doc(
+Add a node_ref to the message.
+
+:param name: The name associated with the node reference.
+:type name: str
+:param ref: The node_ref to add.
+:type ref: node_ref
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("ref"))
+.def("AddMessage", &BMessage::AddMessage, R"doc(
+Add another BMessage to this message.
+
+:param name: The name associated with the nested message.
+:type name: str
+:param message: The BMessage object to add.
+:type message: BMessage
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("message"))
+.def("AddFlat", py::overload_cast<const char *, BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
+Add a BFlattenable object to the message.
+
+:param name: The name associated with the object.
+:type name: str
+:param object: The BFlattenable object to add.
+:type object: BFlattenable
+:param count: Number of objects to add (default is 1).
+:type count: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("object"), py::arg("count")=1)
+.def("AddFlat", py::overload_cast<const char *, const BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
+Add a const BFlattenable object to the message.
+
+:param name: The name associated with the object.
+:type name: str
+:param object: The const BFlattenable object to add.
+:type object: const BFlattenable
+:param count: Number of objects to add (default is 1).
+:type count: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("object"), py::arg("count")=1)
 //.def("AddData", &BMessage::AddData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
-.def("AddData", [](BMessage& self, const char* name, type_code type, py::buffer data, ssize_t numBytes, bool isFixedSize, int32 count) { //const void* data 
+.def("AddData", [](BMessage& self, const char* name, type_code type, py::buffer data, ssize_t numBytes, bool isFixedSize, int32 count) { 
 	py::buffer_info info = data.request();
 	const void* buffer = info.ptr;
 	return self.AddData(name,type,buffer,numBytes,isFixedSize,count);
-}, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
-.def("Append", &BMessage::Append, "", py::arg("message"))
-.def("RemoveData", &BMessage::RemoveData, "", py::arg("name"), py::arg("index")=0)
-.def("RemoveName", &BMessage::RemoveName, "", py::arg("name"))
-.def("MakeEmpty", &BMessage::MakeEmpty, "")
+},R"doc(
+Add arbitrary binary data to the message.
+The assigned type must be a specific data type; it should not be B_ANY_TYPE.
+fixedSize and numItems are usefull to add an array of data under a new
+name. If fixedSize is true, each item in the array must have the same number
+of bytes; otherwise, items can vary in size. numItems tells the 
+object to pre-allocate storage for some number of items. This isn't a limit,
+you can add more than numItems to the field.
 
-.def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("alignment"))
-.def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("alignment"))
-.def("FindAlignment", &PythonicFindAlignmentWrapper, "", py::arg("name"), py::arg("n")=0)
+:param name: The name associated with the data.
+:type name: str
+:param type: The type code representing the data type.
+:type type: int
+:param data: A buffer containing the data to add.
+:type data: bytes / memoryview / bytearray / etc.
+:param numBytes: Number of bytes to add from the buffer.
+:type numBytes: int
+:param isFixedSize: Whether the data has a fixed size (default is True).
+:type isFixedSize: bool
+:param count: Number of elements in the data array (default is 1).
+:type count: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
+.def("Append", &BMessage::Append,R"doc(
+Append another BMessage to this message, merging its contents.
+
+:param message: The BMessage object to append.
+:type message: BMessage
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("message"))
+.def("RemoveData", &BMessage::RemoveData, R"doc(
+Remove data of a specified name from the message.
+
+:param name: The name of the data to remove.
+:type name: str
+:param index: The index of the data to remove (default is 0).
+:type index: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index")=0)
+.def("RemoveName", &BMessage::RemoveName, R"doc(
+Remove all the data associated with a given name.
+
+:param name: The name to remove from the message.
+:type name: str
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"))
+.def("MakeEmpty", &BMessage::MakeEmpty, R"doc(
+Empties the message, removing all data and specifiers.
+
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc")
+
+.def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
+Find a BAlignment object in the message by name.
+
+:param name: The name associated with the BAlignment.
+:type name: str
+:param alignment: Output parameter to store the found BAlignment.
+:type alignment: BAlignment
+:returns: B_OK if the alignment is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("alignment"))
+.def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
+Find a BAlignment object in the message by name and index.
+
+:param name: The name associated with the BAlignment.
+:type name: str
+:param index: The index of the alignment to find.
+:type index: int
+:param alignment: Output parameter to store the found BAlignment.
+:type alignment: BAlignment
+:returns: B_OK if the alignment is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("alignment"))
+.def("FindAlignment", &PythonicFindAlignmentWrapper, R"doc(
+Find a BAlignment object in the message by name and (optionally) by index.
+This function returns a tuple containing the API call status and the
+resulting BAlignment object
+
+:param name: The name associated with the BAlignment.
+:type name: str
+:param index: The index of the alignment to find (default 0).
+:type index: int
+:returns: A tuple ``(status, object)``:
+         - ``status`` (int): ``B_OK`` if the alignment is found, or an error code otherwise.
+         - ``object`` (BAlignment): the BAlignment object found
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 .def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("rect"))
 .def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("rect"))
 .def("FindRect", &PythonicFindRectWrapper, "", py::arg("name"), py::arg("n")=0)
