@@ -36,7 +36,16 @@ void QuitWrapper(BApplication& self) {
 void ArgvReceivedWrapper(BApplication& self, int32 argc, std::vector<char*> argv) {
 	self.ArgvReceived(argc, argv.data());
 }
-
+py::tuple GetSupportedSuitesWrapper(BApplication& self){
+	BMessage message;
+	status_t status = self.GetSupportedSuites(&message);
+	return py::make_tuple(status, message);
+}
+py::tuple GetAppInfoWrapper(BApplication& self){
+	app_info info;
+	status_t status = self.GetAppInfo(&info);
+	return py::make_tuple(status, info);
+}
 class PyBApplication : public BApplication{
 	public:
         using BApplication::BApplication;
@@ -145,12 +154,14 @@ py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplicati
 .def("IsLaunching", &BApplication::IsLaunching, "")
 .def("Signature", &BApplication::Signature, "")
 .def("GetAppInfo", &BApplication::GetAppInfo, "", py::arg("info"))
+.def("GetAppInfo", &GetAppInfoWrapper, "")
 .def_static("AppResources", &BApplication::AppResources, "")
 .def("DispatchMessage", &BApplication::DispatchMessage, "", py::arg("message"), py::arg("handler"))
 .def("SetPulseRate", &BApplication::SetPulseRate, "", py::arg("rate"))
 .def("RegisterLooper", &BApplication::RegisterLooper, "", py::arg("looper"))
 .def("UnregisterLooper", &BApplication::UnregisterLooper, "", py::arg("looper"))
 .def("GetSupportedSuites", &BApplication::GetSupportedSuites, "", py::arg("data"))
+.def("GetSupportedSuites", &GetSupportedSuitesWrapper, "")
 .def("Perform", &BApplication::Perform, "", py::arg("d"), py::arg("arg"))
 ;
 
