@@ -275,7 +275,16 @@ py::class_<BSlider, PyBSlider, BControl, std::unique_ptr<BSlider, py::nodelete>>
 .def("BarThickness", &BSlider::BarThickness, "")
 .def("SetBarThickness", &BSlider::SetBarThickness, "", py::arg("thickness"))
 .def("SetFont", &BSlider::SetFont, "", py::arg("font"), py::arg("properties")=B_FONT_ALL)
-.def("SetLimits", &BSlider::SetLimits, "", py::arg("minimum"), py::arg("maximum"))
+.def("SetLimits", &BSlider::SetLimits, R"doc(
+    Set the minimum and maximum values ​​the slider can represent.
+
+    This method updates the limits and, if the current value is out of range, sets it to the closest limit.
+
+    :param minimum: The minimum value accepted by the slider.
+    :type minimum: int
+    :param maximum: The maximum value accepted by the slider.
+    :type maximum: int
+)doc", py::arg("minimum"), py::arg("maximum"))
 .def("MaxUpdateTextWidth", &BSlider::MaxUpdateTextWidth, "")
 .def("MinSize", &BSlider::MinSize, "")
 .def("MaxSize", &BSlider::MaxSize, "")
