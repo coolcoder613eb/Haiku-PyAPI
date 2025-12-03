@@ -41,7 +41,7 @@ py::class_<BEntry, BStatable>(m, "BEntry")
 .def("GetStat", &BEntry::GetStat, "", py::arg("stat")) /*
 TODO: GetStat writes the result into stat argument, a struct stat variable we should define before calling this function.
 this is a C++ struct and we should provide a way for python to read it. So we wrote stat.cpp. In stat struct we have also some
-timespec variables, which type is unknow to python, so we should provide a way to read a timespec. This is actually undone.
+timespec variables, which type is unknown to python, so we should provide a way to read a timespec. This is actually undone.
 */
 .def("SetTo", py::overload_cast<const BDirectory *, const char *, bool>(&BEntry::SetTo), "", py::arg("dir"), py::arg("path"), py::arg("traverse")=false)
 .def("SetTo", py::overload_cast<const entry_ref *, bool>(&BEntry::SetTo), "", py::arg("ref"), py::arg("traverse")=false)
