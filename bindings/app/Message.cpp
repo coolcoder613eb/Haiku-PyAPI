@@ -25,22 +25,6 @@
 namespace py = pybind11;
 
 
-/*status_t GetInfoWrapper(BMessage& self, type_code typeRequested, int32 index,
-		std::string* nameFound, type_code* typeFound, int32* countFound) {
-		char *namefound_ptr = nullptr;
-		status_t status = self.GetInfo(typeRequested, index,
-		&namefound_ptr, typeFound, countFound);
-		std::cout << "namefound_ptr: " << namefound_ptr << std::endl;
-		if (status == B_OK && namefound_ptr != nullptr) {
-			if (nameFound != nullptr) {
-				*nameFound = std::string(namefound_ptr);
-			}
-		} else if (nameFound != nullptr) {
-			*nameFound = "";
-		}
-	return status;
-}*/
-
 py::tuple GetInfoWrapper(const BMessage& self, type_code typeRequested, int32 index) {
 	char *namefound_local = nullptr;
 	type_code typefound_local = 0;
@@ -51,7 +35,7 @@ py::tuple GetInfoWrapper(const BMessage& self, type_code typeRequested, int32 in
                                    &typefound_local, 
                                    &countfound_local);
     return py::make_tuple(status, 
-                          (namefound_local ? namefound_local : ""), // Gestisce il caso nullptr
+                          (namefound_local ? namefound_local : ""), // Handles nullptr case
                           typefound_local, 
                           countfound_local);
 }
@@ -59,7 +43,7 @@ py::tuple GetInfoWrapper(const BMessage& self, type_code typeRequested, int32 in
 py::tuple GetInfoFixedSizeWrapper(const BMessage& self, const char* name) {
 	type_code typeFound = 0;
 	int32 countFound = 0;
-	bool fixedSize;
+	bool fixedSize = false; //<-in case of not B_OK
 	status_t status = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
 	return py::make_tuple(status, typeFound, countFound, fixedSize);
 }
@@ -70,49 +54,6 @@ py::tuple GetInfoNameWrapper(const BMessage& self, const char* name) {
        status_t status = self.GetInfo(name, &typeFound, &countFound);
        return py::make_tuple(status, typeFound, countFound);
 }
-
-/* both in one
-py::tuple GetInfoNameWrapper2(const BMessage& self, const char* name) {
-	type_code typeFound = 0;
-	int32 countFound = 0;
-	bool fixedSize;
-	status_t status0 = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
-	status_t status = self.GetInfo(name, &typeFound, &countFound);
-	return py::make_tuple(status, typeFound, countFound, fixedSize);
-}
-oppure:
-
-py::tuple GetInfoUnifiedWrapper(const BMessage& self, const char* name, bool includeFixedSize = false) {
-    type_code typeFound = 0;
-    int32 countFound = 0;
-    status_t status;
-    bool fixedSize = false; 
-
-    if (includeFixedSize) {
-        status = self.GetInfo(name, &typeFound, &countFound, &fixedSize);
-        return py::make_tuple(status, typeFound, countFound, fixedSize);
-    } else {
-        status = self.GetInfo(name, &typeFound, &countFound);
-        return py::make_tuple(status, typeFound, countFound);
-    }
-}
-
-
-
-
-
-*/
-
-
-/* int32 is immutable we should return a tuple
-status_t GetCurrentSpecifierWrapper(BMessage& self, int32* index,
-              BMessage* specifier, int32* _what, std::string* property) {
-      const char* p;
-      status_t status = self.GetCurrentSpecifier(index, specifier, _what, &p);
-      *property = p;
-      return status;
-}
-*/
 
 py::tuple GetCurrentSpecifierFullWrapper(const BMessage& self) {
     int32 indexFound = 0;
@@ -129,25 +70,19 @@ py::tuple GetCurrentSpecifierFullWrapper(const BMessage& self) {
     return py::make_tuple(status,indexFound,specifierFound,whatFound,py_property);
 }
 
-/* string is immutable
-status_t FindStringWrapper(BMessage& self, const char* name,
-		std::string* string) {
-	const char* s;
-	status_t status = self.FindString(name, &s);
-	*string = s;
-	return status;
-}*/
-
 py::tuple PythonicFindStringsWrapper(const BMessage& self, const char* name){
 	BStringList sl;
 	status_t status = self.FindStrings(name,&sl);
-	return py::make_tuple(status, sl);
+	if (status == B_OK) {
+		return py::make_tuple(status, sl);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindStringWrapper(const BMessage& self, const char* name, int32 n=0){
 	const char* s;
 	status_t status = self.FindString(name, n, &s);
-	//return py::make_tuple(status, s); more secure below
+	//return py::make_tuple(status, s); safer below
 	if (status == B_OK) {
         std::string safe_string(s);
         return py::make_tuple(status, safe_string);
@@ -158,135 +93,190 @@ py::tuple PythonicFindStringWrapper(const BMessage& self, const char* name, int3
 py::tuple PythonicFindBStringWrapper(const BMessage& self, const char* name, int32 n=0){
 	BString s;
 	status_t status = self.FindString(name,n, &s);
-	return py::make_tuple(status, s); 
+	if (status == B_OK) {
+		return py::make_tuple(status, s); 
+	}
+	return py::make_tuple(status, py::none());
 }
-/*
-status_t FindStringWrapper(BMessage& self, const char* name,
-		int32 index, std::string* string) {
-	const char* s;
-	status_t status = self.FindString(name, index, &s);
-	*string = s;
-	return status;
-}*/
 
 py::tuple PythonicFindAlignmentWrapper(const BMessage& self, const char* name, int32 n=0){
 	BAlignment a;
 	status_t status = self.FindAlignment(name,n,&a);
-	return py::make_tuple(status, a);
+	if (status == B_OK) {
+		return py::make_tuple(status, a);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindRectWrapper(const BMessage& self, const char* name, int32 n=0){
 	BRect r;
 	status_t status = self.FindRect(name,n,&r);
-	return py::make_tuple(status, r);
+	if (status == B_OK) {
+		return py::make_tuple(status, r);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindSizeWrapper(const BMessage& self, const char* name, int32 n=0){
 	BSize sz;
 	status_t status = self.FindSize(name,n,&sz);
-	return py::make_tuple(status, sz);
+	if (status == B_OK) {
+		return py::make_tuple(status, sz);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindPointWrapper(const BMessage& self, const char* name, int32 n=0){
 	BPoint p;
 	status_t status = self.FindPoint(name,n,&p);
-	return py::make_tuple(status, p);
+	if (status == B_OK) {
+		return py::make_tuple(status, p);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindInt8Wrapper(const BMessage& self, const char* name, int32 n=0){
-	int8 i = 0;
+	int8 i;
 	status_t status = self.FindInt8(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindUInt8Wrapper(const BMessage& self, const char* name, int32 n=0){
-	uint8 i = 0;
+	uint8 i;
 	status_t status = self.FindUInt8(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindInt16Wrapper(const BMessage& self, const char* name, int32 n=0){
-	int16 i = 0;
+	int16 i;
 	status_t status = self.FindInt16(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindUInt16Wrapper(const BMessage& self, const char* name, int32 n=0){
-	uint16 i = 0;
+	uint16 i;
 	status_t status = self.FindUInt16(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindInt32Wrapper(const BMessage& self, const char* name, int32 n=0){
-	int32 i = 0;
+	int32 i;
 	status_t status = self.FindInt32(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindUInt32Wrapper(const BMessage& self, const char* name, int32 n=0){
-	uint32 i = 0;
+	uint32 i;
 	status_t status = self.FindUInt32(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindInt64Wrapper(const BMessage& self, const char* name, int32 n=0){
-	int64 i = 0;
+	int64 i;
 	status_t status = self.FindInt64(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindUInt64Wrapper(const BMessage& self, const char* name, int32 n=0){
-	uint64 i = 0;
+	uint64 i;
 	status_t status = self.FindUInt64(name, n, &i);
-	return py::make_tuple(status, i);
+	if (status == B_OK) {
+		return py::make_tuple(status, i);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindBoolWrapper(const BMessage& self, const char* name, int32 n=0){
 	bool b;
 	status_t status = self.FindBool(name, n, &b);
-	return py::make_tuple(status, b);
+	if (status == B_OK) {
+		return py::make_tuple(status, b);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindFloatWrapper(const BMessage& self, const char* name, int32 n=0){
 	float f;
 	status_t status = self.FindFloat(name, n, &f);
-	return py::make_tuple(status, f);
+	if (status == B_OK) {
+		return py::make_tuple(status, f);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindDoubleWrapper(const BMessage& self, const char* name, int32 n=0){
 	double d;
 	status_t status = self.FindDouble(name, n, &d);
-	return py::make_tuple(status, d);
+	if (status == B_OK) {
+		return py::make_tuple(status, d);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindColorWrapper(const BMessage& self, const char* name, int32 n=0){
 	rgb_color col;
 	status_t status = self.FindColor(name,n,&col);
-	return py::make_tuple(status, col);
+	if (status == B_OK) {
+		return py::make_tuple(status, col);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindMessengerWrapper(const BMessage& self, const char* name, int32 n=0){
 	BMessenger msgr;
 	status_t status = self.FindMessenger(name,n,&msgr);
-	return py::make_tuple(status, msgr);
+	if (status == B_OK) {
+		return py::make_tuple(status, msgr);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindRefWrapper(const BMessage& self, const char* name, int32 n=0){
 	entry_ref entr;
 	status_t status = self.FindRef(name,n,&entr);
-	return py::make_tuple(status, entr);
+	if (status == B_OK) {
+		return py::make_tuple(status, entr);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindNodeRefWrapper(const BMessage& self, const char* name, int32 n=0){
 	node_ref nr;
 	status_t status = self.FindNodeRef(name,n,&nr);
-	return py::make_tuple(status, nr);
+	if (status == B_OK) {
+		return py::make_tuple(status, nr);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 py::tuple PythonicFindMessageWrapper(const BMessage& self, const char* name, int32 n=0){
 	BMessage m;
 	status_t status = self.FindMessage(name,n,&m);
-	return py::make_tuple(status, m);
+	if (status == B_OK) {
+		return py::make_tuple(status, m);
+	}
+	return py::make_tuple(status, py::none());
 }
 
 
@@ -1050,73 +1040,403 @@ Find a BAlignment object in the message by name and index.
 .def("FindAlignment", &PythonicFindAlignmentWrapper, R"doc(
 Find a BAlignment object in the message by name and (optionally) by index.
 This function returns a tuple containing the API call status and the
-resulting BAlignment object
+resulting BAlignment object.
 
 :param name: The name associated with the BAlignment.
 :type name: str
-:param index: The index of the alignment to find (default 0).
+:param index: The index of the alignment to find (default is 0).
 :type index: int
 :returns: A tuple ``(status, object)``:
          - ``status`` (int): ``B_OK`` if the alignment is found, or an error code otherwise.
-         - ``object`` (BAlignment): the BAlignment object found
+         - ``object`` (BAlignment): the BAlignment object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
-.def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("rect"))
-.def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("rect"))
-.def("FindRect", &PythonicFindRectWrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), R"doc(
+Find a BRect object in the message by name.
 
-.def("FindPoint", py::overload_cast<const char *, BPoint *>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("point"))
-.def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("point"))
-.def("FindPoint", &PythonicFindPointWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("size"))
-.def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), "", py::arg("name"), py::arg("index"), py::arg("size"))
-.def("FindSize", &PythonicFindSizeWrapper, "", py::arg("name"), py::arg("n")=0)
+:param name: The name associated with the BRect.
+:type name: str
+:param rect: Output parameter to store the found BRect.
+:type rect: BRect
+:returns: ``B_OK`` if the rectangle is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("rect"))
+.def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), R"doc(
+Find a BRect object in the message by name and index.
+
+:param name: The name associated with the BRect.
+:type name: BRect
+:param index: The index of the rectangle to find.
+:type index: int
+:param rect: Output parameter to store the found BRect.
+:type rect: BRect
+:returns: ``B_OK`` if the rectangle is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("rect"))
+.def("FindRect", &PythonicFindRectWrapper, R"doc(
+Find BRect by name and optional index, but instead filling an output parameter,
+this method returns a tuple containing the API call status and the resulting
+BRect object.
+
+:param name: The name associated with the BRect.
+:type name: str
+:param n: The optional index of the BRect to find (default is 0).
+:type n: int
+:returns: A tuple ``(status, object)``:
+         - ``status`` (int): ``B_OK`` if the BRect is found, or an error code otherwise.
+         - ``object`` (BRect): the BRect object found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+
+.def("FindPoint", py::overload_cast<const char *, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
+Find a BPoint by name.
+
+:param name: The name associated with the BPoint.
+:type name: str
+:param point: Output parameter that will receive the BPoint.
+:type point: BPoint
+:returns: ``B_OK`` if the point is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("point"))
+.def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
+Find a BPoint by name and index.
+
+:param name: The name associated with the BPoint.
+:type name: str
+:param index: The index of the BPoint to retrieve.
+:type index: int
+:param point: Output parameter that will receive the BPoint.
+:type point: BPoint
+:returns: ``B_OK`` if the point is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("point"))
+.def("FindPoint", &PythonicFindPointWrapper, R"doc(
+Find a BPoint by name and optional index, but instead filling an output parameter, 
+this method returns a tuple containing the API call status and the resulting 
+BPoint object.
+
+:param name: The name associated with the BPoint.
+:type name: str
+:param n: The optional index of the BPoint to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, object)``:
+         - ``status`` (int): ``B_OK`` if the BPoint is found, or an error code otherwise.
+         - ``object`` (BPoint): the BPoint object found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), R"doc(
+Find a BSize by name.
+
+:param name: The name associated with the BSize object.
+:type name: str
+:param size: Output parameter that will receive the BSize.
+:type size: BSize
+:returns: ``B_OK`` if the size is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("size"))
+.def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), R"doc(
+Find a BSize by name and index.
+
+:param name: The name associated with the BSize.
+:type name: str
+:param index: The index of the BSize to retrieve.
+:type index: int
+:param size: Output parameter that will receive the BSize.
+:type size: BSize
+:returns: ``B_OK`` if the size is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("size"))
+.def("FindSize", &PythonicFindSizeWrapper, R"doc(
+Find a BSize by name and optional index, but instead filling an output parameter, 
+this method returns a tuple containing the API call status and the resulting 
+BSize object.
+
+:param name: The name associated with the BSize object.
+:type name: str
+:param n: The optional index of the BSize to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, object)``:
+         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``object`` (BSize): the BSize object found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
 //.def("FindString", py::overload_cast<BMessage &, const char *, int32, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("index"), py::arg("string"))
-.def("FindString", &PythonicFindStringWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindBString", &PythonicFindBStringWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("string"))
-.def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("string"))
+.def("FindString", &PythonicFindStringWrapper, R"doc(
+Find a string by name and optional index, but instead filling an output parameter, 
+this method returns a tuple containing the API call status and the resulting 
+string.
 
-.def("FindStrings", &BMessage::FindStrings, "", py::arg("name"), py::arg("list"))
-.def("FindStrings", &PythonicFindStringsWrapper, "", py::arg("name"))
+:param name: The name associated with the string.
+:type name: str
+:param n: The optional index of the string to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, string)``:
+         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``string`` (string): the string found, (None) if it fails
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindBString", &PythonicFindBStringWrapper, R"doc(
+Find a string by name and optional index, but instead filling an output parameter, 
+this method returns a tuple containing the API call status and the resulting 
+string as BString object.
+
+:param name: The name associated with the string.
+:type name: str
+:param n: The optional index of the string to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, string)``:
+         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``string`` (BString): the string found as BString, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), R"doc(
+Find a string by name and write it in a BString object.
+
+:param name: The name associated with the string.
+:type name: str
+:param string: Output parameter that will receive the BString.
+:type string: BString
+:returns: ``B_OK`` if the size is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), R"doc(
+Find a string by name and index and write it in a BString object.
+
+:param name: The name associated with the string.
+:type name: str
+:param index: The index of the string to retrieve.
+:type index: int
+:param string: Output parameter that will receive the BString.
+:type string: BString
+:returns: ``B_OK`` if the size is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("string"))
+
+.def("FindStrings", &BMessage::FindStrings, R"doc(
+Find a list of strings by name and write it in a BStringList object.
+
+:param name: The name associated with the list of strings.
+:type name: str
+:param list: Output parameter that will receive the BStringList.
+:type list: BStringList
+:returns: ``B_OK`` if the size is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("list"))
+.def("FindStrings", &PythonicFindStringsWrapper, R"doc(
+Find a list of strings by name, but instead filling an output parameter, 
+this method returns a tuple containing the API call status and the resulting 
+BStringList object.
+
+:param name: The name associated with the list of strings.
+:type name: str
+:returns: A tuple ``(status, list)``:
+         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``list`` (BStringList): the list of strings found as BStringList, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"))
 //.def("FindInt8", py::overload_cast<const char *, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindInt8", py::overload_cast<const char *, int32, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 //.def("FindUInt8", py::overload_cast<const char *, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt8", py::overload_cast<const char *, int32, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt8",  &PythonicFindInt8Wrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindUInt8",  &PythonicFindUInt8Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindInt8",  &PythonicFindInt8Wrapper, R"doc(
+Find a int8 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting int8 value.
+
+:param name: The name associated with the int8.
+:type name: str
+:param n: The optional index of the int8 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the int8 is found, or an error code otherwise.
+         - ``value`` (int): the int8 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindUInt8",  &PythonicFindUInt8Wrapper, R"doc(
+Find a uint8 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting uint8 value.
+
+:param name: The name associated with the uint8.
+:type name: str
+:param n: The optional index of the uint8 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the uint8 is found, or an error code otherwise.
+         - ``value`` (uint): the uint8 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindInt16", py::overload_cast<const char *, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindInt16", py::overload_cast<const char *, int32, int16 *>(&BMessage::FindInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 //.def("FindUInt16", py::overload_cast<const char *, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt16", py::overload_cast<const char *, int32, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt16", &PythonicFindInt16Wrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindUInt16", &PythonicFindUInt16Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindInt16", &PythonicFindInt16Wrapper, R"doc(
+Find a int16 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting int16 value. 
+
+:param name: The name associated with the int16.
+:type name: str
+:param n: The optional index of the int16 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the int16 is found, or an error code otherwise.
+         - ``value`` (int): the int16 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindUInt16", &PythonicFindUInt16Wrapper, R"doc(
+Find a uint16 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting uint16 value. 
+
+:param name: The name associated with the uint16.
+:type name: str
+:param n: The optional index of the uint16 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the uint16 is found, or an error code otherwise.
+         - ``value`` (uint): the uint16 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindInt32", py::overload_cast<const char *, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindInt32", py::overload_cast<const char *, int32, int32 *>(&BMessage::FindInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 //.def("FindUInt32", py::overload_cast<const char *, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt32", py::overload_cast<const char *, int32, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt32", &PythonicFindInt32Wrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindUInt32", &PythonicFindUInt32Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindInt32", &PythonicFindInt32Wrapper, R"doc(
+Find a int32 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting int32 value. 
+
+:param name: The name associated with the int32.
+:type name: str
+:param n: The optional index of the int32 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the int32 is found, or an error code otherwise.
+         - ``value`` (int): the int32 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindUInt32", &PythonicFindUInt32Wrapper, R"doc(
+Find a uint32 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting uint32 value. 
+
+:param name: The name associated with the uint32.
+:type name: str
+:param n: The optional index of the uint32 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the uint32 is found, or an error code otherwise.
+         - ``value`` (uint): the uint32 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindInt64", py::overload_cast<const char *, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindInt64", py::overload_cast<const char *, int32, int64 *>(&BMessage::FindInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 //.def("FindUInt64", py::overload_cast<const char *, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt64", py::overload_cast<const char *, int32, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindInt64", &PythonicFindInt64Wrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindUInt64", &PythonicFindUInt64Wrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindInt64", &PythonicFindInt64Wrapper, R"doc(
+Find a int64 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting int64 value. 
+
+:param name: The name associated with the int64.
+:type name: str
+:param n: The optional index of the int64 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the int64 is found, or an error code otherwise.
+         - ``value`` (int): the int64 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindUInt64", &PythonicFindUInt64Wrapper, R"doc(
+Find a uint64 by name and optional index, this method returns a tuple 
+containing the API call status and the resulting uint64 value. 
+
+:param name: The name associated with the uint64.
+:type name: str
+:param n: The optional index of the uint64 to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the uint64 is found, or an error code otherwise.
+         - ``value`` (uint): the uint64 value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindBool", py::overload_cast<const char *, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindBool", py::overload_cast<const char *, int32, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindBool", &PythonicFindBoolWrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindBool", &PythonicFindBoolWrapper, R"doc(
+Find a bool by name and optional index, this method returns a tuple 
+containing the API call status and the resulting bool value. 
+
+:param name: The name associated with the bool.
+:type name: str
+:param n: The optional index of the bool to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the bool is found, or an error code otherwise.
+         - ``value`` (bool): the bool value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindFloat", py::overload_cast<const char *, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindFloat", py::overload_cast<const char *, int32, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindFloat", &PythonicFindFloatWrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindFloat", &PythonicFindFloatWrapper, R"doc(
+Find a float by name and optional index, this method returns a tuple 
+containing the API call status and the resulting float value. 
+
+:param name: The name associated with the float.
+:type name: str
+:param n: The optional index of the float to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the float is found, or an error code otherwise.
+         - ``value`` (float): the float value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindDouble", py::overload_cast<const char *, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindDouble", py::overload_cast<const char *, int32, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindDouble", &PythonicFindDoubleWrapper, "", py::arg("name"), py::arg("n")=0)
+.def("FindDouble", &PythonicFindDoubleWrapper, R"doc(
+Find a double by name and optional index, this method returns a tuple 
+containing the API call status and the resulting double value. 
 
-.def("FindColor", py::overload_cast<const char *, rgb_color *>(&BMessage::FindColor, py::const_), "", py::arg("name"), py::arg("value"))
-.def("FindColor", py::overload_cast<const char *, int32, rgb_color *>(&BMessage::FindColor, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("FindColor", &PythonicFindColorWrapper, "", py::arg("name"), py::arg("n")=0)
+:param name: The name associated with the double.
+:type name: str
+:param n: The optional index of the double to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, value)``:
+         - ``status`` (int): ``B_OK`` if the double is found, or an error code otherwise.
+         - ``value`` (double): the double value, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+
+.def("FindColor", py::overload_cast<const char *, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
+Find a rgb_color object in the message by name.
+
+:param name: The name associated with the rgb_color.
+:type name: str
+:param value: Output parameter to store the found rgb_color.
+:type value: rgb_color
+:returns: B_OK if the rgb_color is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("FindColor", py::overload_cast<const char *, int32, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
+Find a rgb_color object in the message by name and index.
+
+:param name: The name associated with the rgb_color.
+:type name: str
+:param index: The index of the rgb_color to retrieve.
+:type index: int
+:param value: Output parameter to store the found rgb_color.
+:type value: rgb_color
+:returns: B_OK if the rgb_color is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("FindColor", &PythonicFindColorWrapper, R"doc(
+Find a rgb_color by name and optional index, but instead filling an output 
+parameter, this method returns a tuple containing the API call status and the 
+resulting rgb_color object.
+
+:param name: The name associated with the rgb_color.
+:type name: str
+:param n: The optional index of the string to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, color)``:
+         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``color`` (rgb_color): the rgb_color found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
 //.def("FindPointer", py::overload_cast<const char *, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("pointer"))
 //.def("FindPointer", py::overload_cast<const char *, int32, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 
