@@ -966,6 +966,8 @@ name. If fixedSize is true, each item in the array must have the same number
 of bytes; otherwise, items can vary in size. numItems tells the 
 object to pre-allocate storage for some number of items. This isn't a limit,
 you can add more than numItems to the field.
+Note: For B_RAW_TYPE, if you want to use ReplaceData, you need to set
+isFixedSize as False if you need a different sized data
 
 :param name: The name associated with the data.
 :type name: str
@@ -1911,45 +1913,749 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("string"))
 
-.def("ReplaceInt8", py::overload_cast<const char *, signed char>(&BMessage::ReplaceInt8), "", py::arg("name"), py::arg("value"))
-.def("ReplaceInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::ReplaceInt8), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::ReplaceUInt8), "", py::arg("name"), py::arg("value"))
-.def("ReplaceUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::ReplaceUInt8), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceInt16", py::overload_cast<const char *, int16>(&BMessage::ReplaceInt16), "", py::arg("name"), py::arg("value"))
-.def("ReplaceInt16", py::overload_cast<const char *, int32, int16>(&BMessage::ReplaceInt16), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceUInt16", py::overload_cast<const char *, uint16>(&BMessage::ReplaceUInt16), "", py::arg("name"), py::arg("value"))
-.def("ReplaceUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::ReplaceUInt16), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceInt32", py::overload_cast<const char *, int32>(&BMessage::ReplaceInt32), "", py::arg("name"), py::arg("value"))
-.def("ReplaceInt32", py::overload_cast<const char *, int32, int32>(&BMessage::ReplaceInt32), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceUInt32", py::overload_cast<const char *, uint32>(&BMessage::ReplaceUInt32), "", py::arg("name"), py::arg("value"))
-.def("ReplaceUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::ReplaceUInt32), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceInt64", py::overload_cast<const char *, int64_t>(&BMessage::ReplaceInt64), "", py::arg("name"), py::arg("value"))
-.def("ReplaceInt64", py::overload_cast<const char *, int32, int64_t>(&BMessage::ReplaceInt64), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::ReplaceUInt64), "", py::arg("name"), py::arg("value"))
-.def("ReplaceUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::ReplaceUInt64), "", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceInt8", py::overload_cast<const char *, signed char>(&BMessage::ReplaceInt8), R"doc(
+Replace by name the first or the only existing int8 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+int8 type.
+ 
+This function is typically used to update the value of an existing
+field.
 
-.def("ReplaceBool", py::overload_cast<const char *, bool>(&BMessage::ReplaceBool), "", py::arg("name"), py::arg("aBoolean"))
-.def("ReplaceBool", py::overload_cast<const char *, int32, bool>(&BMessage::ReplaceBool), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceFloat", py::overload_cast<const char *, float>(&BMessage::ReplaceFloat), "", py::arg("name"), py::arg("value"))
-.def("ReplaceFloat", py::overload_cast<const char *, int32, float>(&BMessage::ReplaceFloat), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceDouble", py::overload_cast<const char *, double>(&BMessage::ReplaceDouble), "", py::arg("name"), py::arg("value"))
-.def("ReplaceDouble", py::overload_cast<const char *, int32, double>(&BMessage::ReplaceDouble), "", py::arg("name"), py::arg("index"), py::arg("value"))
-.def("ReplaceColor", py::overload_cast<const char *, rgb_color>(&BMessage::ReplaceColor), "", py::arg("name"), py::arg("value"))
-.def("ReplaceColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::ReplaceColor), "", py::arg("name"), py::arg("index"), py::arg("value"))
+:param name: The name associated with the int8 field to replace.
+:type name: str
+:param value: The new ``int8`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::ReplaceInt8), R"doc(
+Replace in the message an existing int8 item in the name array at the 
+index position with another int8 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the int8 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int8 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``int8`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::ReplaceUInt8), R"doc(
+Replace by name the first or the only existing uint8 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+uint8 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint8 field to replace.
+:type name: str
+:param value: The new ``uint8`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::ReplaceUInt8), R"doc(
+Replace in the message an existing uint8 item in the name array at the 
+index position with another uint8 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the uint8 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint8 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``uint8`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceInt16", py::overload_cast<const char *, int16>(&BMessage::ReplaceInt16), R"doc(
+Replace by name the first or the only existing int16 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+int16 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int16 field to replace.
+:type name: str
+:param value: The new ``int16`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceInt16", py::overload_cast<const char *, int32, int16>(&BMessage::ReplaceInt16), R"doc(
+Replace in the message an existing int16 item in the name array at the 
+index position with another int16 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the int16 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int16 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``int16`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceUInt16", py::overload_cast<const char *, uint16>(&BMessage::ReplaceUInt16), R"doc(
+Replace by name the first or the only existing uint16 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+uint16 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint16 field to replace.
+:type name: str
+:param value: The new ``uint16`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::ReplaceUInt16), R"doc(
+Replace in the message an existing uint16 item in the name array at the 
+index position with another uint16 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the uint16 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint16 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``uint16`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceInt32", py::overload_cast<const char *, int32>(&BMessage::ReplaceInt32), R"doc(
+Replace by name the first or the only existing int32 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+int32 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int32 field to replace.
+:type name: str
+:param value: The new ``int32`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceInt32", py::overload_cast<const char *, int32, int32>(&BMessage::ReplaceInt32), R"doc(
+Replace in the message an existing int32 item in the name array at the 
+index position with another int32 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the int32 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int32 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``int32`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceUInt32", py::overload_cast<const char *, uint32>(&BMessage::ReplaceUInt32), R"doc(
+Replace by name the first or the only existing uint32 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+uint32 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint32 field to replace.
+:type name: str
+:param value: The new ``uint32`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::ReplaceUInt32), R"doc(
+Replace in the message an existing uint32 item in the name array at the 
+index position with another uint32 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the uint32 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint32 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``uint32`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceInt64", py::overload_cast<const char *, int64_t>(&BMessage::ReplaceInt64), R"doc(
+Replace by name the first or the only existing int64 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+int64 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int64 field to replace.
+:type name: str
+:param value: The new ``int64`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceInt64", py::overload_cast<const char *, int32, int64_t>(&BMessage::ReplaceInt64), R"doc(
+Replace in the message an existing int64 item in the name array at the 
+index position with another int64 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the int64 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the int64 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``int64`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::ReplaceUInt64), R"doc(
+Replace by name the first or the only existing uint64 item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+uint64 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint64 field to replace.
+:type name: str
+:param value: The new ``uint64`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::ReplaceUInt64), R"doc(
+Replace in the message an existing uint64 item in the name array at the 
+index position with another uint64 item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the uint64 type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the uint64 field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``uint64`` to store.
+:type value: int
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+
+.def("ReplaceBool", py::overload_cast<const char *, bool>(&BMessage::ReplaceBool), R"doc(
+Replace by name the first or the only existing bool item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+bool type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the bool field to replace.
+:type name: str
+:param value: The new ``bool`` to store.
+:type value: bool
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("aBoolean"))
+.def("ReplaceBool", py::overload_cast<const char *, int32, bool>(&BMessage::ReplaceBool), R"doc(
+Replace in the message an existing bool item in the name array at the 
+index position with another bool item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the bool type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the bool field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``bool`` to store.
+:type value: bool
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceFloat", py::overload_cast<const char *, float>(&BMessage::ReplaceFloat), R"doc(
+Replace by name the first or the only existing float item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+float type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the float field to replace.
+:type name: str
+:param value: The new ``float`` to store.
+:type value: float
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceFloat", py::overload_cast<const char *, int32, float>(&BMessage::ReplaceFloat), R"doc(
+Replace in the message an existing float item in the name array at the 
+index position with another float item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the float type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the float field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``float`` to store.
+:type value: float
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceDouble", py::overload_cast<const char *, double>(&BMessage::ReplaceDouble), R"doc(
+Replace by name the first or the only existing double item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+double type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the double field to replace.
+:type name: str
+:param value: The new ``double`` to store.
+:type value: double
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("ReplaceDouble", py::overload_cast<const char *, int32, double>(&BMessage::ReplaceDouble), R"doc(
+Replace in the message an existing double item in the name array at the 
+index position with another double item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the double type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the double field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param value: The new ``double`` to store.
+:type value: double
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("value"))
+.def("ReplaceColor", py::overload_cast<const char *, rgb_color>(&BMessage::ReplaceColor), R"doc(
+Replace by name the first or the only existing rgb_color item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+rgb_color type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the rgb_color field to replace.
+:type name: str
+:param color: The new ``rgb_color`` object to store.
+:type color: rgb_color
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("color"))
+.def("ReplaceColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::ReplaceColor), R"doc(
+Replace in the message an existing rgb_color item in the name array at the 
+index position with another rgb_color item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the rgb_color type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the rgb_color field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param color: The new ``rgb_color`` object to store.
+:type color: rgb_color
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("color"))
 .def("ReplacePointer", py::overload_cast<const char *, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("pointer"))
 .def("ReplacePointer", py::overload_cast<const char *, int32, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
-.def("ReplaceMessenger", py::overload_cast<const char *, BMessenger>(&BMessage::ReplaceMessenger), "", py::arg("name"), py::arg("messenger"))
-.def("ReplaceMessenger", py::overload_cast<const char *, int32, BMessenger>(&BMessage::ReplaceMessenger), "", py::arg("name"), py::arg("index"), py::arg("messenger"))
-.def("ReplaceRef", py::overload_cast<const char *, const entry_ref *>(&BMessage::ReplaceRef), "", py::arg("name"), py::arg("ref"))
-.def("ReplaceRef", py::overload_cast<const char *, int32, const entry_ref *>(&BMessage::ReplaceRef), "", py::arg("name"), py::arg("index"), py::arg("ref"))
-.def("ReplaceNodeRef", py::overload_cast<const char *, const node_ref *>(&BMessage::ReplaceNodeRef), "", py::arg("name"), py::arg("ref"))
-.def("ReplaceNodeRef", py::overload_cast<const char *, int32, const node_ref *>(&BMessage::ReplaceNodeRef), "", py::arg("name"), py::arg("index"), py::arg("ref"))
-.def("ReplaceMessage", py::overload_cast<const char *, const BMessage *>(&BMessage::ReplaceMessage), "", py::arg("name"), py::arg("message"))
-.def("ReplaceMessage", py::overload_cast<const char *, int32, const BMessage *>(&BMessage::ReplaceMessage), "", py::arg("name"), py::arg("index"), py::arg("message"))
-.def("ReplaceFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::ReplaceFlat), "", py::arg("name"), py::arg("object"))
-.def("ReplaceFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::ReplaceFlat), "", py::arg("name"), py::arg("index"), py::arg("object"))
-.def("ReplaceData", py::overload_cast<const char *, type_code, const void *, ssize_t>(&BMessage::ReplaceData), "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"))
-.def("ReplaceData", py::overload_cast<const char *, type_code, int32, const void *, ssize_t>(&BMessage::ReplaceData), "", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"), py::arg("numBytes"))
+.def("ReplaceMessenger", py::overload_cast<const char *, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
+Replace by name the first or the only existing BMessenger item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BMessenger type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BMessenger field to replace.
+:type name: str
+:param messenger: The new ``BMessenger`` object to store.
+:type messenger: BMessenger
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("messenger"))
+.def("ReplaceMessenger", py::overload_cast<const char *, int32, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
+Replace in the message an existing BMessenger item in the name array at the 
+index position with another BMessenger item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BMessenger type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BMessenger field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param messenger: The new ``BMessenger`` object to store.
+:type messenger: BMessenger
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
+.def("ReplaceRef", py::overload_cast<const char *, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
+Replace by name the first or the only existing entry_ref item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+entry_ref type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the entry_ref field to replace.
+:type name: str
+:param ref: The new ``entry_ref`` object to store.
+:type ref: entry_ref
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("ref"))
+.def("ReplaceRef", py::overload_cast<const char *, int32, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
+Replace in the message an existing entry_ref item in the name array at the 
+index position with another entry_ref item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the entry_ref type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the entry_ref field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param ref: The new ``entry_ref`` object to store.
+:type ref: entry_ref
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("ref"))
+.def("ReplaceNodeRef", py::overload_cast<const char *, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
+Replace by name the first or the only existing node_ref item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+node_ref type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the node_ref field to replace.
+:type name: str
+:param ref: The new ``node_ref`` object to store.
+:type ref: node_ref
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("ref"))
+.def("ReplaceNodeRef", py::overload_cast<const char *, int32, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
+Replace in the message an existing node_ref item in the name array at the 
+index position with another node_ref item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the node_ref type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the node_ref field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param ref: The new ``node_ref`` object to store.
+:type ref: node_ref
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("ref"))
+.def("ReplaceMessage", py::overload_cast<const char *, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
+Replace by name the first or the only existing BMessage item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BMessage type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BMessage field to replace.
+:type name: str
+:param message: The new ``BMessage`` object to store.
+:type message: BMessage
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("message"))
+.def("ReplaceMessage", py::overload_cast<const char *, int32, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
+Replace in the message an existing BMessage item in the name array at the 
+index position with another BMessage item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BMessage type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BMessage field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param message: The new ``BMessage`` object to store.
+:type message: BMessage
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("message"))
+.def("ReplaceFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
+Replace by name the first or the only existing BFlattenable item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BFlattenable type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BFlattenable field to replace.
+:type name: str
+:param object: The new ``BFlattenable`` object to store.
+:type object: BFlattenable
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("object"))
+.def("ReplaceFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
+Replace in the message an existing BFlattenable item in the name array at the 
+index position with another BFlattenable item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BFlattenable type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BFlattenable field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param object: The new ``BFlattenable`` object to store.
+:type object: BFlattenable
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("object"))
+//.def("ReplaceData", py::overload_cast<const char *, type_code, const void *, ssize_t>(&BMessage::ReplaceData),
+.def("ReplaceData",[](BMessage& self, const char* name, type_code type, py::buffer data) {
+	py::buffer_info info = data.request();
+	const void* buffer = info.ptr;
+	ssize_t numBytes = info.size * info.itemsize;
+	return self.ReplaceData(name, type, buffer, numBytes);
+},R"doc(
+Replace by name the first or the only existing data item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+data type.
+NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
+is different from the current one, the data field must have been previously
+created with the isFixedSize flag set to False; otherwise, this function
+returns B_BAD_ADDRESS.
+
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the data field to replace.
+:type name: str
+:param object: The new data to store.
+:type object: bytes
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("type"), py::arg("data"))
+//.def("ReplaceData", py::overload_cast<const char *, type_code, int32, const void *, ssize_t>(&BMessage::ReplaceData), R"doc(
+.def("ReplaceData",[](BMessage& self, const char* name, type_code type, int32 index, py::buffer data) {
+	py::buffer_info info = data.request();
+	const void* buffer = info.ptr;
+	ssize_t numBytes = info.size * info.itemsize;
+	return self.ReplaceData(name, type, index, buffer, numBytes);//(ssize_t)info.size);
+},R"doc(
+Replace in the message an existing data field in the name array at the 
+index position with other data. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the data type.
+NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
+is different from the current one, the data field must have been previously
+created with the isFixedSize flag set to False; otherwise, this function
+returns B_BAD_ADDRESS.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the data field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param object: The new data to store.
+:type object: bytes
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"))
 
 .def("HasSameData", &BMessage::HasSameData, "", py::arg("other"), py::arg("ignoreFieldOrder")=true, py::arg("deep")=false)
 /*
