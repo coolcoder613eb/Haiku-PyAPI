@@ -1430,30 +1430,182 @@ resulting rgb_color object.
 
 :param name: The name associated with the rgb_color.
 :type name: str
-:param n: The optional index of the string to retrieve (default is 0).
+:param n: The optional index of the rgb_color to retrieve (default is 0).
 :type n: int
 :returns: A tuple ``(status, color)``:
-         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
+         - ``status`` (int): ``B_OK`` if the rgb_color is found, or an error code otherwise.
          - ``color`` (rgb_color): the rgb_color found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 //.def("FindPointer", py::overload_cast<const char *, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("pointer"))
 //.def("FindPointer", py::overload_cast<const char *, int32, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 
-.def("FindMessenger", py::overload_cast<const char *, BMessenger *>(&BMessage::FindMessenger, py::const_), "", py::arg("name"), py::arg("messenger"))
-.def("FindMessenger", py::overload_cast<const char *, int32, BMessenger *>(&BMessage::FindMessenger, py::const_), "", py::arg("name"), py::arg("index"), py::arg("messenger"))
-.def("FindMessenger", &PythonicFindMessengerWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindRef", py::overload_cast<const char *, entry_ref *>(&BMessage::FindRef, py::const_), "", py::arg("name"), py::arg("ref"))
-.def("FindRef", py::overload_cast<const char *, int32, entry_ref *>(&BMessage::FindRef, py::const_), "", py::arg("name"), py::arg("index"), py::arg("ref"))
-.def("FindRef", &PythonicFindRefWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindNodeRef", py::overload_cast<const char *, node_ref *>(&BMessage::FindNodeRef, py::const_), "", py::arg("name"), py::arg("ref"))
-.def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), "", py::arg("name"), py::arg("index"), py::arg("ref"))
-.def("FindNodeRef", &PythonicFindNodeRefWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindMessage", py::overload_cast<const char *, BMessage *>(&BMessage::FindMessage, py::const_), "", py::arg("name"), py::arg("message"))
-.def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), "", py::arg("name"), py::arg("index"), py::arg("message"))
-.def("FindMessage", &PythonicFindMessageWrapper, "", py::arg("name"), py::arg("n")=0)
-.def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("object"))
-.def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("object"))
+.def("FindMessenger", py::overload_cast<const char *, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
+Find a BMessenger object in the message by name.
+
+:param name: The name associated with the BMessenger.
+:type name: str
+:param messenger: Output parameter to store the found BMessenger.
+:type messenger: BMessenger
+:returns: B_OK if the BMessenger is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("messenger"))
+.def("FindMessenger", py::overload_cast<const char *, int32, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
+Find a BMessenger object in the message by name and index.
+
+:param name: The name associated with the BMessenger.
+:type name: str
+:param index: The index of the BMessenger to retrieve.
+:type index: int
+:param messenger: Output parameter to store the found BMessenger.
+:type messenger: BMessenger
+:returns: B_OK if the BMessenger is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
+.def("FindMessenger", &PythonicFindMessengerWrapper, R"doc(
+Find a BMessenger by name and optional index, but instead filling an output 
+parameter, this method returns a tuple containing the API call status and the 
+resulting BMessenger object.
+
+:param name: The name associated with the BMessenger.
+:type name: str
+:param n: The optional index of the BMessenger to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, messenger)``:
+         - ``status`` (int): ``B_OK`` if the BMessenger is found, or an error code otherwise.
+         - ``messenger`` (BMessenger): the BMessenger found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindRef", py::overload_cast<const char *, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
+Find an entry_ref object in the message by name.
+
+:param name: The name associated with the entry_ref.
+:type name: str
+:param ref: Output parameter to store the found entry_ref.
+:type ref: entry_ref
+:returns: B_OK if the entry_ref is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("ref"))
+.def("FindRef", py::overload_cast<const char *, int32, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
+Find an entry_ref object in the message by name and index.
+
+:param name: The name associated with the entry_ref.
+:type name: str
+:param index: The index of the entry_ref to retrieve.
+:type index: int
+:param ref: Output parameter to store the found entry_ref.
+:type ref: entry_ref
+:returns: B_OK if the entry_ref is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("ref"))
+.def("FindRef", &PythonicFindRefWrapper, R"doc(
+Find an entry_ref by name and optional index, but instead filling an output 
+parameter, this method returns a tuple containing the API call status and the 
+resulting entry_ref object.
+
+:param name: The name associated with the entry_ref.
+:type name: str
+:param n: The optional index of the entry_ref to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, ref)``:
+         - ``status`` (int): ``B_OK`` if the entry_ref is found, or an error code otherwise.
+         - ``ref`` (entry_ref): the entry_ref found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindNodeRef", py::overload_cast<const char *, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
+Find an node_ref object in the message by name.
+
+:param name: The name associated with the node_ref.
+:type name: str
+:param ref: Output parameter to store the found node_ref.
+:type ref: node_ref
+:returns: B_OK if the node_ref is found, or an error code otherwise.
+:rtype: int
+)doc, py::arg("name"), py::arg("ref"))
+.def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
+Find an node_ref object in the message by name and index.
+
+:param name: The name associated with the node_ref.
+:type name: str
+:param index: The index of the node_ref to retrieve.
+:type index: int
+:param ref: Output parameter to store the found node_ref.
+:type ref: node_ref
+:returns: B_OK if the node_ref is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("ref"))
+.def("FindNodeRef", &PythonicFindNodeRefWrapper, R"doc(
+Find an node_ref by name and optional index, but instead filling an output 
+parameter, this method returns a tuple containing the API call status and the 
+resulting node_ref object.
+
+:param name: The name associated with the node_ref.
+:type name: str
+:param n: The optional index of the node_ref to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, nodref)``:
+         - ``status`` (int): ``B_OK`` if the node_ref is found, or an error code otherwise.
+         - ``nodref`` (node_ref): the node_ref found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindMessage", py::overload_cast<const char *, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
+Find an BMessage object in the message by name.
+
+:param name: The name associated with the BMessage.
+:type name: str
+:param message: Output parameter to store the found BMessage.
+:type message: BMessage
+:returns: B_OK if the BMessage is found, or an error code otherwise.
+:rtype: int
+)doc, py::arg("name"), py::arg("message"))
+.def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
+Find an BMessage object in the message by name and index.
+
+:param name: The name associated with the BMessage.
+:type name: str
+:param index: The index of the BMessage to retrieve.
+:type index: int
+:param message: Output parameter to store the found BMessage.
+:type message: BMessage
+:returns: B_OK if the BMessage is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("message"))
+.def("FindMessage", &PythonicFindMessageWrapper, R"doc(
+Find a BMessage by name and optional index, but instead filling an output 
+parameter, this method returns a tuple containing the API call status and the 
+resulting BMessage object.
+
+:param name: The name associated with the BMessage.
+:type name: str
+:param n: The optional index of the BMessage to retrieve (default is 0).
+:type n: int
+:returns: A tuple ``(status, nodref)``:
+         - ``status`` (int): ``B_OK`` if the BMessage is found, or an error code otherwise.
+         - ``nodref`` (BMessage): the BMessage found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("n")=0)
+.def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
+Find an BFlattenable object in the message by name.
+
+:param name: The name associated with the BFlattenable.
+:type name: str
+:param object: Output parameter to store the found BFlattenable.
+:type object: BFlattenable
+:returns: B_OK if the BFlattenable is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("object"))
+.def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
+Find an BFlattenable object in the message by name and index.
+
+:param name: The name associated with the BFlattenable.
+:type name: str
+:param index: The index of the BFlattenable to retrieve.
+:type index: int
+:param object: Output parameter to store the found BFlattenable.
+:type object: BFlattenable
+:returns: B_OK if the BFlattenable is found, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("object"))
 //.def("FindData", py::overload_cast<const char *, type_code, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"))
 .def("FindData", [](BMessage &self, const char *name, type_code type) -> py::tuple {
     const void *vdata = nullptr;
@@ -1468,7 +1620,22 @@ resulting rgb_color object.
     }
 
     return py::make_tuple(ret, py::none());
-}, "", py::arg("name"), py::arg("type"))
+}, R"doc(
+Find by name a binary data field of a specified type. If type is B_ANY_TYPE, 
+the function provides the data no matter what type it actually is. 
+But if type is a specific data type, it provides the data only if 
+the name field holds data of that particular type. This method 
+returns a tuple containing the API call status and the resulting bytes object.
+
+:param name: The name associated with the data field.
+:type name: str
+:param type: the type code of the data excpeted.
+:type type: type_code
+:returns: A tuple ``(status, data)``:
+         - ``status`` (int): ``B_OK`` if the specified data field is found, or an error code otherwise.
+         - ``data`` (bytes): the data found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("type"))
 //.def("FindData", py::overload_cast<const char *, type_code, int32, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"), py::arg("numBytes"))
 .def("FindData", [](BMessage &self, const char *name, type_code type, int32 index) -> py::tuple {
     const void *vdata = nullptr;
