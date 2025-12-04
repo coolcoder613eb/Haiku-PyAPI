@@ -1521,7 +1521,7 @@ Find an node_ref object in the message by name.
 :type ref: node_ref
 :returns: B_OK if the node_ref is found, or an error code otherwise.
 :rtype: int
-)doc, py::arg("name"), py::arg("ref"))
+)doc", py::arg("name"), py::arg("ref"))
 .def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
 Find an node_ref object in the message by name and index.
 
@@ -1557,7 +1557,7 @@ Find an BMessage object in the message by name.
 :type message: BMessage
 :returns: B_OK if the BMessage is found, or an error code otherwise.
 :rtype: int
-)doc, py::arg("name"), py::arg("message"))
+)doc", py::arg("name"), py::arg("message"))
 .def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
 Find an BMessage object in the message by name and index.
 
@@ -1650,20 +1650,266 @@ returns a tuple containing the API call status and the resulting bytes object.
     }
 
     return py::make_tuple(ret, py::none());
-}, "", py::arg("name"), py::arg("type"), py::arg("index"))
-.def("ReplaceAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::ReplaceAlignment), "", py::arg("name"), py::arg("alignment"))
-.def("ReplaceAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::ReplaceAlignment), "", py::arg("name"), py::arg("index"), py::arg("alignment"))
-.def("ReplaceRect", py::overload_cast<const char *, BRect>(&BMessage::ReplaceRect), "", py::arg("name"), py::arg("rect"))
-.def("ReplaceRect", py::overload_cast<const char *, int32, BRect>(&BMessage::ReplaceRect), "", py::arg("name"), py::arg("index"), py::arg("rect"))
+}, R"doc(
+Find a binary data field of a specified type, by name and index. If type 
+is B_ANY_TYPE, the function provides the data no matter what type it 
+actually is. But if type is a specific data type, it provides the data 
+only if the name field holds data of that particular type. This method 
+returns a tuple containing the API call status and the resulting bytes 
+object.
 
-.def("ReplacePoint", py::overload_cast<const char *, BPoint>(&BMessage::ReplacePoint), "", py::arg("name"), py::arg("aPoint"))
-.def("ReplacePoint", py::overload_cast<const char *, int32, BPoint>(&BMessage::ReplacePoint), "", py::arg("name"), py::arg("index"), py::arg("aPoint"))
-.def("ReplaceSize", py::overload_cast<const char *, BSize>(&BMessage::ReplaceSize), "", py::arg("name"), py::arg("aSize"))
-.def("ReplaceSize", py::overload_cast<const char *, int32, BSize>(&BMessage::ReplaceSize), "", py::arg("name"), py::arg("index"), py::arg("aSize"))
-.def("ReplaceString", py::overload_cast<const char *, const char *>(&BMessage::ReplaceString), "", py::arg("name"), py::arg("string"))
-.def("ReplaceString", py::overload_cast<const char *, int32, const char *>(&BMessage::ReplaceString), "", py::arg("name"), py::arg("index"), py::arg("string"))
-.def("ReplaceString", py::overload_cast<const char *, const BString &>(&BMessage::ReplaceString), "", py::arg("name"), py::arg("string"))
-.def("ReplaceString", py::overload_cast<const char *, int32, const BString &>(&BMessage::ReplaceString), "", py::arg("name"), py::arg("index"), py::arg("string"))
+:param name: The name associated with the data field.
+:type name: str
+:param type: the type code of the data excpeted.
+:type type: type_code
+:param index: the index of the data to retrieve.
+:type index: int
+:returns: A tuple ``(status, data)``:
+         - ``status`` (int): ``B_OK`` if the specified data field is found, or an error code otherwise.
+         - ``data`` (bytes): the data found, ``None`` if it fails.
+:rtype: tuple
+)doc", py::arg("name"), py::arg("type"), py::arg("index"))
+.def("ReplaceAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::ReplaceAlignment), R"doc(
+Replace by name the first or the only existing BAlignment item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BAlignment type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BAlignment field to replace.
+:type name: str
+:param alignment: The new ``BAlignment`` object to store.
+:type alignment: BAlignment
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("alignment"))
+.def("ReplaceAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::ReplaceAlignment), R"doc(
+Replace in the message an existing BAlignment item in the name array at the 
+index position with another BAlignment item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BAlignment type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BAlignment field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param alignment: The new ``BAlignment`` object to store.
+:type alignment: BAlignment
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("alignment"))
+.def("ReplaceRect", py::overload_cast<const char *, BRect>(&BMessage::ReplaceRect), R"doc(
+Replace by name the first or the only existing BRect item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BRect type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BRect field to replace.
+:type name: str
+:param rect: The new ``BRect`` object to store.
+:type rect: BRect
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("rect"))
+.def("ReplaceRect", py::overload_cast<const char *, int32, BRect>(&BMessage::ReplaceRect), R"doc(
+Replace in the message an existing BRect item in the name array at the 
+index position with another BRect item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BRect type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BRect field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param rect: The new ``BRect`` object to store.
+:type rect: BRect
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("rect"))
+
+.def("ReplacePoint", py::overload_cast<const char *, BPoint>(&BMessage::ReplacePoint), R"doc(
+Replace by name the first or the only existing BPoint item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BPoint type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BPoint field to replace.
+:type name: str
+:param aPoint: The new ``BPoint`` object to store.
+:type aPoint: BPoint
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("aPoint"))
+.def("ReplacePoint", py::overload_cast<const char *, int32, BPoint>(&BMessage::ReplacePoint), R"doc(
+Replace in the message an existing BPoint item in the name array at the 
+index position with another BPoint item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BPoint type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BPoint field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param aPoint: The new ``BPoint`` object to store.
+:type aPoint: BPoint
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("aPoint"))
+.def("ReplaceSize", py::overload_cast<const char *, BSize>(&BMessage::ReplaceSize), R"doc(
+Replace by name the first or the only existing BSize item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BSize type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BSize field to replace.
+:type name: str
+:param aSize: The new ``BSize`` object to store.
+:type aSize: BSize
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("aSize"))
+.def("ReplaceSize", py::overload_cast<const char *, int32, BSize>(&BMessage::ReplaceSize), R"doc(
+Replace in the message an existing BSize item in the name array at the 
+index position with another BSize item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BSize type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BSize field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param aSize: The new ``BSize`` object to store.
+:type aSize: BSize
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("aSize"))
+.def("ReplaceString", py::overload_cast<const char *, const char *>(&BMessage::ReplaceString), R"doc(
+Replace by name the first or the only existing string item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+string type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the string to replace.
+:type name: str
+:param string: The new string to store.
+:type string: str
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("ReplaceString", py::overload_cast<const char *, int32, const char *>(&BMessage::ReplaceString), R"doc(
+Replace in the message an existing string item in the name array at the 
+index position with another string item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the string type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the string to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param string: The new string to store.
+:type string: str
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("string"))
+.def("ReplaceString", py::overload_cast<const char *, const BString &>(&BMessage::ReplaceString), R"doc(
+Replace by name the first or the only existing BString item in 
+the message with another one.
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_NAME_NOT_FOUND if name
+doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
+BString type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BString field to replace.
+:type name: str
+:param string: The new ``BString`` object to store.
+:type string: BString
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("ReplaceString", py::overload_cast<const char *, int32, const BString &>(&BMessage::ReplaceString), R"doc(
+Replace in the message an existing BString item in the name array at the 
+index position with another BString item. If the item is out of range, 
+the replacement fails. 
+
+If this call fails it returns B_ERROR in case of read-only message 
+(like while the message is being dragged), B_BAD_INDEX if the index is out
+of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
+field doesn't contin data of the BString type.
+ 
+This function is typically used to update the value of an existing
+field.
+
+:param name: The name associated with the BString field to replace.
+:type name: str
+:param index: The index of the name array where replace the item.
+:type index: int
+:param string: The new ``BString`` object to store.
+:type string: str
+:returns: ``B_OK`` on success, or an error code otherwise (read description).
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("string"))
 
 .def("ReplaceInt8", py::overload_cast<const char *, signed char>(&BMessage::ReplaceInt8), "", py::arg("name"), py::arg("value"))
 .def("ReplaceInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::ReplaceInt8), "", py::arg("name"), py::arg("index"), py::arg("value"))
