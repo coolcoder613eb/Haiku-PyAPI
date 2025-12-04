@@ -2609,6 +2609,7 @@ If this call fails it returns B_ERROR in case of read-only message
 (like while the message is being dragged), B_NAME_NOT_FOUND if name
 doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
 data type.
+The type must be specific; it can't be B_ANY_TYPE.
 NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
 is different from the current one, the data field must have been previously
 created with the isFixedSize flag set to False; otherwise, this function
@@ -2619,8 +2620,10 @@ field.
 
 :param name: The name associated with the data field to replace.
 :type name: str
-:param object: The new data to store.
-:type object: bytes
+:param type: the type code of the data.
+:type type: type_code
+:param data: The new data to store.
+:type data: bytes
 :returns: ``B_OK`` on success, or an error code otherwise (read description).
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"))
@@ -2639,6 +2642,7 @@ If this call fails it returns B_ERROR in case of read-only message
 (like while the message is being dragged), B_BAD_INDEX if the index is out
 of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
 field doesn't contin data of the data type.
+The type must be specific; it can't be B_ANY_TYPE.
 NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
 is different from the current one, the data field must have been previously
 created with the isFixedSize flag set to False; otherwise, this function
@@ -2649,15 +2653,32 @@ field.
 
 :param name: The name associated with the data field to replace.
 :type name: str
+:param type: the type code of the data.
+:type type: type_code
 :param index: The index of the name array where replace the item.
 :type index: int
-:param object: The new data to store.
-:type object: bytes
+:param data: The new data to store.
+:type data: bytes
 :returns: ``B_OK`` on success, or an error code otherwise (read description).
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"))
 
-.def("HasSameData", &BMessage::HasSameData, "", py::arg("other"), py::arg("ignoreFieldOrder")=true, py::arg("deep")=false)
+.def("HasSameData", &BMessage::HasSameData, R"doc(
+Checks if the current message has the same fields and data as another message.
+
+This method is useful for comparing the content of two BMessages, optionally 
+ignoring the field order and allowing for a recursive comparison of nested 
+messages.
+
+:param other: The BMessage to compare the current message with.
+:type other: BMessage
+:param ignoreFieldOrder: Optional, if True (default), the field order is ignored during comparison, otherwise the field order must be identical.
+:type ignoreFieldOrder: bool
+:param deep: Optional, if True, the comparison is "deep," nested BMessages are recursively compared. If False (default), nested messages are only compared by pointer, which generally means they must be the same object.
+:type deep: bool
+:returns: True if the two BMessages contain the same data (according to the specified options), otherwise False.
+:rtype: bool
+)doc", py::arg("other"), py::arg("ignoreFieldOrder")=true, py::arg("deep")=false)
 /*
 .def("operatornew", py::overload_cast<size_t>(&BMessage::operatornew), "", py::arg("size"))
 .def("operatornew", py::overload_cast<size_t, void *>(&BMessage::operatornew), "", py::arg(""), py::arg("pointer"))
@@ -2665,33 +2686,300 @@ field.
 .def("operatordelete", &BMessage::operatordelete, "", py::arg("pointer"), py::arg("size"))
 */
 
-.def("HasAlignment", &BMessage::HasAlignment, "", py::arg("name"), py::arg("n")=0)
-.def("HasRect", &BMessage::HasRect, "", py::arg("name"), py::arg("n")=0)
-.def("HasPoint", &BMessage::HasPoint, "", py::arg("name"), py::arg("n")=0)
-.def("HasSize", &BMessage::HasSize, "", py::arg("name"), py::arg("n")=0)
-.def("HasString", &BMessage::HasString, "", py::arg("name"), py::arg("n")=0)
-.def("HasInt8", &BMessage::HasInt8, "", py::arg("name"), py::arg("n")=0)
-.def("HasUInt8", &BMessage::HasUInt8, "", py::arg("name"), py::arg("n")=0)
-.def("HasInt16", &BMessage::HasInt16, "", py::arg("name"), py::arg("n")=0)
-.def("HasUInt16", &BMessage::HasUInt16, "", py::arg("name"), py::arg("n")=0)
-.def("HasInt32", &BMessage::HasInt32, "", py::arg("name"), py::arg("n")=0)
-.def("HasUInt32", &BMessage::HasUInt32, "", py::arg("name"), py::arg("n")=0)
-.def("HasInt64", &BMessage::HasInt64, "", py::arg("name"), py::arg("n")=0)
-.def("HasUInt64", &BMessage::HasUInt64, "", py::arg("name"), py::arg("n")=0)
+.def("HasAlignment", &BMessage::HasAlignment, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_ALIGNMENT_TYPE.
 
-.def("HasBool", &BMessage::HasBool, "", py::arg("name"), py::arg("n")=0)
-.def("HasFloat", &BMessage::HasFloat, "", py::arg("name"), py::arg("n")=0)
-.def("HasDouble", &BMessage::HasDouble, "", py::arg("name"), py::arg("n")=0)
-.def("HasColor", &BMessage::HasColor, "", py::arg("name"), py::arg("n")=0)
-.def("HasPointer", &BMessage::HasPointer, "", py::arg("name"), py::arg("n")=0)
-.def("HasMessenger", &BMessage::HasMessenger, "", py::arg("name"), py::arg("n")=0)
-.def("HasRef", &BMessage::HasRef, "", py::arg("name"), py::arg("n")=0)
-.def("HasNodeRef", &BMessage::HasNodeRef, "", py::arg("name"), py::arg("n")=0)
-.def("HasMessage", &BMessage::HasMessage, "", py::arg("name"), py::arg("n")=0)
+:param name: The name associated with the BAlignment.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_ALIGNMENT_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasRect", &BMessage::HasRect, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_RECT_TYPE.
 
-.def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("object"))
-.def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), "", py::arg("name"), py::arg("n"), py::arg("object"))
-.def("HasData", &BMessage::HasData, "", py::arg("name"), py::arg(""), py::arg("n")=0)
+:param name: The name associated with the BRect.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_RECT_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasPoint", &BMessage::HasPoint, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_POINT_TYPE.
+
+:param name: The name associated with the BPoint.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_POINT_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasSize", &BMessage::HasSize, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_SIZE_TYPE.
+
+:param name: The name associated with the BSize.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_SIZE_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasString", &BMessage::HasString, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_STRING_TYPE.
+
+:param name: The name associated with the string.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_STRING_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasInt8", &BMessage::HasInt8, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_INT8_TYPE.
+
+:param name: The name associated with the int8.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_INT8_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasUInt8", &BMessage::HasUInt8, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_UINT8_TYPE.
+
+:param name: The name associated with the uint8.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_UINT8_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasInt16", &BMessage::HasInt16, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_INT16_TYPE.
+
+:param name: The name associated with the int16.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_INT16_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasUInt16", &BMessage::HasUInt16, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_UINT16_TYPE.
+
+:param name: The name associated with the uint16.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_UINT16_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasInt32", &BMessage::HasInt32, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_INT32_TYPE.
+
+:param name: The name associated with the int32.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_INT32_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasUInt32", &BMessage::HasUInt32, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_UINT32_TYPE.
+
+:param name: The name associated with the uint32.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_UINT32_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasInt64", &BMessage::HasInt64, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_INT64_TYPE.
+
+:param name: The name associated with the int64.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_INT64_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasUInt64", &BMessage::HasUInt64, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_UINT64_TYPE.
+
+:param name: The name associated with the uint64.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_UINT64_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+
+.def("HasBool", &BMessage::HasBool, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_BOOL_TYPE.
+
+:param name: The name associated with the bool.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_BOOL_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasFloat", &BMessage::HasFloat, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_FLOAT_TYPE.
+
+:param name: The name associated with the float.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_FLOAT_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasDouble", &BMessage::HasDouble, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_DOUBLE_TYPE.
+
+:param name: The name associated with the double.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_DOUBLE_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasColor", &BMessage::HasColor, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_RGB_COLOR_TYPE.
+
+:param name: The name associated with the rgb_color.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_RGB_COLOR_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasPointer", &BMessage::HasPointer, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_POINTER_TYPE.
+
+:param name: The name associated with the pointer.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_POINTER_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasMessenger", &BMessage::HasMessenger, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_MESSENGER_TYPE.
+
+:param name: The name associated with the BMessenger.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_MESSENGER_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasRef", &BMessage::HasRef, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_REF_TYPE.
+
+:param name: The name associated with the entry_ref.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_REF_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasNodeRef", &BMessage::HasNodeRef, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_NODE_REF_TYPE.
+
+:param name: The name associated with the node_ref.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_NODE_REF_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+.def("HasMessage", &BMessage::HasMessage, R"doc(
+Checks if the BMessage contains a field with the specified name and 
+of type B_MESSAGE_TYPE.
+
+:param name: The name associated with the BMessage.
+:type name: str
+:param n: Optional, the index of the field entry to check (default is 0)
+:type n: int
+:returns: True if the field exists at the name and index and is B_MESSAGE_TYPE, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n")=0)
+
+// TODO CHECK THESE FUNCTIONS *******************************************************************************
+.def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
+Checks if the BMessage contains a field with the specified name that 
+holds data of a type matching the given BFlattenable object.
+
+This is typically used to check for data types like BRect, BPoint, 
+BFont, or other custom classes that inherit from BFlattenable.
+
+:param name: The name of the field to search for in the message.
+:type name: str
+:param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
+:type object: BFlattenable
+:returns: True if the field exists and the object data type matches the sample one, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("object"))
+.def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
+Checks if the BMessage contains a field with the specified name and
+index that holds data of a type matching the given BFlattenable object.
+
+This version allows checking a specific instance (via index 'n') when 
+multiple fields share the same name.
+
+This is typically used to check for data types like BRect, BPoint, 
+BFont, or other custom classes that inherit from BFlattenable.
+
+:param name: The name of the field to search for in the message.
+:type name: str
+:param n: The index of the field entry to check (0 for the first).
+:type n: int
+:param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
+:type object: BFlattenable
+:returns: True if the field exists and the object data type matches the sample one, otherwise False.
+:rtype: bool
+)doc", py::arg("name"), py::arg("n"), py::arg("object"))
+.def("HasData", &BMessage::HasData, R"doc(
+Checks if the BMessage contains a field with the specified name and type code.
+
+This generic method checks the presence of any typed data in the message, 
+including B_MESSAGE_TYPE, B_REF_TYPE, and all built-in types.
+
+:param name: The name of the field to search for.
+:type name: str
+:param type: The specific Haiku type code (e.g., B_INT32_TYPE, B_MESSAGE_TYPE) the field must match.
+:type type: type_code
+:param n: Optional, the index of the field entry to check. Defaults to 0 (the first entry).
+:type n: int
+:returns: True if the field with the specified name, type code, and index exists, otherwise False.
+:rtype: bool
+
+)doc", py::arg("name"), py::arg("type"), py::arg("n")=0)
 //.def("FindRect", py::overload_cast<const char *, int32>(&BMessage::FindRect, py::const_), "", py::arg("name"), py::arg("n")=0)
 //.def("FindRectWithStatus", &PythonicFindRectWrapper, "", py::arg("name"), py::arg("n")=0)
 
