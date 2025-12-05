@@ -294,17 +294,20 @@ m.attr("B_SPECIFIERS_END") = 128;
 
 py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
 .def(py::init(), R"doc(
+.. autoconstructor:: BMessage()
 Create an empty BMessage.
 
 The message will have no fields and a `what` code equal to zero.
 )doc")
 .def(py::init<uint32>(), R"doc(
+.. autoconstructor:: BMessage(what_code)
 Create a BMessage with a specific `what` code.
 
 :param what: The 'what' command identifier associated with this message.
 :type what: int
 )doc", py::arg("what"))
 .def(py::init<const BMessage &>(), R"doc(
+.. autoconstructor:: BMessage(other_message)
 Create a copy of an existing BMessage.
 
 This performs a deep copy of all fields and metadata.
@@ -313,6 +316,7 @@ This performs a deep copy of all fields and metadata.
 :type other: BMessage
 )doc", py::arg("other"))
 .def("operator=", &BMessage::operator=, R"doc(
+.. automethod:: __copy__(other)
 Assign the contents of another BMessage to this one.
 
 This performs the same deep copy as the copy constructor.
@@ -324,6 +328,7 @@ This performs the same deep copy as the copy constructor.
 )doc", py::arg("other"))
 //.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
 .def("GetInfo", &GetInfoWrapper, R"doc(
+.. automethod:: GetInfo(typeRequested,index)
 Retrieve information about the N-th field of a given type.
 
 This version queries the *N-th field* (by index) of a specific type.
@@ -343,6 +348,7 @@ It returns four values, including the original status code from Haiku's API.
 //.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound")=NULL)
 //.def("GetInfo", &GetInfoNameWrapper, "", py::arg("name")) //<----- this is the specific version but we use FixedSizeWrapper because it returns the same infosplus fixedSize
 .def("GetInfo", &GetInfoFixedSizeWrapper, R"doc(
+.. automethod:: GetInfo(name)
 Retrieve information about a field by its name.
 
 This function wraps all overloads of Haiku's ``BMessage::GetInfo(const char*)``.
@@ -362,6 +368,7 @@ whether items stored under the field are of fixed size.
 //.def("GetInfo", py::overload_cast<const char *, type_code *, int32 *, bool *>(&BMessage::GetInfo, py::const_), "", py::arg("name"), py::arg("typeFound"), py::arg("countFound"), py::arg("fixedSize"))
 //.def("GetInfoFixedSize", &GetInfoFixedSizeWrapper, "", py::arg("name")) //<--- comment this and use this function for GetInfo(name)
 .def("CountNames", &BMessage::CountNames, R"doc(
+.. automethod:: CountNames
 Count how many field names exist for a given type.
 
 :param type: The type code of the fields to count.
@@ -370,29 +377,34 @@ Count how many field names exist for a given type.
 :rtype: int
 )doc", py::arg("type"))
 .def("IsEmpty", &BMessage::IsEmpty, R"doc(
+.. automethod:: IsEmpty
 Check whether the message has no fields.
 
 :return: ``True`` if the message contains no fields.
 :rtype: bool
 )doc")
 .def("IsSystem", &BMessage::IsSystem, R"doc(
+.. automethod:: IsSystem
 Check whether this message is a system-defined message.
 
 :return: ``True`` if this message was generated internally by the OS.
 :rtype: bool
 )doc")
 .def("IsReply", &BMessage::IsReply, R"doc(
+.. automethod:: IsReply
 Check whether this message is a reply to another message.
 
 :return: ``True`` if this is a reply message.
 :rtype: bool
 )doc")
 .def("PrintToStream", &BMessage::PrintToStream, R"doc(
+.. automethod:: PrintToStream
 Print the contents of the message to the standard output.
 
 Useful for debugging.
 )doc")
 .def("Rename", &BMessage::Rename, R"doc(
+.. automethod:: Rename
 Rename an existing field.
 
 :param oldEntry: Current field name.
@@ -403,51 +415,59 @@ Rename an existing field.
 :rtype: int
 )doc", py::arg("oldEntry"), py::arg("newEntry"))
 .def("WasDelivered", &BMessage::WasDelivered, R"doc(
+.. automethod:: WasDelivered
 Check whether this message was delivered through a message loop.
 
 :return: ``True`` if the message was delivered (posted,sent or dropped).
 :rtype: bool
 )doc")
 .def("IsSourceWaiting", &BMessage::IsSourceWaiting, R"doc(
+.. automethod:: IsSourceWaiting
 Check whether the sender is waiting for a reply.
 
 :return: ``True`` if the sender is blocked waiting.
 :rtype: bool
 )doc")
 .def("IsSourceRemote", &BMessage::IsSourceRemote, R"doc(
+.. automethod:: IsSourceRemote
 Check whether the sender of this message is a remote application.
 
 :return: ``True`` if the source is remote.
 :rtype: bool
 )doc")
 .def("ReturnAddress", &BMessage::ReturnAddress, R"doc(
+.. automethod:: ReturnAddress
 Retrieve the reply handler/address for this message.
 
 :return: A BMessenger object representing the return address.
 :rtype: BMessenger
 )doc")
 .def("Previous", &BMessage::Previous, R"doc(
+.. automethod:: Previous
 Get the previous message in the message chain, if any.
 
 :return: The previous BMessage, or ``None``.
 :rtype: BMessage or None
 )doc")
 .def("WasDropped", &BMessage::WasDropped, R"doc(
+.. automethod:: WasDropped
 Check whether this message was delivered as a drag-and-drop message.
 
 :return: ``True`` if the message was dropped.
 :rtype: bool
 )doc")
 .def("DropPoint", &BMessage::DropPoint, R"doc(
+.. automethod:: DropPoint
 Return the point where this message was dropped.
 
 :param offset: Optional point offset to apply.
-:type offset: BPoint or None
+:type offset: BPoint or None, optional
 :return: The drop location as a BPoint.
 :rtype: BPoint
 )doc", py::arg("offset")=NULL)
 
 .def("SendReply", py::overload_cast<uint32, BHandler *>(&BMessage::SendReply), R"doc(
+.. automethod:: SendReply(what,replyTo=None)
 Send a reply message with the given command code.
 
 This overload constructs a new BMessage whose ``what`` field is set to
@@ -469,11 +489,12 @@ delivered or an error occurs.
 :param command: The ``what`` command identifier for the generated reply.
 :type command: int
 :param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or None
+:type replyTo: BHandler or None, optional
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyTo")=NULL)
 .def("SendReply", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessage::SendReply), R"doc(
+.. automethod:: SendReply(relpy,replyTo=None,timeout=B_INFINITE_TIMEOUT)
 Send the given BMessage as a reply to the message currently being handled.
 
 Delivery is synchronous if the sender of the original message is waiting
@@ -490,13 +511,14 @@ message is delivered, the function fails with ``B_TIMED_OUT``.
 :param reply: The reply message to send.
 :type reply: BMessage
 :param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or None
+:type replyTo: BHandler or None, optional
 :param timeout: Maximum time (in microseconds) allowed for sending.
 :type timeout: int
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("reply"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
 .def("SendReply", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessage::SendReply), R"doc(
+.. automethod:: SendReply(reply,replyTo,timeout=B_INFINITE_TIMEOUT)
 Send the given BMessage as a reply, optionally directing asynchronous
 delivery to the specified BMessenger.
 
@@ -519,6 +541,7 @@ the recipient's message port.
 :rtype: int
 )doc", py::arg("reply"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
 .def("SendReply", py::overload_cast<uint32, BMessage *>(&BMessage::SendReply), R"doc(
+.. automethod:: SendReply(command,replyToReply)
 Send a reply message constructed from the given command code, and
 optionally wait for a synchronous reply to that reply.
 
@@ -538,6 +561,7 @@ waiting for the reply-to-reply.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyToReply"))
 .def("SendReply", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessage::SendReply), R"doc(
+.. automethod:: SendReply(reply,replyToReply,sendTimeout=B_INFINITE_TIMEOUT,replyTimeout=B_INFINITE_TIMEOUT)
 Send the given message as a reply and optionally wait for a synchronous
 reply to that reply, each step with its own timeout.
 
@@ -563,6 +587,7 @@ immediately if it would otherwise block.
 )doc", py::arg("reply"), py::arg("replyToReply"), py::arg("sendTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
 
 .def("FlattenedSize", &BMessage::FlattenedSize,  R"doc(
+.. automethod:: FlattenedSize
 Return the size, in bytes, required to flatten this message.
 
 :return: Number of bytes needed to store the flattened form.
@@ -570,6 +595,7 @@ Return the size, in bytes, required to flatten this message.
 )doc")
 
 .def("Flatten", py::overload_cast<char *, ssize_t>(&BMessage::Flatten, py::const_), R"doc(
+.. automethod:: Flatten(buffer,size)
 Flatten the message into a preallocated buffer.
 
 :param buffer: The buffer where the flattened data will be stored.
@@ -580,17 +606,19 @@ Flatten the message into a preallocated buffer.
 :rtype: int
 )doc", py::arg("buffer"), py::arg("size"))
 .def("Flatten", py::overload_cast<BDataIO *, ssize_t *>(&BMessage::Flatten, py::const_), R"doc(
+.. automethod:: Flatten(stream,size=None)
 Flatten the message and write it into a BDataIO stream.
 
 :param stream: The output stream.
 :type stream: BDataIO
 :param size: Optional variable that will store the number of bytes written.
-:type size: int or None
+:type size: int or None, optional
 :return: ``B_OK`` on success, or an error code.
 :rtype: int
 )doc", py::arg("stream"), py::arg("size")=NULL)
 
 .def("Unflatten", py::overload_cast<const char *>(&BMessage::Unflatten), R"doc(
+.. automethod:: Unflatten(flatBuffer)
 Restore the contents of the message from a flattened buffer.
 
 :param flatBuffer: The buffer containing the flattened message.
@@ -599,6 +627,7 @@ Restore the contents of the message from a flattened buffer.
 :rtype: int
 )doc", py::arg("flatBuffer"))
 .def("Unflatten", py::overload_cast<BDataIO *>(&BMessage::Unflatten), R"doc(
+.. automethod:: Unflatten(stream)
 Restore the contents of the message from a BDataIO input stream.
 
 :param stream: The input stream.
@@ -608,6 +637,7 @@ Restore the contents of the message from a BDataIO input stream.
 )doc", py::arg("stream"))
 
 .def("AddSpecifier", py::overload_cast<const char *>(&BMessage::AddSpecifier), R"doc(
+.. automethod:: AddSpecifier(property)
 Add a specifier targeting the given property.
 
 :param property: The property name.
@@ -616,6 +646,7 @@ Add a specifier targeting the given property.
 :rtype: int
 )doc", py::arg("property"))
 .def("AddSpecifier", py::overload_cast<const char *, int32>(&BMessage::AddSpecifier), R"doc(
+.. automethod:: AddSpecifier(property,index)
 Add a specifier targeting the given property at a specific index.
 
 :param property: The property name.
@@ -626,6 +657,7 @@ Add a specifier targeting the given property at a specific index.
 :rtype: int
 )doc", py::arg("property"), py::arg("index"))
 .def("AddSpecifier", py::overload_cast<const char *, int32, int32>(&BMessage::AddSpecifier), R"doc(
+.. automethod:: AddSpecifier(property,index,range)
 Add a specifier targeting the given property at a specific index and range.
 
 :param property: The property name.
@@ -638,6 +670,7 @@ Add a specifier targeting the given property at a specific index and range.
 :rtype: int
 )doc", py::arg("property"), py::arg("index"), py::arg("range"))
 .def("AddSpecifier", py::overload_cast<const char *, const char *>(&BMessage::AddSpecifier), R"doc(
+.. automethod:: AddSpecifier(property,name)
 Add a specifier targeting the given property and a specified name.
 
 :param property: The property name.
@@ -648,6 +681,7 @@ Add a specifier targeting the given property and a specified name.
 :rtype: int
 )doc", py::arg("property"), py::arg("name"))
 .def("AddSpecifier", py::overload_cast<const BMessage *>(&BMessage::AddSpecifier), R"doc(
+.. automethod:: AddSpecifier(message)
 Add the specifier message to the specifier stack.
 
 :param specifier: The specifier message to add.
@@ -657,12 +691,14 @@ Add the specifier message to the specifier stack.
 )doc", py::arg("message"))
 
 .def("SetCurrentSpecifier", &BMessage::SetCurrentSpecifier, R"doc(
+.. automethod:: SetCurrentSpecifier
 Sets the current specifier by its index.
 
 :param index: The index of the specifier to set as current.
 )doc", py::arg("index"))
 //.def("GetCurrentSpecifier", &GetCurrentSpecifierWrapper, "", py::arg("index"), py::arg("specifier")=NULL, py::arg("what")=NULL, py::arg("property")=NULL)
 .def("GetCurrentSpecifier", &GetCurrentSpecifierFullWrapper, R"doc(
+.. automethod:: GetCurrentSpecifier
 Retrieves the full details of the current specifier.
 
 :returns: A tuple ``(status,indexFound,specifierFound,whatFound,py_property)``:
@@ -674,18 +710,21 @@ Retrieves the full details of the current specifier.
 :rtype: tuple
 )doc")
 .def("HasSpecifiers", &BMessage::HasSpecifiers, R"doc(
+.. automethod:: HasSpecifiers
 Checks whether the message has any specifiers.
 
 :returns: True if the message has specifiers, False otherwise.
 :rtype: bool
 )doc")
 .def("PopSpecifier", &BMessage::PopSpecifier, R"doc(
+.. automethod:: PopSpecifier
 Removes the top specifier from the specifier stack.
 
 :returns: B_OK on success, or an error code if the stack is empty.
 :rtype: int
 )doc")
 .def("AddAlignment", &BMessage::AddAlignment, R"doc(
+.. automethod:: AddAlignment
 Add a BAlignment object to the message.
 
 :param name: The name associated with the BAlignment.
@@ -696,6 +735,7 @@ Add a BAlignment object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("alignment"))
 .def("AddRect", &BMessage::AddRect, R"doc(
+.. automethod:: AddRect
 Add a BRect object to the message.
 
 :param name: The name associated with the BRect.
@@ -706,6 +746,7 @@ Add a BRect object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("rect"))
 .def("AddPoint", &BMessage::AddPoint, R"doc(
+.. automethod:: AddPoint
 Add a BPoint object to the message.
 
 :param name: The name associated with the BPoint.
@@ -716,6 +757,7 @@ Add a BPoint object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("point"))
 .def("AddSize", &BMessage::AddSize, R"doc(
+.. automethod:: AddSize
 Add a BSize object to the message.
 
 :param name: The name associated with the BSize.
@@ -727,6 +769,7 @@ Add a BSize object to the message.
 )doc", py::arg("name"), py::arg("size"))
 
 .def("AddString", py::overload_cast<const char *, const char *>(&BMessage::AddString), R"doc(
+.. automethod:: AddString(name,string)
 Add a string to the message.
 
 :param name: The name associated with the string.
@@ -737,6 +780,7 @@ Add a string to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("AddString", py::overload_cast<const char *, const BString &>(&BMessage::AddString), R"doc(
+.. automethod:: AddString(name,bstring)
 Add a BString object to the message.
 
 :param name: The name associated with the BString.
@@ -747,6 +791,7 @@ Add a BString object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("AddStrings", &BMessage::AddStrings, R"doc(
+.. automethod:: AddStrings
 Add multiple strings as BStringList to the message.
 
 :param name: The name associated with the BStringList.
@@ -758,7 +803,14 @@ Add multiple strings as BStringList to the message.
 )doc", py::arg("name"), py::arg("list"))
 
 .def("AddInt8", &BMessage::AddInt8, R"doc(
+.. automethod:: AddInt8
 Add an int8 value to the message.
+
+.. note::
+   While this method stores a 8-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -768,7 +820,14 @@ Add an int8 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddUInt8", &BMessage::AddUInt8, R"doc(
+.. automethod:: AddUInt8
 Add a uint8 value to the message.
+
+.. note::
+   While this method stores a 8-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -778,7 +837,14 @@ Add a uint8 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddInt16", &BMessage::AddInt16, R"doc(
+.. automethod:: AddInt16
 Add an int16 value to the message.
+
+.. note::
+   While this method stores a 16-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -788,7 +854,14 @@ Add an int16 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddUInt16", &BMessage::AddUInt16, R"doc(
+.. automethod:: AddUInt16
 Add a uint16 value to the message.
+
+.. note::
+   While this method stores a 16-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -798,7 +871,14 @@ Add a uint16 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddInt32", &BMessage::AddInt32, R"doc(
+.. automethod:: AddInt32
 Add an int32 value to the message.
+
+.. note::
+   While this method stores a 32-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -808,7 +888,14 @@ Add an int32 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddUInt32", &BMessage::AddUInt32, R"doc(
+.. automethod:: AddUInt32
 Add a uint32 value to the message.
+
+.. note::
+   While this method stores a 32-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -818,7 +905,14 @@ Add a uint32 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddInt64", &BMessage::AddInt64, R"doc(
+.. automethod:: AddInt64
 Add an int64 value to the message.
+
+.. note::
+   While this method stores a 64-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int64 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -828,7 +922,14 @@ Add an int64 value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddUInt64", &BMessage::AddUInt64, R"doc(
+.. automethod:: AddUInt64
 Add a uint64 value to the message.
+
+.. note::
+   While this method stores a 64-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint64 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
 
 :param name: The name associated with the value.
 :type name: str
@@ -839,6 +940,7 @@ Add a uint64 value to the message.
 )doc", py::arg("name"), py::arg("value"))
 
 .def("AddBool", &BMessage::AddBool, R"doc(
+.. automethod:: AddBool
 Add a boolean value to the message.
 
 :param name: The name associated with the value.
@@ -849,6 +951,7 @@ Add a boolean value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddFloat", &BMessage::AddFloat, R"doc(
+.. automethod:: AddFloat
 Add a float value to the message.
 
 :param name: The name associated with the value.
@@ -859,6 +962,7 @@ Add a float value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddDouble", &BMessage::AddDouble, R"doc(
+.. automethod:: AddDouble
 Add a double value to the message.
 
 :param name: The name associated with the value.
@@ -869,6 +973,7 @@ Add a double value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddColor", &BMessage::AddColor, R"doc(
+.. automethod:: AddColor
 Add a rgb_color object to the message.
 
 :param name: The name associated with the value.
@@ -879,6 +984,7 @@ Add a rgb_color object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddPointer", &BMessage::AddPointer, R"doc(
+.. automethod:: AddPointer
 Add a pointer to the message.
 
 :param name: The name associated with the pointer.
@@ -889,6 +995,7 @@ Add a pointer to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("pointer"))
 .def("AddMessenger", &BMessage::AddMessenger, R"doc(
+.. automethod:: AddMessenger
 Add a BMessenger to the message.
 
 :param name: The name associated with the messenger.
@@ -900,6 +1007,7 @@ Add a BMessenger to the message.
 )doc", py::arg("name"), py::arg("messenger"))
 
 .def("AddRef", &BMessage::AddRef, R"doc(
+.. automethod:: AddRef
 Add a entry_ref to the message.
 
 :param name: The name associated with the reference.
@@ -910,6 +1018,7 @@ Add a entry_ref to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("AddNodeRef", &BMessage::AddNodeRef, R"doc(
+.. automethod:: AddNodeRef
 Add a node_ref to the message.
 
 :param name: The name associated with the node reference.
@@ -920,6 +1029,7 @@ Add a node_ref to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("AddMessage", &BMessage::AddMessage, R"doc(
+.. automethod:: AddMessage
 Add another BMessage to this message.
 
 :param name: The name associated with the nested message.
@@ -930,6 +1040,7 @@ Add another BMessage to this message.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("AddFlat", py::overload_cast<const char *, BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
+.. automethod:: AddFlat(name,object,count=1)
 Add a BFlattenable object to the message.
 
 :param name: The name associated with the object.
@@ -942,6 +1053,7 @@ Add a BFlattenable object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"), py::arg("count")=1)
 .def("AddFlat", py::overload_cast<const char *, const BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
+.. automethod:: AddFlat(name,constobject,count=1)
 Add a const BFlattenable object to the message.
 
 :param name: The name associated with the object.
@@ -959,6 +1071,7 @@ Add a const BFlattenable object to the message.
 	const void* buffer = info.ptr;
 	return self.AddData(name,type,buffer,numBytes,isFixedSize,count);
 },R"doc(
+.. automethod:: AddData
 Add arbitrary binary data to the message.
 The assigned type must be a specific data type; it should not be B_ANY_TYPE.
 fixedSize and numItems are usefull to add an array of data under a new
@@ -985,6 +1098,7 @@ isFixedSize as False if you need a different sized data
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
 .def("Append", &BMessage::Append,R"doc(
+.. automethod:: Append
 Append another BMessage to this message, merging its contents.
 
 :param message: The BMessage object to append.
@@ -993,6 +1107,7 @@ Append another BMessage to this message, merging its contents.
 :rtype: int
 )doc", py::arg("message"))
 .def("RemoveData", &BMessage::RemoveData, R"doc(
+.. automethod:: RemoveData
 Remove data of a specified name from the message.
 
 :param name: The name of the data to remove.
@@ -1003,6 +1118,7 @@ Remove data of a specified name from the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("index")=0)
 .def("RemoveName", &BMessage::RemoveName, R"doc(
+.. automethod:: RemoveName
 Remove all the data associated with a given name.
 
 :param name: The name to remove from the message.
@@ -1011,6 +1127,7 @@ Remove all the data associated with a given name.
 :rtype: int
 )doc", py::arg("name"))
 .def("MakeEmpty", &BMessage::MakeEmpty, R"doc(
+.. automethod:: MakeEmpty
 Empties the message, removing all data and specifiers.
 
 :returns: B_OK on success, or an error code otherwise.
@@ -1018,6 +1135,7 @@ Empties the message, removing all data and specifiers.
 )doc")
 
 .def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
+.. automethod:: FindAlignment(name,alignment)
 Find a BAlignment object in the message by name.
 
 :param name: The name associated with the BAlignment.
@@ -1028,6 +1146,7 @@ Find a BAlignment object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("alignment"))
 .def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
+.. automethod:: FindAlignment(name,index,alignment)
 Find a BAlignment object in the message by name and index.
 
 :param name: The name associated with the BAlignment.
@@ -1040,6 +1159,7 @@ Find a BAlignment object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("alignment"))
 .def("FindAlignment", &PythonicFindAlignmentWrapper, R"doc(
+.. automethod:: FindAlignment(name,n=0)
 Find a BAlignment object in the message by name and (optionally) by index.
 This function returns a tuple containing the API call status and the
 resulting BAlignment object.
@@ -1054,6 +1174,7 @@ resulting BAlignment object.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), R"doc(
+.. automethod:: FindRect(name,rect)
 Find a BRect object in the message by name.
 
 :param name: The name associated with the BRect.
@@ -1064,6 +1185,7 @@ Find a BRect object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("rect"))
 .def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), R"doc(
+.. automethod:: FindRect(name,index,rect)
 Find a BRect object in the message by name and index.
 
 :param name: The name associated with the BRect.
@@ -1076,6 +1198,7 @@ Find a BRect object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("rect"))
 .def("FindRect", &PythonicFindRectWrapper, R"doc(
+.. automethod:: FindRect(name,n=0)
 Find BRect by name and optional index, but instead filling an output parameter,
 this method returns a tuple containing the API call status and the resulting
 BRect object.
@@ -1083,7 +1206,7 @@ BRect object.
 :param name: The name associated with the BRect.
 :type name: str
 :param n: The optional index of the BRect to find (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, object)``:
          - ``status`` (int): ``B_OK`` if the BRect is found, or an error code otherwise.
          - ``object`` (BRect): the BRect object found, ``None`` if it fails.
@@ -1091,6 +1214,7 @@ BRect object.
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("FindPoint", py::overload_cast<const char *, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
+.. automethod:: FindPoint(name,point)
 Find a BPoint by name.
 
 :param name: The name associated with the BPoint.
@@ -1101,6 +1225,7 @@ Find a BPoint by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("point"))
 .def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
+.. automethod:: FindPoint(name,index,point)
 Find a BPoint by name and index.
 
 :param name: The name associated with the BPoint.
@@ -1113,6 +1238,7 @@ Find a BPoint by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("point"))
 .def("FindPoint", &PythonicFindPointWrapper, R"doc(
+.. automethod:: FindPoint(name,n=0)
 Find a BPoint by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
 BPoint object.
@@ -1120,13 +1246,14 @@ BPoint object.
 :param name: The name associated with the BPoint.
 :type name: str
 :param n: The optional index of the BPoint to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, object)``:
          - ``status`` (int): ``B_OK`` if the BPoint is found, or an error code otherwise.
          - ``object`` (BPoint): the BPoint object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), R"doc(
+.. automethod:: FindSize(name,size)
 Find a BSize by name.
 
 :param name: The name associated with the BSize object.
@@ -1137,6 +1264,7 @@ Find a BSize by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("size"))
 .def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), R"doc(
+.. automethod:: FindSize(name,index,size)
 Find a BSize by name and index.
 
 :param name: The name associated with the BSize.
@@ -1149,6 +1277,7 @@ Find a BSize by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("size"))
 .def("FindSize", &PythonicFindSizeWrapper, R"doc(
+.. automethod:: FindSize(name,n=0)
 Find a BSize by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
 BSize object.
@@ -1156,7 +1285,7 @@ BSize object.
 :param name: The name associated with the BSize object.
 :type name: str
 :param n: The optional index of the BSize to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, object)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
          - ``object`` (BSize): the BSize object found, ``None`` if it fails.
@@ -1165,6 +1294,7 @@ BSize object.
 //.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
 //.def("FindString", py::overload_cast<BMessage &, const char *, int32, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("index"), py::arg("string"))
 .def("FindString", &PythonicFindStringWrapper, R"doc(
+.. automethod:: FindString(name,n=0)
 Find a string by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
 string.
@@ -1172,13 +1302,14 @@ string.
 :param name: The name associated with the string.
 :type name: str
 :param n: The optional index of the string to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, string)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
          - ``string`` (string): the string found, (None) if it fails
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindBString", &PythonicFindBStringWrapper, R"doc(
+.. automethod:: FindBString
 Find a string by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
 string as BString object.
@@ -1186,13 +1317,14 @@ string as BString object.
 :param name: The name associated with the string.
 :type name: str
 :param n: The optional index of the string to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, string)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
          - ``string`` (BString): the string found as BString, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), R"doc(
+.. automethod:: FindString(name,bstring)
 Find a string by name and write it in a BString object.
 
 :param name: The name associated with the string.
@@ -1203,6 +1335,7 @@ Find a string by name and write it in a BString object.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), R"doc(
+.. automethod:: FindString
 Find a string by name and index and write it in a BString object.
 
 :param name: The name associated with the string.
@@ -1216,6 +1349,7 @@ Find a string by name and index and write it in a BString object.
 )doc", py::arg("name"), py::arg("index"), py::arg("string"))
 
 .def("FindStrings", &BMessage::FindStrings, R"doc(
+.. automethod:: FindStrings
 Find a list of strings by name and write it in a BStringList object.
 
 :param name: The name associated with the list of strings.
@@ -1226,6 +1360,7 @@ Find a list of strings by name and write it in a BStringList object.
 :rtype: int
 )doc", py::arg("name"), py::arg("list"))
 .def("FindStrings", &PythonicFindStringsWrapper, R"doc(
+.. automethod:: FindStrings
 Find a list of strings by name, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
 BStringList object.
@@ -1242,26 +1377,28 @@ BStringList object.
 //.def("FindUInt8", py::overload_cast<const char *, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt8", py::overload_cast<const char *, int32, uint8 *>(&BMessage::FindUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindInt8",  &PythonicFindInt8Wrapper, R"doc(
+.. automethod:: FindInt8
 Find a int8 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting int8 value.
 
 :param name: The name associated with the int8.
 :type name: str
 :param n: The optional index of the int8 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the int8 is found, or an error code otherwise.
          - ``value`` (int): the int8 value, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindUInt8",  &PythonicFindUInt8Wrapper, R"doc(
+.. automethod:: FindUInt8
 Find a uint8 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting uint8 value.
 
 :param name: The name associated with the uint8.
 :type name: str
 :param n: The optional index of the uint8 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the uint8 is found, or an error code otherwise.
          - ``value`` (uint): the uint8 value, ``None`` if it fails.
@@ -1272,26 +1409,28 @@ containing the API call status and the resulting uint8 value.
 //.def("FindUInt16", py::overload_cast<const char *, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt16", py::overload_cast<const char *, int32, uint16 *>(&BMessage::FindUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindInt16", &PythonicFindInt16Wrapper, R"doc(
+.. automethod:: FindInt16
 Find a int16 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting int16 value. 
 
 :param name: The name associated with the int16.
 :type name: str
 :param n: The optional index of the int16 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the int16 is found, or an error code otherwise.
          - ``value`` (int): the int16 value, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindUInt16", &PythonicFindUInt16Wrapper, R"doc(
+.. automethod:: FindUInt16
 Find a uint16 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting uint16 value. 
 
 :param name: The name associated with the uint16.
 :type name: str
 :param n: The optional index of the uint16 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the uint16 is found, or an error code otherwise.
          - ``value`` (uint): the uint16 value, ``None`` if it fails.
@@ -1302,26 +1441,28 @@ containing the API call status and the resulting uint16 value.
 //.def("FindUInt32", py::overload_cast<const char *, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt32", py::overload_cast<const char *, int32, uint32 *>(&BMessage::FindUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindInt32", &PythonicFindInt32Wrapper, R"doc(
+.. automethod:: FindInt32
 Find a int32 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting int32 value. 
 
 :param name: The name associated with the int32.
 :type name: str
 :param n: The optional index of the int32 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the int32 is found, or an error code otherwise.
          - ``value`` (int): the int32 value, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindUInt32", &PythonicFindUInt32Wrapper, R"doc(
+.. automethod:: FindUInt32
 Find a uint32 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting uint32 value. 
 
 :param name: The name associated with the uint32.
 :type name: str
 :param n: The optional index of the uint32 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the uint32 is found, or an error code otherwise.
          - ``value`` (uint): the uint32 value, ``None`` if it fails.
@@ -1332,26 +1473,28 @@ containing the API call status and the resulting uint32 value.
 //.def("FindUInt64", py::overload_cast<const char *, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindUInt64", py::overload_cast<const char *, int32, uint64 *>(&BMessage::FindUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindInt64", &PythonicFindInt64Wrapper, R"doc(
+.. automethod:: FindInt64
 Find a int64 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting int64 value. 
 
 :param name: The name associated with the int64.
 :type name: str
 :param n: The optional index of the int64 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the int64 is found, or an error code otherwise.
          - ``value`` (int): the int64 value, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindUInt64", &PythonicFindUInt64Wrapper, R"doc(
+.. automethod:: FindUInt64
 Find a uint64 by name and optional index, this method returns a tuple 
 containing the API call status and the resulting uint64 value. 
 
 :param name: The name associated with the uint64.
 :type name: str
 :param n: The optional index of the uint64 to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the uint64 is found, or an error code otherwise.
          - ``value`` (uint): the uint64 value, ``None`` if it fails.
@@ -1360,13 +1503,14 @@ containing the API call status and the resulting uint64 value.
 //.def("FindBool", py::overload_cast<const char *, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindBool", py::overload_cast<const char *, int32, bool *>(&BMessage::FindBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindBool", &PythonicFindBoolWrapper, R"doc(
+.. automethod:: FindBool
 Find a bool by name and optional index, this method returns a tuple 
 containing the API call status and the resulting bool value. 
 
 :param name: The name associated with the bool.
 :type name: str
 :param n: The optional index of the bool to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the bool is found, or an error code otherwise.
          - ``value`` (bool): the bool value, ``None`` if it fails.
@@ -1375,13 +1519,14 @@ containing the API call status and the resulting bool value.
 //.def("FindFloat", py::overload_cast<const char *, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindFloat", py::overload_cast<const char *, int32, float *>(&BMessage::FindFloat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindFloat", &PythonicFindFloatWrapper, R"doc(
+.. automethod:: FindFloat
 Find a float by name and optional index, this method returns a tuple 
 containing the API call status and the resulting float value. 
 
 :param name: The name associated with the float.
 :type name: str
 :param n: The optional index of the float to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the float is found, or an error code otherwise.
          - ``value`` (float): the float value, ``None`` if it fails.
@@ -1390,13 +1535,14 @@ containing the API call status and the resulting float value.
 //.def("FindDouble", py::overload_cast<const char *, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("value"))
 //.def("FindDouble", py::overload_cast<const char *, int32, double *>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindDouble", &PythonicFindDoubleWrapper, R"doc(
+.. automethod:: FindDouble
 Find a double by name and optional index, this method returns a tuple 
 containing the API call status and the resulting double value. 
 
 :param name: The name associated with the double.
 :type name: str
 :param n: The optional index of the double to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, value)``:
          - ``status`` (int): ``B_OK`` if the double is found, or an error code otherwise.
          - ``value`` (double): the double value, ``None`` if it fails.
@@ -1404,6 +1550,7 @@ containing the API call status and the resulting double value.
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("FindColor", py::overload_cast<const char *, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
+.. automethod:: FindColor(name,value)
 Find a rgb_color object in the message by name.
 
 :param name: The name associated with the rgb_color.
@@ -1414,6 +1561,7 @@ Find a rgb_color object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("FindColor", py::overload_cast<const char *, int32, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
+.. automethod:: FindColor(name,index,value)
 Find a rgb_color object in the message by name and index.
 
 :param name: The name associated with the rgb_color.
@@ -1426,6 +1574,7 @@ Find a rgb_color object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindColor", &PythonicFindColorWrapper, R"doc(
+.. automethod:: FindColor(name,n=0)
 Find a rgb_color by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
 resulting rgb_color object.
@@ -1433,7 +1582,7 @@ resulting rgb_color object.
 :param name: The name associated with the rgb_color.
 :type name: str
 :param n: The optional index of the rgb_color to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, color)``:
          - ``status`` (int): ``B_OK`` if the rgb_color is found, or an error code otherwise.
          - ``color`` (rgb_color): the rgb_color found, ``None`` if it fails.
@@ -1443,6 +1592,7 @@ resulting rgb_color object.
 //.def("FindPointer", py::overload_cast<const char *, int32, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 
 .def("FindMessenger", py::overload_cast<const char *, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
+.. automethod:: FindMessenger(name,messenger)
 Find a BMessenger object in the message by name.
 
 :param name: The name associated with the BMessenger.
@@ -1453,6 +1603,7 @@ Find a BMessenger object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("messenger"))
 .def("FindMessenger", py::overload_cast<const char *, int32, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
+.. automethod:: FindMessenger(name,index,messenger)
 Find a BMessenger object in the message by name and index.
 
 :param name: The name associated with the BMessenger.
@@ -1465,6 +1616,7 @@ Find a BMessenger object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
 .def("FindMessenger", &PythonicFindMessengerWrapper, R"doc(
+.. automethod:: FindMessenger(name,n=0)
 Find a BMessenger by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
 resulting BMessenger object.
@@ -1472,13 +1624,14 @@ resulting BMessenger object.
 :param name: The name associated with the BMessenger.
 :type name: str
 :param n: The optional index of the BMessenger to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, messenger)``:
          - ``status`` (int): ``B_OK`` if the BMessenger is found, or an error code otherwise.
          - ``messenger`` (BMessenger): the BMessenger found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindRef", py::overload_cast<const char *, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
+.. automethod:: FindRef(name,ref)
 Find an entry_ref object in the message by name.
 
 :param name: The name associated with the entry_ref.
@@ -1489,6 +1642,7 @@ Find an entry_ref object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("FindRef", py::overload_cast<const char *, int32, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
+.. automethod:: FindRef(name,index,ref)
 Find an entry_ref object in the message by name and index.
 
 :param name: The name associated with the entry_ref.
@@ -1501,6 +1655,7 @@ Find an entry_ref object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("FindRef", &PythonicFindRefWrapper, R"doc(
+.. automethod:: FindRef(name,n=0)
 Find an entry_ref by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
 resulting entry_ref object.
@@ -1508,13 +1663,14 @@ resulting entry_ref object.
 :param name: The name associated with the entry_ref.
 :type name: str
 :param n: The optional index of the entry_ref to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, ref)``:
          - ``status`` (int): ``B_OK`` if the entry_ref is found, or an error code otherwise.
          - ``ref`` (entry_ref): the entry_ref found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindNodeRef", py::overload_cast<const char *, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
+.. automethod:: FindNodeRef(name,ref)
 Find an node_ref object in the message by name.
 
 :param name: The name associated with the node_ref.
@@ -1525,6 +1681,7 @@ Find an node_ref object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
+.. automethod:: FindNodeRef(name,index,ref)
 Find an node_ref object in the message by name and index.
 
 :param name: The name associated with the node_ref.
@@ -1537,6 +1694,7 @@ Find an node_ref object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("FindNodeRef", &PythonicFindNodeRefWrapper, R"doc(
+.. automethod:: FindNodeRef(name,n=0)
 Find an node_ref by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
 resulting node_ref object.
@@ -1544,13 +1702,14 @@ resulting node_ref object.
 :param name: The name associated with the node_ref.
 :type name: str
 :param n: The optional index of the node_ref to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, nodref)``:
          - ``status`` (int): ``B_OK`` if the node_ref is found, or an error code otherwise.
          - ``nodref`` (node_ref): the node_ref found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindMessage", py::overload_cast<const char *, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
+.. automethod:: FindMessage(name,message)
 Find an BMessage object in the message by name.
 
 :param name: The name associated with the BMessage.
@@ -1561,6 +1720,7 @@ Find an BMessage object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
+.. automethod:: FindMessage(name,index,message)
 Find an BMessage object in the message by name and index.
 
 :param name: The name associated with the BMessage.
@@ -1573,6 +1733,7 @@ Find an BMessage object in the message by name and index.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("message"))
 .def("FindMessage", &PythonicFindMessageWrapper, R"doc(
+.. automethod:: FindMessage(name,n=0)
 Find a BMessage by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
 resulting BMessage object.
@@ -1580,13 +1741,14 @@ resulting BMessage object.
 :param name: The name associated with the BMessage.
 :type name: str
 :param n: The optional index of the BMessage to retrieve (default is 0).
-:type n: int
+:type n: int, optional
 :returns: A tuple ``(status, nodref)``:
          - ``status`` (int): ``B_OK`` if the BMessage is found, or an error code otherwise.
          - ``nodref`` (BMessage): the BMessage found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
+.. automethod:: FindFlat(name,object)
 Find an BFlattenable object in the message by name.
 
 :param name: The name associated with the BFlattenable.
@@ -1597,6 +1759,7 @@ Find an BFlattenable object in the message by name.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"))
 .def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
+.. automethod:: FindFlat(name,index,object)
 Find an BFlattenable object in the message by name and index.
 
 :param name: The name associated with the BFlattenable.
@@ -1623,6 +1786,7 @@ Find an BFlattenable object in the message by name and index.
 
     return py::make_tuple(ret, py::none());
 }, R"doc(
+.. automethod:: FindData(name,type)
 Find by name a binary data field of a specified type. If type is B_ANY_TYPE, 
 the function provides the data no matter what type it actually is. 
 But if type is a specific data type, it provides the data only if 
@@ -1653,6 +1817,7 @@ returns a tuple containing the API call status and the resulting bytes object.
 
     return py::make_tuple(ret, py::none());
 }, R"doc(
+.. automethod:: FindData(name,type,index)
 Find a binary data field of a specified type, by name and index. If type 
 is B_ANY_TYPE, the function provides the data no matter what type it 
 actually is. But if type is a specific data type, it provides the data 
@@ -1672,6 +1837,7 @@ object.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("type"), py::arg("index"))
 .def("ReplaceAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::ReplaceAlignment), R"doc(
+.. automethod:: ReplaceAlignment(name,alignment)
 Replace by name the first or the only existing BAlignment item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1690,6 +1856,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("alignment"))
 .def("ReplaceAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::ReplaceAlignment), R"doc(
+.. automethod:: ReplaceAlignment(name,index,alignment)
 Replace in the message an existing BAlignment item in the name array at the 
 index position with another BAlignment item. If the item is out of range, 
 the replacement fails. 
@@ -1712,6 +1879,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("alignment"))
 .def("ReplaceRect", py::overload_cast<const char *, BRect>(&BMessage::ReplaceRect), R"doc(
+.. automethod:: ReplaceRect(name,rect)
 Replace by name the first or the only existing BRect item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1730,6 +1898,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("rect"))
 .def("ReplaceRect", py::overload_cast<const char *, int32, BRect>(&BMessage::ReplaceRect), R"doc(
+.. automethod:: ReplaceRect(name,index,rect)
 Replace in the message an existing BRect item in the name array at the 
 index position with another BRect item. If the item is out of range, 
 the replacement fails. 
@@ -1753,6 +1922,7 @@ field.
 )doc", py::arg("name"), py::arg("index"), py::arg("rect"))
 
 .def("ReplacePoint", py::overload_cast<const char *, BPoint>(&BMessage::ReplacePoint), R"doc(
+.. automethod:: ReplacePoint(name,aPoint)
 Replace by name the first or the only existing BPoint item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1771,6 +1941,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("aPoint"))
 .def("ReplacePoint", py::overload_cast<const char *, int32, BPoint>(&BMessage::ReplacePoint), R"doc(
+.. automethod:: ReplacePoint(name,index,aPoint)
 Replace in the message an existing BPoint item in the name array at the 
 index position with another BPoint item. If the item is out of range, 
 the replacement fails. 
@@ -1793,6 +1964,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("aPoint"))
 .def("ReplaceSize", py::overload_cast<const char *, BSize>(&BMessage::ReplaceSize), R"doc(
+.. automethod:: ReplaceSize(name,aSize)
 Replace by name the first or the only existing BSize item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1811,6 +1983,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("aSize"))
 .def("ReplaceSize", py::overload_cast<const char *, int32, BSize>(&BMessage::ReplaceSize), R"doc(
+.. automethod:: ReplaceSize(name,index,aSize)
 Replace in the message an existing BSize item in the name array at the 
 index position with another BSize item. If the item is out of range, 
 the replacement fails. 
@@ -1833,6 +2006,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("aSize"))
 .def("ReplaceString", py::overload_cast<const char *, const char *>(&BMessage::ReplaceString), R"doc(
+.. automethod:: ReplaceString(name,string)
 Replace by name the first or the only existing string item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1851,6 +2025,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("ReplaceString", py::overload_cast<const char *, int32, const char *>(&BMessage::ReplaceString), R"doc(
+.. automethod:: ReplaceString(name,index,string)
 Replace in the message an existing string item in the name array at the 
 index position with another string item. If the item is out of range, 
 the replacement fails. 
@@ -1873,6 +2048,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("string"))
 .def("ReplaceString", py::overload_cast<const char *, const BString &>(&BMessage::ReplaceString), R"doc(
+.. automethod:: ReplaceString(name,bstring)
 Replace by name the first or the only existing BString item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1891,6 +2067,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("ReplaceString", py::overload_cast<const char *, int32, const BString &>(&BMessage::ReplaceString), R"doc(
+.. automethod:: ReplaceString(name,index,bstring)
 Replace in the message an existing BString item in the name array at the 
 index position with another BString item. If the item is out of range, 
 the replacement fails. 
@@ -1914,6 +2091,7 @@ field.
 )doc", py::arg("name"), py::arg("index"), py::arg("string"))
 
 .def("ReplaceInt8", py::overload_cast<const char *, signed char>(&BMessage::ReplaceInt8), R"doc(
+.. automethod:: ReplaceInt8(name,value)
 Replace by name the first or the only existing int8 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1924,6 +2102,12 @@ int8 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 8-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int8 field to replace.
 :type name: str
 :param value: The new ``int8`` to store.
@@ -1932,6 +2116,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::ReplaceInt8), R"doc(
+.. automethod:: ReplaceInt8(name,index,value)
 Replace in the message an existing int8 item in the name array at the 
 index position with another int8 item. If the item is out of range, 
 the replacement fails. 
@@ -1944,6 +2129,12 @@ field doesn't contin data of the int8 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 8-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int8 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -1954,6 +2145,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::ReplaceUInt8), R"doc(
+.. automethod:: ReplaceUInt8(name,value)
 Replace by name the first or the only existing uint8 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -1964,6 +2156,12 @@ uint8 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 8-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the uint8 field to replace.
 :type name: str
 :param value: The new ``uint8`` to store.
@@ -1972,6 +2170,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::ReplaceUInt8), R"doc(
+.. automethod:: ReplaceUInt8(name,index,value)
 Replace in the message an existing uint8 item in the name array at the 
 index position with another uint8 item. If the item is out of range, 
 the replacement fails. 
@@ -1984,6 +2183,12 @@ field doesn't contin data of the uint8 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 8-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the uint8 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -1994,6 +2199,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceInt16", py::overload_cast<const char *, int16>(&BMessage::ReplaceInt16), R"doc(
+.. automethod:: ReplaceInt16(name,value)
 Replace by name the first or the only existing int16 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2004,6 +2210,12 @@ int16 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 16-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int16 field to replace.
 :type name: str
 :param value: The new ``int16`` to store.
@@ -2012,6 +2224,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceInt16", py::overload_cast<const char *, int32, int16>(&BMessage::ReplaceInt16), R"doc(
+.. automethod:: ReplaceInt16(name,index,value)
 Replace in the message an existing int16 item in the name array at the 
 index position with another int16 item. If the item is out of range, 
 the replacement fails. 
@@ -2024,6 +2237,12 @@ field doesn't contin data of the int16 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 16-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int16 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -2034,6 +2253,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceUInt16", py::overload_cast<const char *, uint16>(&BMessage::ReplaceUInt16), R"doc(
+.. automethod:: ReplaceUInt16(name,value)
 Replace by name the first or the only existing uint16 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2044,6 +2264,12 @@ uint16 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 16-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the uint16 field to replace.
 :type name: str
 :param value: The new ``uint16`` to store.
@@ -2052,6 +2278,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::ReplaceUInt16), R"doc(
+.. automethod:: ReplaceUInt16(name,index,value)
 Replace in the message an existing uint16 item in the name array at the 
 index position with another uint16 item. If the item is out of range, 
 the replacement fails. 
@@ -2064,6 +2291,12 @@ field doesn't contin data of the uint16 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 16-bit usigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the uint16 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -2074,6 +2307,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceInt32", py::overload_cast<const char *, int32>(&BMessage::ReplaceInt32), R"doc(
+.. automethod:: ReplaceInt32(name,value)
 Replace by name the first or the only existing int32 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2084,6 +2318,12 @@ int32 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 32-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int32 field to replace.
 :type name: str
 :param value: The new ``int32`` to store.
@@ -2092,6 +2332,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceInt32", py::overload_cast<const char *, int32, int32>(&BMessage::ReplaceInt32), R"doc(
+.. automethod:: ReplaceInt32(name,index,value)
 Replace in the message an existing int32 item in the name array at the 
 index position with another int32 item. If the item is out of range, 
 the replacement fails. 
@@ -2104,6 +2345,12 @@ field doesn't contin data of the int32 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 32-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the int32 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -2114,6 +2361,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceUInt32", py::overload_cast<const char *, uint32>(&BMessage::ReplaceUInt32), R"doc(
+.. automethod:: ReplaceUInt32(name,value)
 Replace by name the first or the only existing uint32 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2124,6 +2372,12 @@ uint32 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 32-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
 :param name: The name associated with the uint32 field to replace.
 :type name: str
 :param value: The new ``uint32`` to store.
@@ -2132,6 +2386,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::ReplaceUInt32), R"doc(
+.. automethod:: ReplaceUInt32(name,index,value)
 Replace in the message an existing uint32 item in the name array at the 
 index position with another uint32 item. If the item is out of range, 
 the replacement fails. 
@@ -2144,6 +2399,13 @@ field doesn't contin data of the uint32 type.
 This function is typically used to update the value of an existing
 field.
 
+.. note::
+   While this method stores a 32-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+
 :param name: The name associated with the uint32 field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
@@ -2154,6 +2416,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceInt64", py::overload_cast<const char *, int64_t>(&BMessage::ReplaceInt64), R"doc(
+.. automethod:: ReplaceInt64(name,value)
 Replace by name the first or the only existing int64 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2172,6 +2435,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceInt64", py::overload_cast<const char *, int32, int64_t>(&BMessage::ReplaceInt64), R"doc(
+.. automethod:: ReplaceInt64(name,index,value)
 Replace in the message an existing int64 item in the name array at the 
 index position with another int64 item. If the item is out of range, 
 the replacement fails. 
@@ -2194,6 +2458,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::ReplaceUInt64), R"doc(
+.. automethod:: ReplaceUInt64(name,value)
 Replace by name the first or the only existing uint64 item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2212,6 +2477,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::ReplaceUInt64), R"doc(
+.. automethod:: ReplaceUInt64(name,index,value)
 Replace in the message an existing uint64 item in the name array at the 
 index position with another uint64 item. If the item is out of range, 
 the replacement fails. 
@@ -2235,6 +2501,7 @@ field.
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 
 .def("ReplaceBool", py::overload_cast<const char *, bool>(&BMessage::ReplaceBool), R"doc(
+.. automethod:: ReplaceBool(name,value)
 Replace by name the first or the only existing bool item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2251,8 +2518,9 @@ field.
 :type value: bool
 :returns: ``B_OK`` on success, or an error code otherwise (read description).
 :rtype: int
-)doc", py::arg("name"), py::arg("aBoolean"))
+)doc", py::arg("name"), py::arg("value"))
 .def("ReplaceBool", py::overload_cast<const char *, int32, bool>(&BMessage::ReplaceBool), R"doc(
+.. automethod:: ReplaceBool(name,index,value)
 Replace in the message an existing bool item in the name array at the 
 index position with another bool item. If the item is out of range, 
 the replacement fails. 
@@ -2275,6 +2543,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceFloat", py::overload_cast<const char *, float>(&BMessage::ReplaceFloat), R"doc(
+.. automethod:: ReplaceFloat(name,value)
 Replace by name the first or the only existing float item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2293,6 +2562,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceFloat", py::overload_cast<const char *, int32, float>(&BMessage::ReplaceFloat), R"doc(
+.. automethod:: ReplaceFloat(name,index,value)
 Replace in the message an existing float item in the name array at the 
 index position with another float item. If the item is out of range, 
 the replacement fails. 
@@ -2315,6 +2585,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceDouble", py::overload_cast<const char *, double>(&BMessage::ReplaceDouble), R"doc(
+.. automethod:: ReplaceDouble(name,value)
 Replace by name the first or the only existing double item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2333,6 +2604,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("ReplaceDouble", py::overload_cast<const char *, int32, double>(&BMessage::ReplaceDouble), R"doc(
+.. automethod:: ReplaceDouble(name,index,value)
 Replace in the message an existing double item in the name array at the 
 index position with another double item. If the item is out of range, 
 the replacement fails. 
@@ -2355,6 +2627,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceColor", py::overload_cast<const char *, rgb_color>(&BMessage::ReplaceColor), R"doc(
+.. automethod:: ReplaceColor(name,color)
 Replace by name the first or the only existing rgb_color item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2373,6 +2646,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("color"))
 .def("ReplaceColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::ReplaceColor), R"doc(
+.. automethod:: ReplaceColor(name,index,color)
 Replace in the message an existing rgb_color item in the name array at the 
 index position with another rgb_color item. If the item is out of range, 
 the replacement fails. 
@@ -2397,6 +2671,7 @@ field.
 .def("ReplacePointer", py::overload_cast<const char *, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("pointer"))
 .def("ReplacePointer", py::overload_cast<const char *, int32, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 .def("ReplaceMessenger", py::overload_cast<const char *, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
+.. automethod:: ReplaceMessenger(name,messenger)
 Replace by name the first or the only existing BMessenger item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2415,6 +2690,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("messenger"))
 .def("ReplaceMessenger", py::overload_cast<const char *, int32, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
+.. automethod:: ReplaceMessenger(name,index,messenger)
 Replace in the message an existing BMessenger item in the name array at the 
 index position with another BMessenger item. If the item is out of range, 
 the replacement fails. 
@@ -2437,6 +2713,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
 .def("ReplaceRef", py::overload_cast<const char *, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
+.. automethod:: ReplaceRef(name,ref)
 Replace by name the first or the only existing entry_ref item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2455,6 +2732,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("ReplaceRef", py::overload_cast<const char *, int32, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
+.. automethod:: ReplaceRef(name,index,ref)
 Replace in the message an existing entry_ref item in the name array at the 
 index position with another entry_ref item. If the item is out of range, 
 the replacement fails. 
@@ -2477,6 +2755,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("ReplaceNodeRef", py::overload_cast<const char *, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
+.. automethod:: ReplaceNodeRef(name,ref)
 Replace by name the first or the only existing node_ref item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2495,6 +2774,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("ReplaceNodeRef", py::overload_cast<const char *, int32, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
+.. automethod:: ReplaceNodeRef(name,index,ref)
 Replace in the message an existing node_ref item in the name array at the 
 index position with another node_ref item. If the item is out of range, 
 the replacement fails. 
@@ -2517,6 +2797,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("ReplaceMessage", py::overload_cast<const char *, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
+.. automethod:: ReplaceMessage(name,message)
 Replace by name the first or the only existing BMessage item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2535,6 +2816,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("ReplaceMessage", py::overload_cast<const char *, int32, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
+.. automethod:: ReplaceMessage(name,index,message)
 Replace in the message an existing BMessage item in the name array at the 
 index position with another BMessage item. If the item is out of range, 
 the replacement fails. 
@@ -2557,6 +2839,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("message"))
 .def("ReplaceFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
+.. automethod:: ReplaceFlat(name,object)
 Replace by name the first or the only existing BFlattenable item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
@@ -2575,6 +2858,7 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"))
 .def("ReplaceFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
+.. automethod:: ReplaceFlat(name,index,object)
 Replace in the message an existing BFlattenable item in the name array at the 
 index position with another BFlattenable item. If the item is out of range, 
 the replacement fails. 
@@ -2603,20 +2887,24 @@ field.
 	ssize_t numBytes = info.size * info.itemsize;
 	return self.ReplaceData(name, type, buffer, numBytes);
 },R"doc(
+.. automethod:: ReplaceData(name,type,data)
 Replace by name the first or the only existing data item in 
 the message with another one.
 If this call fails it returns B_ERROR in case of read-only message 
 (like while the message is being dragged), B_NAME_NOT_FOUND if name
 doesn't exist, or B_BAD_TYPE if the field doesn't contin data of the
 data type.
+
 The type must be specific; it can't be B_ANY_TYPE.
-NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
-is different from the current one, the data field must have been previously
-created with the isFixedSize flag set to False; otherwise, this function
-returns B_BAD_ADDRESS.
 
 This function is typically used to update the value of an existing
 field.
+
+..note::
+    if you intend to replace a B_RAW_TYPE data and the new data dimension
+    is different from the current one, the data field must have been previously
+    created with the isFixedSize flag set to False; otherwise, this function
+    returns B_BAD_ADDRESS.
 
 :param name: The name associated with the data field to replace.
 :type name: str
@@ -2634,6 +2922,7 @@ field.
 	ssize_t numBytes = info.size * info.itemsize;
 	return self.ReplaceData(name, type, index, buffer, numBytes);//(ssize_t)info.size);
 },R"doc(
+.. automethod:: ReplaceData(name,type,index,data)
 Replace in the message an existing data field in the name array at the 
 index position with other data. If the item is out of range, 
 the replacement fails. 
@@ -2643,13 +2932,15 @@ If this call fails it returns B_ERROR in case of read-only message
 of range, B_NAME_NOT_FOUND if name doesn't exist, or B_BAD_TYPE if the 
 field doesn't contin data of the data type.
 The type must be specific; it can't be B_ANY_TYPE.
-NOTE: if you intend to replace a B_RAW_TYPE data and the new data dimension
-is different from the current one, the data field must have been previously
-created with the isFixedSize flag set to False; otherwise, this function
-returns B_BAD_ADDRESS.
  
 This function is typically used to update the value of an existing
 field.
+
+..note::
+    if you intend to replace a B_RAW_TYPE data and the new data dimension
+    is different from the current one, the data field must have been previously
+    created with the isFixedSize flag set to False; otherwise, this function
+    returns B_BAD_ADDRESS.
 
 :param name: The name associated with the data field to replace.
 :type name: str
@@ -2664,6 +2955,7 @@ field.
 )doc", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"))
 
 .def("HasSameData", &BMessage::HasSameData, R"doc(
+.. automethod:: HasSameData
 Checks if the current message has the same fields and data as another message.
 
 This method is useful for comparing the content of two BMessages, optionally 
@@ -2673,9 +2965,9 @@ messages.
 :param other: The BMessage to compare the current message with.
 :type other: BMessage
 :param ignoreFieldOrder: Optional, if True (default), the field order is ignored during comparison, otherwise the field order must be identical.
-:type ignoreFieldOrder: bool
+:type ignoreFieldOrder: bool, optional
 :param deep: Optional, if True, the comparison is "deep," nested BMessages are recursively compared. If False (default), nested messages are only compared by pointer, which generally means they must be the same object.
-:type deep: bool
+:type deep: bool, optional
 :returns: True if the two BMessages contain the same data (according to the specified options), otherwise False.
 :rtype: bool
 )doc", py::arg("other"), py::arg("ignoreFieldOrder")=true, py::arg("deep")=false)
@@ -2687,251 +2979,274 @@ messages.
 */
 
 .def("HasAlignment", &BMessage::HasAlignment, R"doc(
+.. automethod:: HasAlignment
 Checks if the BMessage contains a field with the specified name and 
 of type B_ALIGNMENT_TYPE.
 
 :param name: The name associated with the BAlignment.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_ALIGNMENT_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasRect", &BMessage::HasRect, R"doc(
+.. automethod:: HasRect
 Checks if the BMessage contains a field with the specified name and 
 of type B_RECT_TYPE.
 
 :param name: The name associated with the BRect.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_RECT_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPoint", &BMessage::HasPoint, R"doc(
+.. automethod:: HasPoint
 Checks if the BMessage contains a field with the specified name and 
 of type B_POINT_TYPE.
 
 :param name: The name associated with the BPoint.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_POINT_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasSize", &BMessage::HasSize, R"doc(
+.. automethod:: HasSize
 Checks if the BMessage contains a field with the specified name and 
 of type B_SIZE_TYPE.
 
 :param name: The name associated with the BSize.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_SIZE_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasString", &BMessage::HasString, R"doc(
+.. automethod:: HasString
 Checks if the BMessage contains a field with the specified name and 
 of type B_STRING_TYPE.
 
 :param name: The name associated with the string.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_STRING_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt8", &BMessage::HasInt8, R"doc(
+.. automethod:: HasInt8
 Checks if the BMessage contains a field with the specified name and 
 of type B_INT8_TYPE.
 
 :param name: The name associated with the int8.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_INT8_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt8", &BMessage::HasUInt8, R"doc(
+.. automethod:: HasUInt8
 Checks if the BMessage contains a field with the specified name and 
 of type B_UINT8_TYPE.
 
 :param name: The name associated with the uint8.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_UINT8_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt16", &BMessage::HasInt16, R"doc(
+.. automethod:: HasInt16
 Checks if the BMessage contains a field with the specified name and 
 of type B_INT16_TYPE.
 
 :param name: The name associated with the int16.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_INT16_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt16", &BMessage::HasUInt16, R"doc(
+.. automethod:: HasUInt16
 Checks if the BMessage contains a field with the specified name and 
 of type B_UINT16_TYPE.
 
 :param name: The name associated with the uint16.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_UINT16_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt32", &BMessage::HasInt32, R"doc(
+.. automethod:: HasInt32
 Checks if the BMessage contains a field with the specified name and 
 of type B_INT32_TYPE.
 
 :param name: The name associated with the int32.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_INT32_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt32", &BMessage::HasUInt32, R"doc(
+.. automethod:: HasUInt32
 Checks if the BMessage contains a field with the specified name and 
 of type B_UINT32_TYPE.
 
 :param name: The name associated with the uint32.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_UINT32_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt64", &BMessage::HasInt64, R"doc(
+.. automethod:: HasInt64
 Checks if the BMessage contains a field with the specified name and 
 of type B_INT64_TYPE.
 
 :param name: The name associated with the int64.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_INT64_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt64", &BMessage::HasUInt64, R"doc(
+.. automethod:: HasUInt64
 Checks if the BMessage contains a field with the specified name and 
 of type B_UINT64_TYPE.
 
 :param name: The name associated with the uint64.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_UINT64_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("HasBool", &BMessage::HasBool, R"doc(
+.. automethod:: HasBool
 Checks if the BMessage contains a field with the specified name and 
 of type B_BOOL_TYPE.
 
 :param name: The name associated with the bool.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_BOOL_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasFloat", &BMessage::HasFloat, R"doc(
+.. automethod:: HasFloat
 Checks if the BMessage contains a field with the specified name and 
 of type B_FLOAT_TYPE.
 
 :param name: The name associated with the float.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_FLOAT_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasDouble", &BMessage::HasDouble, R"doc(
+.. automethod:: HasDouble
 Checks if the BMessage contains a field with the specified name and 
 of type B_DOUBLE_TYPE.
 
 :param name: The name associated with the double.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_DOUBLE_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasColor", &BMessage::HasColor, R"doc(
+.. automethod:: HasColor
 Checks if the BMessage contains a field with the specified name and 
 of type B_RGB_COLOR_TYPE.
 
 :param name: The name associated with the rgb_color.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_RGB_COLOR_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPointer", &BMessage::HasPointer, R"doc(
+.. automethod:: HasPointer
 Checks if the BMessage contains a field with the specified name and 
 of type B_POINTER_TYPE.
 
 :param name: The name associated with the pointer.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_POINTER_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessenger", &BMessage::HasMessenger, R"doc(
+.. automethod:: HasMessenger
 Checks if the BMessage contains a field with the specified name and 
 of type B_MESSENGER_TYPE.
 
 :param name: The name associated with the BMessenger.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_MESSENGER_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasRef", &BMessage::HasRef, R"doc(
+.. automethod:: HasRef
 Checks if the BMessage contains a field with the specified name and 
 of type B_REF_TYPE.
 
 :param name: The name associated with the entry_ref.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_REF_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasNodeRef", &BMessage::HasNodeRef, R"doc(
+.. automethod:: HasNodeRef
 Checks if the BMessage contains a field with the specified name and 
 of type B_NODE_REF_TYPE.
 
 :param name: The name associated with the node_ref.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_NODE_REF_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessage", &BMessage::HasMessage, R"doc(
+.. automethod:: HasMessage
 Checks if the BMessage contains a field with the specified name and 
 of type B_MESSAGE_TYPE.
 
 :param name: The name associated with the BMessage.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
-:type n: int
+:type n: int, optional
 :returns: True if the field exists at the name and index and is B_MESSAGE_TYPE, otherwise False.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 
-// TODO CHECK THESE FUNCTIONS *******************************************************************************
+// TODO CHECK THESE FUNCTIONS BELOW *******************************************************************************
 .def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
+.. automethod:: HasFlat(name,object)
 Checks if the BMessage contains a field with the specified name that 
 holds data of a type matching the given BFlattenable object.
 
@@ -2946,6 +3261,7 @@ BFont, or other custom classes that inherit from BFlattenable.
 :rtype: bool
 )doc", py::arg("name"), py::arg("object"))
 .def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
+.. automethod:: HasFlat(name,n,object)
 Checks if the BMessage contains a field with the specified name and
 index that holds data of a type matching the given BFlattenable object.
 
@@ -2965,6 +3281,7 @@ BFont, or other custom classes that inherit from BFlattenable.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n"), py::arg("object"))
 .def("HasData", &BMessage::HasData, R"doc(
+.. automethod:: HasData
 Checks if the BMessage contains a field with the specified name and type code.
 
 This generic method checks the presence of any typed data in the message, 
@@ -2975,7 +3292,7 @@ including B_MESSAGE_TYPE, B_REF_TYPE, and all built-in types.
 :param type: The specific Haiku type code (e.g., B_INT32_TYPE, B_MESSAGE_TYPE) the field must match.
 :type type: type_code
 :param n: Optional, the index of the field entry to check. Defaults to 0 (the first entry).
-:type n: int
+:type n: int, optional
 :returns: True if the field with the specified name, type code, and index exists, otherwise False.
 :rtype: bool
 
@@ -3002,75 +3319,929 @@ including B_MESSAGE_TYPE, B_REF_TYPE, and all built-in types.
 //.def("FindDouble", py::overload_cast<const char *, int32>(&BMessage::FindDouble, py::const_), "", py::arg("name"), py::arg("n")=0)
 //.def("FindDoubleWithStatus", &PythonicFindDoubleWrapper, "", py::arg("name"), py::arg("n")=0)
 
-.def("GetBool", py::overload_cast<const char *, bool>(&BMessage::GetBool, py::const_), "", py::arg("name"), py::arg("defaultValue")=false)
-.def("GetBool", py::overload_cast<const char *, int32, bool>(&BMessage::GetBool, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetInt8", py::overload_cast<const char *, signed char>(&BMessage::GetInt8, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::GetInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::GetUInt8, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::GetUInt8, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetInt16", py::overload_cast<const char *, int16>(&BMessage::GetInt16, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetInt16", py::overload_cast<const char *, int32, int16>(&BMessage::GetInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetUInt16", py::overload_cast<const char *, uint16>(&BMessage::GetUInt16, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::GetUInt16, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetInt32", py::overload_cast<const char *, int32>(&BMessage::GetInt32, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetInt32", py::overload_cast<const char *, int32, int32>(&BMessage::GetInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetUInt32", py::overload_cast<const char *, uint32>(&BMessage::GetUInt32, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::GetUInt32, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetInt64", py::overload_cast<const char *, int64_t>(&BMessage::GetInt64, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetInt64", py::overload_cast<const char *, int32, int64_t>(&BMessage::GetInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::GetUInt64, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::GetUInt64, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetFloat", py::overload_cast<const char *, float>(&BMessage::GetFloat, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetFloat", py::overload_cast<const char *, int32, float>(&BMessage::GetFloat, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetDouble", py::overload_cast<const char *, double>(&BMessage::GetDouble, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetDouble", py::overload_cast<const char *, int32, double>(&BMessage::GetDouble, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetColor", py::overload_cast<const char *, rgb_color>(&BMessage::GetColor, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::GetColor, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetBool", py::overload_cast<const char *, bool>(&BMessage::GetBool, py::const_), R"doc(
+.. automethod:: GetBool(name,defaultValue=False)
+Retrieves a boolean value from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a boolean from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_BOOL_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the boolean from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_BOOL_TYPE).
+:type default_value: bool
+:returns: The boolean value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: bool
+)doc", py::arg("name"), py::arg("defaultValue")=false)
+.def("GetBool", py::overload_cast<const char *, int32, bool>(&BMessage::GetBool, py::const_), R"doc(
+.. automethod:: GetBool(name,index,defaultValue)
+Retrieves a boolean value from the field with the specified name 
+and index.
+
+This is a convenience method that simplifies retrieving a boolean from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_BOOL_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the boolean from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_BOOL_TYPE).
+:type default_value: bool
+:returns: The boolean value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: bool
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetInt8", py::overload_cast<const char *, signed char>(&BMessage::GetInt8, py::const_), R"doc(
+.. automethod:: GetInt8(name,defaultValue)
+Retrieves an 8-bit signed integer (int8) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an int8 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT8_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int8 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT8_TYPE).
+:type default_value: int
+:returns: The 8-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetInt8", py::overload_cast<const char *, int32, signed char>(&BMessage::GetInt8, py::const_), R"doc(
+.. automethod:: GetInt8(name,index,defaultValue)
+Retrieves an 8-bit signed integer (int8) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an int8 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT8_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int8 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT8_TYPE).
+:type default_value: int
+:returns: The 8-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetUInt8", py::overload_cast<const char *, unsigned char>(&BMessage::GetUInt8, py::const_), R"doc(
+.. automethod:: GetUInt8(name,defaultValue)
+Retrieves an 8-bit unsigned integer (uint8) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an uint8 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT8_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint8 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT8_TYPE).
+:type default_value: uint
+:returns: The 8-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetUInt8", py::overload_cast<const char *, int32, unsigned char>(&BMessage::GetUInt8, py::const_), R"doc(
+.. automethod:: GetUInt8(name,index,defaultValue)
+Retrieves an 8-bit unsigned integer (uint8) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an uint8 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT8_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint8 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT8_TYPE).
+:type default_value: int
+:returns: The 8-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetInt16", py::overload_cast<const char *, int16>(&BMessage::GetInt16, py::const_), R"doc(
+.. automethod:: GetInt16(name,defaultValue)
+Retrieves an 16-bit signed integer (int16) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an int16 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT16_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int16 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT16_TYPE).
+:type default_value: int
+:returns: The 16-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetInt16", py::overload_cast<const char *, int32, int16>(&BMessage::GetInt16, py::const_), R"doc(
+.. automethod:: GetInt16(name,index,defaultValue)
+Retrieves an 16-bit signed integer (int16) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an int16 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT16_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int16 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT16_TYPE).
+:type default_value: int
+:returns: The 16-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetUInt16", py::overload_cast<const char *, uint16>(&BMessage::GetUInt16, py::const_), R"doc(
+.. automethod:: GetUInt16(name,defaultValue)
+Retrieves an 16-bit unsigned integer (uint16) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an uint16 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT16_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint16 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT16_TYPE).
+:type default_value: int
+:returns: The 16-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetUInt16", py::overload_cast<const char *, int32, uint16>(&BMessage::GetUInt16, py::const_), R"doc(
+.. automethod:: GetUInt16(name,index,defaultValue)
+Retrieves an 16-bit unsigned integer (uint16) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an uint16 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT16_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint16 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT16_TYPE).
+:type default_value: int
+:returns: The 16-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetInt32", py::overload_cast<const char *, int32>(&BMessage::GetInt32, py::const_), R"doc(
+.. automethod:: GetInt32(name,defaultValue)
+Retrieves an 32-bit signed integer (int32) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an int32 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT32_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int32 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT32_TYPE).
+:type default_value: int
+:returns: The 32-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetInt32", py::overload_cast<const char *, int32, int32>(&BMessage::GetInt32, py::const_), R"doc(
+.. automethod:: GetInt32(name,index,defaultValue)
+Retrieves an 32-bit signed integer (int32) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an int32 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT32_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int32 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT32_TYPE).
+:type default_value: int
+:returns: The 32-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetUInt32", py::overload_cast<const char *, uint32>(&BMessage::GetUInt32, py::const_), R"doc(
+.. automethod:: GetUInt32(name,defaultValue)
+Retrieves an 32-bit unsigned integer (uint32) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an uint32 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT32_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint32 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT32_TYPE).
+:type default_value: int
+:returns: The 32-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetUInt32", py::overload_cast<const char *, int32, uint32>(&BMessage::GetUInt32, py::const_), R"doc(
+.. automethod:: GetUInt32(name,index,defaultValue)
+Retrieves an 32-bit unsigned integer (uint32) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an uint32 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT32_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint32 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT32_TYPE).
+:type default_value: int
+:returns: The 32-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetInt64", py::overload_cast<const char *, int64_t>(&BMessage::GetInt64, py::const_), R"doc(
+.. automethod:: GetInt64(name,defaultValue)
+Retrieves an 64-bit signed integer (int64) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an int64 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT64_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int64 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT64_TYPE).
+:type default_value: int
+:returns: The 64-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetInt64", py::overload_cast<const char *, int32, int64_t>(&BMessage::GetInt64, py::const_), R"doc(
+.. automethod:: GetInt64(name,index,defaultValue)
+Retrieves an 64-bit signed integer (int64) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an int64 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_INT64_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the int64 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_INT64_TYPE).
+:type default_value: int
+:returns: The 64-bit signed integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetUInt64", py::overload_cast<const char *, uint64_t>(&BMessage::GetUInt64, py::const_), R"doc(
+.. automethod:: GetUInt64(name,defaultValue)
+Retrieves an 64-bit unsigned integer (uint64) value from the field with 
+the specified name.
+
+This is a convenience method that simplifies retrieving an uint64 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT64_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint64 from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT64_TYPE).
+:type default_value: int
+:returns: The 64-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetUInt64", py::overload_cast<const char *, int32, uint64_t>(&BMessage::GetUInt64, py::const_), R"doc(
+.. automethod:: GetUInt64(name,index,defaultValue)
+Retrieves an 64-bit unsigned integer (uint64) value from the field with 
+the specified name and index.
+
+This is a convenience method that simplifies retrieving an uint64 from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_UINT64_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the uint64 from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_UINT64_TYPE).
+:type default_value: int
+:returns: The 64-bit unsigned integer value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: int
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetFloat", py::overload_cast<const char *, float>(&BMessage::GetFloat, py::const_), R"doc(
+.. automethod:: GetFloat(name,defaultValue)
+Retrieves a float value from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a float from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_FLOAT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the float from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_FLOAT_TYPE).
+:type default_value: float
+:returns: The float value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: float
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetFloat", py::overload_cast<const char *, int32, float>(&BMessage::GetFloat, py::const_), R"doc(
+.. automethod:: GetFloat(name,index,defaultValue)
+Retrieves a float value from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a float from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_FLOAT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the float from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_FLOAT_TYPE).
+:type default_value: float
+:returns: The float value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: float
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetDouble", py::overload_cast<const char *, double>(&BMessage::GetDouble, py::const_), R"doc(
+.. automethod:: GetDouble(name,defaultValue)
+Retrieves a double value from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a double from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_DOUBLE_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the double from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_DOUBLE_TYPE).
+:type default_value: double
+:returns: The double value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: double
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetDouble", py::overload_cast<const char *, int32, double>(&BMessage::GetDouble, py::const_), R"doc(
+.. automethod:: GetDouble(name,index,defaultValue)
+Retrieves a double value from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a double from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_DOUBLE_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the double from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_DOUBLE_TYPE).
+:type default_value: double
+:returns: The double value stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: double
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetColor", py::overload_cast<const char *, rgb_color>(&BMessage::GetColor, py::const_), R"doc(
+.. automethod:: GetColor(name,defaultValue)
+Retrieves a rgb_color item from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a rgb_color from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_RGB_COLOR_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the rgb_color from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_RGB_COLOR_TYPE).
+:type default_value: rgb_color
+:returns: The rgb_color item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: rgb_color
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::GetColor, py::const_), R"doc(
+.. automethod:: GetColor(name,index,defaultValue)
+Retrieves a rgb_color item from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a rgb_color from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_RGB_COLOR_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the rgb_color from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_RGB_COLOR_TYPE).
+:type default_value: rgb_color
+:returns: The rgb_color item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: rgb_color
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+// TODO Test if necessary GetPointer
 .def("GetPointer", py::overload_cast<const char *, int32, const void *>(&BMessage::GetPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue")=NULL)
 .def("GetPointer", py::overload_cast<const char *, const void *>(&BMessage::GetPointer, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
-.def("GetString", py::overload_cast<const char *, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("defaultValue")=NULL)
-.def("GetString", py::overload_cast<const char *, int32, const char *>(&BMessage::GetString, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+
+.def("GetString", py::overload_cast<const char *, const char *>(&BMessage::GetString, py::const_), R"doc(
+.. automethod:: GetString(name,defaultValue)
+Retrieves a string from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a string from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_STRING_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the string from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_STRING_TYPE).
+:type default_value: string
+:returns: The string stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: string
+)doc", py::arg("name"), py::arg("defaultValue")=NULL)
+.def("GetString", py::overload_cast<const char *, int32, const char *>(&BMessage::GetString, py::const_), R"doc(
+.. automethod:: GetString(name,index,defaultValue)
+Retrieves a string from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a string from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_STRING_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the string from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_STRING_TYPE).
+:type default_value: string
+:returns: The string stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: string
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 
 // These two don't seem to be available on Haiku R1B4. Maybe they are, but just
 // not in libbe.so? That would be strange... But it's also strange that the
 // header files that come with R1B4 mention them.
 #if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
-.def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), "", py::arg("name"), py::arg("defaultValue"))
+.def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), R"doc(
+.. automethod:: GetAlignment(name,index,defaultValue)
+Retrieves a BAlignment item from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a BAlignment from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_ALIGNMENT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BAlignment from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_ALIGNMENT_TYPE).
+:type default_value: BAlignment
+:returns: The BAlignment item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BAlignment
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), R"doc(
+.. automethod:: GetAlignment(name,defaultValue)
+Retrieves a BAlignment item from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a BAlignment from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_ALIGNMENT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BAlignment from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_ALIGNMENT_TYPE).
+:type default_value: BAlignment
+:returns: The BAlignment item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BAlignment
+)doc", py::arg("name"), py::arg("defaultValue"))
 #endif
 
-.def("GetRect", py::overload_cast<const char *, int32, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetRect", py::overload_cast<const char *, const BRect &>(&BMessage::GetRect, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetPoint", py::overload_cast<const char *, int32, const BPoint &>(&BMessage::GetPoint, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetPoint", py::overload_cast<const char *, const BPoint &>(&BMessage::GetPoint, py::const_), "", py::arg("name"), py::arg("defaultValue"))
-.def("GetSize", py::overload_cast<const char *, int32, const BSize &>(&BMessage::GetSize, py::const_), "", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
-.def("GetSize", py::overload_cast<const char *, const BSize &>(&BMessage::GetSize, py::const_), "", py::arg("name"), py::arg("defaultValue"))
+.def("GetRect", py::overload_cast<const char *, int32, const BRect &>(&BMessage::GetRect, py::const_), R"doc(
+.. automethod:: GetRect(name,index,defaultValue)
+Retrieves a BRect item from the field with the specified name and index.
 
-.def("SetBool", &BMessage::SetBool, "", py::arg("name"), py::arg("value"))
-.def("SetInt8", &BMessage::SetInt8, "", py::arg("name"), py::arg("value"))
-.def("SetUInt8", &BMessage::SetUInt8, "", py::arg("name"), py::arg("value"))
-.def("SetInt16", &BMessage::SetInt16, "", py::arg("name"), py::arg("value"))
-.def("SetUInt16", &BMessage::SetUInt16, "", py::arg("name"), py::arg("value"))
-.def("SetInt32", &BMessage::SetInt32, "", py::arg("name"), py::arg("value"))
-.def("SetUInt32", &BMessage::SetUInt32, "", py::arg("name"), py::arg("value"))
-.def("SetInt64", &BMessage::SetInt64, "", py::arg("name"), py::arg("value"))
-.def("SetUInt64", &BMessage::SetUInt64, "", py::arg("name"), py::arg("value"))
+This is a convenience method that simplifies retrieving a BRect from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_RECT_TYPE, the given default value is returned.
 
-.def("SetColor", &BMessage::SetColor, "", py::arg("name"), py::arg("value"))
+:param name: The name of the field to retrieve the BRect from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_RECT_TYPE).
+:type default_value: BRect
+:returns: The BRect item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BRect
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetRect", py::overload_cast<const char *, const BRect &>(&BMessage::GetRect, py::const_), R"doc(
+.. automethod:: GetRect(name,defaultValue)
+Retrieves a BRect item from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a BRect from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_RECT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BRect from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_RECT_TYPE).
+:type default_value: BRect
+:returns: The BRect item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BRect
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetPoint", py::overload_cast<const char *, int32, const BPoint &>(&BMessage::GetPoint, py::const_), R"doc(
+.. automethod:: GetPoint(name,index,defaultValue)
+Retrieves a BPoint item from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a BPoint from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_POINT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BPoint from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_POINT_TYPE).
+:type default_value: BPoint
+:returns: The BPoint item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BPoint
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetPoint", py::overload_cast<const char *, const BPoint &>(&BMessage::GetPoint, py::const_), R"doc(
+.. automethod:: GetPoint(name,defaultValue)
+Retrieves a BPoint item from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a BPoint from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_POINT_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BPoint from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_POINT_TYPE).
+:type default_value: BPoint
+:returns: The BPoint item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BPoint
+)doc", py::arg("name"), py::arg("defaultValue"))
+.def("GetSize", py::overload_cast<const char *, int32, const BSize &>(&BMessage::GetSize, py::const_), R"doc(
+.. automethod:: GetSize(name,index,defaultValue)
+Retrieves a BSize item from the field with the specified name and index.
+
+This is a convenience method that simplifies retrieving a BSize from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_SIZE_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BSize from.
+:type name: str
+:param index: The index of the field entry to retrieve.
+:type:index: int
+:param default_value: The value to return if the field is not found or is not of the correct type (B_SIZE_TYPE).
+:type default_value: BSize
+:returns: The BSize item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BSize
+)doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
+.def("GetSize", py::overload_cast<const char *, const BSize &>(&BMessage::GetSize, py::const_), R"doc(
+.. automethod:: GetSize(name,defaultValue)
+Retrieves a BSize item from the field with the specified name.
+
+This is a convenience method that simplifies retrieving a BSize from 
+the message. If the field is not found, or if the field exists but is 
+not of type B_SIZE_TYPE, the given default value is returned.
+
+:param name: The name of the field to retrieve the BSize from.
+:type name: str
+:param default_value: The value to return if the field is not found or is not of the correct type (B_SIZE_TYPE).
+:type default_value: BSize
+:returns: The BSize item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:rtype: BSize
+)doc", py::arg("name"), py::arg("defaultValue"))
+
+.def("SetBool", &BMessage::SetBool, R"doc(
+.. automethod:: SetBool
+Adds a boolean value to the BMessage, or replaces the first existing 
+value if a field with the same name already exists.
+
+The value is stored in the message as type B_BOOL_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The boolean value to be stored in the message.
+:type value: bool
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetInt8", &BMessage::SetInt8, R"doc(
+.. automethod:: SetInt8
+Adds a 8-bit signed integer (int8) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_INT8_TYPE.
+
+.. note::
+   While this method stores a 8-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 8-bit signed integer (int8) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetUInt8", &BMessage::SetUInt8, R"doc(
+.. automethod:: SetUInt8
+Adds a 8-bit unsigned integer (uint8) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_UINT8_TYPE.
+
+.. note::
+   While this method stores a 8-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint8 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 8-bit unsigned integer (uint8) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetInt16", &BMessage::SetInt16, R"doc(
+.. automethod:: SetInt16
+Adds a 16-bit signed integer (int16) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_INT16_TYPE.
+
+.. note::
+   While this method stores a 16-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 16-bit signed integer (int16) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetUInt16", &BMessage::SetUInt16, R"doc(
+.. automethod:: SetUInt16
+Adds a 16-bit unsigned integer (uint16) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_UINT16_TYPE.
+
+.. note::
+   While this method stores a 16-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint16 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 16-bit unsigned integer (uint16) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetInt32", &BMessage::SetInt32, R"doc(
+.. automethod:: SetInt32
+Adds a 32-bit signed integer (int32) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_INT32_TYPE.
+
+.. note::
+   While this method stores a 32-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 32-bit signed integer (int32) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetUInt32", &BMessage::SetUInt32, R"doc(
+.. automethod:: SetUInt32
+Adds a 32-bit unsigned integer (uint32) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_UINT32_TYPE.
+
+.. note::
+   While this method stores a 32-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint32 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 32-bit unsigned integer (uint32) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetInt64", &BMessage::SetInt64, R"doc(
+.. automethod:: SetInt64
+Adds a 64-bit signed integer (int64) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_INT64_TYPE.
+
+.. note::
+   While this method stores a 64-bit signed integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside int64 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 64-bit signed integer (int64) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetUInt64", &BMessage::SetUInt64, R"doc(
+.. automethod:: SetUInt64
+Adds a 64-bit unsigned integer (uint64) value to the BMessage, or replaces 
+the first existing value if a field with the same name already exists.
+
+The value is stored in the message as type B_UINT64_TYPE.
+
+.. note::
+   While this method stores a 64-bit unsigned integer, 
+   the Python parameter 'value' must be a standard Python 'int'. 
+   Passing values outside uint64 range may result in truncation 
+   or unexpected behavior when interpreted by the underlying C++ API.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The 64-bit unsigned integer (uint64) value to be stored in the message.
+:type value: int
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+
+.def("SetColor", &BMessage::SetColor, R"doc(
+.. automethod:: SetColor
+Adds a rgb_color element to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_RGB_COLOR_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The rgb_color item to be stored in the message.
+:type value: rgb_color
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+//TODO test if useful or comment out
 .def("SetPointer", &BMessage::SetPointer, "", py::arg("name"), py::arg("value"))
-.def("SetString", py::overload_cast<const char *, const char *>(&BMessage::SetString), "", py::arg("name"), py::arg("string"))
-.def("SetString", py::overload_cast<const char *, const BString &>(&BMessage::SetString), "", py::arg("name"), py::arg("string"))
-.def("SetFloat", &BMessage::SetFloat, "", py::arg("name"), py::arg("value"))
-.def("SetDouble", &BMessage::SetDouble, "", py::arg("name"), py::arg("value"))
-#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4) // see comment for GetAlignment
-.def("SetAlignment", &BMessage::SetAlignment, "", py::arg("name"), py::arg("value"))
-#endif
-.def("SetPoint", &BMessage::SetPoint, "", py::arg("name"), py::arg("value"))
-.def("SetRect", &BMessage::SetRect, "", py::arg("name"), py::arg("value"))
-.def("SetSize", &BMessage::SetSize, "", py::arg("name"), py::arg("value"))
-.def("SetData", &BMessage::SetData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
 
-.def_readwrite("what", &BMessage::what, "")
+.def("SetString", py::overload_cast<const char *, const char *>(&BMessage::SetString), R"doc(
+.. automethod:: SetString(name,string)
+Adds a string element to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_STRING_TYPE.
+
+.. note: 
+    B_ASCII_TYPE is the C-style for char*, but it's
+    deprecated, Haiku prefers using B_STRING_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The string to be stored in the message.
+:type value: str
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("string"))
+.def("SetString", py::overload_cast<const char *, const BString &>(&BMessage::SetString), R"doc(
+.. automethod:: SetString(name,bstring)
+Adds a BString element to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_STRING_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param bstring: The BString item to be stored in the message.
+:type bstring: BString
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("bstring"))
+.def("SetFloat", &BMessage::SetFloat, R"doc(
+.. automethod:: SetFloat
+Adds a float value to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_FLOAT_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The float value to be stored in the message.
+:type value: float
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetDouble", &BMessage::SetDouble, R"doc(
+.. automethod:: SetDouble
+Adds a double value to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_DOUBLE_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The double value to be stored in the message.
+:type value: double
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+#if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4) // see comment for GetAlignment
+.def("SetAlignment", &BMessage::SetAlignment, R"doc(
+.. automethod:: SetAlignment
+Adds a BAlignment item to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_ALIGNMENT_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The BAlignment item to be stored in the message.
+:type value: BAlignment
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+#endif
+.def("SetPoint", &BMessage::SetPoint, R"doc(
+.. automethod:: SetPoint
+Adds a BPoint item to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_POINT_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The BPoint item to be stored in the message.
+:type value: BPoint
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetRect", &BMessage::SetRect, R"doc(
+.. automethod:: SetRect
+Adds a BRect item to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_RECT_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The BRect item to be stored in the message.
+:type value: BRect
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+.def("SetSize", &BMessage::SetSize, R"doc(
+.. automethod:: SetSize
+Adds a BSize item to the BMessage, or replaces the first existing 
+element if a field with the same name already exists.
+
+The value is stored in the message as type B_SIZE_TYPE.
+
+:param name: The name of the field to to add or modify.
+:type name: str
+:param value: The BSize item to be stored in the message.
+:type value: BSize
+:returns: B_OK on success, or an error code otherwise.
+:rtype: int
+)doc", py::arg("name"), py::arg("value"))
+//.def("SetData", &BMessage::SetData, "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
+.def("SetData",[](BMessage& self, const char* name, type_code type, py::buffer data, ssize_t numBytes, bool isFixedSize, int32 count) { 
+	py::buffer_info info = data.request();
+	const void* buffer = info.ptr;
+	return self.SetData(name,type,buffer,numBytes,isFixedSize,count);
+}, R"doc(
+.. automethod:: SetData
+
+   Adds or replaces raw data in the message under a specific field 
+   name and type code.
+
+   This is the most flexible method for storing non-standard, raw, 
+   or compound data structures within the BMessage. The data must 
+   be passed as a Python buffer object (bytes,bytearray etc.). If 
+   the named field exists, the first entry (or the entry at 
+   'count') will be replaced.
+
+   :param name: The name of the field to add or modify.
+   :type name: str
+   :param type: The specific type code (e.g., B_RAW_TYPE, B_RECT_TYPE) that identifies the data format.
+   :type type: int
+   :param data: A Python buffer object (e.g., 'bytes', 'bytearray', NumPy array) containing the raw data to be stored.
+   :type data: bytes/buffer
+   :param numBytes: The exact number of bytes from the 'data' buffer to write into the message.
+   :type numBytes: int
+   :param fixedSize: If True (default), indicates that the type code implies a fixed-size data structure (e.g., BRect, BPoint). If False, the data size is variable (e.g., B_RAW_TYPE), see ReplaceData about this.
+   :type fixedSize: bool, optional
+   :param count: The index of the element to replace if the field holds multiple entries. Defaults to 1.
+   :type count: int, optional
+   :returns: B_OK (0) on success, or an error code otherwise.
+   :rtype: int
+)doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
+.def_readwrite("what", &BMessage::what, R"doc(
+.. autoattribute:: what
+
+   The message command code, which identifies the overall purpose or meaning of the BMessage.
+
+   The 'what' code is a 32-bit integer (type_code) often represented by four ASCII characters (e.g., 'DATA'). It is the first thing checked when a message is received to determine how it should be handled.
+
+   :type: int)doc")
 ;
 
 
