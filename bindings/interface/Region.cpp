@@ -26,7 +26,12 @@ py::class_<BRegion>(m, "BRegion")
 .def(py::init(), "")
 .def(py::init<const BRegion &>(), "", py::arg("other"))
 .def(py::init<const BRect>(), "", py::arg("rect"))
-//.def("operator=", &BRegion::operator=, "", py::arg("other"))
+
+.def("operator=", py::overload_cast<const BRegion&>(&BRegion::operator=),"",py::arg("other"))
+//#if defined(__cplusplus) && __cplusplus >= 201103L
+//	.def("operator=", py::overload_cast<BRegion&>(&BRegion::operator=),"",py::arg("other"))
+////.def("operator=", &BRegion::operator=, "", py::arg("other"))
+//#endif
 .def("__eq__", &BRegion::operator==, "", py::arg("other"))
 .def("Set", py::overload_cast<BRect>(&BRegion::Set), "", py::arg("rect"))
 .def("Set", py::overload_cast<clipping_rect>(&BRegion::Set), "", py::arg("clipping"))
