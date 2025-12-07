@@ -27,9 +27,9 @@ py::class_<BString>(m, "BString")
 .def("IsEmpty", &BString::IsEmpty, "")
 .def("HashValue", py::overload_cast<>(&BString::HashValue, py::const_), "")
 .def_static("HashValueString", py::overload_cast<const char *>(&BString::HashValue), "", py::arg("string"))// BEWARE! Name changed due to: overloading a method with both static and instance methods is not supported
-.def("operator=", py::overload_cast<const BString &>(&BString::operator=), "", py::arg("string"))
-.def("operator=", py::overload_cast<const char *>(&BString::operator=), "", py::arg("string"))
-.def("operator=", py::overload_cast<char>(&BString::operator=), "", py::arg("c"))
+.def("__copy__", py::overload_cast<const BString &>(&BString::operator=), "", py::arg("string"))
+.def("__copy__", py::overload_cast<const char *>(&BString::operator=), "", py::arg("string"))
+.def("__copy__", py::overload_cast<char>(&BString::operator=), "", py::arg("c"))
 /*.def("operator=", [](BString& self) {
     BString &  string;
     BString & r = self.operator=(string);

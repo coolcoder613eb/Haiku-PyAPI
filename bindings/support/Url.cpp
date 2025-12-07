@@ -73,9 +73,9 @@ py::class_<BUrl, BArchivable>(m, "BUrl")
     return std::make_tuple(r,other);
 }
 , "")
-.def("operator=", py::overload_cast<const BUrl &>(&BUrl::operator=), "", py::arg("other"))
-.def("operator=", py::overload_cast<const BString &>(&BUrl::operator=), "", py::arg("string"))
-.def("operator=", py::overload_cast<const char *>(&BUrl::operator=), "", py::arg("string"))
+.def("__copy__", py::overload_cast<const BUrl &>(&BUrl::operator=), "", py::arg("other"))
+.def("__copy__", py::overload_cast<const BString &>(&BUrl::operator=), "", py::arg("string"))
+.def("__copy__", py::overload_cast<const char *>(&BUrl::operator=), "", py::arg("string"))
 //.def("operatorconstchar*", &BUrl::operatorconstchar*, "")
 ;
 

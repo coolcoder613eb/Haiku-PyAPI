@@ -64,7 +64,7 @@ py::class_<BVolume>(m, "BVolume")
 .def("KnowsQuery", &BVolume::KnowsQuery, "")
 .def("__eq__", &BVolume::operator==, "", py::arg("volume"))
 .def("__ne__", &BVolume::operator!=, "", py::arg("volume"))
-.def("operator=", &BVolume::operator=, "", py::arg("volume"))
+.def("__copy__", &BVolume::operator=, "", py::arg("volume"))
 ;
 
 

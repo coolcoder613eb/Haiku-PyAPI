@@ -20,7 +20,7 @@ py::class_<BRect>(m, "BRect")
 .def(py::init<BPoint, BPoint>(), "", py::arg("leftTop"), py::arg("rightBottom"))
 .def(py::init<BPoint, BSize>(), "", py::arg("leftTop"), py::arg("size"))
 .def(py::init<float>(), "", py::arg("side"))
-.def("operator=", &BRect::operator=, "", py::arg("other"))
+.def("__copy__", &BRect::operator=, "", py::arg("other"))
 .def("Set", &BRect::Set, "", py::arg("left"), py::arg("top"), py::arg("right"), py::arg("bottom"))
 .def("PrintToStream", &BRect::PrintToStream, "")
 .def("LeftTop", &BRect::LeftTop, "")
@@ -68,6 +68,6 @@ py::class_<BRect>(m, "BRect")
 .def_readwrite("bottom", &BRect::bottom, "")
 ;
 
-//m.def("operator=", &operator=, "", py::arg("other"));
+//m.def("__copy__", &operator=, "", py::arg("other"));
 
 }

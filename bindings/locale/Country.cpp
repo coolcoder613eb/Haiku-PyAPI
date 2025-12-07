@@ -18,7 +18,7 @@ PYBIND11_MODULE(Country, m)
 py::class_<BCountry>(m, "BCountry")
 .def(py::init<const char *>(), "", py::arg("countryCode")=NULL)
 .def(py::init<const BCountry &>(), "", py::arg("other"))
-.def("operator=", &BCountry::operator=, "", py::arg("other"))
+.def("__copy__", &BCountry::operator=, "", py::arg("other"))
 .def("SetTo", &BCountry::SetTo, "", py::arg("countryCode"))
 .def("InitCheck", &BCountry::InitCheck, "")
 .def("GetNativeName", [](BCountry& self) {

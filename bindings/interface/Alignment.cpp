@@ -25,7 +25,7 @@ py::class_<BAlignment>(m, "BAlignment")
 .def("IsVerticalSet", &BAlignment::IsVerticalSet, "")
 .def("__eq__", &BAlignment::operator==, "", py::arg("other"))
 .def("__ne__", &BAlignment::operator!=, "", py::arg("other"))
-.def("operator=", &BAlignment::operator=, "", py::arg("other"))
+.def("__copy__", &BAlignment::operator=, "", py::arg("other"))
 .def_readwrite("horizontal", &BAlignment::horizontal, "")
 .def_readwrite("vertical", &BAlignment::vertical, "")
 ;

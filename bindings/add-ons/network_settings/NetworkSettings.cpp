@@ -115,7 +115,7 @@ py::class_<BNetworkInterfaceAddressSettings>(m, "BNetworkInterfaceAddressSetting
     return std::make_tuple(r,data);
 }
 , "")
-.def("operator=", &BNetworkInterfaceAddressSettings::operator=, "", py::arg("other"))
+.def("__copy__", &BNetworkInterfaceAddressSettings::operator=, "", py::arg("other"))
 ;
 
 py::class_<BNetworkInterfaceSettings>(m, "BNetworkInterfaceSettings")

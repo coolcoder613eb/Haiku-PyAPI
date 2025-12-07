@@ -188,7 +188,7 @@ py::class_<media_misc_description>(m, "media_misc_description")
 py::class_<media_format_description>(m, "media_format_description")
 .def(py::init(), "")
 .def(py::init<const _media_format_description &>(), "", py::arg("other"))
-.def("operator=", &media_format_description::operator=, "", py::arg("other"))
+.def("__copy__", &media_format_description::operator=, "", py::arg("other"))
 .def_readwrite("family", &media_format_description::family, "")
 //.def_readwrite("_reserved_", &media_format_description::_reserved_, "")
 .def_property(

@@ -55,7 +55,7 @@ py::class_<BCursor>(m, "BCursor")
 .def("InitCheck", &BCursor::InitCheck, "")
 .def("Archive", &BCursor::Archive, "", py::arg("archive"), py::arg("deep")=true)
 .def_static("Instantiate", &BCursor::Instantiate, "", py::arg("archive"))
-.def("operator=", &BCursor::operator=, "", py::arg("other"))
+.def("__copy__", &BCursor::operator=, "", py::arg("other"))
 .def("__eq__", &BCursor::operator==, "", py::arg("other"))
 .def("__ne__", &BCursor::operator!=, "", py::arg("other"))
 ;

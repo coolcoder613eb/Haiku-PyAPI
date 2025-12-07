@@ -90,7 +90,7 @@ py::class_<BBitmap, BArchivable>(m, "BBitmap")
 .def("Lock", &BBitmap::Lock, "")
 .def("Unlock", &BBitmap::Unlock, "")
 .def("IsLocked", &BBitmap::IsLocked, "")
-.def("operator=", &BBitmap::operator=, "", py::arg("source"))
+.def("__copy__", &BBitmap::operator=, "", py::arg("source"))
 //.def("SetBits", &BBitmap::SetBits, "", py::arg("data"), py::arg("length"), py::arg("offset"), py::arg("colorSpace"))
 .def("SetBits", [](BBitmap &bitmap, py::bytes pyData, size_t offset, color_space colorSpace) {
         // Ottieni il puntatore ai dati e la lunghezza da py::bytes

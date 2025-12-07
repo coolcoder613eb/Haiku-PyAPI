@@ -23,7 +23,7 @@ py::class_<entry_ref>(m, "entry_ref")
 .def("set_name", &entry_ref::set_name, "", py::arg("name"))
 .def("__eq__", &entry_ref::operator==, "", py::arg("ref"))
 .def("__ne__", &entry_ref::operator!=, "", py::arg("ref"))
-.def("operator=", &entry_ref::operator=, "", py::arg("ref"))
+.def("__copy__", &entry_ref::operator=, "", py::arg("ref"))
 .def_readwrite("device", &entry_ref::device, "")
 .def_readwrite("directory", &entry_ref::directory, "")
 .def_readwrite("name", &entry_ref::name, "")
@@ -63,7 +63,7 @@ timespec variables, which type is unknown to python, so we should provide a way 
 .def("Remove", &BEntry::Remove, "")
 .def("__eq__", &BEntry::operator==, "", py::arg("item"))
 .def("__ne__", &BEntry::operator!=, "", py::arg("item"))
-.def("operator=", &BEntry::operator=, "", py::arg("item"))
+.def("__copy__", &BEntry::operator=, "", py::arg("item"))
 ;
 
 m.def("get_ref_for_path", &get_ref_for_path, "", py::arg("path"), py::arg("ref"));

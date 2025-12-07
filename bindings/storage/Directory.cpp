@@ -46,7 +46,7 @@ py::class_<BDirectory, BNode, BEntryList>(m, "BDirectory")// verify if needed
 .def("CreateDirectory", &BDirectory::CreateDirectory, "", py::arg("path"), py::arg("dir"))
 .def("CreateFile", &BDirectory::CreateFile, "", py::arg("path"), py::arg("file"), py::arg("failIfExists")=false)
 .def("CreateSymLink", &BDirectory::CreateSymLink, "", py::arg("path"), py::arg("linkToPath"), py::arg("link"))
-.def("operator=", &BDirectory::operator=, "", py::arg("dir"))
+.def("__copy__", &BDirectory::operator=, "", py::arg("dir"))
 ;
 
 m.def("create_directory", &create_directory, "", py::arg("path"), py::arg("mode"));

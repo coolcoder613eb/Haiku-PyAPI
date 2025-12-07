@@ -94,7 +94,7 @@ py::class_<BFile, BNode, BPositionIO>(m, "BFile")
 	status_t ret = self.GetSize(&size);
 	return py::make_tuple(ret,size);
 }, "")
-.def("operator=", &BFile::operator=, "", py::arg("file"))
+.def("__copy__", &BFile::operator=, "", py::arg("file"))
 ;
 
 

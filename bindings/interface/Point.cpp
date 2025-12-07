@@ -17,7 +17,7 @@ py::class_<BPoint>(m, "BPoint")
 .def(py::init(), "")
 .def(py::init<float, float>(), "", py::arg("x"), py::arg("y"))
 .def(py::init<const BPoint &>(), "", py::arg("p"))
-.def("operator=", &BPoint::operator=, "", py::arg("other"))
+.def("__copy__", &BPoint::operator=, "", py::arg("other"))
 .def("Set", &BPoint::Set, "", py::arg("x"), py::arg("y"))
 .def("ConstrainTo", &BPoint::ConstrainTo, "", py::arg("rect"))
 .def("PrintToStream", &BPoint::PrintToStream, "")
@@ -35,6 +35,6 @@ py::class_<BPoint>(m, "BPoint")
 ;
 
 m.attr("B_ORIGIN") = B_ORIGIN;
-//m.def("operator=", &operator=, "", py::arg("other"));
+//m.def("__copy__", &operator=, "", py::arg("other"));
 
 }

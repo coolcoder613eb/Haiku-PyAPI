@@ -44,7 +44,7 @@ py::class_<BLanguage>(m, "BLanguage")
 .def("IsCountrySpecific", &BLanguage::IsCountrySpecific, "")
 .def("IsVariant", &BLanguage::IsVariant, "")
 .def("Direction", &BLanguage::Direction, "")
-.def("operator=", &BLanguage::operator=, "", py::arg("source"))
+.def("__copy__", &BLanguage::operator=, "", py::arg("source"))
 //.def_readwrite("Private", &BLanguage::Private, "")
 ;
 //m.attr("Locale") = py::cast(Locale);

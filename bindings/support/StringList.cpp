@@ -86,7 +86,7 @@ py::class_<BStringList, BFlattenable>(m, "BStringList")
         return CallPythonFunction(item, *static_cast<py::function*>(userData));
     }), arg2);
 }, "", py::arg("func"), py::arg("arg2"))
-.def("operator=", &BStringList::operator=, "", py::arg("other"))
+.def("__copy__", &BStringList::operator=, "", py::arg("other"))
 .def("__eq__", &BStringList::operator==, "", py::arg("other"))
 .def("__ne__", &BStringList::operator!=, "", py::arg("other"))
 .def("IsFixedSize", &BStringList::IsFixedSize, "")

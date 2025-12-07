@@ -115,7 +115,7 @@ py::class_<unicode_block>(m, "unicode_block")
 .def("Includes", &unicode_block::Includes, "", py::arg("block"))
 .def("__and__", &unicode_block::operator&, "", py::arg("block"))
 .def("__or__", &unicode_block::operator|, "", py::arg("block"))
-.def("operator=", &unicode_block::operator=, "", py::arg("block"))
+.def("__copy__", &unicode_block::operator=, "", py::arg("block"))
 .def("__eq__", &unicode_block::operator==, "", py::arg("block"))
 .def("__ne__", &unicode_block::operator!=, "", py::arg("block"))
 ;
@@ -362,7 +362,7 @@ py::class_<BFont>(m, "BFont")
 	return hasArray;
 },"", py::arg("charArray"), py::arg("numChars"), py::arg("useFallbacks"))
 #endif
-.def("operator=", &BFont::operator=, "", py::arg("font"))
+.def("__copy__", &BFont::operator=, "", py::arg("font"))
 .def("__eq__", &BFont::operator==, "", py::arg("font"))
 .def("__ne__", &BFont::operator!=, "", py::arg("font"))
 .def("PrintToStream", &BFont::PrintToStream, "")

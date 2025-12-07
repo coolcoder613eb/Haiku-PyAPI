@@ -30,7 +30,7 @@ py::class_<BSize>(m, "BSize")
 .def("IsHeightSet", &BSize::IsHeightSet, "")
 .def("__eq__", &BSize::operator==, "", py::arg("other"))
 .def("__ne__", &BSize::operator!=, "", py::arg("other"))
-.def("operator=", &BSize::operator=, "", py::arg("other"))
+.def("__copy__", &BSize::operator=, "", py::arg("other"))
 .def_readwrite("width", &BSize::width, "")
 .def_readwrite("height", &BSize::height, "")
 ;

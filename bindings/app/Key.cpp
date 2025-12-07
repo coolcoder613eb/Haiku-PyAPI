@@ -72,7 +72,7 @@ py::class_<BKey,PyBKey>(m, "BKey")
 }
 , "")
 .def("Unflatten", &BKey::Unflatten, "", py::arg("message"))
-.def("operator=", &BKey::operator=, "", py::arg("other"))
+.def("__copy__", &BKey::operator=, "", py::arg("other"))
 .def("__eq__", &BKey::operator==, "", py::arg("other"))
 .def("__ne__", &BKey::operator!=, "", py::arg("other"))
 .def("PrintToStream", &BKey::PrintToStream, "")
