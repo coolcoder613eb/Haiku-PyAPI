@@ -6,13 +6,34 @@
 Welcome to Haiku-PyAPI's documentation!
 =======================================
 
+Welcome to the official documentation for Haiku-PyAPI, the Python interface for the Haiku environment.
+Here you will find complete references for all available Kits, including classes, methods, and library functions.
+
+Start by exploring the following sections:
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Introduction:
+
+   self
+
+
+Documentation by Kits
+======================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Application Kit
 
    message
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Storage Kit
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Support Kit
 
 Indices and tables
 ==================
