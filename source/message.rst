@@ -2,7 +2,11 @@ BMessage Class Reference
 ========================
 .. currentmodule:: Be
 
+
+BMessage constructors
+------------------------
 .. rubric:: `Constructors`
+
 .. function:: BMessage()
 
    Create an empty BMessage.
@@ -21,11 +25,13 @@ Create a copy of an existing BMessage.
 
 This performs a deep copy of all fields and metadata.
 
-:param other: The message to copy.
+:param other_message: The message to copy.
 :type other: BMessage
 
 ========================
 
+BMessage functions
+------------------------
 .. rubric:: `Functions`
 
 .. autoclass:: BMessage
