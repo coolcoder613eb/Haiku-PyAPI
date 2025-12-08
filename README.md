@@ -63,6 +63,17 @@ specify a build parameter, add `-sPARAMETER=VALUE` to the build command line.
 | build_location   | Location to put build files. Default: build/python$(python_version)_$(type) |
 | install_location | Where to install build files to. Default: /boot/system/non-packaged/lib/python$(python_version)/site-packages |
 
+## Documentation
+
+To build the documentation, run
+
+```
+pkgman install sphinx_python310 sphinx_rtd_theme_python310 sphinxcontrib_jquery_python310
+make html
+```
+
+The generated documentation will be at build/html/
+
 ## Example projects
 
 This repository contains `example.py`, which is a simple "Hello world" program.
