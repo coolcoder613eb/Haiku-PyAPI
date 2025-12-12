@@ -1,10 +1,10 @@
 BApplication Class Reference
-========================
+============================
 .. currentmodule:: Be
 
 
 BApplication constructors
-------------------------
+-------------------------------------
 .. rubric:: `Constructors`
 
 .. function:: BApplication(signature)
@@ -13,7 +13,6 @@ BApplication constructors
 
 :param signature: A MIME type string that must have the supertype "application".
 :type signature: str
-   
 .. function:: BApplication(signature,error)
    
    Create a new application and return an error code if initialization fails.
