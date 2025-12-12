@@ -261,7 +261,6 @@ Check whether the cursor is currently hidden.
 :return: True if the cursor is hidden, False otherwise.
 :rtype: bool
 )doc")
-// ################# TODO: Fix this cannot pass void * ################
 //.def("SetCursor", py::overload_cast<const void *>(&BApplication::SetCursor), "", py::arg("cursor"))
 .def("SetCursor", [](BApplication& self, py::buffer cursor){
 	py::buffer_info info = data.request();
@@ -273,7 +272,6 @@ Set the current cursor to the given raw cursor data.
 :param cursor: The cursor data.
 :type cursor: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
 )doc",, py::arg("cursor"))
-// ####################################################################
 .def("SetCursor", py::overload_cast<const BCursor *, bool>(&BApplication::SetCursor), R"doc(
 Set the current cursor to the given BCursor object.
 
@@ -282,19 +280,105 @@ Set the current cursor to the given BCursor object.
 :param sync: If True, update cursor immediately.
 :type sync: bool
 )doc", py::arg("cursor"), py::arg("sync")=true)
-.def("CountWindows", &BApplication::CountWindows, "")
-.def("WindowAt", &BApplication::WindowAt, "", py::arg("index"))
-.def("CountLoopers", &BApplication::CountLoopers, "")
-.def("LooperAt", &BApplication::LooperAt, "", py::arg("index"))
-.def("IsLaunching", &BApplication::IsLaunching, "")
-.def("Signature", &BApplication::Signature, "")
-.def("GetAppInfo", &BApplication::GetAppInfo, "", py::arg("info"))
-.def("GetAppInfo", &GetAppInfoWrapper, "")
-.def_static("AppResources", &BApplication::AppResources, "")
-.def("DispatchMessage", &BApplication::DispatchMessage, "", py::arg("message"), py::arg("handler"))
-.def("SetPulseRate", &BApplication::SetPulseRate, "", py::arg("rate"))
-.def("RegisterLooper", &BApplication::RegisterLooper, "", py::arg("looper"))
-.def("UnregisterLooper", &BApplication::UnregisterLooper, "", py::arg("looper"))
+.def("CountWindows", &BApplication::CountWindows, R"doc(
+Return the number of windows managed by the application.
+
+:return: Number of windows.
+:rtype: int
+)doc")
+.def("WindowAt", &BApplication::WindowAt, R"doc(
+Return the window at the specified index.
+
+:param index: Window index.
+:type index: int
+:return: The window at the given index.
+:rtype: BWindow
+)doc", py::arg("index"))
+.def("CountLoopers", &BApplication::CountLoopers, R"doc(
+Return the number of registered BLoopers.
+
+:return: Number of loopers.
+:rtype: int
+)doc")
+.def("LooperAt", &BApplication::LooperAt, R"doc(
+Return the looper at the specified index.
+
+:param index: Looper index.
+:type index: int
+:return: The BLooper at the given index.
+:rtype: BLooper
+)doc", py::arg("index"))
+.def("IsLaunching", &BApplication::IsLaunching, R"doc(
+Returns True if the application is still launching. An application
+is in its launching phase until ReadyToRun() returns.
+:return: True if in launching phase, otherwise False.
+:rtype: bool
+)doc")
+.def("Signature", &BApplication::Signature, R"doc(
+Returns the signature of the Application.
+
+:return: The signature.
+:rtype: str
+)doc")
+.def("GetAppInfo", &BApplication::GetAppInfo, R"doc(
+Fills out the info parameter (app_info class, look Roster) with information about the application.
+
+:param info: the parameter to be filled with app information
+:type info: app_info
+:return: ``B_OK`` if success, otherwise a Haiku error code
+:rtype: int
+)doc", py::arg("info"))
+.def("GetAppInfo", &GetAppInfoWrapper, R"doc(
+Convenience method that returns a tuple with the status of
+the native call and the actual information.
+
+:return: A tuple ``(status, info)``:
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
+         - ``info`` (app_info): app information  
+:rtype: tuple
+)doc")
+.def_static("AppResources", &BApplication::AppResources, R"doc(
+Return the BResources object associated with the application.
+You may read the data in the BResources object, but you're not 
+allowed to write it.
+
+:return: The resources from the executable file of you application 
+:rtype: BResources
+)doc")
+.def("DispatchMessage", &BApplication::DispatchMessage, R"doc(
+Dispatch a message to the specified handler.
+
+This method is called by the message looping thread to dispatch a
+message to handler. It is rarely called directly by
+applications, but can be overridden to customize how messages are
+dispatched.
+
+:param message: The message to be dispatched.
+:type message: BMessage
+:param handler: The target handler that should receive the message.
+:type handler: BHandler
+)doc", py::arg("message"), py::arg("handler"))
+.def("SetPulseRate", &BApplication::SetPulseRate, R"doc(
+Sets the interval that the ``B_PULSE`` messages are sent.
+
+If the rate is set to 0 then the ``B_PULSE`` messages are not sent. 
+The pulse rate can be no faster than once per 100,000 microseconds or so.
+
+:param rate: The interval
+:type rate: int
+)doc", py::arg("rate"))
+.def("RegisterLooper", &BApplication::RegisterLooper, R"doc(
+Register a looper to quit when the application quits.
+
+:param looper: the looper to register with the application
+:type looper: BLooper
+)doc", py::arg("looper"))
+.def("UnregisterLooper", &BApplication::UnregisterLooper, R"doc(
+Remove a previously registered Looper from the quit-list.
+
+:param looper: the looper to remove from the quit-list
+:type looper: BLooper
+)doc", py::arg("looper"))
 .def("GetSupportedSuites", &BApplication::GetSupportedSuites, "", py::arg("data"))
 .def("GetSupportedSuites", &GetSupportedSuitesWrapper, "")
 .def("Perform", &BApplication::Perform, "", py::arg("d"), py::arg("arg"))
