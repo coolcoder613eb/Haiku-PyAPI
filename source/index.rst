@@ -25,6 +25,7 @@ Documentation by Kits
    :maxdepth: 2
    :caption: Application Kit
 
+   application
    message
 
 .. toctree::
