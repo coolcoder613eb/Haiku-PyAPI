@@ -292,7 +292,11 @@ m.attr("B_NAME_SPECIFIER") = 6;
 m.attr("B_ID_SPECIFIER") = 7;
 m.attr("B_SPECIFIERS_END") = 128;
 
-py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage")
+py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage",R"doc(
+BMessage represents a message object in Haiku, used for communication
+between BHandlers, BLoopers, and BApplications. Messages can carry
+typed fields, references to files, archived objects, or scripting data.
+)doc")
 .def(py::init(), R"doc(
 Create an empty BMessage.
 
