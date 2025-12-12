@@ -122,31 +122,166 @@ PYBIND11_MODULE(Application,m)
 {
 py::module_::import("Be.Messenger");
 
-py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplication")
-.def(py::init<const char *>(), "", py::arg("signature"))
-.def(py::init<const char *, status_t *>(), "", py::arg("signature"), py::arg("error"))
-.def(py::init<BMessage *>(), "", py::arg("data"))
-.def_static("Instantiate", &BApplication::Instantiate, "", py::arg("data"))
-.def("Archive", &BApplication::Archive, "", py::arg("data"), py::arg("deep")=true)
-.def("InitCheck", &BApplication::InitCheck, "")
-.def("Run", &RunWrapper, "")
-.def("Quit", &QuitWrapper, "")
-.def("QuitRequested", &BApplication::QuitRequested, "")
-.def("Pulse", &BApplication::Pulse, "")
-.def("ReadyToRun", &BApplication::ReadyToRun, "")
-.def("MessageReceived", &BApplication::MessageReceived, "", py::arg("message"))
-.def("ArgvReceived", &ArgvReceivedWrapper, "", py::arg("argc"), py::arg("argv"))
+py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplication",R"doc(
+BApplication represents a Haiku application. It manages the application’s
+message loop, windows, event handling, and overall lifecycle. Applications
+should subclass BApplication to implement behavior for messages, events, 
+and scripting interfaces.
+)doc")
+.def(py::init<const char *>(), R"doc(
+Create a new application with the given application signature.
+:param signature: A MIME type string that must have the supertype "application".
+:type signature: str
+)doc", py::arg("signature"))
+// ############### TODO ACT this one won't work as status_t is an int and it's immutable ############
+.def(py::init<const char *, status_t *>(), R"doc(
+Create a new application and return an error code if initialization fails.
+
+:param signature: A MIME type string that must have the supertype "application".
+:type signature: str
+:param error: Pointer to a status_t variable that receives the initialization status.
+:type error: int
+)doc", py::arg("signature"), py::arg("error"))
+// ###############################################################################
+.def(py::init<BMessage *>(), R"doc(
+Reconstruct an application from archived data stored in a BMessage.
+
+:param data: BMessage containing archived application state.
+:type data: BMessage
+)doc", py::arg("data"))
+.def_static("Instantiate", &BApplication::Instantiate, R"doc(
+Return a new instance of the application based on archived data.
+
+:param data: The archived data
+:type data: BMessage
+:return: Returns a BArchivable, regardless the actual class in which it's implemented
+:rtype: BArchivable
+)doc", py::arg("data"))
+.def("Archive", &BApplication::Archive, R"doc(
+Archive the BApplication object into a BMessage.
+
+:param data: BMessage object where the application will be archived.
+:type data: BMessage
+:param deep: If True, perform a deep archive of all contained objects.
+:type deep: bool
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
+)doc", py::arg("data"), py::arg("deep")=true)
+.def("InitCheck", &BApplication::InitCheck, R"doc(
+Return the status of the constructor.
+
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
+)doc")
+.def("Run", &RunWrapper, R"doc(
+Start the application's message loop. This call blocks until the application quits.
+
+:return: The thread ID of the application's message loop.
+:rtype: int
+)doc")
+.def("Quit", &QuitWrapper, R"doc(
+Request the application to quit. Will call QuitRequested() on each window.
+)doc")
+.def("QuitRequested", &BApplication::QuitRequested, R"doc(
+Called before quitting; return True to allow the application to quit.
+
+:return: True if quitting is allowed, False to cancel.
+:rtype: bool
+)doc")
+.def("Pulse", &BApplication::Pulse, R"doc(
+Called periodically if a pulse rate has been set via SetPulseRate().
+)doc")
+.def("ReadyToRun", &BApplication::ReadyToRun, R"doc(
+Called once before Run() begins processing messages, when the application is ready.
+)doc")
+.def("MessageReceived", &BApplication::MessageReceived, R"doc(
+Handle messages sent to the application.
+
+:param message: The BMessage to process.
+:type message: BMessage
+)doc", py::arg("message"))
+.def("ArgvReceived", &ArgvReceivedWrapper, R"doc(
+Called when the application receives command-line arguments.
+
+:param argc: Number of arguments.
+:type argc: int
+:param argv: List of argument strings.
+:type argv: list
+)doc", py::arg("argc"), py::arg("argv"))
 //.def("ArgvReceivedWrapper", &PyBApplication::ArgvReceivedWrapper, "", py::arg("args"))  // Usare il metodo wrapper qui
-.def("AppActivated", &BApplication::AppActivated, "", py::arg("active"))
-.def("RefsReceived", &BApplication::RefsReceived, "", py::arg("message"))
-.def("AboutRequested", &BApplication::AboutRequested, "")
-.def("ResolveSpecifier", &BApplication::ResolveSpecifier, "", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("form"), py::arg("property"))
-.def("ShowCursor", &BApplication::ShowCursor, "")
-.def("HideCursor", &BApplication::HideCursor, "")
-.def("ObscureCursor", &BApplication::ObscureCursor, "")
-.def("IsCursorHidden", &BApplication::IsCursorHidden, "")
-.def("SetCursor", py::overload_cast<const void *>(&BApplication::SetCursor), "", py::arg("cursor"))
-.def("SetCursor", py::overload_cast<const BCursor *, bool>(&BApplication::SetCursor), "", py::arg("cursor"), py::arg("sync")=true)
+.def("AppActivated", &BApplication::AppActivated,R"doc(
+Hook method that gets invoked when the application receives ``B_APP_ACTIVATED`` message.
+The message is sent when the application gains or loses active application status.
+
+:param active: True means your application is now active, otherwise False.
+:type active: bool
+)doc", py::arg("active"))
+.def("RefsReceived", &BApplication::RefsReceived, R"doc(
+Hook function that's called when the application receives a ``B_REFS_RECEIVED`` message. 
+The message is sent when the user drops a file (or files) on your app's icon, or 
+double clicks a file that's handled by your app. 
+The message can arrive either at launch time, or while your application is already 
+running use IsLaunching() to tell which.
+
+:param message: The message containing a single field named be:refs that contains one or more ``entry_ref``s
+:type message: BMessage
+)doc", py::arg("message"))
+.def("AboutRequested", &BApplication::AboutRequested, R"doc(
+Hook function that's invoked when the BApplication receives a B_ABOUT_REQUESTED message.
+)doc")
+.def("ResolveSpecifier", &BApplication::ResolveSpecifier, R"doc(
+ResolveSpecifier(message: BMessage, index: int, specifier: BMessage, form: int, property: BMessage)
+Determine the proper handler for a scripting message.
+
+:param message: The scripting message.
+:type message: BMessage
+:param index: The index in the specifier array of message.
+:type index: int
+:param specifier: The specifier.
+:type specifier: BMessage
+:param form: The "what" data member of specifier.
+:type form: int
+:param property: The name of the targeted property.
+:type property: str
+:return: the next BHandler that should look at the message.
+:rtype: BHandler
+)doc", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("form"), py::arg("property"))
+.def("ShowCursor", &BApplication::ShowCursor, R"doc(
+Restore the mouse cursor.
+)doc")
+.def("HideCursor", &BApplication::HideCursor, R"doc(
+Hide the mouse cursor.
+)doc")
+.def("ObscureCursor", &BApplication::ObscureCursor, R"doc(
+Temporarily hide or obscure the cursor.
+)doc")
+.def("IsCursorHidden", &BApplication::IsCursorHidden, R"doc(
+Check whether the cursor is currently hidden.
+
+:return: True if the cursor is hidden, False otherwise.
+:rtype: bool
+)doc")
+// ################# TODO: Fix this cannot pass void * ################
+//.def("SetCursor", py::overload_cast<const void *>(&BApplication::SetCursor), "", py::arg("cursor"))
+.def("SetCursor", [](BApplication& self, py::buffer cursor){
+	py::buffer_info info = data.request();
+	const void* buffer = info.ptr;
+	self.SetCursor(buffer);
+},R"doc(
+Set the current cursor to the given raw cursor data.
+
+:param cursor: The cursor data.
+:type cursor: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
+)doc",, py::arg("cursor"))
+// ####################################################################
+.def("SetCursor", py::overload_cast<const BCursor *, bool>(&BApplication::SetCursor), R"doc(
+Set the current cursor to the given BCursor object.
+
+:param cursor: BCursor object to use.
+:type cursor: BCursor
+:param sync: If True, update cursor immediately.
+:type sync: bool
+)doc", py::arg("cursor"), py::arg("sync")=true)
 .def("CountWindows", &BApplication::CountWindows, "")
 .def("WindowAt", &BApplication::WindowAt, "", py::arg("index"))
 .def("CountLoopers", &BApplication::CountLoopers, "")
