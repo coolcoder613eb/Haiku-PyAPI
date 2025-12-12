@@ -263,7 +263,7 @@ Check whether the cursor is currently hidden.
 )doc")
 //.def("SetCursor", py::overload_cast<const void *>(&BApplication::SetCursor), "", py::arg("cursor"))
 .def("SetCursor", [](BApplication& self, py::buffer cursor){
-	py::buffer_info info = data.request();
+	py::buffer_info info = cursor.request();
 	const void* buffer = info.ptr;
 	self.SetCursor(buffer);
 },R"doc(
@@ -271,7 +271,7 @@ Set the current cursor to the given raw cursor data.
 
 :param cursor: The cursor data.
 :type cursor: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
-)doc",, py::arg("cursor"))
+)doc", py::arg("cursor"))
 .def("SetCursor", py::overload_cast<const BCursor *, bool>(&BApplication::SetCursor), R"doc(
 Set the current cursor to the given BCursor object.
 
@@ -333,7 +333,7 @@ Convenience method that returns a tuple with the status of
 the native call and the actual information.
 
 :return: A tuple ``(status, info)``:
-         - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code
          - ``info`` (app_info): app information  
 :rtype: tuple
 )doc")
@@ -372,16 +372,65 @@ Register a looper to quit when the application quits.
 
 :param looper: the looper to register with the application
 :type looper: BLooper
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
 )doc", py::arg("looper"))
 .def("UnregisterLooper", &BApplication::UnregisterLooper, R"doc(
 Remove a previously registered Looper from the quit-list.
 
 :param looper: the looper to remove from the quit-list
 :type looper: BLooper
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
 )doc", py::arg("looper"))
-.def("GetSupportedSuites", &BApplication::GetSupportedSuites, "", py::arg("data"))
-.def("GetSupportedSuites", &GetSupportedSuitesWrapper, "")
-.def("Perform", &BApplication::Perform, "", py::arg("d"), py::arg("arg"))
+.def("GetSupportedSuites", &BApplication::GetSupportedSuites, R"doc(
+Reports the suites of messages and specifiers that derived classes understand.
+
+:param data: The message that will be populated with supported suites.
+:type data: BMessage
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
+)doc", py::arg("data"))
+.def("GetSupportedSuites", &GetSupportedSuitesWrapper, R"doc(
+A convenience method to get a tuple containing the status of 
+the call and the resulting populated BMessage with the supported suites.
+
+:return: A tuple ``(status, data)``:
+         - ``status`` (int): ``B_OK`` on success, or a Haiku error code
+         - ``data`` (BMessage): the message with the supported suites
+:rtype: tuple
+)doc")
+// #### TODO wrappare non posso passare void * #######
+//.def("Perform", &BApplication::Perform, "" , py::arg("d"), py::arg("arg"))
+/* first version
+.def("Perform", [](BApplication& self, perform_code d,py::buffer arg){
+	py::buffer_info info = arg.request();
+	const void* buffer = info.ptr;
+	return self.Perform(d,buffer);
+}*/
+.def("Perform", [](BApplication& self, perform_code d, py::object arg = py::none()) {
+	void* buffer = nullptr;
+	if (!arg.is_none()) {
+		py::buffer pybuf = arg.cast<py::buffer>();
+		py::buffer_info info = pybuf.request();
+		buffer = info.ptr;
+	}
+	return self.Perform(d, buffer);
+},R"doc(
+Perform some action. Actually an internal method defined for binary 
+compatibility purposes.
+
+.. note::
+   Only advanced users should call this. Passing arbitrary data may
+   result in undefined behavior.
+:param d: code of the action
+:type d: int
+:param arg: data of the action
+:type arg: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
+)doc",py::arg("d"), py::arg("arg"))
+// ########################################
 ;
 
 m.attr("be_app") = be_app;
