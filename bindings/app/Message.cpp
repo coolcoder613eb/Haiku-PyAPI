@@ -572,7 +572,7 @@ Return the size, in bytes, required to flatten this message.
 :return: Number of bytes needed to store the flattened form.
 :rtype: int
 )doc")
-
+// TODO CHECK if this below works properly
 .def("Flatten", py::overload_cast<char *, ssize_t>(&BMessage::Flatten, py::const_), R"doc(
 Flatten the message into a preallocated buffer.
 
@@ -594,6 +594,8 @@ Flatten the message and write it into a BDataIO stream.
 :rtype: int
 )doc", py::arg("stream"), py::arg("size")=NULL)
 
+
+// ### TODO: CHECK if this returns py::capsule and we should wrap this ####
 .def("Unflatten", py::overload_cast<const char *>(&BMessage::Unflatten), R"doc(
 Restore the contents of the message from a flattened buffer.
 
@@ -1026,7 +1028,7 @@ isFixedSize as False if you need a different sized data
 :param type: The type code representing the data type.
 :type type: int
 :param data: A buffer containing the data to add.
-:type data: bytes / memoryview / bytearray / etc.
+:type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
 :param numBytes: Number of bytes to add from the buffer.
 :type numBytes: int
 :param isFixedSize: Whether the data has a fixed size (default is True).
@@ -2751,7 +2753,7 @@ field.
 :param type: the type code of the data.
 :type type: type_code
 :param data: The new data to store.
-:type data: bytes
+:type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
 :returns: ``B_OK`` on success, or an error code otherwise (read description).
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"))
@@ -2788,7 +2790,7 @@ field.
 :param index: The index of the name array where replace the item.
 :type index: int
 :param data: The new data to store.
-:type data: bytes
+:type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
 :returns: ``B_OK`` on success, or an error code otherwise (read description).
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("index"), py::arg("data"))
@@ -3983,8 +3985,8 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    :type name: str
    :param type: The specific type code (e.g., ``B_RAW_TYPE``, ``B_RECT_TYPE``) that identifies the data format.
    :type type: int
-   :param data: A Python buffer object (e.g., 'bytes', 'bytearray', NumPy array) containing the raw data to be stored.
-   :type data: bytes/buffer
+   :param data: The raw data to be stored.
+   :type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
    :param numBytes: The exact number of bytes from the 'data' buffer to write into the message.
    :type numBytes: int
    :param fixedSize: If True (default), indicates that the type code implies a fixed-size data structure (e.g., BRect, BPoint). If False, the data size is variable (e.g., ``B_RAW_TYPE``), see ReplaceData about this.
