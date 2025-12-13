@@ -68,11 +68,12 @@ specify a build parameter, add `-sPARAMETER=VALUE` to the build command line.
 To build the documentation, run
 
 ```
+cd docs
 pkgman install sphinx_python310 sphinx_rtd_theme_python310 sphinxcontrib_jquery_python310
 make html
 ```
 
-The generated documentation will be at build/html/
+The generated documentation will be at docs/build/html/
 
 ## Example projects
 
