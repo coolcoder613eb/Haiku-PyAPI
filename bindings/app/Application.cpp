@@ -121,7 +121,6 @@ PYBIND11_SMART_HOLDER_TYPE_CASTERS(BApplication);
 PYBIND11_MODULE(Application,m)
 {
 py::module_::import("Be.Messenger");
-
 py::class_<BApplication,PyBApplication,BLooper, py::smart_holder>(m, "BApplication",R"doc(
 BApplication represents a Haiku application. It manages the application’s
 message loop, windows, event handling, and overall lifecycle. Applications
