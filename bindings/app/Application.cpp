@@ -226,7 +226,7 @@ running use IsLaunching() to tell which.
 :type message: BMessage
 )doc", py::arg("message"))
 .def("AboutRequested", &BApplication::AboutRequested, R"doc(
-Hook function that's invoked when the BApplication receives a B_ABOUT_REQUESTED message.
+Hook function that's invoked when the BApplication receives a ``B_ABOUT_REQUESTED`` message.
 )doc")
 .def("ResolveSpecifier", &BApplication::ResolveSpecifier, R"doc(
 ResolveSpecifier(message: BMessage, index: int, specifier: BMessage, form: int, property: BMessage)

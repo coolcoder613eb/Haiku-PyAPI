@@ -42,7 +42,7 @@ BApplication functions
 ------------------------
 .. rubric:: `Functions`
 
-.. autoclass:: Be.BApplication
+.. autoclass:: BApplication
    :members:
    :undoc-members:
    :show-inheritance:
