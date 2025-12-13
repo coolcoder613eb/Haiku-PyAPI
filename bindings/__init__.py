@@ -231,24 +231,24 @@ from .SoundPlayer import *
 from .TimeCode import *
 from .TimedEventQueue import *
 
-_BWindow=BWindow
-_BApplication=BApplication
-def MessageReceived(self, msg, parent):
-    if msg.what in self.events:
-        self.events[msg.what](msg)
-    elif msg in self.events:
-        self.events[msg](msg)
-    else:
-        print(parent,parent.MessageReceived)
-        parent.MessageReceived(self, msg)
-
-class BWindow(_BWindow):
-    events={}
-    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BWindow)
-
-class BApplication(_BApplication):
-    events={}
-    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BApplication)
+#_BWindow=BWindow
+#_BApplication=BApplication
+#def MessageReceived(self, msg, parent):
+#    if msg.what in self.events:
+#        self.events[msg.what](msg)
+#    elif msg in self.events:
+#        self.events[msg](msg)
+#    else:
+#        print(parent,parent.MessageReceived)
+#        parent.MessageReceived(self, msg)
+#
+#class BWindow(_BWindow):
+#    events={}
+#    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BWindow)
+#
+#class BApplication(_BApplication):
+#    events={}
+#    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BApplication)
 
 
 def int32(bytestr):
