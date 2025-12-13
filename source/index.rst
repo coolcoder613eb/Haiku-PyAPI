@@ -28,6 +28,7 @@ Documentation by Kits
    appdefs
    application
    message
+   clipboard
 
 .. toctree::
    :maxdepth: 2
