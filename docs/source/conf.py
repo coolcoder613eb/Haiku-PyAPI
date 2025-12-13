@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os,sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-bindings_path = os.path.join(project_root, 'build', 'python3.10_release')
+bindings_path = os.path.join(project_root, '..','build', 'python3.10_release')
 sys.path.insert(0, bindings_path)
 project = 'Haiku-PyAPI'
 copyright = '2025, coolcoder613eb, Zardshard, Fabio Tomat'
@@ -36,7 +36,7 @@ autodoc_default_options = {
     'undoc-members': True,
     'private-members': False,
     'special-members': False,
-    'inherited-members': True,
+#    'inherited-members': True,
     'show-inheritance': False,
 }
 add_module_names = False
