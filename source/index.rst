@@ -25,6 +25,7 @@ Documentation by Kits
    :maxdepth: 2
    :caption: Application Kit
 
+   appdefs
    application
    message
 

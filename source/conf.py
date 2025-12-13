@@ -35,7 +35,9 @@ autodoc_default_options = {
     'members': True,
     'undoc-members': True,
     'private-members': False,
-    'show-inheritance': True,
+    'special-members': False,
+    'inherited-members': True,
+    'show-inheritance': False,
 }
 add_module_names = False
 autodoc_typehints = "none"
