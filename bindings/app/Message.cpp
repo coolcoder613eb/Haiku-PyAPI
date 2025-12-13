@@ -316,6 +316,8 @@ This performs a deep copy of all fields and metadata.
 :param other: The message to copy.
 :type other: BMessage
 )doc", py::arg("other"))
+
+/* commented out: conceptually wrong, operator= is different from __copy__
 .def("__copy__", &BMessage::operator=, R"doc(
 Assign the contents of another BMessage to this one.
 
@@ -325,7 +327,8 @@ This performs the same deep copy as the copy constructor.
 :type other: BMessage
 :return: Reference to this BMessage.
 :rtype: BMessage
-)doc", py::arg("other"))
+)doc", py::arg("other"))*/
+
 //.def("GetInfo", &GetInfoWrapper, "", py::arg("typeRequested"), py::arg("index"), py::arg("nameFound"), py::arg("typeFound"), py::arg("countFound")=NULL)
 .def("GetInfo", &GetInfoWrapper, R"doc(
 Retrieve information about the N-th field of a given type.
