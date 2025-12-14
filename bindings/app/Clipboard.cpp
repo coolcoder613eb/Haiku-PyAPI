@@ -36,7 +36,7 @@ To access the clipboard data call the Data() method.
 .def(py::init<const char *, bool>(), R"doc(
 Create a BClipboard object with the given name.
 
-If the name parameter is None then the "system" BClipboard object 
+If the name parameter is ``None`` then the "system" BClipboard object 
 is constructed instead.
 
 :param name: The name of the clipboard.
@@ -151,11 +151,18 @@ Get a BMessenger object targeting the application that last modified the clipboa
 Return the BMessage object that holds the clipboard data.
 
 .. note::
-   If the BClipboard object is not locked this method returns None.
+   If the BClipboard object is not locked this method returns ``None``.
 
-:return: The BMessage object that holds the clipboard data or None if the clipboard is not locked
+:return: The BMessage object that holds the clipboard data or ``None`` if the clipboard is not locked
 :rtype: BMessage
 )doc")
+.def("__repr__", [](const BClipboard& clip) {
+    const char* nam = clip.Name();
+    if (nam && nam[0] != '\0') {
+        return std::string("BClipboard(\"") + nam + "\")";
+    }
+    return std::string("<BClipboard>");
+})
 ;
 
 m.attr("be_clipboard") = be_clipboard;
