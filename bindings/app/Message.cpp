@@ -278,7 +278,23 @@ py::tuple PythonicFindMessageWrapper(const BMessage& self, const char* name, int
 	}
 	return py::make_tuple(status, py::none());
 }
+namespace {
+std::string FourCC(uint32 code){
+    char s[5] = {
+        char((code >> 24) & 0xff),
+        char((code >> 16) & 0xff),
+        char((code >> 8) & 0xff),
+        char(code & 0xff),
+        0
+    };
 
+    for (int i = 0; i < 4; i++)
+        if (!isprint((unsigned char)s[i]))
+            return "";
+
+    return std::string("'") + s + "'";
+	}
+}
 
 PYBIND11_MODULE(Message,m)
 {
@@ -437,7 +453,7 @@ Retrieve the reply handler/address for this message.
 Get the previous message in the message chain, if any.
 
 :return: The previous BMessage, or ``None``.
-:rtype: BMessage or None
+:rtype: BMessage or ``None``
 )doc")
 .def("WasDropped", &BMessage::WasDropped, R"doc(
 Check whether this message was delivered as a drag-and-drop message.
@@ -449,7 +465,7 @@ Check whether this message was delivered as a drag-and-drop message.
 Return the point where this message was dropped.
 
 :param offset: Optional point offset to apply.
-:type offset: BPoint or None, optional
+:type offset: BPoint or ``None``, optional
 :return: The drop location as a BPoint.
 :rtype: BPoint
 )doc", py::arg("offset")=NULL)
@@ -476,7 +492,7 @@ delivered or an error occurs.
 :param command: The ``what`` command identifier for the generated reply.
 :type command: int
 :param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or None, optional
+:type replyTo: BHandler or ``None``, optional
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyTo")=NULL)
@@ -497,7 +513,7 @@ message is delivered, the function fails with ``B_TIMED_OUT``.
 :param reply: The reply message to send.
 :type reply: BMessage
 :param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or None, optional
+:type replyTo: BHandler or ``None``, optional
 :param timeout: Maximum time (in microseconds) allowed for sending.
 :type timeout: int
 :return: ``B_OK`` on success, or an error code on failure.
@@ -540,7 +556,7 @@ waiting for the reply-to-reply.
 :param command: The command identifier for the generated reply.
 :type command: int
 :param replyToReply: A BMessage that will receive the synchronous reply.
-:type replyToReply: BMessage or None
+:type replyToReply: BMessage or ``None``
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyToReply"))
@@ -560,7 +576,7 @@ immediately if it would otherwise block.
 :param reply: The reply message to send.
 :type reply: BMessage
 :param replyToReply: A message object that will be filled with the reply-to-reply.
-:type replyToReply: BMessage or None
+:type replyToReply: BMessage or ``None``
 :param sendTimeout: Maximum time for sending the reply.
 :type sendTimeout: int
 :param replyTimeout: Maximum time for waiting for the reply-to-reply.
@@ -592,7 +608,7 @@ Flatten the message and write it into a BDataIO stream.
 :param stream: The output stream.
 :type stream: BDataIO
 :param size: Optional variable that will store the number of bytes written.
-:type size: int or None, optional
+:type size: int or ``None``, optional
 :return: ``B_OK`` on success, or an error code.
 :rtype: int
 )doc", py::arg("stream"), py::arg("size")=NULL)
@@ -1232,7 +1248,7 @@ string.
 :type n: int, optional
 :returns: A tuple ``(status, string)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
-         - ``string`` (string): the string found, (None) if it fails
+         - ``string`` (string): the string found, (``None``) if it fails
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindBString", &PythonicFindBStringWrapper, R"doc(
@@ -3999,13 +4015,26 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    :returns: ``B_OK`` (0) on success, or an error code otherwise.
    :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
+.def("__repr__", [](const BMessage& msg) {
+	std::string repr = "<BMessage what=0x" + std::to_string(msg.what);
+	std::string fourcc = FourCC(msg.what);
+
+	if (!fourcc.empty()) {
+		repr += " " + fourcc;
+	}
+
+	repr += ", fields=" + std::to_string(msg.CountNames(B_ANY_TYPE)) + ">";
+	return repr;
+})
 .def_readwrite("what", &BMessage::what, R"doc(
 
    The message command code, which identifies the overall purpose or meaning of the BMessage.
 
    The 'what' code is a 32-bit integer (type_code) often represented by four ASCII characters (e.g., 'DATA'). It is the first thing checked when a message is received to determine how it should be handled.
 
-   :type: int)doc")
+   :type: int
+)doc")
+
 ;
 
 
