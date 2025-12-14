@@ -64,7 +64,7 @@ Create a cursor from raw cursor data.
 The buffer must contain valid Haiku cursor data (typically a
 legacy 68-byte cursor buffer).
 
-if the buffer is null (None) an exception is raised
+if the buffer is null (``None``) an exception is raised
 
 :param cursorData: Raw cursor data buffer.
 :type cursorData: buffer
@@ -138,7 +138,7 @@ Compare two cursors for inequality.
 :return: ``True`` if the cursors are not equal.
 :rtype: bool
 )doc", py::arg("other"))
-;
-
-
+.def("__repr__", []() {
+    return std::string("<BCursor>");
+});
 }
