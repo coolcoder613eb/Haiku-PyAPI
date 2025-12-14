@@ -186,13 +186,13 @@ Conveninent version of Looper.Lock(), but smarter as it avoids race
 conditions, due to its ability to retrieve the handler's looper and 
 lock it in a pseudo-atomic operation.
 
-.. note:::
-   Avoid using: 
-   ```
+.. note::
+   Avoid using:
+   
    myhandler.Looper().Lock()
-   ...
+   -some code-
    myhandler.Looper().Unlock()
-   ```
+   
    use this function instead and its sibiling for Unlock()
    
 :return: ``True`` if the looper is locked, ``False`` if an error acquiring the lock.
@@ -214,14 +214,15 @@ Conveninent version of Looper.Unlock(), but smarter as it avoids race
 conditions, due to its ability to retrieve the handler's looper and 
 unlock it in a pseudo-atomic operation.
 
-.. note:::
-   Avoid using: 
-   ```
+.. note::
+   Avoid using:
+   
    myhandler.Looper().Lock()
-   ...
+   -some code-
    myhandler.Looper().Unlock()
-   ```
+   
    use this function instead and its sibiling for Lock()
+
 )doc")
 .def("ResolveSpecifier", &BHandler::ResolveSpecifier, R"doc(
 Determine the proper handler for a scripting message.
