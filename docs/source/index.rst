@@ -29,6 +29,7 @@ Documentation by Kits
    application
    message
    clipboard
+   cursor
 
 .. toctree::
    :maxdepth: 2
