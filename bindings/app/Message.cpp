@@ -685,7 +685,7 @@ Retrieves the full details of the current specifier.
 .def("HasSpecifiers", &BMessage::HasSpecifiers, R"doc(
 Checks whether the message has any specifiers.
 
-:returns: True if the message has specifiers, False otherwise.
+:returns: ``True`` if the message has specifiers, ``False`` otherwise.
 :rtype: bool
 )doc")
 .def("PopSpecifier", &BMessage::PopSpecifier, R"doc(
@@ -1019,12 +1019,12 @@ Add a const BFlattenable object to the message.
 Add arbitrary binary data to the message.
 The assigned type must be a specific data type; it should not be ``B_ANY_TYPE``.
 fixedSize and numItems are usefull to add an array of data under a new
-name. If fixedSize is true, each item in the array must have the same number
+name. If fixedSize is ``True``, each item in the array must have the same number
 of bytes; otherwise, items can vary in size. numItems tells the 
 object to pre-allocate storage for some number of items. This isn't a limit,
 you can add more than numItems to the field.
 Note: For ``B_RAW_TYPE``, if you want to use ReplaceData, you need to set
-isFixedSize as False if you need a different sized data
+isFixedSize as ``False`` if you need a different sized data
 
 :param name: The name associated with the data.
 :type name: str
@@ -1034,7 +1034,7 @@ isFixedSize as False if you need a different sized data
 :type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
 :param numBytes: Number of bytes to add from the buffer.
 :type numBytes: int
-:param isFixedSize: Whether the data has a fixed size (default is True).
+:param isFixedSize: Whether the data has a fixed size (default is ``True``).
 :type isFixedSize: bool
 :param count: Number of elements in the data array (default is 1).
 :type count: int
@@ -2748,7 +2748,7 @@ field.
 ..note::
     if you intend to replace a ``B_RAW_TYPE`` data and the new data dimension
     is different from the current one, the data field must have been previously
-    created with the isFixedSize flag set to False; otherwise, this function
+    created with the isFixedSize flag set to ``False``; otherwise, this function
     returns ``B_BAD_ADDRESS``.
 
 :param name: The name associated with the data field to replace.
@@ -2783,7 +2783,7 @@ field.
 ..note::
     if you intend to replace a ``B_RAW_TYPE`` data and the new data dimension
     is different from the current one, the data field must have been previously
-    created with the isFixedSize flag set to False; otherwise, this function
+    created with the isFixedSize flag set to ``False``; otherwise, this function
     returns ``B_BAD_ADDRESS``.
 
 :param name: The name associated with the data field to replace.
@@ -2807,11 +2807,11 @@ messages.
 
 :param other: The BMessage to compare the current message with.
 :type other: BMessage
-:param ignoreFieldOrder: Optional, if True (default), the field order is ignored during comparison, otherwise the field order must be identical.
+:param ignoreFieldOrder: Optional, if ``True`` (default), the field order is ignored during comparison, otherwise the field order must be identical.
 :type ignoreFieldOrder: bool, optional
-:param deep: Optional, if True, the comparison is "deep," nested BMessages are recursively compared. If False (default), nested messages are only compared by pointer, which generally means they must be the same object.
+:param deep: Optional, if ``True``, the comparison is "deep," nested BMessages are recursively compared. If ``False`` (default), nested messages are only compared by pointer, which generally means they must be the same object.
 :type deep: bool, optional
-:returns: True if the two BMessages contain the same data (according to the specified options), otherwise False.
+:returns: ``True`` if the two BMessages contain the same data (according to the specified options), otherwise ``False``.
 :rtype: bool
 )doc", py::arg("other"), py::arg("ignoreFieldOrder")=true, py::arg("deep")=false)
 /*
@@ -2829,7 +2829,7 @@ of type ``B_ALIGNMENT_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_ALIGNMENT_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_ALIGNMENT_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasRect", &BMessage::HasRect, R"doc(
@@ -2840,7 +2840,7 @@ of type ``B_RECT_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_RECT_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_RECT_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPoint", &BMessage::HasPoint, R"doc(
@@ -2851,7 +2851,7 @@ of type ``B_POINT_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_POINT_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_POINT_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasSize", &BMessage::HasSize, R"doc(
@@ -2862,7 +2862,7 @@ of type ``B_SIZE_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_SIZE_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_SIZE_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasString", &BMessage::HasString, R"doc(
@@ -2873,7 +2873,7 @@ of type ``B_STRING_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_STRING_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_STRING_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt8", &BMessage::HasInt8, R"doc(
@@ -2884,7 +2884,7 @@ of type ``B_INT8_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_INT8_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_INT8_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt8", &BMessage::HasUInt8, R"doc(
@@ -2895,7 +2895,7 @@ of type ``B_UINT8_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_UINT8_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_UINT8_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt16", &BMessage::HasInt16, R"doc(
@@ -2906,7 +2906,7 @@ of type ``B_INT16_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_INT16_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_INT16_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt16", &BMessage::HasUInt16, R"doc(
@@ -2917,7 +2917,7 @@ of type ``B_UINT16_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_UINT16_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_UINT16_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt32", &BMessage::HasInt32, R"doc(
@@ -2928,7 +2928,7 @@ of type ``B_INT32_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_INT32_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_INT32_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt32", &BMessage::HasUInt32, R"doc(
@@ -2939,7 +2939,7 @@ of type ``B_UINT32_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_UINT32_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_UINT32_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt64", &BMessage::HasInt64, R"doc(
@@ -2950,7 +2950,7 @@ of type ``B_INT64_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_INT64_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_INT64_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt64", &BMessage::HasUInt64, R"doc(
@@ -2961,7 +2961,7 @@ of type ``B_UINT64_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_UINT64_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_UINT64_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 
@@ -2973,7 +2973,7 @@ of type ``B_BOOL_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_BOOL_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_BOOL_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasFloat", &BMessage::HasFloat, R"doc(
@@ -2984,7 +2984,7 @@ of type ``B_FLOAT_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_FLOAT_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_FLOAT_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasDouble", &BMessage::HasDouble, R"doc(
@@ -2995,7 +2995,7 @@ of type ``B_DOUBLE_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_DOUBLE_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_DOUBLE_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasColor", &BMessage::HasColor, R"doc(
@@ -3006,7 +3006,7 @@ of type ``B_RGB_COLOR_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_RGB_COLOR_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_RGB_COLOR_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPointer", &BMessage::HasPointer, R"doc(
@@ -3017,7 +3017,7 @@ of type ``B_POINTER_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_POINTER_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_POINTER_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessenger", &BMessage::HasMessenger, R"doc(
@@ -3028,7 +3028,7 @@ of type ``B_MESSENGER_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_MESSENGER_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_MESSENGER_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasRef", &BMessage::HasRef, R"doc(
@@ -3039,7 +3039,7 @@ of type ``B_REF_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_REF_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_REF_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasNodeRef", &BMessage::HasNodeRef, R"doc(
@@ -3050,7 +3050,7 @@ of type ``B_NODE_REF_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_NODE_REF_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_NODE_REF_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessage", &BMessage::HasMessage, R"doc(
@@ -3061,7 +3061,7 @@ of type ``B_MESSAGE_TYPE``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
-:returns: True if the field exists at the name and index and is ``B_MESSAGE_TYPE``, otherwise False.
+:returns: ``True`` if the field exists at the name and index and is ``B_MESSAGE_TYPE``, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 
@@ -3077,7 +3077,7 @@ BFont, or other custom classes that inherit from BFlattenable.
 :type name: str
 :param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
 :type object: BFlattenable
-:returns: True if the field exists and the object data type matches the sample one, otherwise False.
+:returns: ``True`` if the field exists and the object data type matches the sample one, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("object"))
 .def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
@@ -3096,7 +3096,7 @@ BFont, or other custom classes that inherit from BFlattenable.
 :type n: int
 :param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
 :type object: BFlattenable
-:returns: True if the field exists and the object data type matches the sample one, otherwise False.
+:returns: ``True`` if the field exists and the object data type matches the sample one, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n"), py::arg("object"))
 .def("HasData", &BMessage::HasData, R"doc(
@@ -3111,7 +3111,7 @@ including ``B_MESSAGE_TYPE``, ``B_REF_TYPE``, and all built-in types.
 :type type: type_code
 :param n: Optional, the index of the field entry to check. Defaults to 0 (the first entry).
 :type n: int, optional
-:returns: True if the field with the specified name, type code, and index exists, otherwise False.
+:returns: ``True`` if the field with the specified name, type code, and index exists, otherwise ``False``.
 :rtype: bool
 
 )doc", py::arg("name"), py::arg("type"), py::arg("n")=0)
@@ -3992,7 +3992,7 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    :type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
    :param numBytes: The exact number of bytes from the 'data' buffer to write into the message.
    :type numBytes: int
-   :param fixedSize: If True (default), indicates that the type code implies a fixed-size data structure (e.g., BRect, BPoint). If False, the data size is variable (e.g., ``B_RAW_TYPE``), see ReplaceData about this.
+   :param fixedSize: If ``True`` (default), indicates that the type code implies a fixed-size data structure (e.g., BRect, BPoint). If ``False``, the data size is variable (e.g., ``B_RAW_TYPE``), see ReplaceData about this.
    :type fixedSize: bool, optional
    :param count: The index of the element to replace if the field holds multiple entries. Defaults to 1.
    :type count: int, optional
