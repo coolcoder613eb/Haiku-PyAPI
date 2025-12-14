@@ -15,7 +15,7 @@ namespace py = pybind11;
 PYBIND11_MODULE(Cursor,m)
 {
 py::enum_<BCursorID>(m, "BCursorID", R"doc(
-IDs for standard Haiku's standard cursor shapes for a complete set of semantic cursors.
+IDs for Haiku's standard cursor shapes for a complete set of semantic cursors.
 )doc")
 .value("B_CURSOR_ID_SYSTEM_DEFAULT", BCursorID::B_CURSOR_ID_SYSTEM_DEFAULT, R"doc(System default cursor)doc")
 .value("B_CURSOR_ID_CONTEXT_MENU", BCursorID::B_CURSOR_ID_CONTEXT_MENU, R"doc(Context menu cursor)doc")
@@ -53,11 +53,9 @@ py::class_<BCursor>(m, "BCursor")
 .def(py::init<const void *>(), "", py::arg("cursorData"))*/
 .def(py::init([](py::buffer cursorData) {
         py::buffer_info info = cursorData.request();
-
         if (info.ptr == nullptr) {
-            throw std::runtime_error("cursorData buffer is null");
+            throw std::runtime_error("Data buffer is null");
         }
-
         return new BCursor(info.ptr);
     }),
     R"doc(
@@ -65,6 +63,8 @@ Create a cursor from raw cursor data.
 
 The buffer must contain valid Haiku cursor data (typically a
 legacy 68-byte cursor buffer).
+
+if the buffer is null (None) an exception is raised
 
 :param cursorData: Raw cursor data buffer.
 :type cursorData: buffer
