@@ -161,7 +161,7 @@ Archive the BApplication object into a BMessage.
 
 :param data: BMessage object where the application will be archived.
 :type data: BMessage
-:param deep: If True, perform a deep archive of all contained objects.
+:param deep: If ``True``, perform a deep archive of all contained objects.
 :type deep: bool
 :return: ``B_OK`` on success, or a Haiku error code
 :rtype: int
@@ -182,9 +182,9 @@ Start the application's message loop. This call blocks until the application qui
 Request the application to quit. Will call QuitRequested() on each window.
 )doc")
 .def("QuitRequested", &BApplication::QuitRequested, R"doc(
-Called before quitting; return True to allow the application to quit.
+Called before quitting; return ``True`` to allow the application to quit.
 
-:return: True if quitting is allowed, False to cancel.
+:return: ``True`` if quitting is allowed, ``False`` to cancel.
 :rtype: bool
 )doc")
 .def("Pulse", &BApplication::Pulse, R"doc(
@@ -212,7 +212,7 @@ Called when the application receives command-line arguments.
 Hook method that gets invoked when the application receives ``B_APP_ACTIVATED`` message.
 The message is sent when the application gains or loses active application status.
 
-:param active: True means your application is now active, otherwise False.
+:param active: ``True`` means your application is now active, otherwise ``False``.
 :type active: bool
 )doc", py::arg("active"))
 .def("RefsReceived", &BApplication::RefsReceived, R"doc(
@@ -257,7 +257,7 @@ Temporarily hide or obscure the cursor.
 .def("IsCursorHidden", &BApplication::IsCursorHidden, R"doc(
 Check whether the cursor is currently hidden.
 
-:return: True if the cursor is hidden, False otherwise.
+:return: ``True`` if the cursor is hidden, ``False`` otherwise.
 :rtype: bool
 )doc")
 //.def("SetCursor", py::overload_cast<const void *>(&BApplication::SetCursor), "", py::arg("cursor"))
@@ -276,7 +276,7 @@ Set the current cursor to the given BCursor object.
 
 :param cursor: BCursor object to use.
 :type cursor: BCursor
-:param sync: If True, update cursor immediately.
+:param sync: If ``True``, update cursor immediately.
 :type sync: bool
 )doc", py::arg("cursor"), py::arg("sync")=true)
 .def("CountWindows", &BApplication::CountWindows, R"doc(
@@ -308,9 +308,9 @@ Return the looper at the specified index.
 :rtype: BLooper
 )doc", py::arg("index"))
 .def("IsLaunching", &BApplication::IsLaunching, R"doc(
-Returns True if the application is still launching. An application
+Returns ``True`` if the application is still launching. An application
 is in its launching phase until ReadyToRun() returns.
-:return: True if in launching phase, otherwise False.
+:return: ``True`` if in launching phase, otherwise ``False``.
 :rtype: bool
 )doc")
 .def("Signature", &BApplication::Signature, R"doc(
@@ -430,6 +430,13 @@ compatibility purposes.
 :rtype: int
 )doc",py::arg("d"), py::arg("arg"))
 // ########################################
+.def("__repr__", [](const BApplication& app) {
+    const char* sig = app.Signature();
+    if (sig && sig[0] != '\0') {
+        return std::string("BApplication(\"") + sig + "\")";
+    }
+    return std::string("<BApplication>");
+})
 ;
 
 m.attr("be_app") = be_app;
