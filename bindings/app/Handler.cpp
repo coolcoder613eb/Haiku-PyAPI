@@ -371,6 +371,13 @@ Check if there are any observers watching this handler.
 :return: A boolean value ``True`` or ``False`` accordingly.
 :rtype: bool
 )doc")
+.def("__repr__", [](const BHandler& handler) {
+    const char* nam = handler.Name();
+    if (nam && nam[0] != '\0') {
+        return std::string("BHandler(\"") + nam + "\")";
+    }
+    return std::string("<BHandler>");
+})
 ;
 
 
