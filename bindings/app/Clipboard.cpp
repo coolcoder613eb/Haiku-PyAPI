@@ -41,7 +41,7 @@ is constructed instead.
 
 :param name: The name of the clipboard.
 :type name: str
-:param transient: If True, lose data after a reboot (currently unused). Defaults to False
+:param transient: If ``True``, lose data after a reboot (currently unused). Defaults to ``False``
 :type transient: bool
 )doc", py::arg("name"), py::arg("transient")=false)
 .def("Name", &BClipboard::Name, R"doc(
@@ -94,7 +94,7 @@ Stop watching the BClipboard object for changes.
 Acquire the lock on the clipboard, preventing other threads from 
 accessing (reading or writing) its content.
 
-:return: True if the clipboard was locked, False otherwise.
+:return: ``True`` if the clipboard was locked, ``False`` otherwise.
 :rtype: bool
 )doc")
 .def("Unlock", &BClipboard::Unlock, R"doc(
@@ -103,7 +103,7 @@ Unlock the clipboard.
 .def("IsLocked", &BClipboard::IsLocked, R"doc(
 Return whether or not the clipboard is locked.
 
-:return: True if the clipboard is locked, False if it is unlocked.
+:return: ``True`` if the clipboard is locked, ``False`` if it is unlocked.
 :rtype: bool
 )doc")
 .def("Clear", &BClipboard::Clear, R"doc(
