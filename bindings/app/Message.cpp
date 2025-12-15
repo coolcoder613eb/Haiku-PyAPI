@@ -4016,7 +4016,7 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("fixedSize")=true, py::arg("count")=1)
 .def("__repr__", [](const BMessage& msg) {
-	std::string repr = "<BMessage what=0x" + std::to_string(msg.what);
+	std::string repr = "<BMessage what=" + std::to_string(msg.what);
 	std::string fourcc = FourCC(msg.what);
 
 	if (!fourcc.empty()) {
