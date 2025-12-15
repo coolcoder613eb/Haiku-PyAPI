@@ -31,6 +31,7 @@ Documentation by Kits
    clipboard
    cursor
    handler
+   invoker
 
 .. toctree::
    :maxdepth: 2
