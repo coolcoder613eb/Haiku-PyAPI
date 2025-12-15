@@ -41,6 +41,24 @@ py::tuple TargetWrapper(BInvoker& self) {
 	return py::make_tuple(handler, looper);
 }
 
+namespace {
+std::string FourCC(uint32 code){
+    char s[5] = {
+        char((code >> 24) & 0xff),
+        char((code >> 16) & 0xff),
+        char((code >> 8) & 0xff),
+        char(code & 0xff),
+        0
+    };
+
+    for (int i = 0; i < 4; i++)
+        if (!isprint((unsigned char)s[i]))
+            return "";
+
+    return std::string("'") + s + "'";
+	}
+}
+
 PYBIND11_MODULE(Invoker,m)
 {
 py::class_<BInvoker, PyBInvoker>(m, "BInvoker",R"doc(
@@ -220,6 +238,30 @@ Return the current timeout value.
 :return: The timeout value
 :rtype: int
 )doc")
+.def("__repr__",[](const BInvoker& self){
+	int32 what=self.Command();
+	std::string repr = "<BInvoker";
+	if (what!=0){
+		repr += " what=" + std::to_string(what);
+		std::string fourcc = FourCC(what);
+		if (!fourcc.empty()) {
+			repr += " " + fourcc;
+		}
+	};
+	BHandler* handler;
+	BLooper* looper = nullptr;
+	handler = self.Target(&looper);
+	if (handler != nullptr){
+		const char* nam = handler->Name();
+		if (nam && nam[0] != '\0') {
+			repr += " handler=\"";
+			repr += nam;
+			repr += "\"";
+		}
+	}
+	repr += ">";
+	return repr;
+})
 ;
 
 
