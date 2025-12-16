@@ -29,12 +29,12 @@ BInvoker constructors
       It is not necessary to specify both the handler and the 
       looper, the unused parameter should be passed in as ``None``.
    
-:param message: The message to send.
-:type message: BMessage
-:param handler: The local handler to receive the message, or ``None``.
-:type handler: BHandler
-:param looper: The local looper to receive the message, or ``None``, defaults to ``None``.
-:type looper: BLooper
+   :param message: The message to send.
+   :type message: BMessage
+   :param handler: The local handler to receive the message, or ``None``.
+   :type handler: BHandler
+   :param looper: The local looper to receive the message, or ``None``, defaults to ``None``.
+   :type looper: BLooper
 
 .. function:: BInvoker(message,target)
 
@@ -42,10 +42,10 @@ BInvoker constructors
    messenger where the message is sent when ``Invoke()`` is called.
    A BMessenger can target either local or remote objects.
 
-:param message: The message to send.
-:type message: BMessage
-:param target: The messenger where the message is sent when ``Invoke()`` is called.
-:type target: BMessenger
+   :param message: The message to send.
+   :type message: BMessage
+   :param target: The messenger where the message is sent when ``Invoke()`` is called.
+   :type target: BMessenger
 
 ========================
 

@@ -13,10 +13,10 @@ BClipboard constructor
    If the name parameter is None then the "system" BClipboard object 
    is constructed instead.
 
-:param name: The name of the clipboard.
-:type name: str
-:param transient: If True, lose data after a reboot (currently unused). Defaults to False
-:type transient: bool
+   :param name: The name of the clipboard.
+   :type name: str
+   :param transient: If True, lose data after a reboot (currently unused). Defaults to False
+   :type transient: bool
 
 ========================
 

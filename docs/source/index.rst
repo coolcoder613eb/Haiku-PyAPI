@@ -32,6 +32,7 @@ Documentation by Kits
    cursor
    handler
    invoker
+   key
 
 .. toctree::
    :maxdepth: 2

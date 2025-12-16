@@ -17,16 +17,16 @@ BMessage constructors
    
    Create a BMessage with a specific `what` code.
 
-:param what: The 'what' command identifier associated with this message.
-:type what: int
+   :param what: The 'what' command identifier associated with this message.
+   :type what: int
 .. function:: BMessage(other_message)
 
-Create a copy of an existing BMessage.
+   Create a copy of an existing BMessage.
 
-This performs a deep copy of all fields and metadata.
+   This performs a deep copy of all fields and metadata.
 
-:param other_message: The message to copy.
-:type other: BMessage
+   :param other_message: The message to copy.
+   :type other: BMessage
 
 ========================
 

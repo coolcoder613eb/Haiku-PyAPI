@@ -19,8 +19,8 @@ BHandler constructors
 
    The newly constructed handler is not associated with a looper until you explicitly request this to happen.
 
-:param name: name of the handler. Defaults to ``None``
-:type name: str
+   :param name: name of the handler. Defaults to ``None``
+   :type name: str
    
 .. function:: BHandler(data)
    
@@ -29,8 +29,8 @@ BHandler constructors
    .. note::
       This data has to be created using the BHandler::Archive() method. Note that only the name is stored. The filters, the associated looper and the observers are not stored, and should be manually added when you are using this object.
 
-:param data: The message containing the archived data.
-:type data: BMessage
+   :param data: The message containing the archived data.
+   :type data: BMessage
 
 ========================
 
