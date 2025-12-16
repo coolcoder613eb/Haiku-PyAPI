@@ -33,6 +33,8 @@ class PyBKey : public BKey{
 class PyBPasswordKey : public BPasswordKey{
 	public:
         using BPasswordKey::BPasswordKey;
+        PyBPasswordKey(const BPasswordKey& key)
+          : BPasswordKey(const_cast<BPasswordKey&>(key)) {}
         BKeyType			Type() const override {
         	PYBIND11_OVERLOAD(BKeyType, BPasswordKey, Type);
         }
