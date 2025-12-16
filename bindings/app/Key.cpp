@@ -171,7 +171,7 @@ Copy constructor that makes a copy of an other BKey.
 .def("Type", &BKey::Type, R"doc(
 Returns the type of key.
 
-For a generic BKey, this will always be ``BKeyType::B_KEY_TYPE_GENERIC``
+For a generic BKey, this will always be ``BKeyType.B_KEY_TYPE_GENERIC``
 
 :return: The type of the key
 :rtype: BKeyType
@@ -312,32 +312,124 @@ buffer will not be touched.
 :param bufferSize: The size of the buffer to allocate and fill.
 :type bufferSize: int
 :return: A tuple containing the status (int) and the data (bytes).
-:rtype: tuple (int, bytes)
+:rtype: tuple ``(int, bytes)``
 )doc", py::arg("bufferSize"))
-.def("Owner", &BKey::Owner, "")
-.def("CreationTime", &BKey::CreationTime, "")
+.def("Owner", &BKey::Owner, R"doc(
+Get the owner of the key.
+
+:return: The owner.
+:rtype: str
+)doc")
+.def("CreationTime", &BKey::CreationTime, R"doc(
+Get the creation time of the key.
+
+:return: The creation time.
+:rtype: int
+)doc")
 .def("Flatten", [](BKey& self) {
     BMessage  message;
     status_t r = self.Flatten(message);
     return std::make_tuple(r,message);
 }
-, "")
-.def("Unflatten", &BKey::Unflatten, "", py::arg("message"))
+, R"doc(
+Flatten the key into a message.
+
+:return: the status of the call along with the message containing the flattened key.
+:rtype: A tuple ``(status, message)``:
+        - ``status`` (int): ``B_OK`` if success, or a Haiku error code.
+        - ``message`` (BMessage): The message containing the flattened key.
+)doc")
+.def("Unflatten", &BKey::Unflatten, R"doc(
+Unflatten the key from a message.
+
+:param message: The message containing the key.
+:type message: BMessage
+)doc", py::arg("message"))
 //.def("operator=", &BKey::operator=, "", py::arg("other"))
 .def("__eq__", &BKey::operator==, "", py::arg("other"))
 .def("__ne__", &BKey::operator!=, "", py::arg("other"))
-.def("PrintToStream", &BKey::PrintToStream, "")
+.def("PrintToStream", &BKey::PrintToStream, R"doc(
+Dump the contents of the key to standard output.
+
+All properties, except for the actual data of the key, 
+will be printed to stdout.
+)doc")
 ;
 
-py::class_<BPasswordKey, PyBPasswordKey, BKey>(m, "BPasswordKey")
-.def(py::init(), "")
-.def(py::init<const char *, BKeyPurpose, const char *, const char *>(), "", py::arg("password"), py::arg("purpose"), py::arg("identifier"), py::arg("secondaryIdentifier")=NULL)
-.def(py::init(), "")
-.def("Type", &BPasswordKey::Type, "")
-.def("SetTo", &BPasswordKey::SetTo, "", py::arg("password"), py::arg("purpose"), py::arg("identifier"), py::arg("secondaryIdentifier")=NULL)
-.def("SetPassword", &BPasswordKey::SetPassword, "", py::arg("password"))
-.def("Password", &BPasswordKey::Password, "")
-.def("PrintToStream", &BPasswordKey::PrintToStream, "")
+py::class_<BPasswordKey, PyBPasswordKey, BKey>(m, "BPasswordKey",R"doc(
+Class that represents a password for or from the Haiku key store.
+
+This is a specialized version of the BKey class, which represents 
+a key of the ``BKeyType.B_KEY_TYPE_PASSWORD``.
+)doc")
+.def(py::init(), R"doc(
+Constructor for an empty password key.
+
+An empty key has no data associated with it, other than that it 
+has a generic purpose and a password key type.
+)doc")
+.def(py::init<const char *, BKeyPurpose, const char *, const char *>(), R"doc(
+Constructor for a password key with the provided data.
+
+:param password: A null-terminated string that contains the password.
+:type password: str
+:param purpose: The purpose of this key.
+:type purpose: BKeyPurpose (int)
+:param identifier: A unique identifier for this key.
+:type identifier: str
+:param secondaryIdentifier: An (optional) secondary identifier for this key.
+:type secondaryIdentifier: str, optional
+)doc", py::arg("password"), py::arg("purpose"), py::arg("identifier"), py::arg("secondaryIdentifier")=NULL)
+//.def(py::init(), "")
+.def(py::init<BPasswordKey&>(), R"doc(
+Copy constructor that makes a copy of an other BPasswordKey.
+
+:param other: the BPasswordKey to copy into this one.
+:type other: BPasswordKey
+)doc", py::arg("other"))
+.def("Type", &BPasswordKey::Type, R"doc(
+Return the ``BKeyType.B_KEY_TYPE_PASSWORD``.
+
+:return: ``B_KEY_TYPE_PASSWORD``, the specific BKeyType of this class.
+:rtype: BKeyType (int)
+)doc")
+.def("SetTo", &BPasswordKey::SetTo, R"doc(
+Set the key to specific values.
+
+If the key had a creation time set, it will be cleared. If there was 
+an owner set, this piece of information will not be cleared.
+
+:param password: A null-terminated string that contains the password.
+:type password: str
+:param purpose: The purpose of this key.
+:type purpose: BKeyPurpose (int)
+:param identifier: A unique identifier for this key.
+:type identifier: str
+:param secondaryIdentifier: An (optional) secondary identifier for this key.
+:type secondaryIdentifier: str, optional
+:return: ``B_OK`` if the changes were successful, ``B_NO_MEMORY`` if it fails to allocate memory.
+:rtype: int
+)doc", py::arg("password"), py::arg("purpose"), py::arg("identifier"), py::arg("secondaryIdentifier")=NULL)
+.def("SetPassword", &BPasswordKey::SetPassword, R"doc(
+Set the password for this key.
+
+:param password: A null-terminated string that contains the password.
+:type password: str
+:return: ``B_OK`` if successful, or a Haiku error code.
+:rtype: int
+)doc", py::arg("password"))
+.def("Password", &BPasswordKey::Password, R"doc(
+Get the password for the key.
+
+:return: the password for the key.
+:rtype: str
+)doc")
+.def("PrintToStream", &BPasswordKey::PrintToStream, R"doc(
+Dump the contents of the key to standard output.
+
+This is a debug function that helps you read the contents of the key. 
+All properties, including the actual **password**, will be printed to stdout.
+)doc")
 ;
 
 
