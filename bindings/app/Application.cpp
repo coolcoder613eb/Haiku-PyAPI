@@ -222,7 +222,7 @@ double clicks a file that's handled by your app.
 The message can arrive either at launch time, or while your application is already 
 running use IsLaunching() to tell which.
 
-:param message: The message containing a single field named be:refs that contains one or more ``entry_ref``s
+:param message: The message containing a single field named ``be:refs`` that contains one or more ``entry_ref``
 :type message: BMessage
 )doc", py::arg("message"))
 .def("AboutRequested", &BApplication::AboutRequested, R"doc(
@@ -422,6 +422,7 @@ compatibility purposes.
 .. note::
    Only advanced users should call this. Passing arbitrary data may
    result in undefined behavior.
+
 :param d: code of the action
 :type d: int
 :param arg: data of the action
