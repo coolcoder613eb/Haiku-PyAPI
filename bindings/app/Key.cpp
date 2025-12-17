@@ -50,9 +50,9 @@ Constants for key purposes)doc")
 .value("B_KEY_PURPOSE_ANY", BKeyPurpose::B_KEY_PURPOSE_ANY, R"doc(
 Query the key store for keys with any purpose.
 
-This constant does not represent a key purpose by itself, but rather is used 
-in querying the key store where you do not know or care about the purpose of 
-key you are looking for.
+This constant does not represent a key purpose by itself, but rather is used
+in querying the key store where you do not know or care about the purpose of
+key you are looking for. 
 )doc")
 .value("B_KEY_PURPOSE_GENERIC", BKeyPurpose::B_KEY_PURPOSE_GENERIC, R"doc(
 Generic key purpose.
