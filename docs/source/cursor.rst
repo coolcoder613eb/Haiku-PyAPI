@@ -17,7 +17,7 @@ Cursor  constructors
 
    Initializes a new cursor object.
 
-   If the cursorData parameter is not NULL then the cursor is initialized with the cursor data.
+   If the cursorData parameter is not ``None`` then the cursor is initialized with the cursor data.
 
    :param cursorData: The cursor data.
    :type cursorData: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
