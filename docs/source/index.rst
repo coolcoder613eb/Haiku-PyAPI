@@ -33,6 +33,7 @@ Documentation by Kits
    handler
    invoker
    key
+   keystore
 
 .. toctree::
    :maxdepth: 2
