@@ -3,8 +3,7 @@ BHandler Class Reference
 This class handles messages that are passed on by a BLooper.
 The BHandler class implements two important pieces of functionality: 
 - the foundations for handling messages 
-- keeping track of the current state of thing for sending out 
-  notifications.
+- keeping track of the current state of thing for sending out notifications.
 
 .. currentmodule:: Be
 
