@@ -15,7 +15,7 @@ Cursor  constructors
 
 .. function:: BCursor(cursorData)
 
-   Initializes a new cursor object.
+   Initializes a new cursor from raw cursor data.
 
    If the cursorData parameter is not ``None`` then the cursor is initialized with the cursor data.
 
