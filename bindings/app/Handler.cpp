@@ -59,8 +59,7 @@ py::class_<BHandler, PyBHandler, py::smart_holder>(m, "BHandler",R"doc(
 This class handles messages that are passed on by a BLooper.
 The BHandler class implements two important pieces of functionality: 
 - the foundations for handling messages 
-- keeping track of the current state of thing for sending out 
-  notifications.
+- keeping track of the current state of thing for sending out notifications.
 )doc")
 .def(py::init<const char *>(), R"doc(
 Construct a new handler with a name.
@@ -351,6 +350,7 @@ compatibility purposes.
 .. note::
    Only advanced users should call this. Passing arbitrary data may
    result in undefined behavior.
+
 :param d: code of the action
 :type d: int
 :param arg: data of the action
