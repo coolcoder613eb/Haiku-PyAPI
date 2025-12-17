@@ -42,7 +42,7 @@ with it. The recommended use is to create an instance on the
 stack whenever you want to interact with the API.
 )doc")
 .def("GetKey", [](BKeyStore& self,BKeyType type,const char * identifier) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(type, identifier, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -70,7 +70,7 @@ and assumes the key must have an empty secondaryIdentifier.
 :rtype: tuple (int,BKey)
 )doc", py::arg("type"), py::arg("identifier"))
 .def("GetKey", [](BKeyStore& self,BKeyType type,const char * identifier,const char * secondaryIdentifier) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(type, identifier, secondaryIdentifier, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -103,7 +103,7 @@ to ``False``, meaning it both identifiers are required to match.
 :rtype: tuple (int,BKey)
 )doc", py::arg("type"), py::arg("identifier"), py::arg("secondaryIdentifier"))
 .def("GetKey", [](BKeyStore& self,BKeyType type,const char * identifier,const char * secondaryIdentifier,bool secondaryIdentifierOptional) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(type, identifier, secondaryIdentifier, secondaryIdentifierOptional, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -137,7 +137,7 @@ It works on the Master keyring.
 :rtype: tuple (int,BKey)
 )doc", py::arg("type"), py::arg("identifier"), py::arg("secondaryIdentifier"), py::arg("secondaryIdentifierOptional"))
 .def("GetKey", [](BKeyStore& self,const char * keyring,BKeyType type,const char * identifier) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(keyring, type, identifier, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -169,7 +169,7 @@ and assumes the key must have an empty secondaryIdentifier.
 :rtype: tuple (int,BKey)
 )doc", py::arg("keyring"), py::arg("type"), py::arg("identifier"))
 .def("GetKey", [](BKeyStore& self,const char * keyring,BKeyType type,const char * identifier,const char * secondaryIdentifier) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(keyring, type, identifier, secondaryIdentifier, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -198,7 +198,7 @@ Both identifiers are required to match.
 
 )doc", py::arg("keyring"), py::arg("type"), py::arg("identifier"), py::arg("secondaryIdentifier"))
 .def("GetKey", [](BKeyStore& self,const char * keyring,BKeyType type,const char * identifier,const char * secondaryIdentifier,bool secondaryIdentifierOptional) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetKey(keyring, type, identifier, secondaryIdentifier, secondaryIdentifierOptional, *key);
     return std::make_tuple(r,key);
 }, R"doc(
@@ -301,26 +301,26 @@ using GetKey() without making any alterations.
 )doc", py::arg("keyring"), py::arg("key"))
 /*  TODO documentation, waiting for cookie details from Master developers */
 .def("GetNextKey", [](BKeyStore& self,uint32 cookie) {
-    BKey*  key;
+    BKey* key = new BKey(); 
     status_t r = self.GetNextKey(cookie, *key);
-    return std::make_tuple(r,key);
+    return std::make_tuple(r, key, cookie);
 }, "", py::arg("cookie"))
 .def("GetNextKey", [](BKeyStore& self,BKeyType type,BKeyPurpose purpose,uint32 cookie) {
-    BKey*  key;
-    status_t r = self.GetNextKey(type, purpose, cookie, *key);
-    return std::make_tuple(r,key);
+	BKey* key = new BKey();
+	status_t r = self.GetNextKey(type, purpose, cookie, *key);
+	return std::make_tuple(r, key, cookie);
 }
 , "", py::arg("type"), py::arg("purpose"), py::arg("cookie"))
 .def("GetNextKey", [](BKeyStore& self,const char * keyring,uint32 cookie) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetNextKey(keyring, cookie, *key);
-    return std::make_tuple(r,key);
+    return std::make_tuple(r,key,cookie);
 }
 , "", py::arg("keyring"), py::arg("cookie"))
 .def("GetNextKey", [](BKeyStore& self,const char * keyring,BKeyType type,BKeyPurpose purpose,uint32 cookie) {
-    BKey*  key;
+    BKey* key = new BKey();
     status_t r = self.GetNextKey(keyring, type, purpose, cookie, *key);
-    return std::make_tuple(r,key);
+    return std::make_tuple(r,key,cookie);
 }
 , "", py::arg("keyring"), py::arg("type"), py::arg("purpose"), py::arg("cookie"))
 /* ********************* 'til here ************************ */
@@ -353,9 +353,10 @@ Remove a keyring.
 )doc", py::arg("keyring"))
 /* ********** waiting for cookie details from Master developers */
 .def("GetNextKeyring", [](BKeyStore& self,uint32 cookie) {
-    BString  keyring;
-    status_t r = self.GetNextKeyring(cookie, keyring);
-    return std::make_tuple(r,keyring);
+    //BString  keyring;
+    BString*  keyring = new BString();
+    status_t r = self.GetNextKeyring(cookie, *keyring);
+    return std::make_tuple(r,keyring,cookie);
 }
 , "", py::arg("cookie"))
 /* ******************* 'til here ***************** */
@@ -415,9 +416,9 @@ This feature is not available in the current release of Haiku.
 )doc", py::arg("keyring"))
 /* ********** waiting for cookie details from Master developers */
 .def("GetNextMasterKeyring", [](BKeyStore& self,uint32 cookie) {
-    BString  keyring;
-    status_t r = self.GetNextMasterKeyring(cookie, keyring);
-    return std::make_tuple(r,keyring);
+    BString*  keyring = new BString();
+    status_t r = self.GetNextMasterKeyring(cookie, *keyring);
+    return std::make_tuple(r,keyring,cookie);
 }
 , "", py::arg("cookie"))
 /* ******************* 'til here ***************** */
@@ -435,15 +436,15 @@ This feature is not available in the current release of Haiku.
 )doc")
 /* ********** waiting for cookie details from Master developers */
 .def("GetNextApplication", [](BKeyStore& self,uint32 cookie) {
-    BString  signature;
-    status_t r = self.GetNextApplication(cookie, signature);
-    return std::make_tuple(r,signature);
+    BString*  signature = new BString();
+    status_t r = self.GetNextApplication(cookie, *signature);
+    return std::make_tuple(r,signature,cookie);
 }
 , "", py::arg("cookie"))
 .def("GetNextApplication", [](BKeyStore& self,const char * keyring,uint32 cookie) {
-    BString  signature;
-    status_t r = self.GetNextApplication(keyring, cookie, signature);
-    return std::make_tuple(r,signature);
+    BString*  signature = new BString();
+    status_t r = self.GetNextApplication(keyring, cookie, *signature);
+    return std::make_tuple(r,signature,cookie);
 }
 , "", py::arg("keyring"), py::arg("cookie"))
 /* ******************* 'til here ***************** */
