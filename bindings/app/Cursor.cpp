@@ -17,35 +17,180 @@ PYBIND11_MODULE(Cursor,m)
 py::enum_<BCursorID>(m, "BCursorID", R"doc(
 IDs for Haiku's standard cursor shapes for a complete set of semantic cursors.
 )doc")
-.value("B_CURSOR_ID_SYSTEM_DEFAULT", BCursorID::B_CURSOR_ID_SYSTEM_DEFAULT, R"doc(System default cursor)doc")
-.value("B_CURSOR_ID_CONTEXT_MENU", BCursorID::B_CURSOR_ID_CONTEXT_MENU, R"doc(Context menu cursor)doc")
-.value("B_CURSOR_ID_COPY", BCursorID::B_CURSOR_ID_COPY, R"doc(Copy cursor)doc")
-.value("B_CURSOR_ID_CREATE_LINK", BCursorID::B_CURSOR_ID_CREATE_LINK, R"doc(Symlink cursor)doc")
-.value("B_CURSOR_ID_CROSS_HAIR", BCursorID::B_CURSOR_ID_CROSS_HAIR, R"doc(Cross hairs cursor)doc")
-.value("B_CURSOR_ID_FOLLOW_LINK", BCursorID::B_CURSOR_ID_FOLLOW_LINK, R"doc(Follow html link cursor)doc")
-.value("B_CURSOR_ID_GRAB", BCursorID::B_CURSOR_ID_GRAB, R"doc(Grab cursor)doc")
-.value("B_CURSOR_ID_GRABBING", BCursorID::B_CURSOR_ID_GRABBING, R"doc(Grabbing cursor (mouse down))doc")
-.value("B_CURSOR_ID_HELP", BCursorID::B_CURSOR_ID_HELP, R"doc(Help cursor)doc")
-.value("B_CURSOR_ID_I_BEAM", BCursorID::B_CURSOR_ID_I_BEAM, R"doc(I beam cursor for text)doc")
-.value("B_CURSOR_ID_I_BEAM_HORIZONTAL", BCursorID::B_CURSOR_ID_I_BEAM_HORIZONTAL, R"doc(Horizontal I beam cursor)doc")
-.value("B_CURSOR_ID_MOVE", BCursorID::B_CURSOR_ID_MOVE, R"doc(Move cursor)doc")
-.value("B_CURSOR_ID_NO_CURSOR", BCursorID::B_CURSOR_ID_NO_CURSOR, R"doc(No cursor)doc")
-.value("B_CURSOR_ID_NOT_ALLOWED", BCursorID::B_CURSOR_ID_NOT_ALLOWED, R"doc(Not allowed cursor)doc")
-.value("B_CURSOR_ID_PROGRESS", BCursorID::B_CURSOR_ID_PROGRESS, R"doc(Progress cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH", BCursorID::B_CURSOR_ID_RESIZE_NORTH, R"doc(Resize north cursor)doc")
-.value("B_CURSOR_ID_RESIZE_EAST", BCursorID::B_CURSOR_ID_RESIZE_EAST, R"doc(Resize east cursor)doc")
-.value("B_CURSOR_ID_RESIZE_SOUTH", BCursorID::B_CURSOR_ID_RESIZE_SOUTH, R"doc(Resize south cursor)doc")
-.value("B_CURSOR_ID_RESIZE_WEST", BCursorID::B_CURSOR_ID_RESIZE_WEST, R"doc(Resize west cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_EAST, R"doc(Resize north east cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_WEST, R"doc(Resize north west cursor)doc")
-.value("B_CURSOR_ID_RESIZE_SOUTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_SOUTH_EAST, R"doc(Resize south east cursor)doc")
-.value("B_CURSOR_ID_RESIZE_SOUTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_SOUTH_WEST, R"doc(Resize south west cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH_SOUTH", BCursorID::B_CURSOR_ID_RESIZE_NORTH_SOUTH, R"doc(Resize north south cursor)doc")
-.value("B_CURSOR_ID_RESIZE_EAST_WEST", BCursorID::B_CURSOR_ID_RESIZE_EAST_WEST, R"doc(Resize east west cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST, R"doc(Resize north east south west cursor)doc")
-.value("B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST, R"doc(Resize north west south east cursor)doc")
-.value("B_CURSOR_ID_ZOOM_IN", BCursorID::B_CURSOR_ID_ZOOM_IN, R"doc(Zoom in cursor)doc")
-.value("B_CURSOR_ID_ZOOM_OUT", BCursorID::B_CURSOR_ID_ZOOM_OUT, R"doc(Zoom out cursor)doc")
+.value("B_CURSOR_ID_SYSTEM_DEFAULT", BCursorID::B_CURSOR_ID_SYSTEM_DEFAULT, R"doc(
+   System default cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_CONTEXT_MENU", BCursorID::B_CURSOR_ID_CONTEXT_MENU, R"doc(
+   Context menu cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_COPY", BCursorID::B_CURSOR_ID_COPY, R"doc(
+   Copy cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_CREATE_LINK", BCursorID::B_CURSOR_ID_CREATE_LINK, R"doc(
+   Symlink cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_CROSS_HAIR", BCursorID::B_CURSOR_ID_CROSS_HAIR, R"doc(
+   Cross hairs cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_FOLLOW_LINK", BCursorID::B_CURSOR_ID_FOLLOW_LINK, R"doc(
+   Follow html link cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_GRAB", BCursorID::B_CURSOR_ID_GRAB, R"doc(
+   Grab cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_GRABBING", BCursorID::B_CURSOR_ID_GRABBING, R"doc(
+   Grabbing cursor (mouse down)
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_HELP", BCursorID::B_CURSOR_ID_HELP, R"doc(
+   Help cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_I_BEAM", BCursorID::B_CURSOR_ID_I_BEAM, R"doc(
+   I beam cursor for text
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_I_BEAM_HORIZONTAL", BCursorID::B_CURSOR_ID_I_BEAM_HORIZONTAL, R"doc(
+   Horizontal I beam cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_MOVE", BCursorID::B_CURSOR_ID_MOVE, R"doc(
+   Move cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_NO_CURSOR", BCursorID::B_CURSOR_ID_NO_CURSOR, R"doc(
+   No cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_NOT_ALLOWED", BCursorID::B_CURSOR_ID_NOT_ALLOWED, R"doc(
+   Not allowed cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_PROGRESS", BCursorID::B_CURSOR_ID_PROGRESS, R"doc(
+   Progress cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH", BCursorID::B_CURSOR_ID_RESIZE_NORTH, R"doc(
+   Resize north cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_EAST", BCursorID::B_CURSOR_ID_RESIZE_EAST, R"doc(
+   Resize east cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_SOUTH", BCursorID::B_CURSOR_ID_RESIZE_SOUTH, R"doc(
+   Resize south cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_WEST", BCursorID::B_CURSOR_ID_RESIZE_WEST, R"doc(
+   Resize west cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_EAST, R"doc(
+   Resize north east cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_WEST, R"doc(
+   Resize north west cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_SOUTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_SOUTH_EAST, R"doc(
+   Resize south east cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_SOUTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_SOUTH_WEST, R"doc(
+   Resize south west cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH_SOUTH", BCursorID::B_CURSOR_ID_RESIZE_NORTH_SOUTH, R"doc(
+   Resize north south cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_EAST_WEST", BCursorID::B_CURSOR_ID_RESIZE_EAST_WEST, R"doc(
+   Resize east west cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST, R"doc(
+   Resize north east south west cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST", BCursorID::B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST, R"doc(
+   Resize north west south east cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_ZOOM_IN", BCursorID::B_CURSOR_ID_ZOOM_IN, R"doc(
+   Zoom in cursor
+   
+   for its numerical value look down below
+
+)doc")
+.value("B_CURSOR_ID_ZOOM_OUT", BCursorID::B_CURSOR_ID_ZOOM_OUT, R"doc(
+   Zoom out cursor
+   
+   for its numerical value look down below
+
+)doc")
 .export_values();
 
 py::class_<BCursor>(m, "BCursor")
@@ -68,6 +213,7 @@ if the buffer is null (``None``) an exception is raised
 
 :param cursorData: Raw cursor data buffer.
 :type cursorData: buffer
+:no-index:
 )doc",
     py::arg("cursorData")
 )
@@ -82,6 +228,7 @@ Initializes a new cursor object from a predefined cursor id.
 
 :param id: An ID of BCursorID enum, see above.
 :type id: int
+:no-index:
 )doc", py::arg("id"))
 .def(py::init<BMessage *>(), R"doc(
 Initializes a new cursor object from a message archive.
@@ -96,6 +243,7 @@ Initializes a new cursor object from a bitmap object and a point object.
 :type bitmap: BBitmap
 :param hotspot: The cursor hotspot.
 :type hotspot: BPoint
+:no-index:
 )doc", py::arg("bitmap"), py::arg("hotspot"))
 .def("InitCheck", &BCursor::InitCheck, R"doc(
 Return the initialization status.
