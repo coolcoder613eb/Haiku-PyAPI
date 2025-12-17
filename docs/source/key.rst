@@ -71,7 +71,7 @@ BKey Class Reference
 
 
 BPasswordKey Class Reference
---------------------------
+------------------------------
 .. currentmodule:: Be
 
 .. rubric:: `Constructors:`
