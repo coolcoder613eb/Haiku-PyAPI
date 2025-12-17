@@ -45,74 +45,81 @@ class PyBPasswordKey : public BPasswordKey{
 
 PYBIND11_MODULE(Key,m)
 {
-py::enum_<BKeyPurpose>(m, "BKeyPurpose", R"doc(
-Constants for key purposes)doc")
+py::enum_<BKeyPurpose>(m, "BKeyPurpose", "Constants for key purposes")
 .value("B_KEY_PURPOSE_ANY", BKeyPurpose::B_KEY_PURPOSE_ANY, R"doc(
-Query the key store for keys with any purpose.
+   Query the key store for keys with any purpose.
 
-This constant does not represent a key purpose by itself, but rather is used
-in querying the key store where you do not know or care about the purpose of
-key you are looking for. 
+   This constant does not represent a key purpose by itself, but rather is used 
+   in querying the key store where you do not know or care about the purpose of 
+   key you are looking for.
+
 )doc")
 .value("B_KEY_PURPOSE_GENERIC", BKeyPurpose::B_KEY_PURPOSE_GENERIC, R"doc(
-Generic key purpose.
+   Generic key purpose.
 
-This type identifies keys that are not for a specific purpose.
+   This type identifies keys that are not for a specific purpose.
+
 )doc")
 .value("B_KEY_PURPOSE_KEYRING", BKeyPurpose::B_KEY_PURPOSE_KEYRING, R"doc(
-Keyring key purpose.
+   Keyring key purpose.
 
-This is a key purpose that is internal to the keystore_server. It represents 
-the internals of a keyring. You cannot directly access and manipulate keys 
-with this purpose. Instead you can use the methods on BKeyStore to access 
-keys within keyrings.
+   This is a key purpose that is internal to the keystore_server. It represents 
+   the internals of a keyring. You cannot directly access and manipulate keys 
+   with this purpose. Instead you can use the methods on BKeyStore to access 
+   keys within keyrings.
+
 )doc")
 .value("B_KEY_PURPOSE_WEB", BKeyPurpose::B_KEY_PURPOSE_WEB, R"doc(
-Web key purpose.
+   Web key purpose.
 
-This type refers to keys that are used on the web, such as username and 
-passwords for HTTP authentication, as well as for stored usernames and 
-passwords for form-based authentication.
+   This type refers to keys that are used on the web, such as username and 
+   passwords for HTTP authentication, as well as for stored usernames and 
+   passwords for form-based authentication.
+
 )doc")
 .value("B_KEY_PURPOSE_NETWORK", BKeyPurpose::B_KEY_PURPOSE_NETWORK, R"doc(
-Network key purpose.
+   Network key purpose.
 
-This type refers to keys that are used in the networking stack, such as 
-WEP/WPA keys.
+   This type refers to keys that are used in the networking stack, such as 
+   WEP/WPA keys.
+
 )doc")
 .value("B_KEY_PURPOSE_VOLUME", BKeyPurpose::B_KEY_PURPOSE_VOLUME, R"doc(
-Volume key purpose.
+   Volume key purpose.
 
-This type refers to keys that are used to lock volumes, like password for 
-encryption.
+   This type refers to keys that are used to lock volumes, like password for 
+   encryption.
+
 )doc")
 .export_values();
 
-py::enum_<BKeyType>(m, "BKeyType", R"doc(
-Constants for key types
-)doc")
+py::enum_<BKeyType>(m, "BKeyType", "Constants for key types")
 .value("B_KEY_TYPE_ANY", BKeyType::B_KEY_TYPE_ANY, R"doc(
-Query the key store for keys of any type.
+   Query the key store for keys of any type.
 
-This constant does not represent a key type by itself, but rather is used 
-in querying the key store where you do not know or care about the type of 
-key you are looking for.
+   This constant does not represent a key type by itself, but rather is used 
+   in querying the key store where you do not know or care about the type of 
+   key you are looking for.
+
 )doc")
 .value("B_KEY_TYPE_GENERIC", BKeyType::B_KEY_TYPE_GENERIC, R"doc(
-Generic key type.
+   Generic key type.
 
-This constant describes the type of key that does not have any particular 
-content or format. They are represented by the ``BKey`` class.
+   This constant describes the type of key that does not have any particular 
+   content or format. They are represented by the ``BKey`` class.
+
 )doc")
 .value("B_KEY_TYPE_PASSWORD", BKeyType::B_KEY_TYPE_PASSWORD, R"doc(
-The key is a password.
+   The key is a password.
 
-This key type is represented by the ``BPasswordKey`` class.
+   This key type is represented by the ``BPasswordKey`` class.
+
 )doc")
 .value("B_KEY_TYPE_CERTIFICATE", BKeyType::B_KEY_TYPE_CERTIFICATE, R"doc(
-The key is a certificate. Not in use.
+   The key is a certificate. Not in use.
 
-This key type is for future expansion. It is currently not in use.
+   This key type is for future expansion. It is currently not in use.
+
 )doc")
 .export_values();
 
