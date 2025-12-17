@@ -129,6 +129,11 @@ have to ``Lock()`` the object first.
    The default priority should be good enough for most tasks. Also, some derived versions 
    of ``BLooper`` will use a specialized priority. So it is advised to leave this setting at 
    the default, unless you know why you would like another setting.
+   The constants for priority are located in the OS module
+   
+   .. code-block:: python
+   
+      from Be.OS import B_NORMAL_PRIORITY
    
    Loopers use ports to send and receive messages (see the kernel kit). Ports have a maximum 
    capacity; if there are so many messages queued that the port is full, all other incoming 
