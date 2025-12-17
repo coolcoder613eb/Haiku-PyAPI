@@ -113,8 +113,41 @@ PYBIND11_SMART_HOLDER_TYPE_CASTERS(BLooper);
 
 PYBIND11_MODULE(Looper,m)
 {
-py::class_<BLooper, PyBLooper, BHandler, py::smart_holder>(m, "BLooper")
-.def(py::init_alias<const char *, int, int>(), "", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
+py::class_<BLooper, PyBLooper, BHandler, py::smart_holder>(m, "BLooper",R"doc(
+A ``BLooper`` object creates a *message loop* that receives messages that are sent or posted 
+to the ``BLooper``. The message loop runs in a separate thread that's spawned (and told to 
+run) when the ``BLooper`` receives a ``Run()`` call. If you're creating your own BLooper, 
+you can invoke ``Run()`` from within the constructor.
+
+You tell the loop to stop by sending the ``BLooper`` a ``B_QUIT_REQUESTED`` message, which 
+invokes the object's ``Quit()`` function. You can also call ``Quit()`` directly, but you 
+have to ``Lock()`` the object first.
+)doc")
+.def(py::init_alias<const char *, int, int>(), R"doc(
+   Construct a new BLooper with a priority and an capacity.
+
+   The default priority should be good enough for most tasks. Also, some derived versions 
+   of ``BLooper`` will use a specialized priority. So it is advised to leave this setting at 
+   the default, unless you know why you would like another setting.
+   
+   Loopers use ports to send and receive messages (see the kernel kit). Ports have a maximum 
+   capacity; if there are so many messages queued that the port is full, all other incoming 
+   messages are dropped. There are situations where the size of the port should be different 
+   from the default. This might be when your looper receives a lot of messages, or if the 
+   message handling thread runs at a lower priority than normal, which would decrease the 
+   processing speed. Finding a suitable value for these custom scenarios would be done by 
+   testing.
+   
+   The new looper is, by default, not running yet. If you have set up everything properly, 
+   you may call ``Run()``.
+   
+   :param name: The name of the looper.
+   :type name: str
+   :param priority: The priority of the message thread of this looper. The default is ``B_NORMAL_PRIORITY``
+   :type priority: int
+   :param portCapacity: The maximum port capacity, the default is ``B_LOOPER_PORT_DEFAULT_CAPACITY``
+   :type portCapacity: int
+)doc", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
 .def(py::init_alias<BMessage *>(), "", py::arg("data"))
 .def_static("Instantiate", &BLooper::Instantiate, "", py::arg("data"))
 .def("Archive", &BLooper::Archive, "", py::arg("data"), py::arg("deep")=true)
@@ -165,5 +198,6 @@ py::class_<BLooper, PyBLooper, BHandler, py::smart_holder>(m, "BLooper")
 .def("Perform", &BLooper::Perform, "", py::arg("d"), py::arg("arg"))
 ;
 
+m.attr("B_LOOPER_PORT_DEFAULT_CAPACITY") = B_LOOPER_PORT_DEFAULT_CAPACITY;
 
 }
