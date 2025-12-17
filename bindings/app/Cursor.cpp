@@ -105,6 +105,7 @@ Return the initialization status.
 )doc")
 .def("Archive", &BCursor::Archive, R"doc(
 Archive the cursor into a message.
+
 .. note::
    Not implemented!
    
@@ -117,6 +118,7 @@ Archive the cursor into a message.
 )doc", py::arg("archive"), py::arg("deep")=true)
 .def_static("Instantiate", &BCursor::Instantiate, R"doc(
 Instantiate a cursor from an archived message. 
+
 .. note::
    Not implemented!
 
