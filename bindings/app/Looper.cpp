@@ -175,7 +175,7 @@ have to ``Lock()`` the object first.
    
    :param data: The archived message containing the looper.
    :type data: BMessage
-   :return: the instantiated looper, or None if the data is not a valid archived BLooper object.
+   :return: The instantiated looper, or None if the data is not a valid archived BLooper object.
    :rtype: BArchivable
 
 )doc", py::arg("data"))
@@ -190,7 +190,7 @@ have to ``Lock()`` the object first.
    :type data: BMessage
    :param deep: This parameter is ignored, as ``BLooper`` does not have children.
    :type deep: bool
-   :return: one of these:
+   :return: One of these:
    
       - ``B_OK`` if success
       - ``B_BAD_VALUE`` if the data parameter is not a valid message.
@@ -203,7 +203,7 @@ have to ``Lock()`` the object first.
    
    :param command: The what identifier of the message to be sent.
    :type command: int
-   :return: one of these:
+   :return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
@@ -220,7 +220,7 @@ have to ``Lock()`` the object first.
    
    :param message: The message you would like to pass to this method.
    :type message: int
-   :return: one of these:
+   :return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
@@ -242,7 +242,7 @@ have to ``Lock()`` the object first.
    :type handler: BHandler
    :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
    :type replyTo: BHandler
-   :return: one of these:
+   :return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
@@ -264,7 +264,7 @@ have to ``Lock()`` the object first.
    :type handler: BHandler
    :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
    :type replyTo: BHandler
-   :return: one of these:
+   :return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
@@ -321,7 +321,7 @@ have to ``Lock()`` the object first.
       Haiku Book explains that calling this function from outside the thread that processes 
       the message, could give you a NULL pointer or an invalid pointer.
       
-   :return: the message that is currently being processed.
+   :return: The message that is currently being processed.
    :rtype: BMessage
    
 )doc")
@@ -360,7 +360,7 @@ have to ``Lock()`` the object first.
    You can then manipulate the message queue. Note that the message 
    that is being processed is already detached from this queue.
    
-   :return: the internal message queue.
+   :return: The internal message queue.
    :rtype: BMessageQueue
 
 )doc")
@@ -386,7 +386,7 @@ have to ``Lock()`` the object first.
 
    If the handler is disassociated, it can be reassociated to another looper.
    
-   :param handler: the handler to dissociate
+   :param handler: The handler to dissociate
    :type handler: BHandler
    :return: ``True`` if the handler has been removed from this looper, ``False`` The handler was invalid or the handler was not associated to this looper.
    :rtype: bool
@@ -395,16 +395,16 @@ have to ``Lock()`` the object first.
 .def("CountHandlers", &BLooper::CountHandlers, R"doc(
    Get the number of handlers associated with this looper.
    
-   :return: the number of handlers.
+   :return: The number of handlers.
    :rtype: int
 
 )doc")
 .def("HandlerAt", &BLooper::HandlerAt, R"doc(
    Get the handler at an index of the list of associated handlers.
    
-   :param index: the index.
+   :param index: The index.
    :type index: int
-   :return: the handler at the specific index provided
+   :return: The handler at the specific index provided
    :rtype: BHandler
 
 )doc", py::arg("index"))
@@ -442,16 +442,124 @@ have to ``Lock()`` the object first.
    :type handler: BHandler
    
 )doc", py::arg("handler"))
-.def("Run", &BLooper::Run, "")
-.def("Loop", &BLooper::Loop, "")
-.def("Quit", &QuitWrapper, "")
-.def("QuitRequested", &BLooper::QuitRequested, "")
-.def("Lock", &BLooper::Lock, "")
-.def("Unlock", &BLooper::Unlock, "")
-.def("IsLocked", &BLooper::IsLocked, "")
-.def("LockWithTimeout", &BLooper::LockWithTimeout, "", py::arg("timeout"))
-.def("Thread", &BLooper::Thread, "")
-.def("Team", &BLooper::Team, "")
+.def("Run", &BLooper::Run, R"doc(
+   Start the event loop.
+   After the looper has been constructed, it needs to be started using this method. 
+   A thread will be spawned, which will receive messages.
+   Make sure the looper is not yet running before you call this method.
+   
+   :return: A (positive) thread id if spawning the thread succeeded, or an error code.
+   :rtype: int
+
+)doc")
+.def("Loop", &BLooper::Loop, R"doc(
+   Run the event loop in the current thread.
+   This method runs the event loop in an already existing thread. It blocks until the 
+   looper stops looping. This can be used to turn an existing thread into a BLooper.
+   Make sure the looper is not yet running before you call this method.
+   
+   :return: The thread ID of the thread that was running the loop.
+   :rtype: thread_id
+   
+)doc")
+.def("Quit", &QuitWrapper, R"doc(
+   Hook method that is called after a ``B_QUIT_REQUESTED`` message.
+   If you want to quit and delete the looper, you should post a ``B_QUIT_REQUESTED`` 
+   message. This will first call the hook method ``QuitRequested()``, which can be overridden 
+   in child classes in case there are conditions that would prevent the looper to be quit. 
+   If you really know what you are doing, and you definitely want to quit this looper, 
+   you may call this method, but only after performing a ``Lock()`` operation.
+   
+   Override this method if your subclass needs to perform specific clean-up tasks. Remember 
+   to call the base class implementation when you're done.
+
+   .. note::
+   
+      You will not have to delete the looper object, if a looper quits it will delete itself.
+      
+)doc")
+.def("QuitRequested", &BLooper::QuitRequested, R"doc(
+   Hook method that is called during a ``B_QUIT_REQUESTED`` message.
+   This hook function is called by the looper thread when a ``B_QUIT_REQUESTED`` is received. 
+   The default implementation always accepts the message, but if your subclass needs a 
+   special condition to be met before actually accepting a quit message, you can test for 
+   that condition in this hook method. A good example is a window (which is a derivative of 
+   ``BLooper``), which contains a modified document. The condition may be that a modal dialog 
+   requesting a path of action is closed.
+   
+   :return: A boolean value:
+      
+      ``True`` if the looper can be quit and destroyed 
+      ``False`` if this method does not accept the quit message and continue processing messages.
+      
+   :rtype: bool
+   
+)doc")
+.def("Lock", &BLooper::Lock, R"doc(
+   Lock the looper.
+   For most operations involving the internal data of the looper, you need to hold the lock. 
+   Each looper implements a global lock, which you can use to perform operations on internal 
+   data in a thread-safe manner.
+   Do not forget to pair each ``Lock()`` request with an ``Unlock()`` request. ``Lock()`` requests 
+   can be stacked, which means that recursively locking a looper from a thread that actually holds 
+   the lock, will not cause a deadlock. See py::meth`BLocker` for more information on locking internals.
+
+   :return: A boolean value:
+   
+      ``True`` if the locking request succeeded
+      ``False`` if the locking request could not be completed. There are a variety of reasons for this to happen, for example when the looper is destroyed.
+      
+   :rtype: bool
+   
+)doc")
+.def("Unlock", &BLooper::Unlock, R"doc(
+   Unlock a locked looper.
+   Use this method paired with ``Lock()`` calls, to release a lock. Make sure that this method is only 
+   called on a locked looper.
+   
+)doc")
+.def("IsLocked", &BLooper::IsLocked, R"doc(
+   Check if a looper is locked.
+
+   :return: A boolean value:
+   
+      ``True`` if the looper is locked
+      ``False`` if the looper is not locked, or the looper has been deleted
+      
+   :rtype: bool
+   
+)doc")
+.def("LockWithTimeout", &BLooper::LockWithTimeout, R"doc(
+   Lock a looper with a timeout.
+   This method locks the looper like ``Lock()``, but if the locking request does not succeed 
+   within the provided timeout, the method will return.
+   
+   :param timeout: The maximum time to wait for the lock request to succeed.
+   :type timeout: int
+   :return: One of these values:
+   
+      - ``B_OK`` The lock is acquired
+      - ``B_BAD_VALUE`` The looper has been destroyed
+      - other errors: There was an error acquiring the lock
+      
+   :rtype: int
+   
+)doc", py::arg("timeout"))
+.def("Thread", &BLooper::Thread, R"doc(
+   Return the thread id of the internal message looper thread.
+   If the looper is not yet running, this method will return ``0``.
+   
+   :return: The thread id of the internal message looper thread, or ``0``
+   :rtype: thread_id
+
+)doc")
+.def("Team", &BLooper::Team, R"doc(
+   Return the team id in which this looper exists.
+
+   :return: The team id in which this looper exists.
+   :rtype: team_id
+   
+)doc")
 .def_static("LooperForThread", &BLooper::LooperForThread, "", py::arg("thread"))
 .def("LockingThread", &BLooper::LockingThread, "")
 .def("CountLocks", &BLooper::CountLocks, "")
