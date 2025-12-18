@@ -150,7 +150,7 @@ have to ``Lock()`` the object first.
    :type name: str
    :param priority: The priority of the message thread of this looper. The default is ``B_NORMAL_PRIORITY``
    :type priority: int
-   :param portCapacity: The maximum port capacity, the default is ``B_LOOPER_PORT_DEFAULT_CAPACITY``
+   :param portCapacity: The maximum port capacity, the default is ``B_LOOPER_PORT_DEFAULT_CAPACITY`` (200)
    :type portCapacity: int
    
 )doc", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
@@ -560,7 +560,15 @@ have to ``Lock()`` the object first.
    :rtype: team_id
    
 )doc")
-.def_static("LooperForThread", &BLooper::LooperForThread, "", py::arg("thread"))
+.def_static("LooperForThread", &BLooper::LooperForThread, R"doc(
+   Static method to retrieve a BLooper for a specified thread.
+
+   :param thread: The ID of the thread for which you want to find the looper.
+   :type thread: thread_id
+   :return: The looper for the specified thread.
+   :rtype: BLooper
+
+)doc", py::arg("thread"))
 .def("LockingThread", &BLooper::LockingThread, "")
 .def("CountLocks", &BLooper::CountLocks, "")
 .def("CountLockRequests", &BLooper::CountLockRequests, "")
