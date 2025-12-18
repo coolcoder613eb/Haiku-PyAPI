@@ -153,9 +153,44 @@ have to ``Lock()`` the object first.
    :param portCapacity: The maximum port capacity, the default is ``B_LOOPER_PORT_DEFAULT_CAPACITY``
    :type portCapacity: int
 )doc", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
-.def(py::init_alias<BMessage *>(), "", py::arg("data"))
-.def_static("Instantiate", &BLooper::Instantiate, "", py::arg("data"))
-.def("Archive", &BLooper::Archive, "", py::arg("data"), py::arg("deep")=true)
+.def(py::init_alias<BMessage *>(), R"doc(
+   Construct a looper from an archived message.
+
+   The data message has to be constructed by a BLooper::Archive() call. Note that the 
+   data that is restored, is merely the port capacity and the name of the looper/handler. 
+   Other data, such as filters, is not archived by the default archiver.
+   
+   .. note::
+      This constructor does no type check whatsoever. Since you can pass any BMessage, 
+      you should - if you are not sure about the exact type - use the Instantiate() method, 
+      which does check the type.
+      
+   :param data: The archived message containing the looper.
+   :type data: BMessage
+
+)doc", py::arg("data"))
+.def_static("Instantiate", &BLooper::Instantiate, R"doc(
+   Static method to instantiate a looper from an archived message.
+   
+   :param data: The archived message containing the looper.
+   :type data: BMessage
+   :return: the instantiated looper, or None if the data is not a valid archived BLooper object.
+   :rtype: BArchivable
+
+)doc", py::arg("data"))
+/* todo pythonize this */
+.def("Archive", &BLooper::Archive, R"doc(
+   Archive a looper to a message.
+   
+   Currently, only the name and the port capacity are archived. Any other data, such as the filters, is not stored.
+   
+   :param data: The ``BMessage`` object to archive the object in.
+   :type data: BMessage
+   :param deep: This parameter is ignored, as ``BLooper`` does not have children.
+   :type deep: bool
+   :return: ``B_OK`` if success, ``B_BAD_VALUE`` if the data parameter is not a valid message.
+   :rtype: int
+)doc", py::arg("data"), py::arg("deep")=true)
 .def("PostMessage", py::overload_cast<uint32>(&BLooper::PostMessage), "", py::arg("command"))
 .def("PostMessage", py::overload_cast<BMessage *>(&BLooper::PostMessage), "", py::arg("message"))
 .def("PostMessage", py::overload_cast<uint32, BHandler *, BHandler *>(&BLooper::PostMessage), "", py::arg("command"), py::arg("handler"), py::arg("replyTo")=NULL)
