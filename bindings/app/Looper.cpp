@@ -152,6 +152,7 @@ have to ``Lock()`` the object first.
    :type priority: int
    :param portCapacity: The maximum port capacity, the default is ``B_LOOPER_PORT_DEFAULT_CAPACITY``
    :type portCapacity: int
+   
 )doc", py::arg("name")=NULL, py::arg("priority")=B_NORMAL_PRIORITY, py::arg("portCapacity")=B_LOOPER_PORT_DEFAULT_CAPACITY)
 .def(py::init_alias<BMessage *>(), R"doc(
    Construct a looper from an archived message.
@@ -182,38 +183,265 @@ have to ``Lock()`` the object first.
 .def("Archive", &BLooper::Archive, R"doc(
    Archive a looper to a message.
    
-   Currently, only the name and the port capacity are archived. Any other data, such as the filters, is not stored.
+   Currently, only the name and the port capacity are archived. Any other data, such 
+   as the filters, is not stored.
    
    :param data: The ``BMessage`` object to archive the object in.
    :type data: BMessage
    :param deep: This parameter is ignored, as ``BLooper`` does not have children.
    :type deep: bool
-   :return: ``B_OK`` if success, ``B_BAD_VALUE`` if the data parameter is not a valid message.
+   :return: one of these:
+   
+      - ``B_OK`` if success
+      - ``B_BAD_VALUE`` if the data parameter is not a valid message.
+      
    :rtype: int
+   
 )doc", py::arg("data"), py::arg("deep")=true)
-.def("PostMessage", py::overload_cast<uint32>(&BLooper::PostMessage), "", py::arg("command"))
-.def("PostMessage", py::overload_cast<BMessage *>(&BLooper::PostMessage), "", py::arg("message"))
-.def("PostMessage", py::overload_cast<uint32, BHandler *, BHandler *>(&BLooper::PostMessage), "", py::arg("command"), py::arg("handler"), py::arg("replyTo")=NULL)
-.def("PostMessage", py::overload_cast<BMessage *, BHandler *, BHandler *>(&BLooper::PostMessage), "", py::arg("message"), py::arg("handler"), py::arg("replyTo")=NULL)
-.def("DispatchMessage", &BLooper::DispatchMessage, "", py::arg("message"), py::arg("handler"))
-.def("MessageReceived", &BLooper::MessageReceived, "", py::arg("message"))
-.def("CurrentMessage", &BLooper::CurrentMessage, "")
-.def("DetachCurrentMessage", &BLooper::DetachCurrentMessage, "")
+.def("PostMessage", py::overload_cast<uint32>(&BLooper::PostMessage), R"doc(
+   Post a message with the *command* as ``what`` identifier to this looper.
+   
+   :param command: The what identifier of the message to be sent.
+   :type command: int
+   :return: one of these:
+   
+      - ``B_OK	if the operation succeeded, and the message is sent to the port.
+      - ``B_ERROR`` if there was a general operation error.
+      - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
+      
+   :rtype: int
+   
+)doc", py::arg("command"))
+.def("PostMessage", py::overload_cast<BMessage *>(&BLooper::PostMessage), R"doc(
+   Post a message to this looper.
+
+   Posting a message puts it in the message queue. The message passes through the 
+   default handler chain.
+   
+   :param message: The message you would like to pass to this method.
+   :type message: int
+   :return: one of these:
+   
+      - ``B_OK	if the operation succeeded, and the message is sent to the port.
+      - ``B_ERROR`` if there was a general operation error.
+      - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
+      
+   :rtype: int
+
+)doc", py::arg("message"))
+.def("PostMessage", py::overload_cast<uint32, BHandler *, BHandler *>(&BLooper::PostMessage), R"doc(
+   Sends a message with *command* ``what`` identifier to the handler associated with 
+   this looper. A response may be sent to the *replyTo* handler asynchronously.
+
+   The target handler should be associated with this looper. This method 
+   bypasses the default message queue.
+   
+   :param command: The value you want as the message's what identifier.
+   :type command: int
+   :param handler: The handler you would like to pass this message to.
+   :type handler: BHandler
+   :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
+   :type replyTo: BHandler
+   :return: one of these:
+   
+      - ``B_OK	if the operation succeeded, and the message is sent to the port.
+      - ``B_ERROR`` if there was a general operation error.
+      - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
+      - ``B_MISMATCHED_VALUES`` if the handler is not associated with this looper.
+      
+   :rtype: int
+)doc", py::arg("command"), py::arg("handler"), py::arg("replyTo")=NULL)
+.def("PostMessage", py::overload_cast<BMessage *, BHandler *, BHandler *>(&BLooper::PostMessage), R"doc(
+   Send a message to the handler associated with this looper. A response may 
+   be sent to the *replyTo* handler asynchronously.
+   
+   The target handler should be associated with this looper. This method 
+   bypasses the default message queue.
+   
+   :param message: The message you want to pass.
+   :type message: BMessage
+   :param handler: The handler you would like to pass this message to.
+   :type handler: BHandler
+   :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
+   :type replyTo: BHandler
+   :return: one of these:
+   
+      - ``B_OK	if the operation succeeded, and the message is sent to the port.
+      - ``B_ERROR`` if there was a general operation error.
+      - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
+      - ``B_MISMATCHED_VALUES`` if the handler is not associated with this looper.
+      
+   :rtype: int
+   
+)doc", py::arg("message"), py::arg("handler"), py::arg("replyTo")=NULL)
+.def("DispatchMessage", &BLooper::DispatchMessage, R"doc(
+   Dispatch a message to a handler. Override if there are messages that 
+   you want to catch before they are sent to the handlers.
+
+   This method is called by the message looping thread to dispatch a message 
+   to handler. If you implement the ``BLooper`` class and your looper receives 
+   messages that absolutely have to be processed by the looper instead of any 
+   of the handlers, override this method. For example, the default implementation 
+   catches ``B_QUIT_REQUESTED`` messages before they are sent to the handlers, 
+   so that the looper will quit at those messages.
+
+   You are discouraged from using this method to filter out any messages you 
+   do not want to process. For this, there is a more generic method using the 
+   ``BMessageFilter`` class. If you want to skip messages with certain patterns, 
+   have a look at the ``AddCommonFilter()`` and ``SetCommonFilterList()`` methods.
+
+   If you do override this method, please remember to call the ``DispatchMessage()`` 
+   method of the parent class.
+   
+   :param message: The message to dispatch.
+   :type message: BMessage
+   :param handler: The handler that will receive the message.
+   :type handler: BHandler
+
+)doc", py::arg("message"), py::arg("handler"))
+.def("MessageReceived", &BLooper::MessageReceived, R"doc(
+   Process a message received by the internal handler of this looper.
+
+   Derived from ``BHandler.MessageReceived()``
+   
+   :param message: The received message to be processed.
+   :type message: BMessage
+
+)doc", py::arg("message"))
+.def("CurrentMessage", &BLooper::CurrentMessage, R"doc(
+   Retrieve the current message.
+   
+   .. note::
+      Only call this method from within the thread that processes the messages. It contains 
+      a pointer to the message that is currently being handled. Due to the multithreaded 
+      nature of the operating system, this method will not safely let you read the message 
+      that is being processed by this handler from outside the context of the processing. 
+      If you do want to use a message outside of the processing thread, have a look at 
+      ``DetachCurrentMessage()`` to safely retrieve a message.
+      Haiku Book explains that calling this function from outside the thread that processes 
+      the message, could give you a NULL pointer or an invalid pointer.
+      
+   :return: the message that is currently being processed.
+   :rtype: BMessage
+   
+)doc")
+.def("DetachCurrentMessage", &BLooper::DetachCurrentMessage, R"doc(
+   Get ownership of the message currently being processed.
+
+   Retrieve the current message and gain ownership of it. This means that 
+   the message will not be deleted as soon as the looper is done processing 
+   it. You can then use it for different purposes.
+   
+   .. note::
+      Only call this method from within the thread that processes the messages. Due to the 
+      multithreaded nature of the operating system, calling it from another thread is very 
+      likely to give you an invalid or a NULL pointer.
+      
+   :return: The message currently being processed.
+   :rtype: BMessage
+
+)doc")
 .def("DispatchExternalMessage", [](BLooper& self,BMessage * message,BHandler * handler) {
     bool  _detached;
     self.DispatchExternalMessage(message, handler, _detached);
     return _detached;
 }
-, "", py::arg("message"), py::arg("handler"))
-.def("MessageQueue", &BLooper::MessageQueue, "")
-.def("IsMessageWaiting", &BLooper::IsMessageWaiting, "")
-.def("AddHandler", &BLooper::AddHandler, "", py::arg("handler"))
-.def("RemoveHandler", &BLooper::RemoveHandler, "", py::arg("handler"))
-.def("CountHandlers", &BLooper::CountHandlers, "")
-.def("HandlerAt", &BLooper::HandlerAt, "", py::arg("index"))
-.def("IndexOf", &BLooper::IndexOf, "", py::arg("handler"))
-.def("PreferredHandler", &BLooper::PreferredHandler, "")
-.def("SetPreferredHandler", &BLooper::SetPreferredHandler, "", py::arg("handler"))
+, R"doc(
+   Internal method to support single-threaded GUI toolkits.
+   
+   :param message: message
+   :type message: BMessage
+   :param handler: handler
+   :type handler: BHandler
+
+)doc", py::arg("message"), py::arg("handler"))
+.def("MessageQueue", &BLooper::MessageQueue, R"doc(
+   Return the internal message queue of this looper.
+   You can then manipulate the message queue. Note that the message 
+   that is being processed is already detached from this queue.
+   
+   :return: the internal message queue.
+   :rtype: BMessageQueue
+
+)doc")
+.def("IsMessageWaiting", &BLooper::IsMessageWaiting, R"doc(
+   Check if there is a message waiting.
+   
+   :return: ``True`` if there are still messages to be processed, ``False`` if there is no message waiting.
+   :rtype: bool
+
+)doc")
+.def("AddHandler", &BLooper::AddHandler, R"doc(
+   Associate a handler to this looper.
+
+   The handler will be associated to this looper. By default, the handler 
+   in this looper will be chained to the supplied handler.
+   
+   :param handler: The handler to associate with this looper. If the handler is already associated to another looper, the operation will fail silently. Check beforehand if you cannot be sure that the handler is unassociated.
+   :type handler: BHandler
+   
+)doc", py::arg("handler"))
+.def("RemoveHandler", &BLooper::RemoveHandler, R"doc(
+   Disassociate a handler from this looper.
+
+   If the handler is disassociated, it can be reassociated to another looper.
+   
+   :param handler: the handler to dissociate
+   :type handler: BHandler
+   :return: ``True`` if the handler has been removed from this looper, ``False`` The handler was invalid or the handler was not associated to this looper.
+   :rtype: bool
+   
+)doc", py::arg("handler"))
+.def("CountHandlers", &BLooper::CountHandlers, R"doc(
+   Get the number of handlers associated with this looper.
+   
+   :return: the number of handlers.
+   :rtype: int
+
+)doc")
+.def("HandlerAt", &BLooper::HandlerAt, R"doc(
+   Get the handler at an index of the list of associated handlers.
+   
+   :param index: the index.
+   :type index: int
+   :return: the handler at the specific index provided
+   :rtype: BHandler
+
+)doc", py::arg("index"))
+.def("IndexOf", &BLooper::IndexOf, R"doc(
+   Get the index of the handler that is in the associated handler list.
+   
+   :param handler: The handler whose index you want to retrieve.
+   :type handler: BHandler
+   :return: The zero-based index of the handler if in the list of handlers, otherwise ``-1``.
+   :rtype: int
+   
+)doc", py::arg("handler"))
+.def("PreferredHandler", &BLooper::PreferredHandler, R"doc(
+   Get the preferred handler.
+
+   :return: The preferred handler, or ``None`` if none is set.
+   :rtype: BHandler
+
+)doc")
+.def("SetPreferredHandler", &BLooper::SetPreferredHandler, R"doc(
+   Set a preferred handler.
+
+   If messages are posted to this looper using one of the ``PostMessage()`` methods 
+   without a specific BHandler argument, the messages will be handled by the looper 
+   itself (since a looper is a subclass of BHandler, this is perfectly possible). 
+   If you want to override that behavior, you should set a preferred handler. This 
+   handler will be called if incoming messages do not ask to be directly passed on 
+   to a specific handler.
+   
+   If you want to unset the preferred handler, pass ``None``. If the supplied handler 
+   is not associated with this looper, this call will fail silently and the current 
+   preferred handler will be unset.
+   
+   :param handler: The preferred handler you want undesignated messages to be handled by.
+   :type handler: BHandler
+   
+)doc", py::arg("handler"))
 .def("Run", &BLooper::Run, "")
 .def("Loop", &BLooper::Loop, "")
 .def("Quit", &QuitWrapper, "")
