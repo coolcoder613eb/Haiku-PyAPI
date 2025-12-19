@@ -569,11 +569,76 @@ have to ``Lock()`` the object first.
    :rtype: BLooper
 
 )doc", py::arg("thread"))
-.def("LockingThread", &BLooper::LockingThread, "")
-.def("CountLocks", &BLooper::CountLocks, "")
-.def("CountLockRequests", &BLooper::CountLockRequests, "")
-.def("Sem", &BLooper::Sem, "")
-.def("ResolveSpecifier", &BLooper::ResolveSpecifier, "", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("what"), py::arg("property"))
+/*    debugging funcs     */
+.def("LockingThread", &BLooper::LockingThread, R"doc(
+   Return the thread id of the thread that currently holds the lock.
+
+   .. note::
+      This methods may aid you in debugging problems when they occur, but do not use it 
+      in actual production code. This method is unreliable because it isn't thread-safe, 
+      and as such are only useful in specific debugging situations. 
+      Handle with care.
+
+   :return: the thread id of the thread that currently holds the lock.
+   :rtype: thread_id
+
+))doc")
+.def("CountLocks", &BLooper::CountLocks, R"doc(
+   Return the number of recursive locks that are currently being held 
+   on this looper.
+   
+   .. note::
+      This methods may aid you in debugging problems when they occur, but do not use it 
+      in actual production code. This method is unreliable because it isn't thread-safe, 
+      and as such are only useful in specific debugging situations. 
+      Handle with care.
+      
+   :return: the number of recursive locks held on by this looper.
+   :rtype: int
+   
+)doc")
+.def("CountLockRequests", &BLooper::CountLockRequests, R"doc(
+   Return the number of pending locks.
+
+   .. note::
+      This methods may aid you in debugging problems when they occur, but do not use it 
+      in actual production code. This method is unreliable because it isn't thread-safe, 
+      and as such are only useful in specific debugging situations. 
+      Handle with care.
+      
+   :return: the number of pending locks.
+   :rtype: int
+
+)doc")
+.def("Sem", &BLooper::Sem, R"doc(
+   Return the id of the semaphore that is used to lock this looper.
+
+   .. note::
+      This methods may aid you in debugging problems when they occur, but do not use it 
+      in actual production code. This method is unreliable because it isn't thread-safe, 
+      and as such are only useful in specific debugging situations. 
+      Handle with care.
+      
+   :return: the semaphore used to lock this looper.
+   :rtype: sem_id
+   
+)doc")
+/////////////////////////////////////
+.def("ResolveSpecifier", &BLooper::ResolveSpecifier, R"doc(
+   Determine the proper handler for a scripting message.
+   
+   :param message: The scripting message to determine the handler.
+   :type message: BMessage
+    param index: The index of the specifier.
+   :type index: int
+   :param specifier: The message which contains the specifier.
+   :type specifier: BMessage
+    param what: The ``what`` field of the specifier message.
+   :type what: int
+   :param property: The name of the target property.
+   :type property: str
+
+)doc", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("what"), py::arg("property"))
 .def("GetSupportedSuites", &BLooper::GetSupportedSuites, "", py::arg("data"))
 .def("AddCommonFilter", &BLooper::AddCommonFilter, "", py::arg("filter"))
 .def("RemoveCommonFilter", &BLooper::RemoveCommonFilter, "", py::arg("filter"))
