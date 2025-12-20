@@ -13,6 +13,11 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
+py::tuple GetSupportedSuitesWrapper(BHandler& self){
+	BMessage message;
+	status_t status = self.GetSupportedSuites(&message);
+	return py::make_tuple(status, message);
+}
 
 PYBIND11_SMART_HOLDER_TYPE_CASTERS(BHandler);
 
@@ -253,6 +258,19 @@ Report the suites of messages and specifiers that derived classes understand.
 :return: ``B_OK`` or a Haiku's error code
 :rtype: int
 )doc", py::arg("data"))
+.def("GetSupportedSuites", &GetSupportedSuitesWrapper, R"doc(
+Convenience method that reports the suites of messages and specifiers 
+that derived classes understand.
+This version returns a tuple containing both the status of the call 
+and the ``BMessage`` containing the supported suites.
+
+:return: A tuple with (status,data):
+
+   - ``status`` (int): ``B_OK`` or a Haiku's error code
+   - ``data`` (BMessage): The supported suites
+   
+:rtype: tuple
+)doc")
 .def("StartWatching", py::overload_cast<BMessenger, uint32>(&BHandler::StartWatching), R"doc(
 Subscribe this handler to watch a specific state change of a target.
 
