@@ -264,6 +264,27 @@ Archive the cursor into a message.
 :return: ``B_OK`` if success, or an error otherwise.
 :rtype: int
 )doc", py::arg("archive"), py::arg("deep")=true)
+.def("Archive", [](const BCursor& self,bool deep){
+	BMessage msg;
+	status_t status = self.Archive(&msg,deep);
+	return py::make_tuple(status,msg);
+}, R"doc(
+Convenience method to archive the ``BCursor`` into a ``BMessage``.
+this verstion returns a tuple containing both the status of the
+call and the message containing the archived cursor.
+
+.. note::
+   Not implemented!
+
+:param deep: If ``True``, perform a deep archive of all contained objects.
+:type deep: bool
+:return: A tuple (status,archive):
+
+   - ``status`` (int): ``B_OK`` on success, or a Haiku error code
+   - ``archive`` (BMessage): the message where the cursor will be archived.
+   
+:rtype: tuple
+)doc", py::arg("deep")=true)
 .def_static("Instantiate", &BCursor::Instantiate, R"doc(
 Instantiate a cursor from an archived message. 
 
