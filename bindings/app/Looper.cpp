@@ -595,6 +595,7 @@ have to ``Lock()`` the object first.
    Return the thread id of the thread that currently holds the lock.
 
    .. note::
+   
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
       and as such are only useful in specific debugging situations. 
@@ -609,6 +610,7 @@ have to ``Lock()`` the object first.
    on this looper.
    
    .. note::
+   
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
       and as such are only useful in specific debugging situations. 
@@ -622,6 +624,7 @@ have to ``Lock()`` the object first.
    Return the number of pending locks.
 
    .. note::
+   
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
       and as such are only useful in specific debugging situations. 
@@ -635,6 +638,7 @@ have to ``Lock()`` the object first.
    Return the id of the semaphore that is used to lock this looper.
 
    .. note::
+   
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
       and as such are only useful in specific debugging situations. 
@@ -690,11 +694,73 @@ have to ``Lock()`` the object first.
    :rtype: tuple
    
 )doc")
-.def("AddCommonFilter", &BLooper::AddCommonFilter, "", py::arg("filter"))
-.def("RemoveCommonFilter", &BLooper::RemoveCommonFilter, "", py::arg("filter"))
-.def("SetCommonFilterList", &BLooper::SetCommonFilterList, "", py::arg("filters"))
-.def("CommonFilterList", &BLooper::CommonFilterList, "")
-.def("Perform", &BLooper::Perform, "", py::arg("d"), py::arg("arg"))
+.def("AddCommonFilter", &BLooper::AddCommonFilter, R"doc(
+   Add a common filter to the list of filters that are applied to all incoming messages.
+
+   Filters can only be applied once, so they cannot be shared between loopers, a handler 
+   and a looper or between two handlers.
+   
+   :param filter: common filter to apply to all incoming messages.
+   :type filter: BMessageFilter
+
+)doc", py::arg("filter"))
+.def("RemoveCommonFilter", &BLooper::RemoveCommonFilter, R"doc(
+   Remove a filter from the common message filter list.
+   
+   :param filter: The filter to remove.
+   :type filter: BMessageFilter
+   :return: ``True`` if successful, or ``False`` if it can't find the specified filter.
+   :rtype: bool
+
+)doc", py::arg("filter"))
+.def("SetCommonFilterList", &BLooper::SetCommonFilterList, R"doc(
+   Set a new list of filters that need to be applied to all incoming messages.
+   You are responsible for validating that all the items in the list of filters are 
+   actual filters. The old list is discarded.
+   
+   .. note::
+   
+      filters can only be applied to one looper or handler. If any of the filters is already associated with another one, this call will fail.
+      
+   :param filters: The new list of filters.
+   :type filters: BList
+   
+)doc", py::arg("filters"))
+.def("CommonFilterList", &BLooper::CommonFilterList, R"doc(
+   Return a list of filters applied to all incoming messages.
+   
+   .. note::
+   
+      You should use the internal list management functions to manipulate the internal filter list, in order to maintain internal consistency.
+   
+   :return: the internal filter list, or ``None`` if such a list has not yet been created.
+   :rtype: BList
+
+)doc")
+//.def("Perform", &BLooper::Perform, "", py::arg("d"), py::arg("arg"))
+.def("Perform", [](BLooper& self, perform_code d, py::object arg = py::none()) {
+	void* buffer = nullptr;
+	if (!arg.is_none()) {
+		py::buffer pybuf = arg.cast<py::buffer>();
+		py::buffer_info info = pybuf.request();
+		buffer = info.ptr;
+	}
+	return self.Perform(d, buffer);
+},R"doc(
+Perform some action. Actually an internal method defined for binary 
+compatibility purposes.
+
+.. note::
+   Only advanced users should call this. Passing arbitrary data may
+   result in undefined behavior.
+
+:param d: code of the action
+:type d: int
+:param arg: data of the action
+:type arg: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
+:return: ``B_OK`` on success, or a Haiku error code
+:rtype: int
+)doc",py::arg("d"), py::arg("arg"))
 ;
 
 m.attr("B_LOOPER_PORT_DEFAULT_CAPACITY") = B_LOOPER_PORT_DEFAULT_CAPACITY;
