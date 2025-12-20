@@ -34,6 +34,7 @@ Documentation by Kits
    invoker
    key
    keystore
+   looper
 
 .. toctree::
    :maxdepth: 2
