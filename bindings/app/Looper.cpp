@@ -198,6 +198,27 @@ have to ``Lock()`` the object first.
    :rtype: int
    
 )doc", py::arg("data"), py::arg("deep")=true)
+.def("Archive", [](const BLooper& self,bool deep){
+	BMessage msg;
+	status_t status = self.Archive(&msg,deep);
+	return py::make_tuple(status,msg);
+}, R"doc(
+   Convenience method to archive the ``BLooper`` into a ``BMessage``.
+   this verstion returns a tuple containing both the status of the
+   call and the message containing the archived looper.
+
+   Currently, only the name and the port capacity are archived. Any other data, such 
+   as the filters, is not stored.
+
+:param deep: If ``True``, perform a deep archive of all contained objects.
+:type deep: bool
+:return: A tuple (status,data):
+
+   - ``status`` (int): ``B_OK`` on success, or a Haiku error code
+   - ``data`` (BMessage): the message where the looper will be archived.
+   
+:rtype: tuple
+)doc", py::arg("deep")=true)
 .def("PostMessage", py::overload_cast<uint32>(&BLooper::PostMessage), R"doc(
    Post a message with the *command* as ``what`` identifier to this looper.
    
@@ -639,7 +660,36 @@ have to ``Lock()`` the object first.
    :type property: str
 
 )doc", py::arg("message"), py::arg("index"), py::arg("specifier"), py::arg("what"), py::arg("property"))
-.def("GetSupportedSuites", &BLooper::GetSupportedSuites, "", py::arg("data"))
+/* non pythonic version */
+.def("GetSupportedSuites", &BLooper::GetSupportedSuites, R"doc(
+   Report the suites of messages and specifiers that derived classes understand.
+   This method fills a passed ``BMessage``.
+   
+   :param data: The message that will be filled with the supported suites.
+   :type data: BMessage
+   :return: the status retuned by the call. ``B_OK`` success or a Haiku's error code
+   :rtype: int
+   
+)doc", py::arg("data"))
+/* pythonic version */
+.def("GetSupportedSuites", [](BLooper& self) {
+    BMessage msg;
+    status_t status = self.GetSupportedSuites(&msg);
+    return py::make_tuple(status, msg); 
+}, R"doc(
+   This is a convenience methond that reports the suites of messages 
+   and specifiers that derived classes understand.
+   This versions return a tuple containing the status of the call and
+   the ``BMessage`` containing the supported suites.
+   
+   :return: A tuple containing ``(status, data)``:
+   
+      - ``status`` (int): the returned status of the call
+      - ``data`` (BMessage): the message containing the supported suites
+      
+   :rtype: tuple
+   
+)doc")
 .def("AddCommonFilter", &BLooper::AddCommonFilter, "", py::arg("filter"))
 .def("RemoveCommonFilter", &BLooper::RemoveCommonFilter, "", py::arg("filter"))
 .def("SetCommonFilterList", &BLooper::SetCommonFilterList, "", py::arg("filters"))
