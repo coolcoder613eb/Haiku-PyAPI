@@ -482,26 +482,26 @@ how the original message was sent:
 * If the original sender is waiting for a reply, this function blocks
   until the reply is delivered.
 * Otherwise the reply is delivered asynchronously. If ``replyTo`` is
-  provided, it designates the target BHandler for the asynchronous reply.
+  provided, it designates the target ``BHandler`` for the asynchronous reply.
   If ``replyTo`` is ``None``, the target chosen when the original message
-  was sent (or the BApplication object) will receive the reply.
+  was sent (or the ``BApplication`` object) will receive the reply.
 
 This overload uses an infinite timeout and blocks until the reply is
 delivered or an error occurs.
 
 :param command: The ``what`` command identifier for the generated reply.
 :type command: int
-:param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or ``None``, optional
+:param replyTo: Optional ``BHandler`` to receive an asynchronous reply, or ``None``.
+:type replyTo: BHandler, optional
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyTo")=NULL)
 .def("SendReply", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessage::SendReply), R"doc(
-Send the given BMessage as a reply to the message currently being handled.
+Send the given ``BMessage`` as a reply to the message currently being handled.
 
 Delivery is synchronous if the sender of the original message is waiting
 for a reply; otherwise it is asynchronous. If ``replyTo`` is provided, it
-specifies the BHandler that will receive the asynchronous reply (if any).
+specifies the ``BHandler`` that will receive the asynchronous reply (if any).
 
 If the reply message itself requests a synchronous reply, this function
 blocks until that reply arrives.
@@ -512,8 +512,8 @@ message is delivered, the function fails with ``B_TIMED_OUT``.
 
 :param reply: The reply message to send.
 :type reply: BMessage
-:param replyTo: Optional BHandler to receive an asynchronous reply.
-:type replyTo: BHandler or ``None``, optional
+:param replyTo: Optional ``BHandler`` to receive an asynchronous reply, or ``None``.
+:type replyTo: BHandler, optional
 :param timeout: Maximum time (in microseconds) allowed for sending.
 :type timeout: int
 :return: ``B_OK`` on success, or an error code on failure.
@@ -523,11 +523,11 @@ message is delivered, the function fails with ``B_TIMED_OUT``.
 Send the given BMessage as a reply, optionally directing asynchronous
 delivery to the specified BMessenger.
 
-This behaves like the other SendReply() overloads:
+This behaves like the other ``SendReply()`` overloads:
 
 * Delivery is synchronous if the original sender is waiting for a reply.
 * Otherwise the reply is asynchronous; ``replyTo`` designates the target
-  BMessenger that will receive it.
+  ``BMessenger`` that will receive it.
 
 The ``timeout`` parameter limits the time allowed to deliver the reply to
 the recipient's message port.
@@ -545,7 +545,7 @@ the recipient's message port.
 Send a reply message constructed from the given command code, and
 optionally wait for a synchronous reply to that reply.
 
-A BMessage with ``what = command`` is created and sent to the sender of
+A ``BMessage`` with ``what = command`` is created and sent to the sender of
 the current message. If ``replyToReply`` is provided, this function blocks
 until the sender returns the synchronous reply contained in
 ``replyToReply``.
@@ -555,8 +555,8 @@ waiting for the reply-to-reply.
 
 :param command: The command identifier for the generated reply.
 :type command: int
-:param replyToReply: A BMessage that will receive the synchronous reply.
-:type replyToReply: BMessage or ``None``
+:param replyToReply: A ``BMessage`` that will receive the synchronous reply, or ``None``
+:type replyToReply: BMessage
 :return: ``B_OK`` on success, or an error code on failure.
 :rtype: int
 )doc", py::arg("command"), py::arg("replyToReply"))
@@ -575,8 +575,8 @@ immediately if it would otherwise block.
 
 :param reply: The reply message to send.
 :type reply: BMessage
-:param replyToReply: A message object that will be filled with the reply-to-reply.
-:type replyToReply: BMessage or ``None``
+:param replyToReply: A message object that will be filled with the reply-to-reply, or ``None``
+:type replyToReply: BMessage
 :param sendTimeout: Maximum time for sending the reply.
 :type sendTimeout: int
 :param replyTimeout: Maximum time for waiting for the reply-to-reply.
@@ -607,8 +607,8 @@ Flatten the message and write it into a BDataIO stream.
 
 :param stream: The output stream.
 :type stream: BDataIO
-:param size: Optional variable that will store the number of bytes written.
-:type size: int or ``None``, optional
+:param size: Optional variable that will store the number of bytes written, or ``None``
+:type size: int, optional
 :return: ``B_OK`` on success, or an error code.
 :rtype: int
 )doc", py::arg("stream"), py::arg("size")=NULL)
@@ -691,11 +691,13 @@ Sets the current specifier by its index.
 Retrieves the full details of the current specifier.
 
 :returns: A tuple ``(status,indexFound,specifierFound,whatFound,py_property)``:
+
          - ``status`` (int): ``B_OK`` on success, or a Haiku error code  
          - ``indexFound`` (int): the index of the current specifier 
          - ``specifierFound`` (BMessage): a copy of the current specifier  
          - ``whatFound`` (int): the what data member of the specifier  
          - ``py_property`` (int): the property name in the property variable
+         
 :rtype: tuple
 )doc")
 .def("HasSpecifiers", &BMessage::HasSpecifiers, R"doc(
@@ -721,31 +723,31 @@ Add a BAlignment object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("alignment"))
 .def("AddRect", &BMessage::AddRect, R"doc(
-Add a BRect object to the message.
+Add a ``BRect`` object to the message.
 
-:param name: The name associated with the BRect.
+:param name: The name associated with the ``BRect``.
 :type name: str
-:param rect: The BRect object to add.
+:param rect: The ``BRect`` object to add.
 :type rect: BRect
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("rect"))
 .def("AddPoint", &BMessage::AddPoint, R"doc(
-Add a BPoint object to the message.
+Add a ``BPoint`` object to the message.
 
-:param name: The name associated with the BPoint.
+:param name: The name associated with the ``BPoint``.
 :type name: str
-:param point: The BPoint object to add.
+:param point: The ``BPoint`` object to add.
 :type point: BPoint
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("point"))
 .def("AddSize", &BMessage::AddSize, R"doc(
-Add a BSize object to the message.
+Add a ``BSize`` object to the message.
 
-:param name: The name associated with the BSize.
+:param name: The name associated with the ``BSize``.
 :type name: str
-:param size: The BSize object to add.
+:param size: The ``BSize`` object to add.
 :type size: BSize
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
@@ -762,21 +764,21 @@ Add a string to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("AddString", py::overload_cast<const char *, const BString &>(&BMessage::AddString), R"doc(
-Add a BString object to the message.
+Add a ``BString`` object to the message.
 
-:param name: The name associated with the BString.
+:param name: The name associated with the ``BString``.
 :type name: str
-:param string: The BString object to add.
+:param string: The ``BString`` object to add.
 :type string: BString
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("AddStrings", &BMessage::AddStrings, R"doc(
-Add multiple strings as BStringList to the message.
+Add multiple strings as ``BStringList`` to the message.
 
-:param name: The name associated with the BStringList.
+:param name: The name associated with the ``BStringList``.
 :type name: str
-:param list: The BStringList containing the list of strings to add.
+:param list: The ``BStringList`` containing the list of strings to add.
 :type list: BStringList
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
@@ -942,15 +944,16 @@ Add a double value to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("AddColor", &BMessage::AddColor, R"doc(
-Add a rgb_color object to the message.
+Add a ``rgb_color`` object to the message.
 
 :param name: The name associated with the value.
 :type name: str
-:param value: The rgb_color object to add.
+:param value: The ``rgb_color`` object to add.
 :type value: rgb_color
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
+// TODO: check if necessary this below
 .def("AddPointer", &BMessage::AddPointer, R"doc(
 Add a pointer to the message.
 
@@ -962,52 +965,52 @@ Add a pointer to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("pointer"))
 .def("AddMessenger", &BMessage::AddMessenger, R"doc(
-Add a BMessenger to the message.
+Add a ``BMessenger`` to the message.
 
 :param name: The name associated with the messenger.
 :type name: str
-:param messenger: The BMessenger object to add.
+:param messenger: The ``BMessenger`` object to add.
 :type messenger: BMessenger
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("messenger"))
 
 .def("AddRef", &BMessage::AddRef, R"doc(
-Add a entry_ref to the message.
+Add a ``entry_ref`` to the message.
 
 :param name: The name associated with the reference.
 :type name: str
-:param ref: The entry_ref to add.
+:param ref: The ``entry_ref`` to add.
 :type ref: entry_ref
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("AddNodeRef", &BMessage::AddNodeRef, R"doc(
-Add a node_ref to the message.
+Add a ``node_ref`` to the message.
 
 :param name: The name associated with the node reference.
 :type name: str
-:param ref: The node_ref to add.
+:param ref: The ``node_ref`` to add.
 :type ref: node_ref
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("AddMessage", &BMessage::AddMessage, R"doc(
-Add another BMessage to this message.
+Add another ``BMessage`` to this message.
 
 :param name: The name associated with the nested message.
 :type name: str
-:param message: The BMessage object to add.
+:param message: The ``BMessage`` object to add.
 :type message: BMessage
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("AddFlat", py::overload_cast<const char *, BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
-Add a BFlattenable object to the message.
+Add a ``BFlattenable`` object to the message.
 
 :param name: The name associated with the object.
 :type name: str
-:param object: The BFlattenable object to add.
+:param object: The ``BFlattenable`` object to add.
 :type object: BFlattenable
 :param count: Number of objects to add (default is 1).
 :type count: int
@@ -1015,11 +1018,11 @@ Add a BFlattenable object to the message.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"), py::arg("count")=1)
 .def("AddFlat", py::overload_cast<const char *, const BFlattenable *, int32>(&BMessage::AddFlat), R"doc(
-Add a const BFlattenable object to the message.
+Add a const ``BFlattenable`` object to the message.
 
 :param name: The name associated with the object.
 :type name: str
-:param object: The const BFlattenable object to add.
+:param object: The const ``BFlattenable`` object to add.
 :type object: const BFlattenable
 :param count: Number of objects to add (default is 1).
 :type count: int
@@ -1034,13 +1037,13 @@ Add a const BFlattenable object to the message.
 },R"doc(
 Add arbitrary binary data to the message.
 The assigned type must be a specific data type; it should not be ``B_ANY_TYPE``.
-fixedSize and numItems are usefull to add an array of data under a new
-name. If fixedSize is ``True``, each item in the array must have the same number
-of bytes; otherwise, items can vary in size. numItems tells the 
+``fixedSize`` and ``numItems`` are usefull to add an array of data under a new
+name. If ``fixedSize`` is ``True``, each item in the array must have the same number
+of bytes; otherwise, items can vary in size. ``numItems`` tells the 
 object to pre-allocate storage for some number of items. This isn't a limit,
 you can add more than numItems to the field.
-Note: For ``B_RAW_TYPE``, if you want to use ReplaceData, you need to set
-isFixedSize as ``False`` if you need a different sized data
+Note: For ``B_RAW_TYPE``, if you want to use ``ReplaceData``, you need to set
+``isFixedSize`` as ``False`` if you need a different sized data
 
 :param name: The name associated with the data.
 :type name: str
@@ -1058,9 +1061,9 @@ isFixedSize as ``False`` if you need a different sized data
 :rtype: int
 )doc", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"), py::arg("isFixedSize")=true, py::arg("count")=1)
 .def("Append", &BMessage::Append,R"doc(
-Append another BMessage to this message, merging its contents.
+Append another ``BMessage`` to this message, merging its contents.
 
-:param message: The BMessage object to append.
+:param message: The ``BMessage`` object to append.
 :type message: BMessage
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
@@ -1091,59 +1094,59 @@ Empties the message, removing all data and specifiers.
 )doc")
 
 .def("FindAlignment", py::overload_cast<const char *, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
-Find a BAlignment object in the message by name.
+Find a ``BAlignment`` object in the message by name.
 
-:param name: The name associated with the BAlignment.
+:param name: The name associated with the ``BAlignment``.
 :type name: str
-:param alignment: Output parameter to store the found BAlignment.
+:param alignment: Output parameter to store the found ``BAlignment``.
 :type alignment: BAlignment
 :returns: ``B_OK`` if the alignment is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("alignment"))
 .def("FindAlignment", py::overload_cast<const char *, int32, BAlignment *>(&BMessage::FindAlignment, py::const_), R"doc(
-Find a BAlignment object in the message by name and index.
+Find a ``BAlignment`` object in the message by name and index.
 
-:param name: The name associated with the BAlignment.
+:param name: The name associated with the ``BAlignment``.
 :type name: str
 :param index: The index of the alignment to find.
 :type index: int
-:param alignment: Output parameter to store the found BAlignment.
+:param alignment: Output parameter to store the found ``BAlignment``.
 :type alignment: BAlignment
 :returns: ``B_OK`` if the alignment is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("alignment"))
 .def("FindAlignment", &PythonicFindAlignmentWrapper, R"doc(
-Find a BAlignment object in the message by name and (optionally) by index.
+Find a ``BAlignment`` object in the message by name and (optionally) by index.
 This function returns a tuple containing the API call status and the
-resulting BAlignment object.
+resulting ``BAlignment`` object.
 
-:param name: The name associated with the BAlignment.
+:param name: The name associated with the ``BAlignment``.
 :type name: str
 :param index: The index of the alignment to find (default is 0).
 :type index: int
 :returns: A tuple ``(status, object)``:
          - ``status`` (int): ``B_OK`` if the alignment is found, or an error code otherwise.
-         - ``object`` (BAlignment): the BAlignment object found, ``None`` if it fails.
+         - ``object`` (BAlignment): the ``BAlignment`` object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindRect", py::overload_cast<const char *, BRect *>(&BMessage::FindRect, py::const_), R"doc(
-Find a BRect object in the message by name.
+Find a ``BRect`` object in the message by name.
 
-:param name: The name associated with the BRect.
+:param name: The name associated with the ``BRect``.
 :type name: str
-:param rect: Output parameter to store the found BRect.
+:param rect: Output parameter to store the found ``BRect``.
 :type rect: BRect
 :returns: ``B_OK`` if the rectangle is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("rect"))
 .def("FindRect", py::overload_cast<const char *, int32, BRect *>(&BMessage::FindRect, py::const_), R"doc(
-Find a BRect object in the message by name and index.
+Find a ``BRect`` object in the message by name and index.
 
-:param name: The name associated with the BRect.
+:param name: The name associated with the ``BRect``.
 :type name: BRect
 :param index: The index of the rectangle to find.
 :type index: int
-:param rect: Output parameter to store the found BRect.
+:param rect: Output parameter to store the found ``BRect``.
 :type rect: BRect
 :returns: ``B_OK`` if the rectangle is found, or an error code otherwise.
 :rtype: int
@@ -1153,86 +1156,86 @@ Find BRect by name and optional index, but instead filling an output parameter,
 this method returns a tuple containing the API call status and the resulting
 BRect object.
 
-:param name: The name associated with the BRect.
+:param name: The name associated with the ``BRect``.
 :type name: str
-:param n: The optional index of the BRect to find (default is 0).
+:param n: The optional index of the ``BRect`` to find (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, object)``:
-         - ``status`` (int): ``B_OK`` if the BRect is found, or an error code otherwise.
-         - ``object`` (BRect): the BRect object found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``BRect`` is found, or an error code otherwise.
+         - ``object`` (BRect): the ``BRect`` object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("FindPoint", py::overload_cast<const char *, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
-Find a BPoint by name.
+Find a ``BPoint`` by name.
 
-:param name: The name associated with the BPoint.
+:param name: The name associated with the ``BPoint``.
 :type name: str
-:param point: Output parameter that will receive the BPoint.
+:param point: Output parameter that will receive the ``BPoint``.
 :type point: BPoint
 :returns: ``B_OK`` if the point is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("point"))
 .def("FindPoint", py::overload_cast<const char *, int32, BPoint *>(&BMessage::FindPoint, py::const_), R"doc(
-Find a BPoint by name and index.
+Find a ``BPoint`` by name and index.
 
-:param name: The name associated with the BPoint.
+:param name: The name associated with the ``BPoint``.
 :type name: str
-:param index: The index of the BPoint to retrieve.
+:param index: The index of the ``BPoint`` to retrieve.
 :type index: int
-:param point: Output parameter that will receive the BPoint.
+:param point: Output parameter that will receive the ``BPoint``.
 :type point: BPoint
 :returns: ``B_OK`` if the point is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("point"))
 .def("FindPoint", &PythonicFindPointWrapper, R"doc(
-Find a BPoint by name and optional index, but instead filling an output parameter, 
+Find a ``BPoint`` by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
-BPoint object.
+``BPoint`` object.
 
-:param name: The name associated with the BPoint.
+:param name: The name associated with the ``BPoint``.
 :type name: str
-:param n: The optional index of the BPoint to retrieve (default is 0).
+:param n: The optional index of the ``BPoint`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, object)``:
-         - ``status`` (int): ``B_OK`` if the BPoint is found, or an error code otherwise.
-         - ``object`` (BPoint): the BPoint object found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``BPoint`` is found, or an error code otherwise.
+         - ``object`` (BPoint): the ``BPoint`` object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindSize", py::overload_cast<const char *, BSize *>(&BMessage::FindSize, py::const_), R"doc(
-Find a BSize by name.
+Find a ``BSize`` by name.
 
-:param name: The name associated with the BSize object.
+:param name: The name associated with the ``BSize`` object.
 :type name: str
-:param size: Output parameter that will receive the BSize.
+:param size: Output parameter that will receive the ``BSize``.
 :type size: BSize
 :returns: ``B_OK`` if the size is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("size"))
 .def("FindSize", py::overload_cast<const char *, int32, BSize *>(&BMessage::FindSize, py::const_), R"doc(
-Find a BSize by name and index.
+Find a ``BSize`` by name and index.
 
-:param name: The name associated with the BSize.
+:param name: The name associated with the ``BSize``.
 :type name: str
 :param index: The index of the BSize to retrieve.
 :type index: int
-:param size: Output parameter that will receive the BSize.
+:param size: Output parameter that will receive the ``BSize``.
 :type size: BSize
 :returns: ``B_OK`` if the size is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("size"))
 .def("FindSize", &PythonicFindSizeWrapper, R"doc(
-Find a BSize by name and optional index, but instead filling an output parameter, 
+Find a ``BSize`` by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
-BSize object.
+``BSize`` object.
 
-:param name: The name associated with the BSize object.
+:param name: The name associated with the ``BSize`` object.
 :type name: str
-:param n: The optional index of the BSize to retrieve (default is 0).
+:param n: The optional index of the ``BSize`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, object)``:
-         - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
-         - ``object`` (BSize): the BSize object found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``BSize`` is found, or an error code otherwise.
+         - ``object`` (BSize): the ``BSize`` object found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 //.def("FindString", py::overload_cast<BMessage &, const char *, std::string *>(&FindStringWrapper), "", py::arg("name"), py::arg("string"))
@@ -1254,7 +1257,7 @@ string.
 .def("FindBString", &PythonicFindBStringWrapper, R"doc(
 Find a string by name and optional index, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
-string as BString object.
+string as ``BString`` object.
 
 :param name: The name associated with the string.
 :type name: str
@@ -1262,38 +1265,38 @@ string as BString object.
 :type n: int, optional
 :returns: A tuple ``(status, string)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
-         - ``string`` (BString): the string found as BString, ``None`` if it fails.
+         - ``string`` (BString): the string found as ``BString``, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindString", py::overload_cast<const char *, BString *>(&BMessage::FindString, py::const_), R"doc(
-Find a string by name and write it in a BString object.
+Find a string by name and write it in a ``BString`` object.
 
 :param name: The name associated with the string.
 :type name: str
-:param string: Output parameter that will receive the BString.
+:param string: Output parameter that will receive the ``BString``.
 :type string: BString
 :returns: ``B_OK`` if the size is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("FindString", py::overload_cast<const char *, int32, BString *>(&BMessage::FindString, py::const_), R"doc(
-Find a string by name and index and write it in a BString object.
+Find a string by name and index and write it in a ``BString`` object.
 
 :param name: The name associated with the string.
 :type name: str
 :param index: The index of the string to retrieve.
 :type index: int
-:param string: Output parameter that will receive the BString.
+:param string: Output parameter that will receive the ``BString``.
 :type string: BString
 :returns: ``B_OK`` if the size is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("string"))
 
 .def("FindStrings", &BMessage::FindStrings, R"doc(
-Find a list of strings by name and write it in a BStringList object.
+Find a list of strings by name and write it in a ``BStringList`` object.
 
 :param name: The name associated with the list of strings.
 :type name: str
-:param list: Output parameter that will receive the BStringList.
+:param list: Output parameter that will receive the ``BStringList``.
 :type list: BStringList
 :returns: ``B_OK`` if the size is found, or an error code otherwise.
 :rtype: int
@@ -1301,13 +1304,13 @@ Find a list of strings by name and write it in a BStringList object.
 .def("FindStrings", &PythonicFindStringsWrapper, R"doc(
 Find a list of strings by name, but instead filling an output parameter, 
 this method returns a tuple containing the API call status and the resulting 
-BStringList object.
+``BStringList`` object.
 
 :param name: The name associated with the list of strings.
 :type name: str
 :returns: A tuple ``(status, list)``:
          - ``status`` (int): ``B_OK`` if the BSize is found, or an error code otherwise.
-         - ``list`` (BStringList): the list of strings found as BStringList, ``None`` if it fails.
+         - ``list`` (BStringList): the list of strings found as ``BStringList``, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"))
 //.def("FindInt8", py::overload_cast<const char *, int8 *>(&BMessage::FindInt8, py::const_), "", py::arg("name"), py::arg("value"))
@@ -1477,208 +1480,208 @@ containing the API call status and the resulting double value.
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("FindColor", py::overload_cast<const char *, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
-Find a rgb_color object in the message by name.
+Find a ``rgb_color`` object in the message by name.
 
-:param name: The name associated with the rgb_color.
+:param name: The name associated with the ``rgb_color``.
 :type name: str
-:param value: Output parameter to store the found rgb_color.
+:param value: Output parameter to store the found ``rgb_color``.
 :type value: rgb_color
-:returns: ``B_OK`` if the rgb_color is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``rgb_color`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("FindColor", py::overload_cast<const char *, int32, rgb_color *>(&BMessage::FindColor, py::const_), R"doc(
-Find a rgb_color object in the message by name and index.
+Find a ``rgb_color`` object in the message by name and index.
 
-:param name: The name associated with the rgb_color.
+:param name: The name associated with the ``rgb_color``.
 :type name: str
-:param index: The index of the rgb_color to retrieve.
+:param index: The index of the ``rgb_color`` to retrieve.
 :type index: int
-:param value: Output parameter to store the found rgb_color.
+:param value: Output parameter to store the found ``rgb_color``.
 :type value: rgb_color
-:returns: ``B_OK`` if the rgb_color is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``rgb_color`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("FindColor", &PythonicFindColorWrapper, R"doc(
-Find a rgb_color by name and optional index, but instead filling an output 
+Find a ``rgb_color`` by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
-resulting rgb_color object.
+resulting ``rgb_color`` object.
 
-:param name: The name associated with the rgb_color.
+:param name: The name associated with the ``rgb_color``.
 :type name: str
-:param n: The optional index of the rgb_color to retrieve (default is 0).
+:param n: The optional index of the ``rgb_color`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, color)``:
-         - ``status`` (int): ``B_OK`` if the rgb_color is found, or an error code otherwise.
-         - ``color`` (rgb_color): the rgb_color found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``rgb_color`` is found, or an error code otherwise.
+         - ``color`` (rgb_color): the ``rgb_color`` found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 //.def("FindPointer", py::overload_cast<const char *, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("pointer"))
 //.def("FindPointer", py::overload_cast<const char *, int32, void * *>(&BMessage::FindPointer, py::const_), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 
 .def("FindMessenger", py::overload_cast<const char *, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
-Find a BMessenger object in the message by name.
+Find a ``BMessenger`` object in the message by name.
 
-:param name: The name associated with the BMessenger.
+:param name: The name associated with the ``BMessenger``.
 :type name: str
-:param messenger: Output parameter to store the found BMessenger.
+:param messenger: Output parameter to store the found ``BMessenger``.
 :type messenger: BMessenger
-:returns: ``B_OK`` if the BMessenger is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BMessenger`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("messenger"))
 .def("FindMessenger", py::overload_cast<const char *, int32, BMessenger *>(&BMessage::FindMessenger, py::const_), R"doc(
-Find a BMessenger object in the message by name and index.
+Find a ``BMessenger`` object in the message by name and index.
 
-:param name: The name associated with the BMessenger.
+:param name: The name associated with the ``BMessenger``.
 :type name: str
-:param index: The index of the BMessenger to retrieve.
+:param index: The index of the ``BMessenger`` to retrieve.
 :type index: int
-:param messenger: Output parameter to store the found BMessenger.
+:param messenger: Output parameter to store the found ``BMessenger``.
 :type messenger: BMessenger
-:returns: ``B_OK`` if the BMessenger is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BMessenger`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
 .def("FindMessenger", &PythonicFindMessengerWrapper, R"doc(
-Find a BMessenger by name and optional index, but instead filling an output 
+Find a ``BMessenger`` by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
-resulting BMessenger object.
+resulting ``BMessenger`` object.
 
-:param name: The name associated with the BMessenger.
+:param name: The name associated with the ``BMessenger``.
 :type name: str
-:param n: The optional index of the BMessenger to retrieve (default is 0).
+:param n: The optional index of the ``BMessenger`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, messenger)``:
-         - ``status`` (int): ``B_OK`` if the BMessenger is found, or an error code otherwise.
-         - ``messenger`` (BMessenger): the BMessenger found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``BMessenger`` is found, or an error code otherwise.
+         - ``messenger`` (BMessenger): the ``BMessenger`` found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindRef", py::overload_cast<const char *, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
-Find an entry_ref object in the message by name.
+Find an ``entry_ref`` object in the message by name.
 
-:param name: The name associated with the entry_ref.
+:param name: The name associated with the ``entry_ref``.
 :type name: str
-:param ref: Output parameter to store the found entry_ref.
+:param ref: Output parameter to store the found ``entry_ref``.
 :type ref: entry_ref
-:returns: ``B_OK`` if the entry_ref is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``entry_ref`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("FindRef", py::overload_cast<const char *, int32, entry_ref *>(&BMessage::FindRef, py::const_), R"doc(
-Find an entry_ref object in the message by name and index.
+Find an ``entry_ref`` object in the message by name and index.
 
-:param name: The name associated with the entry_ref.
+:param name: The name associated with the ``entry_ref``.
 :type name: str
-:param index: The index of the entry_ref to retrieve.
+:param index: The index of the ``entry_ref`` to retrieve.
 :type index: int
-:param ref: Output parameter to store the found entry_ref.
+:param ref: Output parameter to store the found ``entry_ref``.
 :type ref: entry_ref
-:returns: ``B_OK`` if the entry_ref is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``entry_ref`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("FindRef", &PythonicFindRefWrapper, R"doc(
-Find an entry_ref by name and optional index, but instead filling an output 
+Find an ``entry_ref`` by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
-resulting entry_ref object.
+resulting ``entry_ref`` object.
 
-:param name: The name associated with the entry_ref.
+:param name: The name associated with the ``entry_ref``.
 :type name: str
-:param n: The optional index of the entry_ref to retrieve (default is 0).
+:param n: The optional index of the ``entry_ref`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, ref)``:
-         - ``status`` (int): ``B_OK`` if the entry_ref is found, or an error code otherwise.
-         - ``ref`` (entry_ref): the entry_ref found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``entry_ref`` is found, or an error code otherwise.
+         - ``ref`` (entry_ref): the ``entry_ref`` found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindNodeRef", py::overload_cast<const char *, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
-Find an node_ref object in the message by name.
+Find an ``node_ref`` object in the message by name.
 
-:param name: The name associated with the node_ref.
+:param name: The name associated with the ``node_ref``.
 :type name: str
-:param ref: Output parameter to store the found node_ref.
+:param ref: Output parameter to store the found ``node_ref``.
 :type ref: node_ref
-:returns: ``B_OK`` if the node_ref is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``node_ref`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("FindNodeRef", py::overload_cast<const char *, int32, node_ref *>(&BMessage::FindNodeRef, py::const_), R"doc(
-Find an node_ref object in the message by name and index.
+Find an ``node_ref`` object in the message by name and index.
 
-:param name: The name associated with the node_ref.
+:param name: The name associated with the ``node_ref``.
 :type name: str
-:param index: The index of the node_ref to retrieve.
+:param index: The index of the ``node_ref`` to retrieve.
 :type index: int
-:param ref: Output parameter to store the found node_ref.
+:param ref: Output parameter to store the found ``node_ref``.
 :type ref: node_ref
-:returns: ``B_OK`` if the node_ref is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``node_ref`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("FindNodeRef", &PythonicFindNodeRefWrapper, R"doc(
-Find an node_ref by name and optional index, but instead filling an output 
+Find an ``node_ref`` by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
-resulting node_ref object.
+resulting ``node_ref`` object.
 
-:param name: The name associated with the node_ref.
+:param name: The name associated with the ``node_ref``.
 :type name: str
-:param n: The optional index of the node_ref to retrieve (default is 0).
+:param n: The optional index of the ``node_ref`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, nodref)``:
-         - ``status`` (int): ``B_OK`` if the node_ref is found, or an error code otherwise.
-         - ``nodref`` (node_ref): the node_ref found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``node_ref`` is found, or an error code otherwise.
+         - ``nodref`` (node_ref): the ``node_ref`` found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindMessage", py::overload_cast<const char *, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
-Find an BMessage object in the message by name.
+Find an ``BMessage`` object in the message by name.
 
-:param name: The name associated with the BMessage.
+:param name: The name associated with the ``BMessage``.
 :type name: str
-:param message: Output parameter to store the found BMessage.
+:param message: Output parameter to store the found ``BMessage``.
 :type message: BMessage
-:returns: ``B_OK`` if the BMessage is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BMessage`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("FindMessage", py::overload_cast<const char *, int32, BMessage *>(&BMessage::FindMessage, py::const_), R"doc(
-Find an BMessage object in the message by name and index.
+Find an ``BMessage`` object in the message by name and index.
 
-:param name: The name associated with the BMessage.
+:param name: The name associated with the ``BMessage``.
 :type name: str
-:param index: The index of the BMessage to retrieve.
+:param index: The index of the ``BMessage`` to retrieve.
 :type index: int
-:param message: Output parameter to store the found BMessage.
+:param message: Output parameter to store the found ``BMessage``.
 :type message: BMessage
-:returns: ``B_OK`` if the BMessage is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BMessage`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("message"))
 .def("FindMessage", &PythonicFindMessageWrapper, R"doc(
-Find a BMessage by name and optional index, but instead filling an output 
+Find a ``BMessage`` by name and optional index, but instead filling an output 
 parameter, this method returns a tuple containing the API call status and the 
-resulting BMessage object.
+resulting ``BMessage`` object.
 
-:param name: The name associated with the BMessage.
+:param name: The name associated with the ``BMessage``.
 :type name: str
-:param n: The optional index of the BMessage to retrieve (default is 0).
+:param n: The optional index of the ``BMessage`` to retrieve (default is 0).
 :type n: int, optional
 :returns: A tuple ``(status, nodref)``:
-         - ``status`` (int): ``B_OK`` if the BMessage is found, or an error code otherwise.
-         - ``nodref`` (BMessage): the BMessage found, ``None`` if it fails.
+         - ``status`` (int): ``B_OK`` if the ``BMessage`` is found, or an error code otherwise.
+         - ``nodref`` (BMessage): the ``BMessage`` found, ``None`` if it fails.
 :rtype: tuple
 )doc", py::arg("name"), py::arg("n")=0)
 .def("FindFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
-Find an BFlattenable object in the message by name.
+Find an ``BFlattenable`` object in the message by name.
 
-:param name: The name associated with the BFlattenable.
+:param name: The name associated with the ``BFlattenable``.
 :type name: str
-:param object: Output parameter to store the found BFlattenable.
+:param object: Output parameter to store the found ``BFlattenable``.
 :type object: BFlattenable
-:returns: ``B_OK`` if the BFlattenable is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BFlattenable`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"))
 .def("FindFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::FindFlat, py::const_), R"doc(
-Find an BFlattenable object in the message by name and index.
+Find an ``BFlattenable`` object in the message by name and index.
 
-:param name: The name associated with the BFlattenable.
+:param name: The name associated with the ``BFlattenable``.
 :type name: str
-:param index: The index of the BFlattenable to retrieve.
+:param index: The index of the ``BFlattenable`` to retrieve.
 :type index: int
-:param object: Output parameter to store the found BFlattenable.
+:param object: Output parameter to store the found ``BFlattenable``.
 :type object: BFlattenable
-:returns: ``B_OK`` if the BFlattenable is found, or an error code otherwise.
+:returns: ``B_OK`` if the ``BFlattenable`` is found, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("object"))
 //.def("FindData", py::overload_cast<const char *, type_code, const void * *, ssize_t *>(&BMessage::FindData, py::const_), "", py::arg("name"), py::arg("type"), py::arg("data"), py::arg("numBytes"))
@@ -1755,7 +1758,7 @@ BAlignment type.
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BAlignment field to replace.
+:param name: The name associated with the ``BAlignment`` field to replace.
 :type name: str
 :param alignment: The new ``BAlignment`` object to store.
 :type alignment: BAlignment
@@ -1770,12 +1773,12 @@ the replacement fails.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BAlignment type.
+field doesn't contin data of the ``BAlignment`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BAlignment field to replace.
+:param name: The name associated with the ``BAlignment`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -1790,12 +1793,12 @@ the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BRect type.
+``BRect`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BRect field to replace.
+:param name: The name associated with the ``BRect`` field to replace.
 :type name: str
 :param rect: The new ``BRect`` object to store.
 :type rect: BRect
@@ -1804,18 +1807,18 @@ field.
 )doc", py::arg("name"), py::arg("rect"))
 .def("ReplaceRect", py::overload_cast<const char *, int32, BRect>(&BMessage::ReplaceRect), R"doc(
 Replace in the message an existing BRect item in the name array at the 
-index position with another BRect item. If the item is out of range, 
+index position with another ``BRect`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BRect type.
+field doesn't contin data of the ``BRect`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BRect field to replace.
+:param name: The name associated with the ``BRect`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -1826,17 +1829,17 @@ field.
 )doc", py::arg("name"), py::arg("index"), py::arg("rect"))
 
 .def("ReplacePoint", py::overload_cast<const char *, BPoint>(&BMessage::ReplacePoint), R"doc(
-Replace by name the first or the only existing BPoint item in 
+Replace by name the first or the only existing ``BPoint`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BPoint type.
+``BPoint`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BPoint field to replace.
+:param name: The name associated with the ``BPoint`` field to replace.
 :type name: str
 :param aPoint: The new ``BPoint`` object to store.
 :type aPoint: BPoint
@@ -1844,19 +1847,19 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("aPoint"))
 .def("ReplacePoint", py::overload_cast<const char *, int32, BPoint>(&BMessage::ReplacePoint), R"doc(
-Replace in the message an existing BPoint item in the name array at the 
-index position with another BPoint item. If the item is out of range, 
+Replace in the message an existing ``BPoint`` item in the name array at the 
+index position with another ``BPoint`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BPoint type.
+field doesn't contin data of the ``BPoint`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BPoint field to replace.
+:param name: The name associated with the ``BPoint`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -1866,12 +1869,12 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("aPoint"))
 .def("ReplaceSize", py::overload_cast<const char *, BSize>(&BMessage::ReplaceSize), R"doc(
-Replace by name the first or the only existing BSize item in 
+Replace by name the first or the only existing ``BSize`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BSize type.
+``BSize`` type.
  
 This function is typically used to update the value of an existing
 field.
@@ -1885,7 +1888,7 @@ field.
 )doc", py::arg("name"), py::arg("aSize"))
 .def("ReplaceSize", py::overload_cast<const char *, int32, BSize>(&BMessage::ReplaceSize), R"doc(
 Replace in the message an existing BSize item in the name array at the 
-index position with another BSize item. If the item is out of range, 
+index position with another ``BSize`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
@@ -1896,7 +1899,7 @@ field doesn't contin data of the BSize type.
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BSize field to replace.
+:param name: The name associated with the ``BSize`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -1951,12 +1954,12 @@ the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BString type.
+``BString`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BString field to replace.
+:param name: The name associated with the ``BString`` field to replace.
 :type name: str
 :param string: The new ``BString`` object to store.
 :type string: BString
@@ -1965,7 +1968,7 @@ field.
 )doc", py::arg("name"), py::arg("string"))
 .def("ReplaceString", py::overload_cast<const char *, int32, const BString &>(&BMessage::ReplaceString), R"doc(
 Replace in the message an existing BString item in the name array at the 
-index position with another BString item. If the item is out of range, 
+index position with another ``BString`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
@@ -1976,7 +1979,7 @@ field doesn't contin data of the BString type.
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BString field to replace.
+:param name: The name associated with the ``BString`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2501,17 +2504,17 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("value"))
 .def("ReplaceColor", py::overload_cast<const char *, rgb_color>(&BMessage::ReplaceColor), R"doc(
-Replace by name the first or the only existing rgb_color item in 
+Replace by name the first or the only existing ``rgb_color`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-rgb_color type.
+``rgb_color`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the rgb_color field to replace.
+:param name: The name associated with the ``rgb_color`` field to replace.
 :type name: str
 :param color: The new ``rgb_color`` object to store.
 :type color: rgb_color
@@ -2520,18 +2523,18 @@ field.
 )doc", py::arg("name"), py::arg("color"))
 .def("ReplaceColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::ReplaceColor), R"doc(
 Replace in the message an existing rgb_color item in the name array at the 
-index position with another rgb_color item. If the item is out of range, 
+index position with another ``rgb_color`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the rgb_color type.
+field doesn't contin data of the ``rgb_color`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the rgb_color field to replace.
+:param name: The name associated with the ``rgb_color`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2543,17 +2546,17 @@ field.
 .def("ReplacePointer", py::overload_cast<const char *, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("pointer"))
 .def("ReplacePointer", py::overload_cast<const char *, int32, const void *>(&BMessage::ReplacePointer), "", py::arg("name"), py::arg("index"), py::arg("pointer"))
 .def("ReplaceMessenger", py::overload_cast<const char *, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
-Replace by name the first or the only existing BMessenger item in 
+Replace by name the first or the only existing ``BMessenger`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BMessenger type.
+``BMessenger`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BMessenger field to replace.
+:param name: The name associated with the ``BMessenger`` field to replace.
 :type name: str
 :param messenger: The new ``BMessenger`` object to store.
 :type messenger: BMessenger
@@ -2561,19 +2564,19 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("messenger"))
 .def("ReplaceMessenger", py::overload_cast<const char *, int32, BMessenger>(&BMessage::ReplaceMessenger), R"doc(
-Replace in the message an existing BMessenger item in the name array at the 
-index position with another BMessenger item. If the item is out of range, 
+Replace in the message an existing ``BMessenger`` item in the name array at the 
+index position with another ``BMessenger`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BMessenger type.
+field doesn't contin data of the ``BMessenger`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BMessenger field to replace.
+:param name: The name associated with the ``BMessenger`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2583,17 +2586,17 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("messenger"))
 .def("ReplaceRef", py::overload_cast<const char *, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
-Replace by name the first or the only existing entry_ref item in 
+Replace by name the first or the only existing ``entry_ref`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-entry_ref type.
+``entry_ref`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the entry_ref field to replace.
+:param name: The name associated with the ``entry_ref`` field to replace.
 :type name: str
 :param ref: The new ``entry_ref`` object to store.
 :type ref: entry_ref
@@ -2601,19 +2604,19 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("ref"))
 .def("ReplaceRef", py::overload_cast<const char *, int32, const entry_ref *>(&BMessage::ReplaceRef), R"doc(
-Replace in the message an existing entry_ref item in the name array at the 
-index position with another entry_ref item. If the item is out of range, 
+Replace in the message an existing ``entry_ref`` item in the name array at the 
+index position with another ``entry_ref`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the entry_ref type.
+field doesn't contin data of the ``entry_ref`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the entry_ref field to replace.
+:param name: The name associated with the ``entry_ref`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2623,17 +2626,17 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("ReplaceNodeRef", py::overload_cast<const char *, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
-Replace by name the first or the only existing node_ref item in 
+Replace by name the first or the only existing ``node_ref`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-node_ref type.
+``node_ref`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the node_ref field to replace.
+:param name: The name associated with the ``node_ref`` field to replace.
 :type name: str
 :param ref: The new ``node_ref`` object to store.
 :type ref: node_ref
@@ -2642,18 +2645,18 @@ field.
 )doc", py::arg("name"), py::arg("ref"))
 .def("ReplaceNodeRef", py::overload_cast<const char *, int32, const node_ref *>(&BMessage::ReplaceNodeRef), R"doc(
 Replace in the message an existing node_ref item in the name array at the 
-index position with another node_ref item. If the item is out of range, 
+index position with another ``node_ref`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the node_ref type.
+field doesn't contin data of the ``node_ref`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the node_ref field to replace.
+:param name: The name associated with the ``node_ref`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2663,17 +2666,17 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("ref"))
 .def("ReplaceMessage", py::overload_cast<const char *, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
-Replace by name the first or the only existing BMessage item in 
+Replace by name the first or the only existing ``BMessage`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BMessage type.
+``BMessage`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BMessage field to replace.
+:param name: The name associated with the ``BMessage`` field to replace.
 :type name: str
 :param message: The new ``BMessage`` object to store.
 :type message: BMessage
@@ -2681,19 +2684,19 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("message"))
 .def("ReplaceMessage", py::overload_cast<const char *, int32, const BMessage *>(&BMessage::ReplaceMessage), R"doc(
-Replace in the message an existing BMessage item in the name array at the 
-index position with another BMessage item. If the item is out of range, 
+Replace in the message an existing ``BMessage`` item in the name array at the 
+index position with another ``BMessage`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BMessage type.
+field doesn't contin data of the ``BMessage`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BMessage field to replace.
+:param name: The name associated with the ``BMessage`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2703,17 +2706,17 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("index"), py::arg("message"))
 .def("ReplaceFlat", py::overload_cast<const char *, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
-Replace by name the first or the only existing BFlattenable item in 
+Replace by name the first or the only existing ``BFlattenable`` item in 
 the message with another one.
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_NAME_NOT_FOUND`` if name
 doesn't exist, or ``B_BAD_TYPE`` if the field doesn't contin data of the
-BFlattenable type.
+``BFlattenable`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BFlattenable field to replace.
+:param name: The name associated with the ``BFlattenable`` field to replace.
 :type name: str
 :param object: The new ``BFlattenable`` object to store.
 :type object: BFlattenable
@@ -2721,19 +2724,19 @@ field.
 :rtype: int
 )doc", py::arg("name"), py::arg("object"))
 .def("ReplaceFlat", py::overload_cast<const char *, int32, BFlattenable *>(&BMessage::ReplaceFlat), R"doc(
-Replace in the message an existing BFlattenable item in the name array at the 
-index position with another BFlattenable item. If the item is out of range, 
+Replace in the message an existing ``BFlattenable`` item in the name array at the 
+index position with another ``BFlattenable`` item. If the item is out of range, 
 the replacement fails. 
 
 If this call fails it returns ``B_ERROR`` in case of read-only message 
 (like while the message is being dragged), ``B_BAD_INDEX`` if the index is out
 of range, ``B_NAME_NOT_FOUND`` if name doesn't exist, or ``B_BAD_TYPE`` if the 
-field doesn't contin data of the BFlattenable type.
+field doesn't contin data of the ``BFlattenable`` type.
  
 This function is typically used to update the value of an existing
 field.
 
-:param name: The name associated with the BFlattenable field to replace.
+:param name: The name associated with the ``BFlattenable`` field to replace.
 :type name: str
 :param index: The index of the name array where replace the item.
 :type index: int
@@ -2821,7 +2824,7 @@ This method is useful for comparing the content of two BMessages, optionally
 ignoring the field order and allowing for a recursive comparison of nested 
 messages.
 
-:param other: The BMessage to compare the current message with.
+:param other: The ``BMessage`` to compare the current message with.
 :type other: BMessage
 :param ignoreFieldOrder: Optional, if ``True`` (default), the field order is ignored during comparison, otherwise the field order must be identical.
 :type ignoreFieldOrder: bool, optional
@@ -2838,10 +2841,10 @@ messages.
 */
 
 .def("HasAlignment", &BMessage::HasAlignment, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_ALIGNMENT_TYPE``.
 
-:param name: The name associated with the BAlignment.
+:param name: The name associated with the ``BAlignment``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -2849,10 +2852,10 @@ of type ``B_ALIGNMENT_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasRect", &BMessage::HasRect, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_RECT_TYPE``.
 
-:param name: The name associated with the BRect.
+:param name: The name associated with the ``BRect``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -2860,10 +2863,10 @@ of type ``B_RECT_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPoint", &BMessage::HasPoint, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_POINT_TYPE``.
 
-:param name: The name associated with the BPoint.
+:param name: The name associated with the ``BPoint``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -2871,10 +2874,10 @@ of type ``B_POINT_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasSize", &BMessage::HasSize, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_SIZE_TYPE``.
 
-:param name: The name associated with the BSize.
+:param name: The name associated with the ``BSize``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -2882,7 +2885,7 @@ of type ``B_SIZE_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasString", &BMessage::HasString, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_STRING_TYPE``.
 
 :param name: The name associated with the string.
@@ -2893,7 +2896,7 @@ of type ``B_STRING_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt8", &BMessage::HasInt8, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_INT8_TYPE``.
 
 :param name: The name associated with the int8.
@@ -2904,7 +2907,7 @@ of type ``B_INT8_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt8", &BMessage::HasUInt8, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_UINT8_TYPE``.
 
 :param name: The name associated with the uint8.
@@ -2915,7 +2918,7 @@ of type ``B_UINT8_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt16", &BMessage::HasInt16, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_INT16_TYPE``.
 
 :param name: The name associated with the int16.
@@ -2926,7 +2929,7 @@ of type ``B_INT16_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt16", &BMessage::HasUInt16, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_UINT16_TYPE``.
 
 :param name: The name associated with the uint16.
@@ -2937,7 +2940,7 @@ of type ``B_UINT16_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt32", &BMessage::HasInt32, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_INT32_TYPE``.
 
 :param name: The name associated with the int32.
@@ -2948,7 +2951,7 @@ of type ``B_INT32_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt32", &BMessage::HasUInt32, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_UINT32_TYPE``.
 
 :param name: The name associated with the uint32.
@@ -2959,7 +2962,7 @@ of type ``B_UINT32_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasInt64", &BMessage::HasInt64, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_INT64_TYPE``.
 
 :param name: The name associated with the int64.
@@ -2970,7 +2973,7 @@ of type ``B_INT64_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasUInt64", &BMessage::HasUInt64, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_UINT64_TYPE``.
 
 :param name: The name associated with the uint64.
@@ -2982,7 +2985,7 @@ of type ``B_UINT64_TYPE``.
 )doc", py::arg("name"), py::arg("n")=0)
 
 .def("HasBool", &BMessage::HasBool, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_BOOL_TYPE``.
 
 :param name: The name associated with the bool.
@@ -3004,7 +3007,7 @@ of type ``B_FLOAT_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasDouble", &BMessage::HasDouble, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_DOUBLE_TYPE``.
 
 :param name: The name associated with the double.
@@ -3015,10 +3018,10 @@ of type ``B_DOUBLE_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasColor", &BMessage::HasColor, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_RGB_COLOR_TYPE``.
 
-:param name: The name associated with the rgb_color.
+:param name: The name associated with the ``rgb_color``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -3026,7 +3029,7 @@ of type ``B_RGB_COLOR_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasPointer", &BMessage::HasPointer, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_POINTER_TYPE``.
 
 :param name: The name associated with the pointer.
@@ -3037,10 +3040,10 @@ of type ``B_POINTER_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessenger", &BMessage::HasMessenger, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_MESSENGER_TYPE``.
 
-:param name: The name associated with the BMessenger.
+:param name: The name associated with the ``BMessenger``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -3051,7 +3054,7 @@ of type ``B_MESSENGER_TYPE``.
 Checks if the BMessage contains a field with the specified name and 
 of type ``B_REF_TYPE``.
 
-:param name: The name associated with the entry_ref.
+:param name: The name associated with the ``entry_ref``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -3059,10 +3062,10 @@ of type ``B_REF_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasNodeRef", &BMessage::HasNodeRef, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_NODE_REF_TYPE``.
 
-:param name: The name associated with the node_ref.
+:param name: The name associated with the ``node_ref``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -3070,10 +3073,10 @@ of type ``B_NODE_REF_TYPE``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n")=0)
 .def("HasMessage", &BMessage::HasMessage, R"doc(
-Checks if the BMessage contains a field with the specified name and 
+Checks if the ``BMessage`` contains a field with the specified name and 
 of type ``B_MESSAGE_TYPE``.
 
-:param name: The name associated with the BMessage.
+:param name: The name associated with the ``BMessage``.
 :type name: str
 :param n: Optional, the index of the field entry to check (default is 0)
 :type n: int, optional
@@ -3083,40 +3086,40 @@ of type ``B_MESSAGE_TYPE``.
 
 // TODO CHECK THESE FUNCTIONS BELOW *******************************************************************************
 .def("HasFlat", py::overload_cast<const char *, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
-Checks if the BMessage contains a field with the specified name that 
-holds data of a type matching the given BFlattenable object.
+Checks if the ``BMessage`` contains a field with the specified name that 
+holds data of a type matching the given ``BFlattenable`` object.
 
-This is typically used to check for data types like BRect, BPoint, 
-BFont, or other custom classes that inherit from BFlattenable.
+This is typically used to check for data types like ``BRect``, ``BPoint``, 
+``BFont``, or other custom classes that inherit from ``BFlattenable``.
 
 :param name: The name of the field to search for in the message.
 :type name: str
-:param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
+:param object: A sample ``BFlattenable`` object whose type is used for comparison against the field's data type.
 :type object: BFlattenable
 :returns: ``True`` if the field exists and the object data type matches the sample one, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("object"))
 .def("HasFlat", py::overload_cast<const char *, int32, const BFlattenable *>(&BMessage::HasFlat, py::const_), R"doc(
-Checks if the BMessage contains a field with the specified name and
+Checks if the ``BMessage`` contains a field with the specified name and
 index that holds data of a type matching the given BFlattenable object.
 
 This version allows checking a specific instance (via index 'n') when 
 multiple fields share the same name.
 
-This is typically used to check for data types like BRect, BPoint, 
-BFont, or other custom classes that inherit from BFlattenable.
+This is typically used to check for data types like ``BRect``, ``BPoint``, 
+``BFont``, or other custom classes that inherit from ``BFlattenable``.
 
 :param name: The name of the field to search for in the message.
 :type name: str
 :param n: The index of the field entry to check (0 for the first).
 :type n: int
-:param object: A sample BFlattenable object whose type is used for comparison against the field's data type.
+:param object: A sample ``BFlattenable`` object whose type is used for comparison against the field's data type.
 :type object: BFlattenable
 :returns: ``True`` if the field exists and the object data type matches the sample one, otherwise ``False``.
 :rtype: bool
 )doc", py::arg("name"), py::arg("n"), py::arg("object"))
 .def("HasData", &BMessage::HasData, R"doc(
-Checks if the BMessage contains a field with the specified name and type code.
+Checks if the ``BMessage`` contains a field with the specified name and type code.
 
 This generic method checks the presence of any typed data in the message, 
 including ``B_MESSAGE_TYPE``, ``B_REF_TYPE``, and all built-in types.
@@ -3501,33 +3504,33 @@ not of type ``B_DOUBLE_TYPE``, the given default value is returned.
 :rtype: double
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetColor", py::overload_cast<const char *, rgb_color>(&BMessage::GetColor, py::const_), R"doc(
-Retrieves a rgb_color item from the field with the specified name.
+Retrieves a ``rgb_color`` item from the field with the specified name.
 
-This is a convenience method that simplifies retrieving a rgb_color from 
+This is a convenience method that simplifies retrieving a ``rgb_color`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_RGB_COLOR_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the rgb_color from.
+:param name: The name of the field to retrieve the ``rgb_color`` from.
 :type name: str
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_RGB_COLOR_TYPE``).
 :type default_value: rgb_color
-:returns: The rgb_color item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``rgb_color`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: rgb_color
 )doc", py::arg("name"), py::arg("defaultValue"))
 .def("GetColor", py::overload_cast<const char *, int32, rgb_color>(&BMessage::GetColor, py::const_), R"doc(
-Retrieves a rgb_color item from the field with the specified name and index.
+Retrieves a ``rgb_color`` item from the field with the specified name and index.
 
-This is a convenience method that simplifies retrieving a rgb_color from 
+This is a convenience method that simplifies retrieving a ``rgb_color`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_RGB_COLOR_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the rgb_color from.
+:param name: The name of the field to retrieve the ``rgb_color`` from.
 :type name: str
 :param index: The index of the field entry to retrieve.
 :type:index: int
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_RGB_COLOR_TYPE``).
 :type default_value: rgb_color
-:returns: The rgb_color item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``rgb_color`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: rgb_color
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 // TODO Test if necessary GetPointer
@@ -3570,25 +3573,25 @@ not of type ``B_STRING_TYPE``, the given default value is returned.
 // header files that come with R1B4 mention them.
 #if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4)
 .def("GetAlignment", py::overload_cast<const char *, int32, const BAlignment &>(&BMessage::GetAlignment, py::const_), R"doc(
-Retrieves a BAlignment item from the field with the specified name and index.
+Retrieves a ``BAlignment`` item from the field with the specified name and index.
 
-This is a convenience method that simplifies retrieving a BAlignment from 
+This is a convenience method that simplifies retrieving a ``BAlignment`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_ALIGNMENT_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BAlignment from.
+:param name: The name of the field to retrieve the ``BAlignment`` from.
 :type name: str
 :param index: The index of the field entry to retrieve.
 :type:index: int
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_ALIGNMENT_TYPE``).
 :type default_value: BAlignment
-:returns: The BAlignment item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BAlignment`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BAlignment
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetAlignment", py::overload_cast<const char *, const BAlignment &>(&BMessage::GetAlignment, py::const_), R"doc(
-Retrieves a BAlignment item from the field with the specified name.
+Retrieves a ``BAlignment`` item from the field with the specified name.
 
-This is a convenience method that simplifies retrieving a BAlignment from 
+This is a convenience method that simplifies retrieving a ``BAlignment`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_ALIGNMENT_TYPE``, the given default value is returned.
 
@@ -3596,104 +3599,104 @@ not of type ``B_ALIGNMENT_TYPE``, the given default value is returned.
 :type name: str
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_ALIGNMENT_TYPE``).
 :type default_value: BAlignment
-:returns: The BAlignment item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BAlignment`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BAlignment
 )doc", py::arg("name"), py::arg("defaultValue"))
 #endif
 
 .def("GetRect", py::overload_cast<const char *, int32, const BRect &>(&BMessage::GetRect, py::const_), R"doc(
-Retrieves a BRect item from the field with the specified name and index.
+Retrieves a ``BRect`` item from the field with the specified name and index.
 
-This is a convenience method that simplifies retrieving a BRect from 
+This is a convenience method that simplifies retrieving a ``BRect`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_RECT_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BRect from.
+:param name: The name of the field to retrieve the ``BRect`` from.
 :type name: str
 :param index: The index of the field entry to retrieve.
 :type:index: int
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_RECT_TYPE``).
 :type default_value: BRect
-:returns: The BRect item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BRect`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BRect
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetRect", py::overload_cast<const char *, const BRect &>(&BMessage::GetRect, py::const_), R"doc(
-Retrieves a BRect item from the field with the specified name.
+Retrieves a ``BRect`` item from the field with the specified name.
 
-This is a convenience method that simplifies retrieving a BRect from 
+This is a convenience method that simplifies retrieving a ``BRect`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_RECT_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BRect from.
+:param name: The name of the field to retrieve the ``BRect`` from.
 :type name: str
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_RECT_TYPE``).
 :type default_value: BRect
-:returns: The BRect item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BRect`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BRect
 )doc", py::arg("name"), py::arg("defaultValue"))
 .def("GetPoint", py::overload_cast<const char *, int32, const BPoint &>(&BMessage::GetPoint, py::const_), R"doc(
-Retrieves a BPoint item from the field with the specified name and index.
+Retrieves a ``BPoint`` item from the field with the specified name and index.
 
-This is a convenience method that simplifies retrieving a BPoint from 
+This is a convenience method that simplifies retrieving a ``BPoint`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_POINT_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BPoint from.
+:param name: The name of the field to retrieve the ``BPoint`` from.
 :type name: str
 :param index: The index of the field entry to retrieve.
 :type:index: int
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_POINT_TYPE``).
 :type default_value: BPoint
-:returns: The BPoint item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BPoint`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BPoint
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetPoint", py::overload_cast<const char *, const BPoint &>(&BMessage::GetPoint, py::const_), R"doc(
-Retrieves a BPoint item from the field with the specified name.
+Retrieves a ``BPoint`` item from the field with the specified name.
 
-This is a convenience method that simplifies retrieving a BPoint from 
+This is a convenience method that simplifies retrieving a ``BPoint`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_POINT_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BPoint from.
+:param name: The name of the field to retrieve the ``BPoint`` from.
 :type name: str
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_POINT_TYPE``).
 :type default_value: BPoint
-:returns: The BPoint item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BPoint`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BPoint
 )doc", py::arg("name"), py::arg("defaultValue"))
 .def("GetSize", py::overload_cast<const char *, int32, const BSize &>(&BMessage::GetSize, py::const_), R"doc(
-Retrieves a BSize item from the field with the specified name and index.
+Retrieves a ``BSize`` item from the field with the specified name and index.
 
-This is a convenience method that simplifies retrieving a BSize from 
+This is a convenience method that simplifies retrieving a ``BSize`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_SIZE_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BSize from.
+:param name: The name of the field to retrieve the ``BSize`` from.
 :type name: str
 :param index: The index of the field entry to retrieve.
 :type:index: int
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_SIZE_TYPE``).
 :type default_value: BSize
-:returns: The BSize item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BSize`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BSize
 )doc", py::arg("name"), py::arg("index"), py::arg("defaultValue"))
 .def("GetSize", py::overload_cast<const char *, const BSize &>(&BMessage::GetSize, py::const_), R"doc(
-Retrieves a BSize item from the field with the specified name.
+Retrieves a ``BSize`` item from the field with the specified name.
 
-This is a convenience method that simplifies retrieving a BSize from 
+This is a convenience method that simplifies retrieving a ``BSize`` from 
 the message. If the field is not found, or if the field exists but is 
 not of type ``B_SIZE_TYPE``, the given default value is returned.
 
-:param name: The name of the field to retrieve the BSize from.
+:param name: The name of the field to retrieve the ``BSize`` from.
 :type name: str
 :param default_value: The value to return if the field is not found or is not of the correct type (``B_SIZE_TYPE``).
 :type default_value: BSize
-:returns: The BSize item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
+:returns: The ``BSize`` item stored in the message, or the 'default_value' if the field doesn't exist or its type is incorrect.
 :rtype: BSize
 )doc", py::arg("name"), py::arg("defaultValue"))
 
 .def("SetBool", &BMessage::SetBool, R"doc(
-Adds a boolean value to the BMessage, or replaces the first existing 
+Adds a boolean value to the ``BMessage``, or replaces the first existing 
 value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_BOOL_TYPE``.
@@ -3706,7 +3709,7 @@ The value is stored in the message as type ``B_BOOL_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetInt8", &BMessage::SetInt8, R"doc(
-Adds a 8-bit signed integer (int8) value to the BMessage, or replaces 
+Adds a 8-bit signed integer (int8) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_INT8_TYPE``.
@@ -3725,7 +3728,7 @@ The value is stored in the message as type ``B_INT8_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetUInt8", &BMessage::SetUInt8, R"doc(
-Adds a 8-bit unsigned integer (uint8) value to the BMessage, or replaces 
+Adds a 8-bit unsigned integer (uint8) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_UINT8_TYPE``.
@@ -3744,7 +3747,7 @@ The value is stored in the message as type ``B_UINT8_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetInt16", &BMessage::SetInt16, R"doc(
-Adds a 16-bit signed integer (int16) value to the BMessage, or replaces 
+Adds a 16-bit signed integer (int16) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_INT16_TYPE``.
@@ -3763,7 +3766,7 @@ The value is stored in the message as type ``B_INT16_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetUInt16", &BMessage::SetUInt16, R"doc(
-Adds a 16-bit unsigned integer (uint16) value to the BMessage, or replaces 
+Adds a 16-bit unsigned integer (uint16) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_UINT16_TYPE``.
@@ -3782,7 +3785,7 @@ The value is stored in the message as type ``B_UINT16_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetInt32", &BMessage::SetInt32, R"doc(
-Adds a 32-bit signed integer (int32) value to the BMessage, or replaces 
+Adds a 32-bit signed integer (int32) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_INT32_TYPE``.
@@ -3801,7 +3804,7 @@ The value is stored in the message as type ``B_INT32_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetUInt32", &BMessage::SetUInt32, R"doc(
-Adds a 32-bit unsigned integer (uint32) value to the BMessage, or replaces 
+Adds a 32-bit unsigned integer (uint32) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_UINT32_TYPE``.
@@ -3820,7 +3823,7 @@ The value is stored in the message as type ``B_UINT32_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetInt64", &BMessage::SetInt64, R"doc(
-Adds a 64-bit signed integer (int64) value to the BMessage, or replaces 
+Adds a 64-bit signed integer (int64) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_INT64_TYPE``.
@@ -3839,7 +3842,7 @@ The value is stored in the message as type ``B_INT64_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetUInt64", &BMessage::SetUInt64, R"doc(
-Adds a 64-bit unsigned integer (uint64) value to the BMessage, or replaces 
+Adds a 64-bit unsigned integer (uint64) value to the ``BMessage``, or replaces 
 the first existing value if a field with the same name already exists.
 
 The value is stored in the message as type ``B_UINT64_TYPE``.
@@ -3859,14 +3862,14 @@ The value is stored in the message as type ``B_UINT64_TYPE``.
 )doc", py::arg("name"), py::arg("value"))
 
 .def("SetColor", &BMessage::SetColor, R"doc(
-Adds a rgb_color element to the BMessage, or replaces the first existing 
+Adds a ``rgb_color`` element to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_RGB_COLOR_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param value: The rgb_color item to be stored in the message.
+:param value: The ``rgb_color`` item to be stored in the message.
 :type value: rgb_color
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
@@ -3875,14 +3878,14 @@ The value is stored in the message as type ``B_RGB_COLOR_TYPE``.
 .def("SetPointer", &BMessage::SetPointer, "", py::arg("name"), py::arg("value"))
 
 .def("SetString", py::overload_cast<const char *, const char *>(&BMessage::SetString), R"doc(
-Adds a string element to the BMessage, or replaces the first existing 
+Adds a string element to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_STRING_TYPE``.
 
 .. note: 
-    B_ASCII_TYPE is the C-style for char*, but it's
-    deprecated, Haiku prefers using B_STRING_TYPE.
+    ``B_ASCII_TYPE`` is the C-style for char*, but it's
+    deprecated, Haiku prefers using ``B_STRING_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
@@ -3892,20 +3895,20 @@ The value is stored in the message as type ``B_STRING_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("string"))
 .def("SetString", py::overload_cast<const char *, const BString &>(&BMessage::SetString), R"doc(
-Adds a BString element to the BMessage, or replaces the first existing 
+Adds a ``BString`` element to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_STRING_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param bstring: The BString item to be stored in the message.
+:param bstring: The ``BString`` item to be stored in the message.
 :type bstring: BString
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("bstring"))
 .def("SetFloat", &BMessage::SetFloat, R"doc(
-Adds a float value to the BMessage, or replaces the first existing 
+Adds a float value to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_FLOAT_TYPE``.
@@ -3918,7 +3921,7 @@ The value is stored in the message as type ``B_FLOAT_TYPE``.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetDouble", &BMessage::SetDouble, R"doc(
-Adds a double value to the BMessage, or replaces the first existing 
+Adds a double value to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_DOUBLE_TYPE``.
@@ -3932,54 +3935,54 @@ The value is stored in the message as type ``B_DOUBLE_TYPE``.
 )doc", py::arg("name"), py::arg("value"))
 #if (B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_4) // see comment for GetAlignment
 .def("SetAlignment", &BMessage::SetAlignment, R"doc(
-Adds a BAlignment item to the BMessage, or replaces the first existing 
+Adds a ``BAlignment`` item to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_ALIGNMENT_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param value: The BAlignment item to be stored in the message.
+:param value: The ``BAlignment`` item to be stored in the message.
 :type value: BAlignment
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 #endif
 .def("SetPoint", &BMessage::SetPoint, R"doc(
-Adds a BPoint item to the BMessage, or replaces the first existing 
+Adds a ``BPoint`` item to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_POINT_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param value: The BPoint item to be stored in the message.
+:param value: The ``BPoint`` item to be stored in the message.
 :type value: BPoint
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetRect", &BMessage::SetRect, R"doc(
-Adds a BRect item to the BMessage, or replaces the first existing 
+Adds a ``BRect`` item to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_RECT_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param value: The BRect item to be stored in the message.
+:param value: The ``BRect`` item to be stored in the message.
 :type value: BRect
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
 )doc", py::arg("name"), py::arg("value"))
 .def("SetSize", &BMessage::SetSize, R"doc(
-Adds a BSize item to the BMessage, or replaces the first existing 
+Adds a ``BSize`` item to the ``BMessage``, or replaces the first existing 
 element if a field with the same name already exists.
 
 The value is stored in the message as type ``B_SIZE_TYPE``.
 
 :param name: The name of the field to to add or modify.
 :type name: str
-:param value: The BSize item to be stored in the message.
+:param value: The ``BSize`` item to be stored in the message.
 :type value: BSize
 :returns: ``B_OK`` on success, or an error code otherwise.
 :rtype: int
@@ -3995,7 +3998,7 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    name and type code.
 
    This is the most flexible method for storing non-standard, raw, 
-   or compound data structures within the BMessage. The data must 
+   or compound data structures within the ``BMessage``. The data must 
    be passed as a Python buffer object (bytes,bytearray etc.). If 
    the named field exists, the first entry (or the entry at 
    'count') will be replaced.
@@ -4008,7 +4011,7 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
    :type data: py::buffer (e.g. bytes, bytearray, numpy.ndarray)
    :param numBytes: The exact number of bytes from the 'data' buffer to write into the message.
    :type numBytes: int
-   :param fixedSize: If ``True`` (default), indicates that the type code implies a fixed-size data structure (e.g., BRect, BPoint). If ``False``, the data size is variable (e.g., ``B_RAW_TYPE``), see ReplaceData about this.
+   :param fixedSize: If ``True`` (default), indicates that the type code implies a fixed-size data structure (e.g., ``BRect``, ``BPoint``). If ``False``, the data size is variable (e.g., ``B_RAW_TYPE``), see ``ReplaceData`` about this.
    :type fixedSize: bool, optional
    :param count: The index of the element to replace if the field holds multiple entries. Defaults to 1.
    :type count: int, optional
@@ -4028,7 +4031,7 @@ The value is stored in the message as type ``B_SIZE_TYPE``.
 })
 .def_readwrite("what", &BMessage::what, R"doc(
 
-   The message command code, which identifies the overall purpose or meaning of the BMessage.
+   The message command code, which identifies the overall purpose or meaning of the ``BMessage``.
 
    The 'what' code is a 32-bit integer (type_code) often represented by four ASCII characters (e.g., 'DATA'). It is the first thing checked when a message is received to determine how it should be handled.
 
