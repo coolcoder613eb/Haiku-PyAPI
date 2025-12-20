@@ -171,7 +171,7 @@ Archive the BApplication object into a BMessage.
 	status_t status = self.Archive(&msg,deep);
 	return py::make_tuple(status,msg);
 }, R"doc(
-Convenience method to archive the BApplication into a BMessage.
+Convenience method to archive the ``BApplication`` into a ``BMessage``.
 this verstion returns a tuple containing both the status of the
 call and the message containing the archived application.
 
