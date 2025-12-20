@@ -166,6 +166,24 @@ Archive the BApplication object into a BMessage.
 :return: ``B_OK`` on success, or a Haiku error code
 :rtype: int
 )doc", py::arg("data"), py::arg("deep")=true)
+.def("Archive", [](const BApplication& self,bool deep){
+	BMessage msg;
+	status_t status = self.Archive(&msg,deep);
+	return py::make_tuple(status,msg);
+}, R"doc(
+Convenience method to archive the BApplication into a BMessage.
+this verstion returns a tuple containing both the status of the
+call and the message containing the archived application.
+
+:param deep: If ``True``, perform a deep archive of all contained objects.
+:type deep: bool
+:return: A tuple (status,data):
+
+   - ``status`` (int): ``B_OK`` on success, or a Haiku error code
+   - ``data`` (BMessage): the message where the application will be archived.
+   
+:rtype: tuple
+)doc", py::arg("deep")=true)
 .def("InitCheck", &BApplication::InitCheck, R"doc(
 Return the status of the constructor.
 
@@ -399,7 +417,6 @@ the call and the resulting populated BMessage with the supported suites.
          - ``data`` (BMessage): the message with the supported suites
 :rtype: tuple
 )doc")
-// #### TODO wrappare non posso passare void * #######
 //.def("Perform", &BApplication::Perform, "" , py::arg("d"), py::arg("arg"))
 /* first version
 .def("Perform", [](BApplication& self, perform_code d,py::buffer arg){
