@@ -105,6 +105,24 @@ looper and the observers are not stored.
 :return: ``B_OK`` if success, ``B_BAD_VALUE`` if data parameter is not a valid message.
 :rtype: int
 )doc", py::arg("data"), py::arg("deep")=true)
+.def("Archive", [](const BHandler& self,bool deep){
+	BMessage msg;
+	status_t status = self.Archive(&msg,deep);
+	return py::make_tuple(status,msg);
+}, R"doc(
+Convenience method to archive the ``BHandler`` into a ``BMessage``.
+this verstion returns a tuple containing both the status of the
+call and the message containing the archived handler.
+
+:param deep: This parameter is ignored, as BHandler does not have children.
+:type deep: bool
+:return: A tuple (status,data):
+
+   - ``status`` (int): ``B_OK`` on success, or a Haiku error code
+   - ``data`` (BMessage): the message where the handler will be archived.
+   
+:rtype: tuple
+)doc", py::arg("deep")=true)
 .def("MessageReceived", &BHandler::MessageReceived, R"doc(
 Handle the message that has been received by the associated looper.
 This method is reimplemented by subclasses.
