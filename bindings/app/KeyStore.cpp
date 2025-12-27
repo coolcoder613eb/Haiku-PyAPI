@@ -392,7 +392,7 @@ clears the unlock key.
 )doc", py::arg("keyring"))
 .def("SetMasterUnlockKey", &BKeyStore::SetMasterUnlockKey, R"doc(
 A convenience method that calls SetUnlockKey for master keyring.
-Not implemented on server-side, look at py::meth`BKeyStore.SetUnlockKey`.
+Not implemented on server-side, look at ``SetUnlockKey``.
 
 :param key: The key that will unlock the master keyring.
 :type key: BKey

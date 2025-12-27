@@ -523,7 +523,7 @@ have to ``Lock()`` the object first.
    data in a thread-safe manner.
    Do not forget to pair each ``Lock()`` request with an ``Unlock()`` request. ``Lock()`` requests 
    can be stacked, which means that recursively locking a looper from a thread that actually holds 
-   the lock, will not cause a deadlock. See py::meth`BLocker` for more information on locking internals.
+   the lock, will not cause a deadlock. See ``BLocker`` for more information on locking internals.
 
    :return: A boolean value:
    
