@@ -37,6 +37,7 @@ Documentation by Kits
    looper
    messagefilter
    messagequeue
+   messagerunner
 
 .. toctree::
    :maxdepth: 2
