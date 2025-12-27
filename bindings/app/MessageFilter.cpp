@@ -83,13 +83,11 @@ restricted.
 .. note::
 
    filter_hook defines the protocol for message-filtering functions.
-   In c++:
+   In C++:
    
-   .. code-block:: c++
+   .. code-block:: cpp
    
-      filter_result (*filter_hook)(BMessage* message,
-                             BHandler** target,
-                             BMessageFilter* messageFilter);
+      filter_result (*filter_hook)(BMessage* message, BHandler** target, BMessageFilter* messageFilter);
 
    The first two arguments are the message that's being considered, and 
    the proposed ``BHandler`` target. You can alter the contents of the 
