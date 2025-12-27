@@ -34,8 +34,14 @@ If you supply a target ``BMessenger`` or ``BHandler`` to ``SendMessage()``
 the method will return immediately after delivery and the response will be 
 handled asynchronously, otherwise the method will return once the reply has 
 been delivered or after a set timeout.
+
+In this python binding, some convenient static functions are provided to
+initialize a BMessenger and obtaining at the same time the status of the 
+initialization through a tuple. Please see ``Create`` static functions.
 )doc")
-.def(py::init(), "Create an uninitialized BMessenger.")
+.def(py::init(), R"doc(
+Create an uninitialized ``BMessenger``.
+)doc")
 // ACT TODO: modificare init perché non possiamo passare un parametro status_t visto che python lo rende immutabile
 //.def(py::init<const char *, team_id, status_t *>(), R"doc(
 /*.def(py::init([](const char * signature, team_id team){
@@ -53,7 +59,7 @@ py::init cannot return tuples so, in this case we can provide a
 static_def (e.g.) "Create" which returns both the new BMessenger and the status_t
 */
 .def(py::init<const char *, team_id>(),R"doc(
-Creates a BMessenger and initializes it to target the already running 
+Creates a ``BMessenger`` and initializes it to target the already running 
 application identified by its signature and/or team ID.
 
 When only a signature is given, and multiple instances of the application 
@@ -195,7 +201,7 @@ message or even sends a reply.
 :type command: int
 :param replyTo: The handler to which a reply to the message shall be sent. May be ``None``.
 :type replyTo: BHandler
-:return: A status code, B_OK on success or an error code otherwise:
+:return: A status code, ``B_OK`` on success or an error code otherwise:
 
    - ``B_OK`` if everything went fine.
    - ``B_BAD_PORT_ID`` if the messenger is not properly initialized or its target doesn't exist anymore.
@@ -223,7 +229,7 @@ delivered. You can set a delivery timeout in microseconds.
 :type replyTo: BHandler
 :param timeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
 :type timeout: int, optional
-:return: A status code, B_OK on success or an error code otherwise:
+:return: A status code, ``B_OK`` on success or an error code otherwise:
 
    - ``B_OK`` if everything went fine.
    - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
@@ -253,7 +259,7 @@ delivered. You can set a delivery timeout in microseconds.
 :type replyTo: BMessenger
 :param timeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
 :type timeout: int, optional
-:return: A status code, B_OK on success or an error code otherwise:
+:return: A status code, ``B_OK`` on success or an error code otherwise:
 
    - ``B_OK`` if everything went fine.
    - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
@@ -278,7 +284,7 @@ If the target doesn't send a reply, the what field of reply is set to
 :type command: int
 :param reply: A pre-allocated ``BMessage`` object which the reply message will be copied into.
 :type reply: BMessage
-:return: A status code, B_OK on success or an error code otherwise:
+:return: A status code, ``B_OK`` on success or an error code otherwise:
 
    - ``B_OK`` if everything went fine.
    - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
@@ -342,7 +348,7 @@ and a ``replyTimeout`` in microseconds.
 :type deliveryTimeout: int, optional
 :param replyTimeout: The reply message timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
 :type replyTimeout: int, optional
-:return: A status code, B_OK on success or an error code otherwise:
+:return: A status code, ``B_OK`` on success or an error code otherwise:
    
    - ``B_OK`` if everything went fine.
    - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
@@ -394,13 +400,73 @@ in a convenient pythonic style.
    
 :rtype: tuple
 )doc", py::arg("message"),py::arg("deliveryTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
-.def("SetTo", py::overload_cast<const char *, team_id>(&BMessenger::SetTo), "", py::arg("signature"), py::arg("team")=- 1)
-.def("SetTo", py::overload_cast<const BHandler *, const BLooper *>(&BMessenger::SetTo), "", py::arg("handler"), py::arg("looper")=NULL)
+.def("SetTo", py::overload_cast<const char *, team_id>(&BMessenger::SetTo), R"doc(
+Reinitializes a ``BMessenger`` to target the already running application 
+identified by the supplied signature and/or team ID.
+
+When only a signature is given, and multiple instances of the application 
+are running it is indeterminate which one is chosen as the target. In 
+case only a team ID is passed, the target application is identified uniquely. 
+If both are supplied, the application identified by the team ID must have a 
+matching signature, otherwise the initialization fails.
+
+:param signature: The target application's signature. May be ``None``.
+:type signature: str
+:param team: The target application's team ID. May be negative. Defaults to ``-1``
+:type team: int, optional
+:return: A status code, ``B_OK`` if the reinitialization was successful or an error code otherwise:
+
+   - ``B_OK`` if the reinitialization was successful.
+   - ``B_BAD_VALUE`` if no application with the given signature or team ID was running.
+   - ``B_BAD_TYPE`` if No team ID was given and the signature was ``None``.
+   - ``B_MISMATCHED_VALUES`` if the supplied signature and the signature of the team didn't match.
+   
+:rtype: int
+)doc", py::arg("signature"), py::arg("team")=- 1)
+.def("SetTo", py::overload_cast<const BHandler *, const BLooper *>(&BMessenger::SetTo), R"doc(
+Reinitializes a ``BMessenger`` to target the local ``BHandler`` and/or ``BLooper``.
+
+When a ``None`` handler is supplied, the preferred handler in the given looper 
+is targeted. If no looper is supplied the looper the given handler belongs to 
+is used – that means in particular, that the handler must already belong to a 
+looper. If both are supplied the handler must actually belong to looper.
+
+:param handler: The target handler. May be ``None``.
+:type handler: BHandler
+:param looper: The target looper. May be ``None``. Defaults to ``None``
+:type looper: BLooper, optional
+:return: A status code, ``B_OK`` if the reinitialization was successful or an error code otherwise:
+
+   - ``B_OK`` if the reinitialization was successful.
+   - ``B_BAD_VALUE`` if both handler and looper were ``None`` or invalid.
+   - ``B_MISMATCHED_VALUES`` if the looper of the supplied handler and looper didn't match.
+   
+:rtype: int
+)doc", py::arg("handler"), py::arg("looper")=NULL)
 //.def("operator=", &BMessenger::operator=, "", py::arg("other"))
 .def("__eq__", &BMessenger::operator==, "", py::arg("other"))
-.def("IsValid", &BMessenger::IsValid, "")
-.def("Team", &BMessenger::Team, "")
-.def("HashValue", &BMessenger::HashValue, "")
+.def("IsValid", &BMessenger::IsValid, R"doc(
+Return whether the messenger's target looper still exists.
+
+.. note::
+   
+   This method does not check whether the target handler also still exists.
+   
+:return: ``True`` if the messenger's target looper still exists, ``False`` otherwise.
+:rtype: bool
+)doc")
+.def("Team", &BMessenger::Team, R"doc(
+Return the ID of the team that the messenger's target belongs to.
+
+:return: The team of the messenger's target.
+:rtype: team_id
+)doc")
+.def("HashValue", &BMessenger::HashValue, R"doc(
+Return a hash value that uniquely identifies the messenger.
+
+:return: A unique identifier for the messenger.
+:rtype: int
+)doc")
 ;
 
 m.def("__lt__", py::overload_cast<const BMessenger &, const BMessenger &>(&operator<), "", py::arg("a"), py::arg("b"));

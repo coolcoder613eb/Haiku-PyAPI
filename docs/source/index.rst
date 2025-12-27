@@ -38,6 +38,7 @@ Documentation by Kits
    messagefilter
    messagequeue
    messagerunner
+   messenger
 
 .. toctree::
    :maxdepth: 2
