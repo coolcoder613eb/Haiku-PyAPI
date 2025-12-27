@@ -186,16 +186,16 @@ have to ``Lock()`` the object first.
    Currently, only the name and the port capacity are archived. Any other data, such 
    as the filters, is not stored.
    
-   :param data: The ``BMessage`` object to archive the object in.
-   :type data: BMessage
-   :param deep: This parameter is ignored, as ``BLooper`` does not have children.
-   :type deep: bool
-   :return: One of these:
+:param data: The ``BMessage`` object to archive the object in.
+:type data: BMessage
+:param deep: This parameter is ignored, as ``BLooper`` does not have children.
+:type deep: bool
+:return: One of these:
    
       - ``B_OK`` if success
       - ``B_BAD_VALUE`` if the data parameter is not a valid message.
       
-   :rtype: int
+:rtype: int
    
 )doc", py::arg("data"), py::arg("deep")=true)
 .def("Archive", [](const BLooper& self,bool deep){
@@ -222,15 +222,15 @@ have to ``Lock()`` the object first.
 .def("PostMessage", py::overload_cast<uint32>(&BLooper::PostMessage), R"doc(
    Post a message with the *command* as ``what`` identifier to this looper.
    
-   :param command: The what identifier of the message to be sent.
-   :type command: int
-   :return: One of these:
+:param command: The what identifier of the message to be sent.
+:type command: int
+:return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
       - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
       
-   :rtype: int
+:rtype: int
    
 )doc", py::arg("command"))
 .def("PostMessage", py::overload_cast<BMessage *>(&BLooper::PostMessage), R"doc(
@@ -239,15 +239,15 @@ have to ``Lock()`` the object first.
    Posting a message puts it in the message queue. The message passes through the 
    default handler chain.
    
-   :param message: The message you would like to pass to this method.
-   :type message: int
-   :return: One of these:
+:param message: The message you would like to pass to this method.
+:type message: int
+:return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
       - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
       
-   :rtype: int
+:rtype: int
 
 )doc", py::arg("message"))
 .def("PostMessage", py::overload_cast<uint32, BHandler *, BHandler *>(&BLooper::PostMessage), R"doc(
@@ -257,20 +257,20 @@ have to ``Lock()`` the object first.
    The target handler should be associated with this looper. This method 
    bypasses the default message queue.
    
-   :param command: The value you want as the message's what identifier.
-   :type command: int
-   :param handler: The handler you would like to pass this message to.
-   :type handler: BHandler
-   :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
-   :type replyTo: BHandler
-   :return: One of these:
+:param command: The value you want as the message's what identifier.
+:type command: int
+:param handler: The handler you would like to pass this message to.
+:type handler: BHandler
+:param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
+:type replyTo: BHandler
+:return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
       - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
       - ``B_MISMATCHED_VALUES`` if the handler is not associated with this looper.
       
-   :rtype: int
+:rtype: int
 )doc", py::arg("command"), py::arg("handler"), py::arg("replyTo")=NULL)
 .def("PostMessage", py::overload_cast<BMessage *, BHandler *, BHandler *>(&BLooper::PostMessage), R"doc(
    Send a message to the handler associated with this looper. A response may 
@@ -279,20 +279,20 @@ have to ``Lock()`` the object first.
    The target handler should be associated with this looper. This method 
    bypasses the default message queue.
    
-   :param message: The message you want to pass.
-   :type message: BMessage
-   :param handler: The handler you would like to pass this message to.
-   :type handler: BHandler
-   :param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
-   :type replyTo: BHandler
-   :return: One of these:
+:param message: The message you want to pass.
+:type message: BMessage
+:param handler: The handler you would like to pass this message to.
+:type handler: BHandler
+:param replyTo: If you would like to request a reply, pass the handler to which this reply should be directed to. If you pass ``None``, you will not receive a reply.
+:type replyTo: BHandler
+:return: One of these:
    
       - ``B_OK	if the operation succeeded, and the message is sent to the port.
       - ``B_ERROR`` if there was a general operation error.
       - ``B_BAD_VALUE`` if this looper is not yet running and therefore cannot receive messages.
       - ``B_MISMATCHED_VALUES`` if the handler is not associated with this looper.
       
-   :rtype: int
+:rtype: int
    
 )doc", py::arg("message"), py::arg("handler"), py::arg("replyTo")=NULL)
 .def("DispatchMessage", &BLooper::DispatchMessage, R"doc(
@@ -601,10 +601,9 @@ have to ``Lock()`` the object first.
       and as such are only useful in specific debugging situations. 
       Handle with care.
 
-   :return: the thread id of the thread that currently holds the lock.
-   :rtype: thread_id
-
-))doc")
+:return: the thread id of the thread that currently holds the lock.
+:rtype: thread_id
+)doc")
 .def("CountLocks", &BLooper::CountLocks, R"doc(
    Return the number of recursive locks that are currently being held 
    on this looper.
@@ -669,10 +668,10 @@ have to ``Lock()`` the object first.
    Report the suites of messages and specifiers that derived classes understand.
    This method fills a passed ``BMessage``.
    
-   :param data: The message that will be filled with the supported suites.
-   :type data: BMessage
-   :return: the status retuned by the call. ``B_OK`` success or a Haiku's error code
-   :rtype: int
+:param data: The message that will be filled with the supported suites.
+:type data: BMessage
+:return: the status retuned by the call. ``B_OK`` success or a Haiku's error code
+:rtype: int
    
 )doc", py::arg("data"))
 /* pythonic version */
@@ -686,12 +685,12 @@ have to ``Lock()`` the object first.
    This versions return a tuple containing the status of the call and
    the ``BMessage`` containing the supported suites.
    
-   :return: A tuple containing ``(status, data)``:
+:return: A tuple containing ``(status, data)``:
    
       - ``status`` (int): the returned status of the call
       - ``data`` (BMessage): the message containing the supported suites
       
-   :rtype: tuple
+:rtype: tuple
    
 )doc")
 .def("AddCommonFilter", &BLooper::AddCommonFilter, R"doc(
