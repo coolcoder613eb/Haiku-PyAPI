@@ -56,6 +56,8 @@ signifies the message that's been in the queue the longest.
 
 :param index: The zero-based index of the message to retrieve.
 :type index: int
+:return: The message retrieved.
+:rtype: BMessage
 )doc", py::arg("index"))
 .def("FindMessage", py::overload_cast<uint32, int32>(&BMessageQueue::FindMessage, py::const_), R"doc(
 This version of ``FindMessage`` lets you specify a ``what`` field value; 
@@ -70,10 +72,12 @@ in this case, only messages that match the ``what`` argument are counted.
 :type what: int
 :param index: The zero-based index of the considered message list to use for message retrival.
 :type index: int
+:return: The message retrieved.
+:rtype: BMessage
 )doc", py::arg("what"), py::arg("index")=0)
 .def("Lock", &BMessageQueue::Lock, R"doc(
 Lock the ``BMessageQueue``, so that another thread won't alter the 
-contents of the queue while it's being read. ``Lock()` doesn't 
+contents of the queue while it's being read. ``Lock()`` doesn't 
 return until it has the queue locked; it always returns ``True``.
 
 .. note::
