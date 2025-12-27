@@ -35,6 +35,7 @@ Documentation by Kits
    key
    keystore
    looper
+   messagefilter
 
 .. toctree::
    :maxdepth: 2
