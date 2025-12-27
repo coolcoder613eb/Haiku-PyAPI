@@ -163,11 +163,54 @@ Executes the message filter.
    
 :rtype: tuple
 )doc", py::arg("message"), py::arg("target"))
-.def("MessageDelivery", &BMessageFilter::MessageDelivery, "")
-.def("MessageSource", &BMessageFilter::MessageSource, "")
-.def("Command", &BMessageFilter::Command, "")
-.def("FiltersAnyCommand", &BMessageFilter::FiltersAnyCommand, "")
-.def("Looper", &BMessageFilter::Looper, "",py::return_value_policy::reference)
+.def("MessageDelivery", &BMessageFilter::MessageDelivery, R"doc(
+This function returns the ``message_delivery`` constant set when the 
+``BMessageFilter`` was constructed.
+
+:return: How the message must be deliverded.
+:rtype: message_delivery
+)doc")
+.def("MessageSource", &BMessageFilter::MessageSource, R"doc(
+This function returns the ``message_source`` constant set when the 
+``BMessageFilter`` was constructed.
+
+:return: How the source of the message is constrained.
+:rtype: message_source
+)doc")
+.def("Command", &BMessageFilter::Command, R"doc(
+This function returns the command constant (the ``BMessage`` ``what`` value) 
+that an arriving message must match for the filter to apply.
+
+.. note::
+
+   Because all command constants are valid, including negative numbers and ``0``, 
+   ``Command()`` returns a reliable result only if ``FiltersAnyCommand()`` 
+   returns ``False``.
+
+:return: The ``what`` command to filter.
+:rtype: int
+)doc")
+.def("FiltersAnyCommand", &BMessageFilter::FiltersAnyCommand, R"doc(
+This function returns ``True`` if the filter applies to all messages, and 
+``False`` if it's limited to a specific command.
+
+.. note::
+
+   Because all command constants are valid, including negative numbers and ``0``, 
+   ``Command()`` returns a reliable result only if ``FiltersAnyCommand()`` 
+   returns ``False``.
+
+:return: Wether the filter applies to all messages.
+:rtype: bool
+)doc")
+.def("Looper", &BMessageFilter::Looper, R"doc(
+Returns the ``BLooper`` whose messages this object filters, or ``None`` if the 
+``BMessageFilter`` hasn't yet been assigned to a ``BHandler`` or ``BLooper``.
+
+:return: The looper whose messages this object filters.
+:rtype: BLopper
+)doc",
+py::return_value_policy::reference) //<<--- important: avoids double frees or crashes
 ;
 
 
