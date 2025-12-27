@@ -181,11 +181,219 @@ looper afterwards.
    
 :rtype: int 
 )doc", py::arg("timeout"))
-.def("SendMessage", py::overload_cast<uint32, BHandler *>(&BMessenger::SendMessage, py::const_), "", py::arg("command"), py::arg("replyTo")=NULL)
-.def("SendMessage", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessenger::SendMessage, py::const_), "", py::arg("message"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
-.def("SendMessage", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessenger::SendMessage, py::const_), "", py::arg("message"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
-.def("SendMessage", py::overload_cast<uint32, BMessage *>(&BMessenger::SendMessage, py::const_), "", py::arg("command"), py::arg("reply"))
-.def("SendMessage", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessenger::SendMessage, py::const_), "", py::arg("message"), py::arg("reply"), py::arg("deliveryTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
+.def("SendMessage", py::overload_cast<uint32, BHandler *>(&BMessenger::SendMessage, py::const_), R"doc(
+Deliver a ``BMessage`` with command what identifier to the 
+messenger's target. A response may be sent to the replyTo handler 
+asynchronously.
+
+If the target's message port is full, the method waits indefinitely, 
+until space becomes available in the port. After delivery the method 
+returns immediately. It does not wait until the target processes the 
+message or even sends a reply.
+
+:param command: The ``what`` field of the message to deliver.
+:type command: int
+:param replyTo: The handler to which a reply to the message shall be sent. May be ``None``.
+:type replyTo: BHandler
+:return: A status code, B_OK on success or an error code otherwise:
+
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if the messenger is not properly initialized or its target doesn't exist anymore.
+   
+:rtype: int
+)doc", py::arg("command"), py::arg("replyTo")=NULL)
+.def("SendMessage", py::overload_cast<BMessage *, BHandler *, bigtime_t>(&BMessenger::SendMessage, py::const_), R"doc(
+Delivers a message to the messenger's target. A response message may 
+be sent back to the replyTo handler asynchronously.
+
+A copy of the supplied message is sent and the caller retains ownership 
+of message.
+
+If the target's message port is full, the method waits until space 
+becomes available in the port or the specified timeout occurs (whichever 
+happens first). After delivery the method returns immediately. It does 
+not wait until the target processes the message or even sends a reply.
+
+This method does not return by default until the message has been 
+delivered. You can set a delivery timeout in microseconds.
+
+:param message: The message to be sent.
+:type message: BMessage
+:param replyTo: The handler for a response message to be sent. May be ``None``.
+:type replyTo: BHandler
+:param timeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type timeout: int, optional
+:return: A status code, B_OK on success or an error code otherwise:
+
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+   - ``B_WOULD_BLOCK`` if a delivery timeout of ``0`` was supplied and the target port was full when trying to deliver the message.
+   - ``B_TIMED_OUT`` if the timeout expired while trying to deliver the message.
+   
+:rtype: int
+)doc", py::arg("message"), py::arg("replyTo")=NULL, py::arg("timeout")=B_INFINITE_TIMEOUT)
+.def("SendMessage", py::overload_cast<BMessage *, BMessenger, bigtime_t>(&BMessenger::SendMessage, py::const_), R"doc(
+Delivers a message to the messenger's target. A response message may be 
+sent back to the replyTo messenger's target asynchronously.
+
+A copy of the supplied message is sent and the caller retains ownership 
+of message.
+
+If the target's message port is full, the method waits until space 
+becomes available in the port or the specified timeout occurs (whichever 
+happens first). After delivery the method returns immediately. It does 
+not wait until the target processes the message or even sends a reply.
+
+This method does not return by default until the message has been 
+delivered. You can set a delivery timeout in microseconds.
+
+:param message: The message to be sent.
+:type message: BMessage
+:param replyTo: A messenger specifying the target for a response message.
+:type replyTo: BMessenger
+:param timeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type timeout: int, optional
+:return: A status code, B_OK on success or an error code otherwise:
+
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+   - ``B_WOULD_BLOCK`` if a delivery timeout of ``0`` was supplied and the target port was full when trying to deliver the message.
+   - ``B_TIMED_OUT`` if the timeout expired while trying to deliver the message.
+   
+:rtype: int
+)doc", py::arg("message"), py::arg("replyTo"), py::arg("timeout")=B_INFINITE_TIMEOUT)
+.def("SendMessage", py::overload_cast<uint32, BMessage *>(&BMessenger::SendMessage, py::const_), R"doc(
+Delivers a ``BMessage`` with command what identifier to the messenger's 
+target and waits for a reply ``BMessage`` synchronously.
+
+The method does wait for a reply. The reply message is copied into reply. 
+If the target doesn't send a reply, the what field of reply is set to 
+``B_NO_REPLY``.
+
+.. note::
+
+   This version is kept for compatibility with the original C++ API.
+
+:param command: The ``what`` field of the message to deliver.
+:type command: int
+:param reply: A pre-allocated ``BMessage`` object which the reply message will be copied into.
+:type reply: BMessage
+:return: A status code, B_OK on success or an error code otherwise:
+
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+   - ``B_NO_MORE_PORTS`` if all reply ports were in use.
+   	
+:rtype: int
+)doc", py::arg("command"), py::arg("reply"))
+.def("SendMessage",[](const BMessenger& self, uint32 command){
+	BMessage reply;
+	status_t status = self.SendMessage(command,&reply);
+	return py::make_tuple(status, reply);
+}, R"doc(
+Delivers a ``BMessage`` with command what identifier to the messenger's 
+target and waits for a reply ``BMessage`` synchronously.
+
+The method does wait for a reply. The reply message is copied into reply. 
+If the target doesn't send a reply, the what field of reply is set to 
+``B_NO_REPLY``.
+
+The resultin status of the call and the reply are returned in a tuple
+in a convenient pythonic style.
+
+:param command: The ``what`` field of the message to deliver.
+:type command: int
+:return: a tuple containing the status code and the reply message:
+
+   - the status code is one of these:
+   
+      - ``B_OK`` if everything went fine.
+      - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+      - ``B_NO_MORE_PORTS`` if all reply ports were in use.
+      
+   - the ``BMessage`` containing the reply message.
+   
+:rtype: tuple
+)doc", py::arg("command"))
+.def("SendMessage", py::overload_cast<BMessage *, BMessage *, bigtime_t, bigtime_t>(&BMessenger::SendMessage, py::const_), R"doc(
+Delivers a message to the messenger's target and waits for a reply 
+to come back synchronously.
+
+A copy of the supplied message is sent and the caller retains 
+ownership of message.
+
+The method does wait for a reply. The reply message is copied into 
+reply. If the target doesn't send a reply or if a reply timeout 
+occurs, the what field of reply is set to ``B_NO_REPLY``.
+
+This method does not return by default until the message has been 
+delivered and the reply has come back. You can set a ``deliveryTimeout`` 
+and a ``replyTimeout`` in microseconds.
+
+.. note::
+
+   This version is kept for compatibility with the original C++ API.
+
+:param message: The message to be sent.
+:type message: BMessage
+:param reply: A pre-allocated ``BMessage`` which the reply message will be copied into.
+:type reply: BMessage
+:param deliveryTimeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type deliveryTimeout: int, optional
+:param replyTimeout: The reply message timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type replyTimeout: int, optional
+:return: A status code, B_OK on success or an error code otherwise:
+   
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+   - ``B_WOULD_BLOCK`` if a delivery timeout of 0 was supplied and the target port was full when trying to deliver the message.
+   - ``B_TIMED_OUT`` if the timeout expired while trying to deliver the message.
+   - ``B_NO_MORE_PORTS`` if all reply ports were in use.
+   
+:rtype: int
+)doc", py::arg("message"), py::arg("reply"), py::arg("deliveryTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
+.def("SendMessage", [](const BMessenger& self, BMessage * message,bigtime_t deliveryTimeout, bigtime_t replyTimeout){
+	BMessage reply;
+	status_t status = self.SendMessage(message,&reply,deliveryTimeout,replyTimeout);
+	return py::make_tuple(status, reply);
+},R"doc(
+Delivers a message to the messenger's target and waits for a reply 
+to come back synchronously.
+
+A copy of the supplied message is sent and the caller retains 
+ownership of message.
+
+The method does wait for a reply. The reply message is copied into 
+reply. If the target doesn't send a reply or if a reply timeout 
+occurs, the what field of reply is set to ``B_NO_REPLY``.
+
+This method does not return by default until the message has been 
+delivered and the reply has come back. You can set a ``deliveryTimeout`` 
+and a ``replyTimeout`` in microseconds.
+
+The resultin status of the call and the reply are returned in a tuple
+in a convenient pythonic style.
+
+:param message: The message to be sent.
+:type message: BMessage
+:param deliveryTimeout: The message delivery timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type deliveryTimeout: int, optional
+:param replyTimeout: The reply message timeout in microseconds. Defaults to ``B_INFINITE_TIMEOUT`` (optional)
+:type replyTimeout: int, optional
+:return: A tuple containing the status of the call and the reply message:
+
+   - the status of the call (int) can be:
+      
+      - ``B_OK`` if everything went fine.
+      - ``B_BAD_PORT_ID`` if the messenger was not properly initialized or its target didn't exist.
+      - ``B_WOULD_BLOCK`` if a delivery timeout of 0 was supplied and the target port was full when trying to deliver the message.
+      - ``B_TIMED_OUT`` if the timeout expired while trying to deliver the message.
+      - ``B_NO_MORE_PORTS`` if all reply ports were in use.
+      
+   - the reply message (BMessage)
+   
+:rtype: tuple
+)doc", py::arg("message"),py::arg("deliveryTimeout")=B_INFINITE_TIMEOUT, py::arg("replyTimeout")=B_INFINITE_TIMEOUT)
 .def("SetTo", py::overload_cast<const char *, team_id>(&BMessenger::SetTo), "", py::arg("signature"), py::arg("team")=- 1)
 .def("SetTo", py::overload_cast<const BHandler *, const BLooper *>(&BMessenger::SetTo), "", py::arg("handler"), py::arg("looper")=NULL)
 //.def("operator=", &BMessenger::operator=, "", py::arg("other"))
