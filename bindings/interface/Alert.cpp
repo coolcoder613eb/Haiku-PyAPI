@@ -13,7 +13,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BAlert);
+//PYBIND11_SMART_HOLDER_TYPE_CASTERS(BAlert);
 
 class PyBAlert : public BAlert{
 	public:
@@ -53,7 +53,7 @@ py::enum_<button_spacing>(m, "button_spacing", "")
 .value("B_OFFSET_SPACING", button_spacing::B_OFFSET_SPACING, "")
 .export_values();
 
-py::class_<BAlert,PyBAlert, BWindow, py::smart_holder>(m, "BAlert")
+py::class_<BAlert,PyBAlert,std::unique_ptr<BAlert, py::nodelete>>(m, "BAlert") //previously, BWindow, py::smart_holder instead of std::unique_ptr<BAlert, py::nodelete>
 .def(py::init(), "")
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2")=NULL, py::arg("button3")=NULL, py::arg("width")=B_WIDTH_AS_USUAL, py::arg("type")=B_INFO_ALERT)
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, button_spacing, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2"), py::arg("button3"), py::arg("width"), py::arg("spacing"), py::arg("type")=B_INFO_ALERT)
