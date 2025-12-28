@@ -53,7 +53,22 @@ py::enum_<button_spacing>(m, "button_spacing", "")
 .value("B_OFFSET_SPACING", button_spacing::B_OFFSET_SPACING, "")
 .export_values();
 
-py::class_<BAlert,PyBAlert,std::unique_ptr<BAlert, py::nodelete>>(m, "BAlert") //previously, BWindow, py::smart_holder instead of std::unique_ptr<BAlert, py::nodelete>
+py::class_<BAlert,PyBAlert,std::unique_ptr<BAlert, py::nodelete>>(m, "BAlert",R"doc(
+The ``BAlert`` class defines a modal alert dialog which displays a short message and provides a set of labeled buttons that allow the user to respond.
+
+The alert can be configured with a set of one to three buttons. These buttons are assigned indexes ``0``, ``1``, and ``2`` from right-to-left respectively and are automatically positioned by the system. The user can either click on one of the buttons or use a shortcut key to select a button.
+
+The layout of the buttons can be configured by setting the button_width and button_spacing properties in the ``BAlert`` constructor. The icon displayed in the alert can also be configured by setting the alert_type property. The right-most button (index ``0``) is the default button which can be activated by pushing the `Enter` key.
+
+When the user responds by selecting one of the buttons the alert window is removed from the screen. The index of the selected button is returned to the calling application and the ``BAlert`` object is deleted by Haiku.
+
+.. note::
+   
+   To prevent "double free" errors, the Python wrapper does not automatically destroy the ``BAlert`` object, as Haiku handles its deletion when the alert closes. 
+   However, if a ``BAlert`` is instantiated but never displayed (e.g., by calling ``Go()``), the memory will not be reclaimed automatically.
+   In such cases, you are responsible for managing the object's lifecycle to avoid memory leaks by calling ``Quit()``.
+   
+)doc") //previously, BWindow, py::smart_holder instead of std::unique_ptr<BAlert, py::nodelete>
 .def(py::init(), "")
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2")=NULL, py::arg("button3")=NULL, py::arg("width")=B_WIDTH_AS_USUAL, py::arg("type")=B_INFO_ALERT)
 .def(py::init<const char *, const char *, const char *, const char *, const char *, button_width, button_spacing, alert_type>(), "", py::arg("title"), py::arg("text"), py::arg("button1"), py::arg("button2"), py::arg("button3"), py::arg("width"), py::arg("spacing"), py::arg("type")=B_INFO_ALERT)
