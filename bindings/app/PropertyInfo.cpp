@@ -40,38 +40,38 @@ class PyBPropertyInfo : public BPropertyInfo{
 
 PYBIND11_MODULE(PropertyInfo,m)
 {
-py::enum_<value_kind>(m, "value_kind", "")
-.value("B_COMMAND_KIND", value_kind::B_COMMAND_KIND, "")
-.value("B_TYPE_CODE_KIND", value_kind::B_TYPE_CODE_KIND, "")
+py::enum_<value_kind>(m, "value_kind", "Specifies the nature of the value in a value_info structure.")
+.value("B_COMMAND_KIND", value_kind::B_COMMAND_KIND, R"doc(The value represents a ``BMessage`` command constant (``what``).)doc")
+.value("B_TYPE_CODE_KIND", value_kind::B_TYPE_CODE_KIND, R"doc(The value represents a data type code (``type_code``).)doc")
 .export_values();
 
-py::class_<compound_type>(m, "compound_type")
-.def_readonly("pairs", &compound_type::pairs, "")
+py::class_<compound_type>(m, "compound_type","Represents a complex data type made of multiple fields.")
+.def_readonly("pairs", &compound_type::pairs, "The list of field definitions for this compound type.")
 ;
 
-py::class_<compound_type::field_pair>(m, "field_pair")
-.def_readonly("name", &compound_type::field_pair::name, "")
-.def_readonly("type", &compound_type::field_pair::type, "")
+py::class_<compound_type::field_pair>(m, "field_pair", "Describes a single named field within a compound data type.")
+.def_readonly("name", &compound_type::field_pair::name, "The name of the field.")
+.def_readonly("type", &compound_type::field_pair::type, "The data type code of the field.")
 ;
 
-py::class_<property_info>(m, "property_info")
-.def_readwrite("name", &property_info::name, "")
-.def_readonly("commands", &property_info::commands, "")
-.def_readonly("specifiers", &property_info::specifiers, "")
-.def_readwrite("usage", &property_info::usage, "")
-.def_readwrite("extra_data", &property_info::extra_data, "")
-.def_readonly("types", &property_info::types, "")
-.def_readonly("ctypes", &property_info::ctypes, "")
-.def_readonly("_reserved", &property_info::_reserved, "")
+py::class_<property_info>(m, "property_info", "Defines a property supported by an object in the scripting system.")
+.def_readwrite("name", &property_info::name, "The name of the property.")
+.def_readonly("commands", &property_info::commands, "The command codes (what) this property accepts.")
+.def_readonly("specifiers", &property_info::specifiers, "The types of specifiers this property can handle.")
+.def_readwrite("usage", &property_info::usage, "A human-readable description of the property's purpose or usage.")
+.def_readwrite("extra_data", &property_info::extra_data, "Additional data used for specific property implementations.")
+.def_readonly("types", &property_info::types, "The simple data types supported by this property.")
+.def_readonly("ctypes", &property_info::ctypes, "The compound data types supported by this property.")
+.def_readonly("_reserved", &property_info::_reserved, "Internal reserved field for future expansion.")
 ;
 
-py::class_<value_info>(m, "value_info")
-.def_readwrite("name", &value_info::name, "")
-.def_readwrite("value", &value_info::value, "")
-.def_readwrite("kind", &value_info::kind, "")
-.def_readwrite("usage", &value_info::usage, "")
-.def_readwrite("extra_data", &value_info::extra_data, "")
-.def_readonly("_reserved", &value_info::_reserved, "")
+py::class_<value_info>(m, "value_info", "Maps a human-readable name to a specific constant value or command.")
+.def_readwrite("name", &value_info::name, "The human-readable name of the value.")
+.def_readwrite("value", &value_info::value, "The actual numeric value (command or type).")
+.def_readwrite("kind", &value_info::kind, R"doc(The category of this value (see :class:`value_kind`).)doc")
+.def_readwrite("usage", &value_info::usage, "Textual explanation of what this value represents.")
+.def_readwrite("extra_data", &value_info::extra_data, "Additional data associated with this value.")
+.def_readonly("_reserved", &value_info::_reserved, "Internal reserved field.")
 ;
 
 py::class_<BPropertyInfo,PyBPropertyInfo>(m, "BPropertyInfo", "Class used to manage scripting.")
