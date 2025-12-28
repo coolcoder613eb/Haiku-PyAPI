@@ -179,22 +179,182 @@ application.
 :param id: The message identifier.
 :type id: BString
 )doc", py::arg("id"))
-.def("Progress", &BNotification::Progress, "")
-.def("SetProgress", &BNotification::SetProgress, "", py::arg("progress"))
-.def("OnClickApp", &BNotification::OnClickApp, "")
-.def("SetOnClickApp", &BNotification::SetOnClickApp, "", py::arg("app"))
-.def("OnClickFile", &BNotification::OnClickFile, "")
-.def("SetOnClickFile", &BNotification::SetOnClickFile, "", py::arg("file"))
-.def("AddOnClickRef", &BNotification::AddOnClickRef, "", py::arg("ref"))
-.def("CountOnClickRefs", &BNotification::CountOnClickRefs, "")
-.def("OnClickRefAt", &BNotification::OnClickRefAt, "", py::arg("index"))
-.def("AddOnClickArg", &BNotification::AddOnClickArg, "", py::arg("arg"))
-.def("CountOnClickArgs", &BNotification::CountOnClickArgs, "")
-.def("OnClickArgAt", &BNotification::OnClickArgAt, "", py::arg("index"))
-.def("Icon", &BNotification::Icon, "")
-.def("SetIcon", &BNotification::SetIcon, "", py::arg("icon"))
-.def("Send", &BNotification::Send, "", py::arg("timeout")=- 1)
-;
+.def("Progress", &BNotification::Progress, R"doc(
+Return the progress for the notification.
 
+:return: A value between ``0.0`` and ``1.0`` if notification's type is ``B_PROGRESS_NOTIFICATION``, or otherwise ``-1``.
+:rtype: float
+)doc")
+.def("SetProgress", &BNotification::SetProgress, R"doc(
+Set progress information.
+
+When you are building a notification of the type ``B_PROGRESS_NOTIFICATION`` 
+the notification view will show a progress bar and a label that expresses 
+the progress in a percentage. Using this method you can set what the bar 
+and label express.
+
+The valid range is between ``0.0`` and ``1.0``. If progress is lower than 
+``0.0`` (i.e. negative), the value will be set to ``0.0``. If it is higher 
+than ``1.0``, it will be set to ``1.0``.
+
+:param progress: The value of the progress bar.
+:type progress: float
+)doc", py::arg("progress"))
+.def("OnClickApp", &BNotification::OnClickApp, R"doc(
+Return the signature of the application that will be called when the 
+notification is clicked.
+
+:return: The signature of the application.
+:rtype: str
+)doc")
+.def("SetOnClickApp", &BNotification::SetOnClickApp, R"doc(
+Set which application should be called when the notification is clicked 
+by the user.
+
+The value app should be a valid application signature, for example 
+'application/x-vnd.Haiku-StyledEdit'.
+
+Using this property has precedence on when ``BNotification.SetOnClickFile()`` 
+is used. If you want interacting with the notification opening a specific 
+file, then you should use this method in combination with 
+``BNotification.AddOnClickRef()``.
+
+:param app: The signature of the application that should be called.
+:type app: BString
+)doc", py::arg("app"))
+.def("OnClickFile", &BNotification::OnClickFile, R"doc(
+Return the reference to the file that will be opened when the notification is clicked.
+
+:return: The reference to the file that will be opened on click.
+:rtype: entry_ref
+)doc")
+.def("SetOnClickFile", &BNotification::SetOnClickFile, R"doc(
+Set which file should be opened when the notification is clicked 
+by the user.
+
+The file will be opened by the default application for this file 
+type.
+
+You cannot use this action in combination with 
+``BNotification.SetOnClickApp()``. If you use this way of setting 
+an action, this action will be ignored.
+
+:param file: The file to open on notification clic.
+:type file: entry_ref
+:return: ``B_OK`` or an error code.
+:rtype: int
+)doc", py::arg("file"))
+.def("AddOnClickRef", &BNotification::AddOnClickRef, R"doc(
+Add a ref to the list of arguments passed when a user clicks the 
+notification.
+
+This method allows you to construct a list of refs, that will be 
+sent to the application specified by ``BNotification.AddOnClickApp()``, 
+or the one that is associated with ``BNotification.AddOnClickFile()``. 
+The refs will be handled by the application's 
+``BApplication.RefsReceived()`` hook method.
+
+:param ref: The ref to add to a list of refs passed as arguments
+:type ref: entry_ref
+:return: ``B_OK`` or an error code.
+:rtype: int
+)doc", py::arg("ref"))
+.def("CountOnClickRefs", &BNotification::CountOnClickRefs, R"doc(
+Return the number of refs to be passed when the user clicks on the 
+notification.
+
+:return: The number of refs to be passed on notification click.
+:rtype: int
+)doc")
+.def("OnClickRefAt", &BNotification::OnClickRefAt, R"doc(
+Return the ref that is stored at ``index``.
+
+:param index: The index to use to retrieve the ref.
+:type index: int
+:return: The ref at the index specified.
+:rtype: entry_ref
+)doc", py::arg("index"))
+.def("AddOnClickArg", &BNotification::AddOnClickArg, R"doc(
+Add to a list of arguments that are passed to an application when 
+the user clicks on the notification.
+
+This method allows you to construct a list of arguments, that 
+will be sent to the application specified by 
+``BNotification.AddOnClickApp()``, or the one that is associated 
+with ``BNotification.AddOnClickFile()``. The args will be handled 
+by the application's ``BApplication.ArgvReceived()`` hook method.
+
+:param arg: The list of arguments.
+:type arg: BString
+:return: ``B_OK`` or an error code.
+:rtype: int
+)doc", py::arg("arg"))
+.def("CountOnClickArgs", &BNotification::CountOnClickArgs, R"doc(
+Return the number of args to be passed when the user clicks on the 
+notification.
+
+:return: The number of arguments.
+:rtype: int
+)doc")
+.def("OnClickArgAt", &BNotification::OnClickArgAt, R"doc(
+Return the arg that is stored at ``index``.
+
+:param index: The index of the arg to be retrieved.
+:type index: int
+:return: The specified argument
+:rtype: str
+)doc", py::arg("index"))
+/*
+ TODO: in "Icon()" the description says:
+ 	Returns a borrowed unchangeable reference to the icon.
+ but this is valid in C++ (const BBitmap*). We should test if 
+ in python this is valid.
+*/
+.def("Icon", &BNotification::Icon, R"doc(
+Return the icon for the notification.
+
+:return: Returns a borrowed unchangeable reference to the icon.
+:rtype: BBitmap
+)doc")
+.def("SetIcon", &BNotification::SetIcon, R"doc(
+Set the icon of the notification.
+
+Set the icon for the notification. By default, the application 
+icon is used. This method makes a copy of the icon.
+
+:param icon: The icon that should be displayed with the notification.
+:type icon: BBitmap
+:return: ``B_OK`` or an error code:
+
+   - ``B_OK`` if everything went fine
+   - ``B_NO_MEMORY`` when the icon could not be copied
+   - or another error if something else went wrong.
+   
+:rtype: int
+)doc", py::arg("icon"))
+.def("Send", &BNotification::Send, R"doc(
+Send the notification to the ``notification_server``.
+
+The notification is delivered asynchronously to the 
+``notification_server``, which will display it according to its 
+settings and filters.
+
+After sending, you retain ownership of the notification. The 
+advantage is that you can re-use the notification at a later moment, 
+or use the object to update the notification. See 
+``BNotification.SetMessageID()`` about updating displayed 
+notifications.
+
+:param timeout: The timeout in microsecond that the notification should be displayed. If you want to use the default timing, use the default argument or pass ``-1``.
+:type timeout: int
+:return: ``B_OK`` or an error code:
+
+   - ``B_OK`` if everything went fine.
+   - ``B_BAD_PORT_ID`` if there was a problem connecting to the ``notification_server``.
+   - or any other errors if something went wrong transmitting the notification.
+   
+:rtype: int
+)doc", py::arg("timeout")=- 1)
+;
 
 }
