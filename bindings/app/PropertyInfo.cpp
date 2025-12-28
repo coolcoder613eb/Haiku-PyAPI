@@ -223,8 +223,54 @@ The status of the call is returned in a tuple along with the filled buffer.
    
 :rtype: tuple
 )doc")
-.def("AllowsTypeCode", &BPropertyInfo::AllowsTypeCode, "", py::arg("code"))
-.def("Unflatten", &BPropertyInfo::Unflatten, "", py::arg("code"), py::arg("buffer"), py::arg("size"))
+.def("AllowsTypeCode", &BPropertyInfo::AllowsTypeCode, R"doc(
+Implements ``BFlattenable.AllowsTypeCode``:
+Get whether or not the supplied type_code is supported. Only ``B_PROPERTY_INFO_TYPE`` 
+is supported here.
+
+:param code: The ``type_code`` constant you want to check for.
+:type code: type_code
+:return: ``True`` if code is ``B_PROPERTY_INFO_TYPE``, ``False`` otherwise.
+:rtype: bool
+)doc", py::arg("code"))
+//.def("Unflatten", &BPropertyInfo::Unflatten, R"doc(
+.def("Unflatten", [](BPropertyInfo& self, type_code code, py::buffer buffer, ssize_t size){
+	py::buffer_info info = buffer.request();
+	if (size > (ssize_t)info.size) {
+		throw py::value_error("size exceeds buffer length");
+	}
+	ssize_t finalSize = (size <= 0) ? (ssize_t)info.size : size;
+	return self.Unflatten(code, info.ptr, finalSize);
+}, R"doc(
+Unflatten the ``BPropertyInfo`` object from a buffer.
+This version is kept for C++ compatibility as you should provide the type code and 
+the explicit size of the data to be processed.
+
+:param code: The type code identifying the data format (e.g., ``B_PROPERTY_INFO_TYPE``).
+:type code: type_code
+:param buffer: The source buffer (bytes, bytearray, or any buffer-compatible object) containing the serialized data.
+:type buffer: py::buffer (e.g. bytes, bytearray etc.)
+:param size: The number of bytes to read from the buffer.
+:type size: int
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("code"), py::arg("buffer"), py::arg("size"))
+.def("Unflatten", [](BPropertyInfo& self, type_code code, py::buffer buffer){
+	py::buffer_info info = buffer.request();
+	status_t status = self.Unflatten(code, info.ptr, (ssize_t)info.size);
+	return status;
+}, R"doc(
+Unflatten the ``BPropertyInfo`` object from a buffer.
+This pythonic version of Unflatten automatically detects the
+size of the input buffer, so you don't need to pass it manually.
+
+:param code: The type code identifying the data format (e.g., ``B_PROPERTY_INFO_TYPE``).
+:type code: type_code
+:param buffer: The source buffer (bytes, bytearray, or any buffer-compatible object) containing the serialized data.
+:type buffer: py::buffer (e.g. bytes, bytearray etc.)
+:return: ``B_OK`` on success, or an error code.
+:rtype: int
+)doc", py::arg("code"), py::arg("buffer"))
 .def("Properties", &BPropertyInfo::Properties, "")
 .def("Values", &BPropertyInfo::Values, "")
 .def("CountProperties", &BPropertyInfo::CountProperties, "")
