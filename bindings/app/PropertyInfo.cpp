@@ -271,11 +271,34 @@ size of the input buffer, so you don't need to pass it manually.
 :return: ``B_OK`` on success, or an error code.
 :rtype: int
 )doc", py::arg("code"), py::arg("buffer"))
-.def("Properties", &BPropertyInfo::Properties, "")
-.def("Values", &BPropertyInfo::Values, "")
-.def("CountProperties", &BPropertyInfo::CountProperties, "")
-.def("CountValues", &BPropertyInfo::CountValues, "")
-.def("PrintToStream", &BPropertyInfo::PrintToStream, "")
+.def("Properties", &BPropertyInfo::Properties, R"doc(
+Return the properties as a ``property_info`` object.
+
+:return: The property information structure.
+:rtype: property_info
+)doc")
+.def("Values", &BPropertyInfo::Values, R"doc(
+Return the values as a ``value_info`` object.
+
+:return: The value information object.
+:rtype: value_info
+)doc")
+.def("CountProperties", &BPropertyInfo::CountProperties, R"doc(
+Return the number of properties specified as an ``int``
+
+:return: The number of properties specified
+:rtype: int
+)doc")
+.def("CountValues", &BPropertyInfo::CountValues, R"doc(
+Returns the number of values specified as an ``int``
+
+:return: The number of values specified
+:rtype: int
+)doc")
+.def("PrintToStream", &BPropertyInfo::PrintToStream, R"doc(
+Print each property, command, type, and specifier to standard output.
+Useful for debug purposes.
+)doc")
 ;
 
 
