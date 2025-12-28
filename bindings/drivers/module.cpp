@@ -2,9 +2,9 @@
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
-
-#include <drivers/module.h>
-
+extern "C" {
+	#include <drivers/module.h>
+}
 namespace py = pybind11;
 
 /*
@@ -118,6 +118,22 @@ status_t call_with_tuple(module_info* info, int32_t operation, Tuple&& args, std
 
 status_t call_std_ops(module_info* info, int32_t operation, py::args args) {
     if (info == nullptr || info->std_ops == nullptr) {
+        return B_ERROR; 
+    }
+    size_t num_args = args.size();
+    if (num_args == 0) {
+        return info->std_ops(operation);
+    } else if (num_args == 1) {
+        return info->std_ops(operation, args[0].cast<int>());
+    } else if (num_args == 2) {
+        return info->std_ops(operation, args[0].cast<int>(), args[1].cast<int>());
+    }
+    
+    return B_BAD_VALUE;
+}
+/*
+status_t call_std_ops(module_info* info, int32_t operation, py::args args) {
+    if (info == nullptr || info->std_ops == nullptr) {
         return -1; // Codice di errore o valore di default
     }
 
@@ -130,16 +146,16 @@ status_t call_std_ops(module_info* info, int32_t operation, py::args args) {
     return std::apply([&](auto&&... unpackedArgs) {
         return info->std_ops(operation, unpackedArgs...);
     }, args_tuple);
-}
+}*/
 
-PYBIND11_MODULE(module, m) 
+PYBIND11_MODULE(Module, m) 
 {
 py::class_<module_info>(m, "module_info")
 .def_readwrite("name", &module_info::name, "")
 .def_readwrite("flags", &module_info::flags, "")
 //.def_readwrite("std_ops", &module_info::std_ops, "")
-
-.def("call_std_ops", &call_std_ops, "Call the std_ops function", py::arg("info"), py::arg("operation"), py::arg("args"));
+.def("call_std_ops", &call_std_ops, "Call the std_ops function", py::arg("operation"))
+//.def("call_std_ops", &call_std_ops, "Call the std_ops function", py::arg("info"), py::arg("operation"), py::arg("args"));
 ;
 
 py::class_<module_dependency>(m, "module_dependency")
@@ -170,6 +186,7 @@ py::class_<module_dependency>(m, "module_dependency")
 //m.def("get_module", &get_module, "", py::arg("path"), py::arg("_info"));
 //nell'heaader status_t get_module(const char *path, module_info **_info);
 //m.def("get_module", [](const char *path, module_info **_info){}, "", py::arg("path"), py::arg("_info"));
+/* python can't access to these funcs
 m.def("get_module", &get_module_wrapper, "", py::arg("path"));
 
 m.def("put_module", &put_module, "", py::arg("path"));
@@ -183,5 +200,5 @@ m.def("open_module_list", &open_module_list, "", py::arg("prefix"));
 m.def("close_module_list", &close_module_list, "", py::arg("cookie"));
 
 m.def("read_next_module_name", &read_next_module_name, "", py::arg("cookie"), py::arg("buffer"), py::arg("_bufferSize"));
-
+*/
 }

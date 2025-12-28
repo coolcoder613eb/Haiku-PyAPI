@@ -116,6 +116,7 @@ from .Job import *
 
 from .fs_attr import *
 from .OS import *
+from .scheduler import *
 
 from .StorageDefs import *
 from .Statable import *
