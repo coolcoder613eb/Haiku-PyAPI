@@ -39,6 +39,7 @@ Documentation by Kits
    messagequeue
    messagerunner
    messenger
+   notification
 
 .. toctree::
    :maxdepth: 2
