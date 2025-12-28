@@ -167,6 +167,10 @@ from .NetworkSettings import *
 #from .NetworkSettingsAddOn import *
 
 #from .bus_manager import *
+#from .ACPI import *
+#from .cpufreq import *
+#from .cpuidle import *
+#from .module import *
 
 #from .SerialPort import *
 #from .Joystick import *

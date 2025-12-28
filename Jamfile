@@ -301,7 +301,11 @@ local sourceFiles =
 	
 	#drivers
 	#bios.cpp
+	#module.cpp
 	#bus_manager.cpp
+	#ACPI.cpp
+	#cpufreq.cpp
+	#cpuidle.cpp
 
 	
 	#device
@@ -440,6 +444,7 @@ LINKLIBS on MailContainer.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailMessage.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailSettings.so = $(LINKLIBS) -lmail ;
 LINKLIBS on NetworkSettings.so = $(LINKLIBS) -lbnetapi ;
+#LINKLIBS on module.so = $(LINKLIBS) -lroot ;
 
 # __init__.py can be built by simply copying the file
 MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory
