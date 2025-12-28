@@ -40,6 +40,7 @@ Documentation by Kits
    messagerunner
    messenger
    notification
+   propertyinfo
 
 .. toctree::
    :maxdepth: 2
