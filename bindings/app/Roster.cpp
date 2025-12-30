@@ -596,7 +596,7 @@ delivers them to the currently running instance.
 .def("Launch", py::overload_cast<const char *, BList *, team_id *>(&BRoster::Launch, py::const_), R"doc()doc", py::arg("mimeType"), py::arg("messageList"), py::arg("_appTeam")=NULL)
 */
 .def("Launch", [](const BRoster& self, const char * mimeType, BList* messageList){
-	team_id _appTeam = -1;
+	team_id _appTeam = B_ERROR;//-1;
 	status_t status = self.Launch(mimeType,messageList,&_appTeam);
 	return py::make_tuple(status,_appTeam);
 }, R"doc(
@@ -618,6 +618,7 @@ you want the messages to get to the application and so
 delivers them to the currently running instance.
 
 .. warning::
+
    The BList passed to this method must contain only ``BMessage`` objects. 
    The caller is responsible for ensuring the list contains only the correct 
    types. Passing other types of objects will result in undefined behavior 
@@ -662,7 +663,7 @@ this functions behaves like the Launch(str,BList) one
 )doc", py::arg("mimeType"), py::arg("messages"))*/
 //.def("Launch", static_cast<status_t (*)(BRoster &, const char *, int, const std::vector<const char *>&, team_id *)>(&LaunchWrapper), "", py::arg("mimeType"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
 .def("Launch", [](const BRoster& self, const char* mimeType, py::list args) {
-	team_id appTeam = -1;
+	team_id appTeam = B_ERROR;
 	std::vector<std::string> storage;
 	storage.reserve(args.size());
 	std::vector<char*> argv;
@@ -674,11 +675,195 @@ this functions behaves like the Launch(str,BList) one
 	argv.push_back(nullptr);
 	status_t status = self.Launch(mimeType, static_cast<int>(args.size()), argv.data(), &appTeam);
 	return py::make_tuple(status, appTeam);
-}, R"doc()doc", py::arg("mimeType"), py::arg("args"))
+}, R"doc(
+Launches the application associated with the MIME ``mimeType``.
+If the MIME type is an application signature, this function 
+launches the application with that signature. Otherwise, it 
+launches the preferred application for the type.
 
-.def("Launch", py::overload_cast<const entry_ref *, const BMessage *, team_id *>(&BRoster::Launch, py::const_), R"doc()doc", py::arg("ref"), py::arg("initialMessage")=NULL, py::arg("_appTeam")=NULL)
-.def("Launch", py::overload_cast<const entry_ref *, const BList *, team_id *>(&BRoster::Launch, py::const_), R"doc()doc", py::arg("ref"), py::arg("messageList"), py::arg("_appTeam")=NULL)
-.def("Launch", static_cast<status_t (*)(BRoster &, const entry_ref *, int, const std::vector<const char *>&, team_id *)>(&LaunchWrapper), R"doc()doc", py::arg("ref"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
+The application will be launched with an array of argument 
+strings that will be passed to its main() function. ``args``
+is a python list containing the arguments. If the application 
+accepts messages, this information will also be packaged in 
+a ``B_ARGV_RECEIVED`` message that the application will 
+receive on-launch.
+
+If the target application is already running, ``Launch()`` won't 
+launch it again, unless it permits multiple instances to run 
+concurrently (it doesn't wait for the messages to be sent or 
+report errors encountered when they are). It fails for 
+``B_SINGLE_LAUNCH`` and ``B_EXCLUSIVE_LAUNCH`` applications 
+that have already been launched. Nevertheless, it assumes that 
+you want the messages to get to the application and so 
+delivers them to the currently running instance.
+
+
+:param mimeType: The MIME associated to an application.
+:type mimeType: str
+:param messageList: The list containing the arguments.
+:type messageList: list
+:return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
+
+   - A status code (int):
+
+      - ``B_OK`` if this method is able to launch the application
+      - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
+      - ``B_ALREADY_RUNNING`` The application is already running and can't be launched again (it's a B_SINGLE_LAUNCH or B_EXCLUSIVE_LAUNCH application).
+      - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
+      - A file system error: The ``mimeType`` can't be matched to an application.
+   
+   - The team identifier (int) for the newly launched application, or ``-1``
+   
+:rtype: tuple
+)doc", py::arg("mimeType"), py::arg("args"))
+
+//.def("Launch", py::overload_cast<const entry_ref *, const BMessage *, team_id *>(&BRoster::Launch, py::const_), R"doc()doc", py::arg("ref"), py::arg("initialMessage")=NULL, py::arg("_appTeam")=NULL)
+.def("Launch", [](const BRoster& self,const entry_ref * ref, const BMessage * initialMessage){
+	team_id appTeam = B_ERROR;
+	status_t status = self.Launch(ref,initialMessage,&appTeam);
+	return py::make_tuple(status,appTeam);
+}, R"doc(
+Launches the application associated with a particular file
+reference (``ref``). If the file is an application executable, 
+it launches that application. Otherwise, it launches the 
+preferred application for the file type and passes the file 
+reference to the application in a ``B_REFS_RECEIVED`` message.
+
+If a message is specified, it will be sent to the application 
+on-launch where it will be received and responded to before 
+the application is notified that it's ready to run. 
+
+If the target application is already running, ``Launch()`` won't 
+launch it again, unless it permits multiple instances to run 
+concurrently (it doesn't wait for the messages to be sent or 
+report errors encountered when they are). It fails for 
+``B_SINGLE_LAUNCH`` and ``B_EXCLUSIVE_LAUNCH`` applications 
+that have already been launched. Nevertheless, it assumes that 
+you want the messages to get to the application and so 
+delivers them to the currently running instance.
+
+:param ref: the reference to the file to check.
+:type ref: entry_ref
+:param initialMessage: The message to be sent to the application.
+:type initialMessage: BMessage, optional
+:return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
+
+   - A status code (int):
+
+      - ``B_OK`` if this method is able to launch the application
+      - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
+      - ``B_ALREADY_RUNNING`` The application is already running and can't be launched again (it's a B_SINGLE_LAUNCH or B_EXCLUSIVE_LAUNCH application).
+      - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
+      - A file system error: The ``mimeType`` can't be matched to an application.
+   
+   - The team identifier (int) for the newly launched application, or ``-1``
+   
+:rtype: tuple
+)doc", py::arg("ref"), py::arg("initialMessage")=NULL)
+//.def("Launch", py::overload_cast<const entry_ref *, const BList *, team_id *>(&BRoster::Launch, py::const_), R"doc()doc", py::arg("ref"), py::arg("messageList"), py::arg("_appTeam")=NULL)
+.def("Launch", [](BRoster& self,const entry_ref * ref, const BList * messageList){
+	team_id appTeam = B_ERROR;
+	status_t status = self.Launch(ref,messageList,&appTeam);
+	return py::make_tuple(status,appTeam);
+}, R"doc(
+Launches the application associated with a particular file
+reference (``ref``). If the file is an application executable, 
+it launches that application. Otherwise, it launches the 
+preferred application for the file type and passes the file 
+reference to the application in a ``B_REFS_RECEIVED`` message.
+
+Each message in the list of messages ``messageList`` will be 
+delivered on-launch.
+
+If the target application is already running, ``Launch()`` won't 
+launch it again, unless it permits multiple instances to run 
+concurrently (it doesn't wait for the messages to be sent or 
+report errors encountered when they are). It fails for 
+``B_SINGLE_LAUNCH`` and ``B_EXCLUSIVE_LAUNCH`` applications 
+that have already been launched. Nevertheless, it assumes that 
+you want the messages to get to the application and so 
+delivers them to the currently running instance.
+
+.. warning::
+
+   The BList passed to this method must contain only ``BMessage`` objects. 
+   The caller is responsible for ensuring the list contains only the correct 
+   types. Passing other types of objects will result in undefined behavior 
+   (and likely a crash).
+   
+:param ref: the reference to the file to check.
+:type ref: entry_ref
+:param messageList: The list containing the messages to be sent.
+:type messageList: BList
+:return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
+
+   - A status code (int):
+
+      - ``B_OK`` if this method is able to launch the application
+      - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
+      - ``B_ALREADY_RUNNING`` The application is already running and can't be launched again (it's a B_SINGLE_LAUNCH or B_EXCLUSIVE_LAUNCH application).
+      - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
+      - A file system error: The ``mimeType`` can't be matched to an application.
+   
+   - The team identifier (int) for the newly launched application, or ``-1``
+   
+:rtype: tuple
+)doc", py::arg("ref"), py::arg("messageList"))
+//.def("Launch", static_cast<status_t (*)(BRoster &, const entry_ref *, int, const std::vector<const char *>&, team_id *)>(&LaunchWrapper), R"doc()doc", py::arg("ref"), py::arg("argc"), py::arg("args"), py::arg("_appTeam")=NULL)
+.def("Launch", [](BRoster& self,const entry_ref * ref, py::list args) {
+	team_id appTeam = B_ERROR;
+	std::vector<std::string> storage;
+	storage.reserve(args.size());
+	std::vector<char*> argv;
+	argv.reserve(args.size() + 1);
+	for (auto item : args) {
+		storage.push_back(item.cast<std::string>());
+		argv.push_back(const_cast<char*>(storage.back().c_str()));
+	}
+	argv.push_back(nullptr);
+	status_t status = self.Launch(ref, static_cast<int>(args.size()), argv.data(), &appTeam);
+	return py::make_tuple(status, appTeam);
+},R"doc(
+Launches the application associated with a particular file
+reference (``ref``). If the file is an application executable, 
+it launches that application. Otherwise, it launches the 
+preferred application for the file type and passes the file 
+reference to the application in a ``B_REFS_RECEIVED`` message.
+
+The application will be launched with an array of argument 
+strings that will be passed to its main() function. ``args``
+is a python list containing the arguments. If the application 
+accepts messages, this information will also be packaged in 
+a ``B_ARGV_RECEIVED`` message that the application will 
+receive on-launch.
+
+If the target application is already running, ``Launch()`` won't 
+launch it again, unless it permits multiple instances to run 
+concurrently (it doesn't wait for the messages to be sent or 
+report errors encountered when they are). It fails for 
+``B_SINGLE_LAUNCH`` and ``B_EXCLUSIVE_LAUNCH`` applications 
+that have already been launched. Nevertheless, it assumes that 
+you want the messages to get to the application and so 
+delivers them to the currently running instance.
+
+:param ref: the reference to the file to check.
+:type ref: entry_ref
+:param messageList: The list containing the arguments.
+:type messageList: list
+:return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
+
+   - A status code (int):
+
+      - ``B_OK`` if this method is able to launch the application
+      - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
+      - ``B_ALREADY_RUNNING`` The application is already running and can't be launched again (it's a B_SINGLE_LAUNCH or B_EXCLUSIVE_LAUNCH application).
+      - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
+      - A file system error: The ``mimeType`` can't be matched to an application.
+   
+   - The team identifier (int) for the newly launched application, or ``-1``
+   
+:rtype: tuple
+)doc", py::arg("ref"), py::arg("args"))
 .def("GetRecentDocuments", py::overload_cast<BMessage *, int32, const char *, const char *>(&BRoster::GetRecentDocuments, py::const_), R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
 .def("GetRecentDocuments", &GetRecentDocumentsWrapper, R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
 .def("GetRecentFolders", &BRoster::GetRecentFolders, R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("signature")=NULL)
