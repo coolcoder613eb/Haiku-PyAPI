@@ -578,7 +578,7 @@ have to ``Lock()`` the object first.
    Return the team id in which this looper exists.
 
    :return: The team id in which this looper exists.
-   :rtype: team_id
+   :rtype: int
    
 )doc")
 .def_static("LooperForThread", &BLooper::LooperForThread, R"doc(

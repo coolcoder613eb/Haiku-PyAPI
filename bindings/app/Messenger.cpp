@@ -71,7 +71,7 @@ a matching signature, otherwise the initialization fails.
 :param signature: The target application's signature. May be ``None``.
 :type signature: str
 :param team: The target application's team ID. May be < ``0``.
-:type team: team_id
+:type team: int
 )doc", py::arg("signature"), py::arg("team")=- 1)
 //.def(py::init<const BHandler *, const BLooper *, status_t *>(), "", py::arg("handler"), py::arg("looper")=NULL, py::arg("result")=NULL)
 .def(py::init<const BHandler *, const BLooper *>(), R"doc(
@@ -107,7 +107,7 @@ its initialization status through a tuple.
 :param signature: The target application's signature. May be ``None``.
 :type signature: str
 :param team: The target application's team ID. May be < ``0``.
-:type team: team_id
+:type team: int
 :return: A tuple containing the messenger and its initialization status
 :rtype: tuple
 )doc", py::arg("signature"), py::arg("team"))
@@ -459,7 +459,7 @@ Return whether the messenger's target looper still exists.
 Return the ID of the team that the messenger's target belongs to.
 
 :return: The team of the messenger's target.
-:rtype: team_id
+:rtype: int
 )doc")
 .def("HashValue", &BMessenger::HashValue, R"doc(
 Return a hash value that uniquely identifies the messenger.
