@@ -133,6 +133,22 @@ notifications in that box.
 :param group: The group for the notification.
 :type group: BString
 )doc", py::arg("group"))
+.def("SetGroup", [](BNotification& self, const char * group){
+	self.SetGroup(BString(group));
+}, R"doc(
+Convenient method that sets a group for the notifcation.
+
+The default behaviour of the notification_server is group the 
+visible notifications per running application, and then in order 
+in which they have been received. There may be situations where 
+you want to override that behavior and group related notifications. 
+When you set a group name, the notification_server will create a 
+box with the group name as label, and insert all related 
+notifications in that box.
+
+:param group: The group for the notification.
+:type group: str
+)doc", py::arg("group"))
 .def("Title", &BNotification::Title, R"doc(
 Return the title of the notification.
 
@@ -145,6 +161,14 @@ Set a title for the notification.
 :param title: The new title for the notification.
 :type title: BString
 )doc", py::arg("title"))
+.def("SetTitle", [](BNotification& self, const char * title){
+	self.SetTitle(BString(title));
+}, R"doc(
+Convenient method that sets a title for the notification.
+
+:param title: The new title for the notification.
+:type title: str
+)doc", py::arg("title"))
 .def("Content", &BNotification::Content, R"doc(
 Return the message of the notification.
 
@@ -156,6 +180,14 @@ Set a message for the notification.
 
 :param content: The message for the notification.
 :type content: BString
+)doc", py::arg("content"))
+.def("SetContent", [](BNotification& self, const char * content){
+	self.SetContent(BString(content));
+}, R"doc(
+Convenient method that sets a message for the notification.
+
+:param content: The message for the notification.
+:type content: str
 )doc", py::arg("content"))
 .def("MessageID", &BNotification::MessageID, R"doc(
 Return the identifier of the notification.
@@ -178,6 +210,24 @@ application.
 
 :param id: The message identifier.
 :type id: BString
+)doc", py::arg("id"))
+.def("SetMessageID", [](BNotification& self, const char * id){
+	self.SetMessageID(BString(id));
+}, R"doc(
+Convenient method that sets notification's message identifier.
+
+If you want to update the contents of an existing notification, 
+you can set a identifier for this message. When you send a 
+new or updated message with the same identifier, the 
+``notification_server`` will update the existing message 
+with the new content.
+
+In order to effectively use this feature, you will have to 
+make sure the identifier is unique within the current 
+application.
+
+:param id: The message identifier.
+:type id: str
 )doc", py::arg("id"))
 .def("Progress", &BNotification::Progress, R"doc(
 Return the progress for the notification.
@@ -221,6 +271,23 @@ file, then you should use this method in combination with
 
 :param app: The signature of the application that should be called.
 :type app: BString
+)doc", py::arg("app"))
+.def("SetOnClickApp", [](BNotification& self, const char * app){
+	self.SetOnClickApp(BString(app));
+}, R"doc(
+Convenient method that sets which application should be called when 
+the notification is clicked by the user.
+
+The value app should be a valid application signature, for example 
+'application/x-vnd.Haiku-StyledEdit'.
+
+Using this property has precedence on when ``BNotification.SetOnClickFile()`` 
+is used. If you want interacting with the notification opening a specific 
+file, then you should use this method in combination with 
+``BNotification.AddOnClickRef()``.
+
+:param app: The signature of the application that should be called.
+:type app: str
 )doc", py::arg("app"))
 .def("OnClickFile", &BNotification::OnClickFile, R"doc(
 Return the reference to the file that will be opened when the notification is clicked.
@@ -286,6 +353,23 @@ by the application's ``BApplication.ArgvReceived()`` hook method.
 
 :param arg: The list of arguments.
 :type arg: BString
+:return: ``B_OK`` or an error code.
+:rtype: int
+)doc", py::arg("arg"))
+.def("AddOnClickArg", [](BNotification& self, const char * arg){
+	self.AddOnClickArg(BString(arg));
+}, R"doc(
+Convenient method that adds to a list of arguments that are passed 
+to an application when the user clicks on the notification.
+
+This method allows you to construct a list of arguments, that 
+will be sent to the application specified by 
+``BNotification.AddOnClickApp()``, or the one that is associated 
+with ``BNotification.AddOnClickFile()``. The args will be handled 
+by the application's ``BApplication.ArgvReceived()`` hook method.
+
+:param arg: The list of arguments.
+:type arg: str
 :return: ``B_OK`` or an error code.
 :rtype: int
 )doc", py::arg("arg"))
