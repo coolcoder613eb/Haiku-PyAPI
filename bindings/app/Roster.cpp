@@ -259,8 +259,82 @@ If there's more than one such app, the function chooses one at random.
    
 :rtype: tuple
 )doc",py::arg("ref"))
-.def("GetRunningAppInfo", &BRoster::GetRunningAppInfo, R"doc()doc", py::arg("team"), py::arg("info"))
-.def("GetActiveAppInfo", &BRoster::GetActiveAppInfo, R"doc()doc", py::arg("info"))
+.def("GetRunningAppInfo", &BRoster::GetRunningAppInfo, R"doc(
+Finds an app that corresponds to the given ``team`` identifier 
+and reports information about the application.
+
+.. note::
+   
+   This version is kept for C++ compatibility
+   
+:param team: The team identifier of the app.
+:type team: team_id
+:param info: The parameter to fill with the information reported about the application.
+:type info: app_info
+:return: ``B_OK`` or an error code:
+   
+   - ``B_OK`` if able to fill in the app_info variable with meaningful values.
+   - ``B_ERROR`` if the application isn't running.
+   
+:rtype: int
+)doc", py::arg("team"), py::arg("info"))
+.def("GetRunningAppInfo", [](BRoster& self, team_id team){
+	app_info* info = new app_info;
+	status_t status = self.GetRunningAppInfo(team,info);
+	return py::make_tuple(status,info);
+}, R"doc(
+Finds an app that corresponds to the given ``team`` identifier 
+and reports information about the application.
+
+:param team: The team identifier of the app.
+:type team: team_id
+:return: A tuple with the status of the function and the information about the app:
+   
+   - the status can be one of these:
+   
+      - ``B_OK`` (int) if able to fill in the app_info variable with meaningful values.
+      - ``B_ERROR`` (int) if the application isn't running.
+   
+   - the information is an ``app_info`` class containig the values
+   
+:rtype: tuple
+)doc", py::arg("team"))
+.def("GetActiveAppInfo", &BRoster::GetActiveAppInfo, R"doc(
+Finds the current active app and reports information about the
+application.
+
+.. note::
+   
+   This version is kept for C++ compatibility
+
+:param info: The parameter to fill with the information reported about the application.
+:type info: app_info
+:return: ``B_OK`` or an error code:
+   
+   - ``B_OK`` if able to fill in the app_info variable with meaningful values.
+   - ``B_ERROR`` if the application isn't running.
+   
+:rtype: int
+)doc", py::arg("info"))
+.def("GetActiveAppInfo", [](BRoster& self){
+	app_info* info = new app_info;
+	status_t status = self.GetActiveAppInfo(info);
+	return py::make_tuple(status,info);
+}, R"doc(
+Finds the current active app and reports information about the
+application.
+
+:return: A tuple with the status of the function and the information about the app:
+   
+   - the status can be one of these:
+   
+      - ``B_OK`` (int) if able to fill in the app_info variable with meaningful values.
+      - ``B_ERROR`` (int) if the application isn't running.
+   
+   - the information is an ``app_info`` class containig the values
+   
+:rtype: tuple
+)doc")
 .def("FindApp", py::overload_cast<const char *, entry_ref *>(&BRoster::FindApp, py::const_), R"doc()doc", py::arg("mimeType"), py::arg("app"))
 .def("FindApp", py::overload_cast<entry_ref *, entry_ref *>(&BRoster::FindApp, py::const_), R"doc()doc", py::arg("ref"), py::arg("app"))
 .def("Broadcast", py::overload_cast<BMessage *>(&BRoster::Broadcast, py::const_), R"doc()doc", py::arg("message"))
