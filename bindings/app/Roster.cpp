@@ -364,6 +364,10 @@ application signature, this function finds the application that
 has that signature. Otherwise, it finds the preferred 
 application for the type.
 
+.. note::
+
+   This version is kept for C++ compatibility.
+
 :param mimeType: The application signature or a file's MIME type
 :type mimeType: str
 :param app: The ``entry_ref`` class to fill with the reference to the executable file or to the preferred application.
@@ -407,6 +411,10 @@ modifies the app entry_ref that refers to the executable file for
 that application. If the file is an application executable, this
 method merely copies the file reference to the app argument. 
 Otherwise, it finds the preferred application for the filetype.
+
+.. note::
+
+   This version is kept for C++ compatibility.
 
 :param ref: the reference to the file to check.
 :type ref: entry_ref
@@ -884,6 +892,10 @@ want to be opened by a specific application, specify that
 application's signature in ``signature``; if you don't care, 
 pass ``None``.
 
+.. note::
+
+   This version is kept for C++ compatibility.
+
 :param refList: The message to be filled out with information.
 :type refList: BMessage
 :param maxCount: The maximum number of recent documents to retrieve.
@@ -978,6 +990,10 @@ Retrieve a list of the most recently-accessed folders. The
 were used by a specific application, specify that application's 
 signature in ``signature``; if you don't care, pass ``None``.
 
+.. note::
+
+   This version is kept for C++ compatibility.
+
 :param refList: The message to be filled out with information.
 :type refList: BMessage
 :param maxCount: The maximum number of recent documents to retrieve.
@@ -1012,6 +1028,10 @@ about the maxCount most recently-launched applications.
 
 The resulting refList will have a field, "refs", containing 
 the ``entry_ref``s to the resulting applications.
+
+.. note::
+
+   This version is kept for C++ compatibility.
 
 :param refList: The message to be filled out with information.
 :type refList: BMessage
