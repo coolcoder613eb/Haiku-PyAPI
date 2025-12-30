@@ -33,6 +33,14 @@ void GetRecentDocumentsWrapper(BRoster& self, BMessage* refList, int32 maxCount,
 	self.GetRecentDocuments(refList, maxCount,
 		fileTypes.data(), fileTypesCount, signature);
 }
+BMessage GetRecentDocumentsPythonicWrapper(BRoster& self, int32 maxCount,
+		std::vector<const char*>& fileTypes, int32 fileTypesCount,
+		const char* signature) {
+	BMessage refList;
+	self.GetRecentDocuments(&refList, maxCount,
+		fileTypes.data(), fileTypesCount, signature);
+	return refList;
+}
 
 PYBIND11_MODULE(Roster,m)
 {
@@ -864,12 +872,191 @@ delivers them to the currently running instance.
    
 :rtype: tuple
 )doc", py::arg("ref"), py::arg("args"))
-.def("GetRecentDocuments", py::overload_cast<BMessage *, int32, const char *, const char *>(&BRoster::GetRecentDocuments, py::const_), R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
-.def("GetRecentDocuments", &GetRecentDocumentsWrapper, R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
-.def("GetRecentFolders", &BRoster::GetRecentFolders, R"doc()doc", py::arg("refList"), py::arg("maxCount"), py::arg("signature")=NULL)
-.def("GetRecentApps", &BRoster::GetRecentApps, R"doc()doc", py::arg("refList"), py::arg("maxCount"))
-.def("AddToRecentDocuments", &BRoster::AddToRecentDocuments, R"doc()doc", py::arg("document"), py::arg("signature")=NULL)
-.def("AddToRecentFolders", &BRoster::AddToRecentFolders, R"doc()doc", py::arg("folder"), py::arg("signature")=NULL)
+.def("GetRecentDocuments", py::overload_cast<BMessage *, int32, const char *, const char *>(&BRoster::GetRecentDocuments, py::const_), R"doc(
+Retrieve a list of the most recent documents. The ``refList`` 
+message will be filled with ``entry_ref`` items (under the 
+name "refs") providing information about the most recently 
+used documents, up to the limit specified by ``maxCount``. 
+If you want to obtain a list of documents of a specific type, 
+you can specify a MIME type string in the ``fileType`` 
+argument. Likewise, if you're only interested in files that 
+want to be opened by a specific application, specify that 
+application's signature in ``signature``; if you don't care, 
+pass ``None``.
+
+:param refList: The message to be filled out with information.
+:type refList: BMessage
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param fileType: Optional MIME type to filter the documents (e.g., "text/plain"). Pass ``None`` for all types.
+:type fileType: str
+:param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
+:type signature: str
+)doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
+.def("GetRecentDocuments", [](BRoster& self,int32 maxCount,const char* fileType, const char* signature){
+	BMessage refList;
+	self.GetRecentDocuments(&refList,maxCount,fileType,signature);
+	return refList;
+}, R"doc(
+Convenient method to return a list of the most recent 
+documents through a ``BMessage``. 
+The message returned will be filled with ``entry_ref`` items 
+(under the name "refs") providing information about the most 
+recently used documents, up to the limit specified by ``maxCount``. 
+If you want to obtain a list of documents of a specific type, 
+you can specify a MIME type string in the ``fileType`` 
+argument. Likewise, if you're only interested in files that 
+want to be opened by a specific application, specify that 
+application's signature in ``signature``; if you don't care, 
+pass ``None``.
+
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param fileType: Optional MIME type to filter the documents (e.g., "text/plain"). Pass ``None`` for all types.
+:type fileType: str
+:param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
+:type signature: str
+:return: A  message filled out with information (``entry_ref``s).
+:rtype: BMessage
+)doc", py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
+.def("GetRecentDocuments", &GetRecentDocumentsWrapper, R"doc(
+Retrieve a list of the most recent documents. The ``refList`` 
+message will be filled with ``entry_ref`` items (under the 
+name "refs") providing information about the most recently 
+used documents, up to the limit specified by ``maxCount``. 
+In this version you can get a list of files of multiple types
+by specifying an array of strings in ``fileTypes`` and the 
+number of types in the list in ``fileTypesCount``.
+
+
+If you're only interested in files that want to be opened 
+by a specific application, specify that application's 
+signature in ``signature``; if you don't care, pass ``None``.
+
+:param refList: The message to be filled out with information.
+:type refList: BMessage
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param fileTypes: Optional list of MIME types to filter the documents. Pass ``None`` for all types/no list.
+:type fileType: list
+:param fileTypesCount: The number of types in the list
+:type fileTypesCount: int
+:param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
+:type signature: str
+)doc", py::arg("refList"), py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
+.def("GetRecentDocuments", &GetRecentDocumentsPythonicWrapper, R"doc(
+Convenient method to return a list of the most recent 
+documents through a ``BMessage``.
+The message returned will be filled with ``entry_ref`` 
+items (under the name "refs") providing information about 
+the most recently used documents, up to the limit specified 
+by ``maxCount``. 
+In this version you can get a list of files of multiple types
+by specifying an array of strings in ``fileTypes`` and the 
+number of types in the list in ``fileTypesCount``.
+
+If you're only interested in files that want to be opened 
+by a specific application, specify that application's 
+signature in ``signature``; if you don't care, pass ``None``.
+
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param fileTypes: Optional list of MIME types to filter the documents. Pass ``None`` for all types/no list.
+:type fileType: list
+:param fileTypesCount: The number of types in the list
+:type fileTypesCount: int
+:param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
+:type signature: str
+:return: A  message filled out with information (``entry_ref``s).
+:rtype: BMessage
+)doc", py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
+.def("GetRecentFolders", &BRoster::GetRecentFolders, R"doc(
+Retrieve a list of the most recently-accessed folders. The 
+``refList`` message will be filled with ``entry_ref`` items 
+(under the name "refs") up to the limit specified by 
+``maxCount``. If you're only interested in folders that 
+were used by a specific application, specify that application's 
+signature in ``signature``; if you don't care, pass ``None``.
+
+:param refList: The message to be filled out with information.
+:type refList: BMessage
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param signature: Optional application signature to filter for folders that were used by a specific application. Pass ``None`` for any application.
+:type signature: str
+)doc", py::arg("refList"), py::arg("maxCount"), py::arg("signature")=NULL)
+.def("GetRecentFolders", [](const BRoster& self,int32 maxCount, const char * signature){
+	BMessage refList;
+	self.GetRecentFolders(&refList, maxCount, signature);
+	return refList;
+},R"doc(
+Convenient method to return a list of the most recently-accessed 
+folders through a ``BMessage``.
+The message returned will be filled with ``entry_ref`` 
+items (under the name "refs") up to the limit specified by 
+``maxCount``. If you're only interested in folders that 
+were used by a specific application, specify that application's 
+signature in ``signature``; if you don't care, pass ``None``.
+
+:param maxCount: The maximum number of recent documents to retrieve.
+:type maxCount: int
+:param signature: Optional application signature to filter for folders that were used by a specific application. Pass ``None`` for any application.
+:type signature: str
+:return: A message filled out with information (``entry_ref``s).
+:rtype: BMessage
+)doc",py::arg("maxCount"), py::arg("signature")=NULL)
+.def("GetRecentApps", &BRoster::GetRecentApps, R"doc(
+Return a list of the most recently-launched applications. The 
+``BMessage`` ``refList`` will be filled out with information 
+about the maxCount most recently-launched applications.
+
+The resulting refList will have a field, "refs", containing 
+the ``entry_ref``s to the resulting applications.
+
+:param refList: The message to be filled out with information.
+:type refList: BMessage
+:param maxCount: The maximum number of recent applications.
+:type maxCount: int
+)doc", py::arg("refList"), py::arg("maxCount"))
+.def("GetRecentApps", [](BRoster& self, int32 maxCount){
+	BMessage refList;
+	self.GetRecentApps(&refList,maxCount);
+	return refList;
+}, R"doc(
+Convenient method to return a list of the most recently-launched 
+applications through a ``BMessage``. The message returned will 
+be filled with ``entry_ref`` items (under the name "refs") up 
+to the limit specified by ``maxCount``.
+
+:param maxCount: The maximum number of recent applications.
+:type maxCount: int
+:return: A message filled out with information (``entry_ref``s).
+:rtype: BMessage
+)doc", py::arg("maxCount"))
+.def("AddToRecentDocuments", &BRoster::AddToRecentDocuments, R"doc(
+Add the document file specified by ``document`` to the list of 
+recent documents. If you wish to record that a specific 
+application used the document, you can specify the signature 
+of that application using the ``signature`` argument; otherwise 
+you can specify ``None``.
+
+:param document: The document to add to the list of recent documents.
+:type document: entry_ref
+:param signature: The app signature that used the document you wish to record, or ``None``.
+:type signature: str
+)doc", py::arg("document"), py::arg("signature")=NULL)
+.def("AddToRecentFolders", &BRoster::AddToRecentFolders, R"doc(
+Add the folder specified by ``folder`` to the list of recent 
+folders. If you wish to record that a specific application 
+used the folder, you can specify the signature of that 
+application using the ``signature`` argument; otherwise you 
+can use ``None``.
+
+:param folder: The folder to add to the list of recently-accessed folders.
+:type folder: entry_ref
+:param signature: The app signature that accessed the folder you wish to record, or ``None``.
+:type signature: str
+)doc", py::arg("folder"), py::arg("signature")=NULL)
 ;
 
 m.attr("be_roster") = be_roster;
