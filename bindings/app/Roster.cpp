@@ -45,6 +45,14 @@ BMessage GetRecentDocumentsPythonicWrapper(BRoster& self, int32 maxCount,
 PYBIND11_MODULE(Roster,m)
 {
 
+m.attr("B_SINGLE_LAUNCH")=B_SINGLE_LAUNCH;
+m.attr("B_MULTIPLE_LAUNCH")=B_MULTIPLE_LAUNCH;
+m.attr("B_EXCLUSIVE_LAUNCH")=B_EXCLUSIVE_LAUNCH;
+m.attr("B_LAUNCH_MASK")=B_LAUNCH_MASK;
+m.attr("B_BACKGROUND_APP")=B_BACKGROUND_APP;
+m.attr("B_ARGV_ONLY")=B_ARGV_ONLY;
+m.attr("_B_APP_INFO_RESERVED1_")=_B_APP_INFO_RESERVED1_;
+
 py::enum_<watching_request_flags>(m, "watching_request_flags", R"doc(Flags used to specify which application events to monitor with StartWatching().)doc")
 .value("B_REQUEST_LAUNCHED", watching_request_flags::B_REQUEST_LAUNCHED, R"doc(Notify when an application is launched.)doc")
 .value("B_REQUEST_QUIT", watching_request_flags::B_REQUEST_QUIT, R"doc(Notify when an application quits.)doc")
