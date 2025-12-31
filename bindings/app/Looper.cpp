@@ -161,7 +161,7 @@ have to ``Lock()`` the object first.
    data that is restored, is merely the port capacity and the name of the looper/handler. 
    Other data, such as filters, is not archived by the default archiver.
    
-   .. note::
+   .. warning::
       This constructor does no type check whatsoever. Since you can pass any BMessage, 
       you should - if you are not sure about the exact type - use the Instantiate() method, 
       which does check the type.
@@ -332,7 +332,7 @@ have to ``Lock()`` the object first.
 .def("CurrentMessage", &BLooper::CurrentMessage, R"doc(
    Retrieve the current message.
    
-   .. note::
+   .. warning::
       Only call this method from within the thread that processes the messages. It contains 
       a pointer to the message that is currently being handled. Due to the multithreaded 
       nature of the operating system, this method will not safely let you read the message 
@@ -353,7 +353,7 @@ have to ``Lock()`` the object first.
    the message will not be deleted as soon as the looper is done processing 
    it. You can then use it for different purposes.
    
-   .. note::
+   .. warning::
       Only call this method from within the thread that processes the messages. Due to the 
       multithreaded nature of the operating system, calling it from another thread is very 
       likely to give you an invalid or a NULL pointer.
@@ -594,7 +594,7 @@ have to ``Lock()`` the object first.
 .def("LockingThread", &BLooper::LockingThread, R"doc(
    Return the thread id of the thread that currently holds the lock.
 
-   .. note::
+   .. warning::
    
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
@@ -608,7 +608,7 @@ have to ``Lock()`` the object first.
    Return the number of recursive locks that are currently being held 
    on this looper.
    
-   .. note::
+   .. warning::
    
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
@@ -622,7 +622,7 @@ have to ``Lock()`` the object first.
 .def("CountLockRequests", &BLooper::CountLockRequests, R"doc(
    Return the number of pending locks.
 
-   .. note::
+   .. warning::
    
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
@@ -636,7 +636,7 @@ have to ``Lock()`` the object first.
 .def("Sem", &BLooper::Sem, R"doc(
    Return the id of the semaphore that is used to lock this looper.
 
-   .. note::
+   .. warning::
    
       This methods may aid you in debugging problems when they occur, but do not use it 
       in actual production code. This method is unreliable because it isn't thread-safe, 
@@ -728,7 +728,7 @@ have to ``Lock()`` the object first.
 .def("CommonFilterList", &BLooper::CommonFilterList, R"doc(
    Return a list of filters applied to all incoming messages.
    
-   .. note::
+   .. warning::
    
       You should use the internal list management functions to manipulate the internal filter list, in order to maintain internal consistency.
    
