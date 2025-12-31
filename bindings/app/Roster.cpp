@@ -45,24 +45,24 @@ BMessage GetRecentDocumentsPythonicWrapper(BRoster& self, int32 maxCount,
 PYBIND11_MODULE(Roster,m)
 {
 
-py::enum_<watching_request_flags>(m, "watching_request_flags", R"doc()doc")
-.value("B_REQUEST_LAUNCHED", watching_request_flags::B_REQUEST_LAUNCHED, R"doc()doc")
-.value("B_REQUEST_QUIT", watching_request_flags::B_REQUEST_QUIT, R"doc()doc")
-.value("B_REQUEST_ACTIVATED", watching_request_flags::B_REQUEST_ACTIVATED, R"doc()doc")
+py::enum_<watching_request_flags>(m, "watching_request_flags", R"doc(Flags used to specify which application events to monitor with StartWatching().)doc")
+.value("B_REQUEST_LAUNCHED", watching_request_flags::B_REQUEST_LAUNCHED, R"doc(Notify when an application is launched.)doc")
+.value("B_REQUEST_QUIT", watching_request_flags::B_REQUEST_QUIT, R"doc(Notify when an application quits.)doc")
+.value("B_REQUEST_ACTIVATED", watching_request_flags::B_REQUEST_ACTIVATED, R"doc(Notify when an application becomes the active window.)doc")
 .export_values();
 
 m.attr("B_SOME_APP_LAUNCHED") = py::int_('BRAS');
 m.attr("B_SOME_APP_QUIT") = py::int_('BRAQ');
 m.attr("B_SOME_APP_ACTIVATED") = py::int_('BRAW');
 
-py::class_<app_info>(m, "app_info")
-.def(py::init(), R"doc()doc")
-.def_readwrite("thread", &app_info::thread, R"doc()doc")
-.def_readwrite("team", &app_info::team, R"doc()doc")
-.def_readwrite("port", &app_info::port, R"doc()doc")
-.def_readwrite("flags", &app_info::flags, R"doc()doc")
-.def_readwrite("ref", &app_info::ref, R"doc()doc")
-.def_readonly("signature", &app_info::signature, R"doc()doc")
+py::class_<app_info>(m, "app_info",R"doc(This class contains information about a specific application.)doc")
+.def(py::init())//, R"doc(Initialize an empty app_info object.)doc")
+.def_readwrite("thread", &app_info::thread, R"doc(The ``thread_id`` of the application's main thread.)doc")
+.def_readwrite("team", &app_info::team, R"doc(The ``team_id`` of the application.)doc")
+.def_readwrite("port", &app_info::port, R"doc(The main message port of the application.)doc")
+.def_readwrite("flags", &app_info::flags, R"doc(Configuration flags)doc")
+.def_readwrite("ref", &app_info::ref, R"doc(An ``entry_ref`` to the application's executable file.)doc")
+.def_readonly("signature", &app_info::signature, R"doc(The MIME signature of the application.)doc")
 ;
 
 
@@ -81,13 +81,8 @@ variable; you never have to instantiate a ``BRoster`` in application code.
 The ``BRoster`` identifies applications in three ways:
 
    - By entry_ref references to the executable files where they reside.
-
-   - By their signatures. The signature is a unique identifier for the 
-   application assigned as a file-system attribute or resource at compile 
-   time or by the ``BApplication`` constructor at run time.
-
-   - At run time, by their ``team_id``s. A team is a group of threads 
-   sharing an address space; every application is a team.
+   - By their signatures. The signature is a unique identifier for the  application assigned as a file-system attribute or resource at compile time or by the ``BApplication`` constructor at run time.
+   - At run time, by their ``team_id`` identifiers. A team is a group of threads sharing an address space; every application is a team.
 
 If an application is launched more than once, the roster will include one 
 entry for each instance of the application that's running. These instances 
@@ -147,7 +142,7 @@ applications in the roster. Each item in the list will be of type
    
    This version is kept for C++ compatibility
 
-:param teamIDList: The list of ``team_id``s to be filled.
+:param teamIDList: The list of ``team_id`` identifiers to be filled.
 :type teamIDList: BList
 )doc", py::arg("teamIDList"))
 .def("GetAppList", [](const BRoster& self){
@@ -173,7 +168,7 @@ Each item in the list will be of type ``team_id``.
 
 :param signature: The applications signature.
 :type signature: str
-:param teamIDList: The list of ``team_id``s (int) to be filled.
+:param teamIDList: The list of ``team_id`` identifiers (int) to be filled.
 :type teamIDList: BList
 )doc", py::arg("signature"), py::arg("teamIDList"))
 .def("GetAppList", [](const BRoster& self, const char* signature){
@@ -464,10 +459,7 @@ The replies to this message will be lost.
 
 :param message: The message to broadcast.
 :type message: BMessage
-:return: a status code:
-
-   -  ``B_OK`` ff successful in getting the operation started
-   - An error only if it can't start the broadcast operation.
+:return: ``B_OK`` if successful in getting the operation started, or an error **only** if it can't start the broadcast operation.
    
 :rtype: int
 )doc", py::arg("message"))
@@ -489,10 +481,7 @@ Replies to the broadcasted message will be sent via the
 :type message: BMessage
 :param replyTo: The messaenger for the replies.
 :type replyTo: BMessenger
-:return: a status code:
-
-   -  ``B_OK`` ff successful in getting the operation started
-   - An error only if it can't start the broadcast operation.
+:return: ``B_OK`` if successful in getting the operation started, or an error **only** if it can't start the broadcast operation.
    
 :rtype: int
 )doc", py::arg("message"), py::arg("replyTo"))
@@ -596,7 +585,7 @@ delivers them to the currently running instance.
 :type initialMessage: BMessage, optional
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -604,7 +593,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("mimeType"), py::arg("initialMessage")=NULL)
@@ -646,7 +635,7 @@ delivers them to the currently running instance.
 :type messageList: BList
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -654,7 +643,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("mimeType"), py::arg("messageList"))
@@ -720,7 +709,7 @@ delivers them to the currently running instance.
 :type messageList: list
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -728,7 +717,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("mimeType"), py::arg("args"))
@@ -764,7 +753,7 @@ delivers them to the currently running instance.
 :type initialMessage: BMessage, optional
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -772,7 +761,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("ref"), py::arg("initialMessage")=NULL)
@@ -813,7 +802,7 @@ delivers them to the currently running instance.
 :type messageList: BList
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -821,7 +810,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("ref"), py::arg("messageList"))
@@ -868,7 +857,7 @@ delivers them to the currently running instance.
 :type messageList: list
 :return: a tuple (int,int) containing the status code and the ``team_id`` of the launched app:
 
-   - A status code (int):
+   - One of these status codes (int):
 
       - ``B_OK`` if this method is able to launch the application
       - ``B_BAD_VALUE`` if the ``mimeType`` is not valid or  an attempt is being made to send an on-launch message to an application that doesn't accept messages (a B_ARGV_ONLY app)
@@ -876,7 +865,7 @@ delivers them to the currently running instance.
       - ``B_LAUNCH_FAILED`` The attempt to launch the application failed for some other reason, such as insufficient memory.
       - A file system error: The ``mimeType`` can't be matched to an application.
    
-   - The team identifier (int) for the newly launched application, or ``-1``
+   - The team identifier (int) for the newly launched application, or ``-1`` (``B_ERROR``)
    
 :rtype: tuple
 )doc", py::arg("ref"), py::arg("args"))
@@ -928,7 +917,7 @@ pass ``None``.
 :type fileType: str
 :param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
 :type signature: str
-:return: A  message filled out with information (``entry_ref``s).
+:return: A  message filled out with information (``entry_ref`` references).
 :rtype: BMessage
 )doc", py::arg("maxCount"), py::arg("fileType")=NULL, py::arg("signature")=NULL)
 .def("GetRecentDocuments", &GetRecentDocumentsWrapper, R"doc(
@@ -979,7 +968,7 @@ signature in ``signature``; if you don't care, pass ``None``.
 :type fileTypesCount: int
 :param signature: Optional application signature to filter for documents associated with a specific app. Pass ``None`` for any application.
 :type signature: str
-:return: A  message filled out with information (``entry_ref``s).
+:return: A  message filled out with information (``entry_ref`` references).
 :rtype: BMessage
 )doc", py::arg("maxCount"), py::arg("fileTypes"), py::arg("fileTypesCount"), py::arg("signature")=NULL)
 .def("GetRecentFolders", &BRoster::GetRecentFolders, R"doc(
@@ -1018,7 +1007,7 @@ signature in ``signature``; if you don't care, pass ``None``.
 :type maxCount: int
 :param signature: Optional application signature to filter for folders that were used by a specific application. Pass ``None`` for any application.
 :type signature: str
-:return: A message filled out with information (``entry_ref``s).
+:return: A message filled out with information (``entry_ref`` references).
 :rtype: BMessage
 )doc",py::arg("maxCount"), py::arg("signature")=NULL)
 .def("GetRecentApps", &BRoster::GetRecentApps, R"doc(
@@ -1027,7 +1016,7 @@ Return a list of the most recently-launched applications. The
 about the maxCount most recently-launched applications.
 
 The resulting refList will have a field, "refs", containing 
-the ``entry_ref``s to the resulting applications.
+the ``entry_ref`` references to the resulting applications.
 
 .. note::
 
@@ -1050,7 +1039,7 @@ to the limit specified by ``maxCount``.
 
 :param maxCount: The maximum number of recent applications.
 :type maxCount: int
-:return: A message filled out with information (``entry_ref``s).
+:return: A message filled out with information (``entry_ref`` references).
 :rtype: BMessage
 )doc", py::arg("maxCount"))
 .def("AddToRecentDocuments", &BRoster::AddToRecentDocuments, R"doc(
