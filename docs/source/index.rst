@@ -41,6 +41,7 @@ Documentation by Kits
    messenger
    notification
    propertyinfo
+   roster
 
 .. toctree::
    :maxdepth: 2
