@@ -80,7 +80,7 @@ modify or reject the message, change the message's designated handler, or
 whatever else it wants to do—the implementation of the filter function isn't 
 restricted.
 
-.. note::
+.. warning::
 
    filter_hook defines the protocol for message-filtering functions.
    In C++:
@@ -100,7 +100,7 @@ restricted.
    function is being called; you mustn't delete this object. More than 
    one ``BMessageFilter`` can use the same ``filter_hook`` function.
    
-   **beware** filter_hook is not Python-usable therefore we ignore it
+   **beware** ``filter_hook`` is not Python-usable therefore we ignore it
 
 )doc")
 .def(py::init<uint32>(),R"doc(
