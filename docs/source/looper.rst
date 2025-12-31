@@ -1,8 +1,16 @@
 BLooper Class Reference
 ========================
 
-.. currentmodule:: Be
+BLooper definitions and constants
+-----------------------------------
+.. currentmodule:: Be.Roster
 
+.. data:: B_LOOPER_PORT_DEFAULT_CAPACITY
+   :value: 200
+
+   This constant is the default maximum port capacity.
+
+.. currentmodule:: Be
 
 BLooper constructors
 ------------------------
@@ -47,7 +55,7 @@ BLooper constructors
    data that is restored, is merely the port capacity and the name of the looper/handler. 
    Other data, such as filters, is not archived by the default archiver.
    
-   .. note::
+   .. warning::
       This constructor does no type check whatsoever. Since you can pass any BMessage, 
       you should - if you are not sure about the exact type - use the Instantiate() method, 
       which does check the type.

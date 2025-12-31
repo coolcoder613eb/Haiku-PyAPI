@@ -23,24 +23,36 @@ The Haiku-PyAPI module `Be.AppDefs` provides several predefined cursors, both ol
 (byte arrays) and new-style (system constants). These cursors can be used in applications
 to set the mouse cursor.
 
+.. currentmodule:: Be.Roster
+
 .. rubric:: `Old-style cursors (arrays of bytes)`
 
-**B_HAND_CURSOR**  
-Hand-shaped cursor. Represented as a byte array containing:
-- A 4-byte header
-- Image data
-- Transparency mask
+.. data:: B_HAND_CURSOR
+   :value: (bytes)
 
-**B_I_BEAM_CURSOR**  
-I-beam cursor (vertical line). Represented as a byte array containing:
-- A 4-byte header
-- Image data
-- Transparency mask
+   Hand-shaped cursor. Represented as a byte array containing:
+   
+      - A 4-byte header
+      - Image data
+      - Transparency mask
+
+.. data:: B_I_BEAM_CURSOR
+   :value: (bytes)
+
+   I-beam cursor (vertical line). Represented as a byte array containing:
+
+      - A 4-byte header
+      - Image data
+      - Transparency mask
 
 .. rubric:: `New-style cursors (system constants)`
 
-**B_CURSOR_SYSTEM_DEFAULT**  
-System default cursor. Managed internally by Haiku, does not require a byte array.
+.. data:: B_CURSOR_SYSTEM_DEFAULT
+   :value: (BCursor)
 
-**B_CURSOR_I_BEAM**  
-Standard text I-beam cursor (new-style). Compatible with the Haiku system cursor API.
+   System default cursor. Managed internally by Haiku, does not require a byte array.
+
+.. data:: B_CURSOR_I_BEAM
+   :value: (BCursor)
+
+   Standard text I-beam cursor (new-style). Compatible with the Haiku system cursor API.
