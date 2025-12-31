@@ -108,7 +108,7 @@ field of the match and returns the index of the match in the array. Otherwise, i
    
    this function is kept for C++ compatibility
    
-.. note::
+.. warning::
 
    if the provided data buffer is smaller than 4 bytes an exception is rised.
    
