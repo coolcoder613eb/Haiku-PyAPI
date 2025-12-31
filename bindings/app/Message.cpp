@@ -307,6 +307,8 @@ m.attr("B_REVERSE_RANGE_SPECIFIER") = 5;
 m.attr("B_NAME_SPECIFIER") = 6;
 m.attr("B_ID_SPECIFIER") = 7;
 m.attr("B_SPECIFIERS_END") = 128;
+m.attr("B_FIELD_NAME_LENGTH")=B_FIELD_NAME_LENGTH;
+m.attr("B_PROPERTY_NAME_LENGTH")=B_PROPERTY_NAME_LENGTH;
 
 py::class_<BMessage,std::unique_ptr<BMessage, py::nodelete>>(m, "BMessage",R"doc(
    ``BMessage`` represents a message object in Haiku, used for communication
