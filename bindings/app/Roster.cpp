@@ -75,7 +75,7 @@ help you decide whether to launch it.
 
 There's just one roster and it's shared by all applications. When an 
 application starts up, a ``BRoster`` object is constructed and assigned to 
-a global variable, be_roster. You always access the roster through this 
+a global variable, ``be_roster``. You always access the roster through this 
 variable; you never have to instantiate a ``BRoster`` in application code.
 
 The ``BRoster`` identifies applications in three ways:
@@ -92,7 +92,7 @@ will have the same signature, but different team identifiers.
 Sets up the object's connection to the roster service.
 
 When an application constructs its ``BApplication`` object, the system 
-constructs a ``BRoster`` object and assigns it to the be_roster global 
+constructs a ``BRoster`` object and assigns it to the ``be_roster`` global 
 variable. A ``BRoster`` is therefore readily available from the time 
 the application is initialized until the time it quits; you don't have 
 to construct one. The constructor is public only to give programs that 

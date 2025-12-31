@@ -57,11 +57,11 @@ BRoster  constructors
    Sets up the object's connection to the roster service.
 
    When an application constructs its ``BApplication`` object, the system 
-   constructs a ``BRoster`` object and assigns it to the be_roster global 
+   constructs a ``BRoster`` object and assigns it to the ``be_roster`` global 
    variable. A ``BRoster`` is therefore readily available from the time 
    the application is initialized until the time it quits; you don't have 
    to construct one. The constructor is public only to give programs that 
-   don't have BApplication objects access to the roster
+   don't have BApplication objects access to the roster.
 
 BRoster functions
 ------------------------
