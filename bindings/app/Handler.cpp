@@ -59,6 +59,8 @@ class PyBHandler : public BHandler{
 PYBIND11_MODULE(Handler,m)
 {
 m.attr("B_OBSERVER_OBSERVE_ALL") = B_OBSERVER_OBSERVE_ALL;
+m.attr("B_OBSERVE_WHAT_CHANGE") = B_OBSERVE_WHAT_CHANGE;
+m.attr("B_OBSERVE_ORIGINAL_WHAT") = B_OBSERVE_ORIGINAL_WHAT;
 
 py::class_<BHandler, PyBHandler, py::smart_holder>(m, "BHandler",R"doc(
 This class handles messages that are passed on by a BLooper.
