@@ -80,7 +80,7 @@ explicitly request this to happen.
 .def(py::init<BMessage *>(), R"doc(
 Construct a handler from an archived message.
 
-.. note::
+.. warning::
    This data has to be created using the BHandler::Archive() method. Note that only the name is stored. The filters, the associated looper and the observers are not stored, and should be manually added when you are using this object.
 
 :param data: The message containing the archived data.
@@ -210,12 +210,14 @@ Conveninent version of Looper.Lock(), but smarter as it avoids race
 conditions, due to its ability to retrieve the handler's looper and 
 lock it in a pseudo-atomic operation.
 
-.. note::
+.. warning::
    Avoid using:
    
-   myhandler.Looper().Lock()
-   -some code-
-   myhandler.Looper().Unlock()
+   .. code-block:: python
+   
+      myhandler.Looper().Lock()
+      {some code}
+      myhandler.Looper().Unlock()
    
    use this function instead and its sibiling for Unlock()
    
@@ -238,12 +240,14 @@ Conveninent version of Looper.Unlock(), but smarter as it avoids race
 conditions, due to its ability to retrieve the handler's looper and 
 unlock it in a pseudo-atomic operation.
 
-.. note::
+.. warning::
    Avoid using:
    
-   myhandler.Looper().Lock()
-   -some code-
-   myhandler.Looper().Unlock()
+   .. code-block:: python
+   
+      myhandler.Looper().Lock()
+      {some code}
+      myhandler.Looper().Unlock()
    
    use this function instead and its sibiling for Lock()
 
