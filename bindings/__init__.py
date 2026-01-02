@@ -116,6 +116,7 @@ from .Job import *
 
 from .fs_attr import *
 from .OS import *
+from .scheduler import *
 
 from .StorageDefs import *
 from .Statable import *
@@ -166,6 +167,10 @@ from .NetworkSettings import *
 #from .NetworkSettingsAddOn import *
 
 #from .bus_manager import *
+#from .ACPI import *
+#from .cpufreq import *
+#from .cpuidle import *
+#from .module import *
 
 #from .SerialPort import *
 #from .Joystick import *
@@ -231,24 +236,24 @@ from .SoundPlayer import *
 from .TimeCode import *
 from .TimedEventQueue import *
 
-_BWindow=BWindow
-_BApplication=BApplication
-def MessageReceived(self, msg, parent):
-    if msg.what in self.events:
-        self.events[msg.what](msg)
-    elif msg in self.events:
-        self.events[msg](msg)
-    else:
-        print(parent,parent.MessageReceived)
-        parent.MessageReceived(self, msg)
-
-class BWindow(_BWindow):
-    events={}
-    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BWindow)
-
-class BApplication(_BApplication):
-    events={}
-    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BApplication)
+#_BWindow=BWindow
+#_BApplication=BApplication
+#def MessageReceived(self, msg, parent):
+#    if msg.what in self.events:
+#        self.events[msg.what](msg)
+#    elif msg in self.events:
+#        self.events[msg](msg)
+#    else:
+#        print(parent,parent.MessageReceived)
+#        parent.MessageReceived(self, msg)
+#
+#class BWindow(_BWindow):
+#    events={}
+#    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BWindow)
+#
+#class BApplication(_BApplication):
+#    events={}
+#    MessageReceived=lambda self, msg: MessageReceived(self, msg,_BApplication)
 
 
 def int32(bytestr):

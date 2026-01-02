@@ -53,6 +53,14 @@ py::class_<BRect>(m, "BRect")
 .def("__ne__", &BRect::operator!=, "", py::arg("other"))
 .def("__and__", &BRect::operator&, "", py::arg("other"))
 .def("__or__", &BRect::operator|, "", py::arg("other"))
+// added by TmTFx 
+.def("__repr__", [](const BRect& r) {
+    return "BRect(" +
+        std::to_string(r.left) + ", " +
+        std::to_string(r.top) + ", " +
+        std::to_string(r.right) + ", " +
+        std::to_string(r.bottom) + ")";
+})
 .def("IsValid", &BRect::IsValid, "")
 .def("Width", &BRect::Width, "")
 .def("IntegerWidth", &BRect::IntegerWidth, "")

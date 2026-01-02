@@ -1,6 +1,7 @@
 
 from Be import BApplication, BWindow, BListItem, BTabView, BTab, BFont, BPicture, BStringItem, BAlert, BPoint, BBox, BListView, BScrollView, BRadioButton, BColorControl, BCheckBox, BRect, BTextControl, BView,BMenu,BStatusBar, BMenuBar, BMenuItem,BSeparatorItem,BStringView,BMessage,window_type,  B_NOT_RESIZABLE, B_QUIT_ON_WINDOW_CLOSE
-from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap, TypeConstants,BShape
+from Be import BPictureButton, BTextView, BButton, BScreen, BBitmap, TypeConstants,BShape,BMessageFilter
+from Be.MessageFilter import *
 from Be.PictureButton import picture_button_behavior
 from Be.GraphicsDefs import *
 from Be.ListView import list_view_type
@@ -17,6 +18,25 @@ from Be.Entry import get_ref_for_path
 from Be.TextView import text_run,text_run_array
 from Be.View import set_font_mask
 B_FONT_ALL = set_font_mask.B_FONT_ALL
+
+class MyFilter(BMessageFilter):
+    def __init__(self):
+        # Filtra tutti i messaggi (B_ANY_DELIVERY, B_ANY_SOURCE)
+        super().__init__(B_ANY_DELIVERY, B_ANY_SOURCE)
+
+    def Filter(self, message, target):
+        # 'message' è l'oggetto BMessage intercettato
+        # 'target' è il BHandler a cui è destinato
+        what=message.what
+        print(f"Intercepted message with 'what': {what}")
+
+        # Esempio: blocca i messaggi con what == 1234
+        if what == 1:
+            print("Message blocked!")
+            return (B_SKIP_MESSAGE,target) 
+
+        # Lascia passare gli altri messaggi
+        return (B_DISPATCH_MESSAGE,target)
 
 class PBox(BBox):
 	def __init__(self,frame,name,immagine):
@@ -166,6 +186,8 @@ class Window(BWindow):
 	def __init__(self):
 		BWindow.__init__(self, BRect(100,100,600,750), "Hello Haiku!", window_type.B_TITLED_WINDOW,  B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE)
 		bounds=self.Bounds()
+		self.the_filter = MyFilter()
+		self.AddFilter(self.the_filter)
 		self.bckgnd = MyView(self.Bounds(), "background", 8, 20000000)
 		self.maintabview = BTabView(BRect(2.0, 2.0, bounds.Width()-2.0, bounds.Height()-2.0), 'tabview')
 		self.panel = MyView(self.Bounds(), "panel", 8, 20000000)
