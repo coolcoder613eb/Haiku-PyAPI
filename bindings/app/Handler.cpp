@@ -1,4 +1,4 @@
-#include <pybind11/smart_holder.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -19,9 +19,7 @@ py::tuple GetSupportedSuitesWrapper(BHandler& self){
 	return py::make_tuple(status, message);
 }
 
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BHandler);
-
-class PyBHandler : public BHandler{
+class PyBHandler : public BHandler, py::trampoline_self_life_support {
 	public:
         using BHandler::BHandler;
         status_t			Archive(BMessage* data, bool deep = true) const override {

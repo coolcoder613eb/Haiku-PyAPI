@@ -1,4 +1,4 @@
-#include <pybind11/smart_holder.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -12,8 +12,6 @@
 #include <TextView.h>
 
 namespace py = pybind11;
-
-//PYBIND11_SMART_HOLDER_TYPE_CASTERS(BAlert);
 
 class PyBAlert : public BAlert{
 	public:

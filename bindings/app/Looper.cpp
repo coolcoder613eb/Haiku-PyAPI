@@ -1,4 +1,4 @@
-#include <pybind11/smart_holder.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -14,7 +14,7 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
-class PyBLooper : public BLooper{
+class PyBLooper : public BLooper, public py::trampoline_self_life_support {
 	public:
         using BLooper::BLooper;
 		~PyBLooper() override {
@@ -108,8 +108,6 @@ void QuitWrapper(BLooper& self) {
 	// If the code reaches this point, the global interpreter lock is
 	// reacquired, otherwise, it isn't. Exactly the behaviour we want.
 }
-
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BLooper);
 
 PYBIND11_MODULE(Looper,m)
 {

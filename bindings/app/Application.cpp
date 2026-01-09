@@ -1,4 +1,4 @@
-#include <pybind11/smart_holder.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -46,7 +46,7 @@ py::tuple GetAppInfoWrapper(BApplication& self){
 	status_t status = self.GetAppInfo(&info);
 	return py::make_tuple(status, info);
 }
-class PyBApplication : public BApplication{
+class PyBApplication : public BApplication, public py::trampoline_self_life_support {
 	public:
         using BApplication::BApplication;
         void ReadyToRun() override {
@@ -115,8 +115,6 @@ class PyBApplication : public BApplication{
         }
 };
 
-
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BApplication);
 
 PYBIND11_MODULE(Application,m)
 {

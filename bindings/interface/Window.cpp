@@ -1,4 +1,4 @@
-#include <pybind11/smart_holder.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
@@ -15,7 +15,7 @@
 namespace py = pybind11;
 using namespace BPrivate;
 
-class PyBWindow : public BWindow{
+class PyBWindow : public BWindow, py::trampoline_self_life_support {
     public:
         using BWindow::BWindow;
  
@@ -123,8 +123,6 @@ void QuitWrapper(BWindow& self) {
 	py::gil_scoped_release release;
 	self.Quit();
 }
-
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BWindow);
 
 PYBIND11_MODULE(Window,m)
 {

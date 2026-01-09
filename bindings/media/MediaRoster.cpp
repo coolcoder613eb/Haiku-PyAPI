@@ -1,4 +1,3 @@
-#include <pybind11/smart_holder.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
@@ -16,8 +15,6 @@
 namespace py = pybind11;
 using namespace BPrivate;
 using namespace BPrivate::media;
-
-PYBIND11_SMART_HOLDER_TYPE_CASTERS(BMediaRoster);
 
 PYBIND11_MODULE(MediaRoster, m)
 {
