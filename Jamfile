@@ -309,7 +309,7 @@ local sourceFiles =
 
 	
 	#device
-	#SerialPort.cpp
+	SerialPort.cpp
 	#Joystick.cpp
 	#USBKit.cpp
 	#A2D.cpp
@@ -445,6 +445,7 @@ LINKLIBS on MailMessage.so = $(LINKLIBS) -lmail ;
 LINKLIBS on MailSettings.so = $(LINKLIBS) -lmail ;
 LINKLIBS on NetworkSettings.so = $(LINKLIBS) -lbnetapi ;
 #LINKLIBS on module.so = $(LINKLIBS) -lroot ;
+LINKLIBS on SerialPort.so = $(LINKLIBS) -ldevice ;
 
 # __init__.py can be built by simply copying the file
 MakeLocate __init__.py : $(LOCATE_TARGET) ; # Put it in the build directory

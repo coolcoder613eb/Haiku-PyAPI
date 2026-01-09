@@ -172,7 +172,7 @@ from .NetworkSettings import *
 #from .cpuidle import *
 #from .module import *
 
-#from .SerialPort import *
+from .SerialPort import *
 #from .Joystick import *
 #from .USBKit import *
 #from .A2D import *

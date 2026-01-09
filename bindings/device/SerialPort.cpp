@@ -48,9 +48,9 @@ py::enum_<parity_mode>(m, "parity_mode", "")
 .value("B_EVEN_PARITY", parity_mode::B_EVEN_PARITY, "")
 .export_values();
 
-m.attr("B_NOFLOW_CONTROL") = py::cast(B_NOFLOW_CONTROL);
-m.attr("B_HARDWARE_CONTROL") = py::cast(B_HARDWARE_CONTROL);
-m.attr("B_SOFTWARE_CONTROL") = py::cast(B_SOFTWARE_CONTROL);
+m.attr("B_NOFLOW_CONTROL") = 0;//py::cast(B_NOFLOW_CONTROL);
+m.attr("B_HARDWARE_CONTROL") = 0x00000001;//py::cast(B_HARDWARE_CONTROL);
+m.attr("B_SOFTWARE_CONTROL") = 0x00000002;//py::cast(B_SOFTWARE_CONTROL);
 
 py::class_<BSerialPort>(m, "BSerialPort")
 .def(py::init(), "")
