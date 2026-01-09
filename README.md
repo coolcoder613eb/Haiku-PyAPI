@@ -79,10 +79,10 @@ The generated documentation will be at docs/build/html/
 
 This repository contains `example.py`, which is a simple "Hello world" program.
 Other examples:
-- https://github.com/coolcoder613eb/Bemini
-- https://github.com/coolcoder613eb/BeMatched
-- https://github.com/tmtfx/HaiQR
+- https://github.com/robante15/Haiku-PyAPI_Examples
 - https://github.com/tmtfx/FeedGator
+- https://github.com/tmtfx/HaiQR
 - https://github.com/tmtfx/HTPBZ2
 - https://github.com/tmtfx/HaikuPO
-- https://github.com/robante15/Haiku-PyAPI_Examples
+<!-- - https://github.com/coolcoder613eb/Bemini (Commented out because it uses BWindow.events which was removed because it isn't in Haiku's API) -->
+<!-- - https://github.com/coolcoder613eb/BeMatched (Same as above) -->
