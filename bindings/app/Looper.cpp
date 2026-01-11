@@ -418,7 +418,7 @@ have to ``Lock()`` the object first.
    :rtype: int
 
 )doc")
-.def("HandlerAt", &BLooper::HandlerAt, R"doc(
+.def("HandlerAt", &BLooper::HandlerAt, py::return_value_policy::reference, R"doc(
    Get the handler at an index of the list of associated handlers.
    
    :param index: The index.
