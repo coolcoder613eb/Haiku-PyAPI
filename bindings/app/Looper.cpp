@@ -436,7 +436,7 @@ have to ``Lock()`` the object first.
    :rtype: int
    
 )doc", py::arg("handler"))
-.def("PreferredHandler", &BLooper::PreferredHandler, R"doc(
+.def("PreferredHandler", &BLooper::PreferredHandler, py::return_value_policy::reference, R"doc(
    Get the preferred handler.
 
    :return: The preferred handler, or ``None`` if none is set.
