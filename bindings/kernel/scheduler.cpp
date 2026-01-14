@@ -50,20 +50,20 @@ py::enum_<scheduler_mode>(m, "scheduler_mode", "")
 .value("SCHEDULER_MODE_POWER_SAVING", scheduler_mode::SCHEDULER_MODE_POWER_SAVING, "")
 .export_values();
 
-m.def("suggest_thread_priority", py::overload_cast<unsigned int, int, bigtime_t, bigtime_t>(&suggest_thread_priority), "", py::arg("task_flags")=B_DEFAULT_MEDIA_PRIORITY, py::arg("period")=0, py::arg("jitter")=0, py::arg("length")=0);
+m.def("suggest_thread_priority", py::overload_cast<uint32, int32, bigtime_t, bigtime_t>(&suggest_thread_priority), "", py::arg("task_flags")=B_DEFAULT_MEDIA_PRIORITY, py::arg("period")=0, py::arg("jitter")=0, py::arg("length")=0);
 
 m.def("estimate_max_scheduling_latency", py::overload_cast<thread_id>(&estimate_max_scheduling_latency), "", py::arg("th")=- 1);
 
-m.def("set_scheduler_mode", py::overload_cast<int>(&set_scheduler_mode), "", py::arg("mode"));
+m.def("set_scheduler_mode", py::overload_cast<int32>(&set_scheduler_mode), "", py::arg("mode"));
 
 //m.def("get_scheduler_mode", py::overload_cast<void>(&get_scheduler_mode), "", py::arg(""));
 m.def("get_scheduler_mode", &get_scheduler_mode, "");
 
-m.def("suggest_thread_priority", py::overload_cast<unsigned int, int, bigtime_t, bigtime_t>(&suggest_thread_priority), "", py::arg("what"), py::arg("period"), py::arg("jitter"), py::arg("length"));
+m.def("suggest_thread_priority", py::overload_cast<uint32, int32, bigtime_t, bigtime_t>(&suggest_thread_priority), "", py::arg("what"), py::arg("period"), py::arg("jitter"), py::arg("length"));
 
 m.def("estimate_max_scheduling_latency", py::overload_cast<thread_id>(&estimate_max_scheduling_latency), "", py::arg("th"));
 
-m.def("set_scheduler_mode", py::overload_cast<int>(&set_scheduler_mode), "", py::arg("mode"));
+m.def("set_scheduler_mode", py::overload_cast<int32>(&set_scheduler_mode), "", py::arg("mode"));
 
 //m.def("get_scheduler_mode", py::overload_cast<void>(&get_scheduler_mode), "", py::arg(""));
 
