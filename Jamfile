@@ -72,6 +72,13 @@ type ?= release ;
 build_location ?= build/python$(python_version)_$(type) ;
 install_location ?=
 	/boot/system/non-packaged/lib/python$(python_version)/site-packages ;
+# Ideally, we would test if the platform building this is Haiku Beta 5 instead
+# of requiring the user to specify it. Based off of my searching, Haiku does
+# not have a preprocessor macro available (i.e. there is nothing that lets us
+# do something like `#if HAIKU_VERSION == 5`). One alternative is to create a
+# script that figures it out and make this Jamfile call it and set a
+# preprocessor macro based off of it. This is good enough for now, though.
+target_beta5 ?= 0 ;
 
 # Where to search for .cpp files
 SEARCH_SOURCE +=
@@ -112,6 +119,10 @@ if $(type) = release {
 	SubDirC++Flags -gdwarf-4 ;
 } else {
 	Exit "Bad type given. Valid options are \"release\" and \"debug\"" ;
+}
+if $(target_beta5) = 1 {
+	# Define TARGET_BETA5 C++ preprocessor macro
+	SubDirC++Flags -D TARGET_BETA5 ;
 }
 
 # Flags to use when linking

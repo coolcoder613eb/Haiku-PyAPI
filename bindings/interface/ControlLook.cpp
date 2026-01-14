@@ -390,12 +390,21 @@ void DrawTabFrame(BView* view, BRect& rect, const BRect& updateRect,
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawTabFrame, view, rect,
                            updateRect, base, flags, borders, borderStyle, side);
 }
+#ifdef TARGET_BETA5
+void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
+                         const rgb_color& base, uint32 flags, int32 direction,
+                         orientation orientation, bool down = false) {
+    PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarButton, view, rect,
+                           updateRect, base, flags, direction, orientation, down);
+}
+#else
 void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
                          const rgb_color& base, const rgb_color& text, uint32 flags, int32 direction,
                          orientation orientation, bool down = false) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarButton, view, rect,
                            updateRect, base, text, flags, direction, orientation, down);
 }
+#endif
 void DrawScrollBarThumb(BView* view, BRect& rect, const BRect& updateRect,
                         const rgb_color& base, uint32 flags,
                         orientation orientation, uint32 knobStyle = B_KNOB_NONE) override {
@@ -850,7 +859,11 @@ float  _bottom;
     return rect;
 }
 , "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("borderStyle")=B_FANCY_BORDER, py::arg("side")=MyClass::various::B_TOP_BORDER)
-.def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"),py::arg("text"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
+#ifdef TARGET_BETA5
+.def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
+#else
+.def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("text"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
+#endif
 .def("DrawScrollBarThumb", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,uint32 flags,orientation orientation,uint32 knobStyle=MyClass::various::B_KNOB_NONE) {
     BRect  rect;
     self.DrawScrollBarThumb(view, rect, updateRect, base, flags, orientation, knobStyle);

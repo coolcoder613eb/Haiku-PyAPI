@@ -11,14 +11,21 @@ namespace py = pybind11;
 PYBIND11_MODULE(Url, m)
 {
 py::class_<BUrl, BArchivable>(m, "BUrl")
-.def(py::init<const char *, bool>(), "", py::arg("url"),py::arg("encode")=true)
+#ifdef TARGET_BETA5
+.def(py::init<const char *>(), "", py::arg("url"))
+#else
+.def(py::init<const char *, bool>(), "", py::arg("url"), py::arg("encode")=true)
+#endif
 .def(py::init<BMessage *>(), "", py::arg("archive"))
 .def(py::init<const BUrl &>(), "", py::arg("other"))
 .def(py::init<const BUrl &, const BString &>(), "", py::arg("base"), py::arg("relative"))
 .def(py::init<const BPath &>(), "", py::arg("path"))
 .def(py::init(), "")
+#ifdef TARGET_BETA5
+.def("SetUrlString", py::overload_cast<const BString&>(&BUrl::SetUrlString), "", py::arg("url"))
+#else
 .def("SetUrlString", py::overload_cast<const BString&, bool>(&BUrl::SetUrlString), "", py::arg("url"),py::arg("encode")=true)
-//.def("SetUrlString", py::overload_cast<const BString&>(&BUrl::SetUrlString), "", py::arg("url"))
+#endif
 .def("SetProtocol", &BUrl::SetProtocol, "", py::arg("scheme"))
 .def("SetUserName", &BUrl::SetUserName, "", py::arg("user"))
 .def("SetPassword", &BUrl::SetPassword, "", py::arg("password"))

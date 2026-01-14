@@ -171,8 +171,10 @@ m.attr("ETXTBSY") = ETXTBSY;
 m.attr("ENOATTR") = ENOATTR;
 m.attr("ENOTRECOVERABLE") = ENOTRECOVERABLE;
 m.attr("EOWNERDEAD") = EOWNERDEAD;
+#ifndef TARGET_BETA5
 m.attr("ESOCKTNOSUPPORT") = ESOCKTNOSUPPORT;
-// TODO: integrare doppia versione di ENOMEM come da Errors.h
+#endif
+// TODO: Add support for ENOMEM which is also defined in Errors.h
 
 
 /* POSIX errors that can be mapped to BeOS error codes */
