@@ -59,7 +59,11 @@ py::class_<BSerialPort>(m, "BSerialPort")
 //.def("Read", &BSerialPort::Read, "", py::arg("buf"), py::arg("count"))
 .def("Read", [](BSerialPort& self, size_t count) {
 	std::vector<uint8_t> buffer(count);
-	ssize_t result = self.Read(buffer.data(), count);
+	ssize_t result;
+	{
+		py::gil_scoped_release release;
+		result = self.Read(buffer.data(), count);
+	}
 	if (result > 0) {
 		return py::bytes(reinterpret_cast<const char*>(buffer.data()), result);
 	}
@@ -67,13 +71,15 @@ py::class_<BSerialPort>(m, "BSerialPort")
 	}, "", py::arg("count"))
 //.def("Write", &BSerialPort::Write, "", py::arg("buf"), py::arg("count"))
 .def("Write", [](BSerialPort& self, py::buffer data){
-	/*std::string buffer = data;
-	const void* buf =buffer.data();
-	size_t count = buffer.size();*/
 	py::buffer_info info = data.request();
 	size_t count = info.size;
 	const void* buffer = info.ptr;
-	return self.Write(buffer,count);
+	ssize_t result;
+	{
+		py::gil_scoped_release release;
+		result = self.Write(buffer, count);
+	}
+	return result;
 },"",py::arg("data"))
 .def("SetBlocking", &BSerialPort::SetBlocking, "", py::arg("blocking"))
 .def("SetTimeout", &BSerialPort::SetTimeout, "", py::arg("microSeconds"))
