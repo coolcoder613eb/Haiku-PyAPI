@@ -171,8 +171,10 @@ m.attr("ETXTBSY") = ETXTBSY;
 m.attr("ENOATTR") = ENOATTR;
 m.attr("ENOTRECOVERABLE") = ENOTRECOVERABLE;
 m.attr("EOWNERDEAD") = EOWNERDEAD;
-#ifndef TARGET_BETA5
+#if B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_5
 m.attr("ESOCKTNOSUPPORT") = ESOCKTNOSUPPORT;
+#else
+// Support for Beta 5 can be removed when Beta 6 is released
 #endif
 // TODO: Add support for ENOMEM which is also defined in Errors.h
 

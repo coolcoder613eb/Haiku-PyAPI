@@ -3,17 +3,17 @@
 #include <pybind11/iostream.h>
 #include <pybind11/operators.h>
 
-#include <interface/ControlLook.h>
-#include <InterfaceDefs.h>
 #include <Alignment.h>
+#include <BeBuild.h>
+#include <Bitmap.h>
+#include <interface/ControlLook.h>
 #include <Font.h>
+#include <InterfaceDefs.h>
 #include <Rect.h>
 #include <Slider.h>
-#include <Bitmap.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
-
 
 
 class PyBControlLook : public BControlLook {
@@ -390,19 +390,20 @@ void DrawTabFrame(BView* view, BRect& rect, const BRect& updateRect,
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawTabFrame, view, rect,
                            updateRect, base, flags, borders, borderStyle, side);
 }
-#ifdef TARGET_BETA5
-void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
-                         const rgb_color& base, uint32 flags, int32 direction,
-                         orientation orientation, bool down = false) {
-    PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarButton, view, rect,
-                           updateRect, base, flags, direction, orientation, down);
-}
-#else
+#if B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_5
 void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
                          const rgb_color& base, const rgb_color& text, uint32 flags, int32 direction,
                          orientation orientation, bool down = false) override {
     PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarButton, view, rect,
                            updateRect, base, text, flags, direction, orientation, down);
+}
+#else
+// Support for Beta 5 can be removed when Beta 6 is released
+void DrawScrollBarButton(BView* view, BRect rect, const BRect& updateRect,
+                         const rgb_color& base, uint32 flags, int32 direction,
+                         orientation orientation, bool down = false) {
+    PYBIND11_OVERRIDE_PURE(void, BControlLook, DrawScrollBarButton, view, rect,
+                           updateRect, base, flags, direction, orientation, down);
 }
 #endif
 void DrawScrollBarThumb(BView* view, BRect& rect, const BRect& updateRect,
@@ -859,10 +860,11 @@ float  _bottom;
     return rect;
 }
 , "", py::arg("view"), py::arg("updateRect"), py::arg("base"), py::arg("flags")=0, py::arg("borders")=MyClass::various::B_ALL_BORDERS, py::arg("borderStyle")=B_FANCY_BORDER, py::arg("side")=MyClass::various::B_TOP_BORDER)
-#ifdef TARGET_BETA5
-.def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
-#else
+#if B_HAIKU_VERSION > B_HAIKU_VERSION_1_BETA_5
 .def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("text"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
+#else
+// Support for Beta 5 can be removed when Beta 6 is released
+.def("DrawScrollBarButton", &BControlLook::DrawScrollBarButton, "", py::arg("view"), py::arg("rect"), py::arg("updateRect"), py::arg("base"), py::arg("flags"), py::arg("direction"), py::arg("orientation"), py::arg("down")=false)
 #endif
 .def("DrawScrollBarThumb", [](BControlLook& self,BView * view,const BRect & updateRect,const rgb_color & base,uint32 flags,orientation orientation,uint32 knobStyle=MyClass::various::B_KNOB_NONE) {
     BRect  rect;
