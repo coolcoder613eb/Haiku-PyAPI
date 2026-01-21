@@ -7,6 +7,7 @@
 #include <NodeInfo.h>
 #include <Bitmap.h>
 #include <StorageDefs.h>
+#include <MimeType.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -69,7 +70,16 @@ py::class_<BNodeInfo>(m, "BNodeInfo")
             return std::make_tuple(result, py::array_t<uint8_t>({static_cast<ssize_t>(size)}, {sizeof(uint8_t)}, data, capsule), type);
 }, "")*/
 .def("SetIcon", py::overload_cast<const uint8*, size_t>(&BNodeInfo::SetIcon), "", py::arg("data"), py::arg("size"))
-.def("GetPreferredApp", &BNodeInfo::GetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
+//.def("GetPreferredApp", &BNodeInfo::GetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
+.def("GetPreferredApp", [](BNodeInfo& self,app_verb verb){
+	char signature[B_MIME_TYPE_LENGTH];
+	status_t status = self.GetPreferredApp(signature,verb);
+	if (status == B_OK) {
+        return py::make_tuple(status, std::string(signature));
+    } else {
+        return py::make_tuple(status, py::none());
+    }
+}, "", py::arg("verb")=B_OPEN)
 .def("SetPreferredApp", &BNodeInfo::SetPreferredApp, "", py::arg("signature"), py::arg("verb")=B_OPEN)
 .def("GetAppHint", &BNodeInfo::GetAppHint, "", py::arg("ref"))
 .def("SetAppHint", &BNodeInfo::SetAppHint, "", py::arg("ref"))
