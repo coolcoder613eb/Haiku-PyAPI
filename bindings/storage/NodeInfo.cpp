@@ -6,6 +6,7 @@
 
 #include <NodeInfo.h>
 #include <Bitmap.h>
+#include <StorageDefs.h>
 
 namespace py = pybind11;
 using namespace BPrivate;
@@ -19,7 +20,16 @@ py::class_<BNodeInfo>(m, "BNodeInfo")
 .def(py::init<BNode *>(), "", py::arg("node"))
 .def("SetTo", &BNodeInfo::SetTo, "", py::arg("node"))
 .def("InitCheck", &BNodeInfo::InitCheck, "")
-.def("GetType", &BNodeInfo::GetType, "", py::arg("type"))
+//.def("GetType", &BNodeInfo::GetType, "", py::arg("type"))
+.def("GetType", [](BNodeInfo& self){
+	char type[B_MIME_TYPE_LENGTH];
+	status_t status = self.GetType(type);
+	if (status == B_OK) {
+        return py::make_tuple(status, std::string(type));
+    } else {
+        return py::make_tuple(status, py::none());
+    }
+},"")
 .def("SetType", &BNodeInfo::SetType, "", py::arg("type"))
 .def("GetIcon", py::overload_cast<BBitmap *, icon_size>(&BNodeInfo::GetIcon, py::const_), "", py::arg("icon"), py::arg("which")=B_LARGE_ICON)
 /*
