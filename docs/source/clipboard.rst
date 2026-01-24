@@ -42,8 +42,7 @@ BClipboard functions
       This is an example how to use this function:
    
       .. code-block:: python
-   
-         # *** BApplication should already exist ***
+         
          from Be import BApplication, get_be_clipboard
          # script stuff
       
