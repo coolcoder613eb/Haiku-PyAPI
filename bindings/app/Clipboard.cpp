@@ -163,9 +163,9 @@ Return the BMessage object that holds the clipboard data.
     }
     return std::string("<BClipboard>");
 })
-//.def_property_readonly_static("be_clipboard", [](py::object /* self */) {
-//        return be_clipboard;
-//    }, py::return_value_policy::reference)
+.def_property_readonly_static("be_clipboard", [](py::object /* self */) {
+        return be_clipboard;
+}, py::return_value_policy::reference)
 ;
 
 m.def("get_be_clipboard", []() {
