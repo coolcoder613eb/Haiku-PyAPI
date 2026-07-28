@@ -4,6 +4,8 @@
 #include <pybind11/operators.h>
 
 #include <interface/SplitView.h>
+#include <Layout.h>
+#include <LayoutItem.h>
 #include <View.h>
 
 namespace py = pybind11;
@@ -11,7 +13,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(SplitView,m)
 {
-py::class_<BSplitView, BView>(m, "BSplitView")
+py::class_<BSplitView, BView, std::unique_ptr<BSplitView, py::nodelete>>(m, "BSplitView")
 .def(py::init<orientation, float>(), "", py::arg("orientation")=B_HORIZONTAL, py::arg("spacing")=B_USE_DEFAULT_SPACING)
 .def(py::init<BMessage *>(), "", py::arg("from"))
 .def("SetInsets", py::overload_cast<float, float, float, float>(&BSplitView::SetInsets), "", py::arg("left"), py::arg("top"), py::arg("right"), py::arg("bottom"))
@@ -25,8 +27,8 @@ py::class_<BSplitView, BView>(m, "BSplitView")
 .def("SplitterSize", &BSplitView::SplitterSize, "")
 .def("SetSplitterSize", &BSplitView::SetSplitterSize, "", py::arg("size"))
 .def("CountItems", &BSplitView::CountItems, "")
-.def("ItemWeight", py::overload_cast<int>(&BSplitView::ItemWeight), "", py::arg("index"))
-.def("ItemWeight", py::overload_cast<BLayoutItem *>(&BSplitView::ItemWeight), "", py::arg("item"))
+.def("ItemWeight", py::overload_cast<int>(&BSplitView::ItemWeight, py::const_), "", py::arg("index"))
+.def("ItemWeight", py::overload_cast<BLayoutItem *>(&BSplitView::ItemWeight, py::const_), "", py::arg("item"))
 .def("SetItemWeight", py::overload_cast<int, float, bool>(&BSplitView::SetItemWeight), "", py::arg("index"), py::arg("weight"), py::arg("invalidateLayout"))
 .def("SetItemWeight", py::overload_cast<BLayoutItem *, float>(&BSplitView::SetItemWeight), "", py::arg("item"), py::arg("weight"))
 .def("IsCollapsible", &BSplitView::IsCollapsible, "", py::arg("index"))

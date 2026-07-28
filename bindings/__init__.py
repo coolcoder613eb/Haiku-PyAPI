@@ -52,6 +52,7 @@ from .Box import *
 from .SeparatorItem import *
 from .Alignment import *
 from .SeparatorView import *
+from .SplitView import *
 from .MenuBar import *
 from .StatusBar import *
 from .CheckBox import *

@@ -175,6 +175,7 @@ local sourceFiles =
 	SeparatorItem.cpp
 	Alignment.cpp
 	SeparatorView.cpp
+	SplitView.cpp
 	MenuBar.cpp
 	StatusBar.cpp
 	CheckBox.cpp
