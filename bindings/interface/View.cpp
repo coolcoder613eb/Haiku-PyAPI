@@ -49,10 +49,10 @@ class PyBView : public BView{
             PYBIND11_OVERLOAD(void, BView, AllAttached);
         }
         void				DetachedFromWindow() override {
-            PYBIND11_OVERLOAD(void, BView, AllAttached);
+            PYBIND11_OVERLOAD(void, BView, DetachedFromWindow);
         }
         void				AllDetached() override {
-            PYBIND11_OVERLOAD(void, BView, AllAttached);
+            PYBIND11_OVERLOAD(void, BView, AllDetached);
         }
         void				MessageReceived(BMessage* message) override {
             PYBIND11_OVERLOAD(void, BView, MessageReceived, message);
