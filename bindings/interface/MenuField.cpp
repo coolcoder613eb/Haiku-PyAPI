@@ -51,7 +51,7 @@ class PyBMenuField : public BMenuField{
             PYBIND11_OVERLOAD(void, BMenuField, DetachedFromWindow);
         }
         void				AllDetached() override {
-            PYBIND11_OVERLOAD(void, BMenuField, AllAttached);
+            PYBIND11_OVERLOAD(void, BMenuField, AllDetached);
         }
         void				FrameMoved(BPoint where) override {
             PYBIND11_OVERLOAD(void, BMenuField, FrameMoved, where);
