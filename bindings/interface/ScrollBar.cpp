@@ -33,7 +33,7 @@ class PyBScrollBar : public BScrollBar{
             PYBIND11_OVERLOAD(void, BScrollBar, FrameMoved, new_position);
         }
         void				FrameResized(float newWidth, float newHeight) override {
-            PYBIND11_OVERLOAD(void, BScrollBar, FrameResized, newWidth, newWidth);
+            PYBIND11_OVERLOAD(void, BScrollBar, FrameResized, newWidth, newHeight);
         }
         void				MessageReceived(BMessage* message) override {
             PYBIND11_OVERLOAD(void, BScrollBar, MessageReceived, message);
