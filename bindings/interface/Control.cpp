@@ -92,7 +92,7 @@ m.attr("B_CONTROL_PARTIALLY_ON") = 2;
 
 //m.attr("BIcon") = BIcon;
 
-py::class_<BControl, PyBControl, BView, BInvoker>(m, "BControl")
+py::class_<BControl, PyBControl, BView, BInvoker, std::unique_ptr<BControl, py::nodelete>>(m, "BControl")
 .def(py::init<BRect, const char *, const char *, BMessage *, unsigned int, unsigned int>(), "", py::arg("frame"), py::arg("name"), py::arg("label"), py::arg("message"), py::arg("resizingMode"), py::arg("flags"))
 .def(py::init<const char *, const char *, BMessage *, unsigned int>(), "", py::arg("name"), py::arg("label"), py::arg("message"), py::arg("flags"))
 .def(py::init<BMessage *>(), "", py::arg("data"))
