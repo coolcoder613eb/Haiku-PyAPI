@@ -38,7 +38,7 @@ class PyBSeparatorView : public BSeparatorView{
 
 PYBIND11_MODULE(SeparatorView,m)
 {
-py::class_<BSeparatorView, PyBSeparatorView, BView>(m, "BSeparatorView")
+py::class_<BSeparatorView, PyBSeparatorView, BView, std::unique_ptr<BSeparatorView, py::nodelete>>(m, "BSeparatorView")
 .def(py::init<orientation, border_style>(), "", py::arg("orientation"), py::arg("border")=B_PLAIN_BORDER)
 .def(py::init<const char *, const char *, orientation, border_style, const BAlignment &>(), "", py::arg("name"), py::arg("label"), py::arg("orientation")=B_HORIZONTAL, py::arg("border")=B_FANCY_BORDER, py::arg("alignment")=BAlignment(B_ALIGN_HORIZONTAL_CENTER,B_ALIGN_VERTICAL_CENTER))
 .def(py::init<const char *, BView *, orientation, border_style, const BAlignment &>(), "", py::arg("name"), py::arg("labelView"), py::arg("orientation")=B_HORIZONTAL, py::arg("border")=B_FANCY_BORDER, py::arg("alignment")=BAlignment(B_ALIGN_HORIZONTAL_CENTER,B_ALIGN_VERTICAL_CENTER))
