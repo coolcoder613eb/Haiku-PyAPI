@@ -211,7 +211,7 @@ If message is ``None`` the default message is sent instead.
 :type message: BMessage
 :return: ``B_OK`` if the message was sent, ``B_BAD_VALUE`` for no default message, and no message argument, other error forwarded from BMessenger::SendMessage().
 :rtype: int
-)doc", py::arg("message")=NULL)
+)doc", py::arg("message")=py::none())
 .def("InvokeNotify", &BInvoker::InvokeNotify, R"doc(
 Send the message to its target, using the notification code specified by kind.
 If message is ``None``, no message is sent to the target, but any watchers of the 

@@ -135,7 +135,7 @@ py::class_<BButton,PyBButton,BControl,BView,std::unique_ptr<BButton, py::nodelet
 .def("SetValue", &BButton::SetValue, "", py::arg("value"))
 .def("GetPreferredSize", &BButton::GetPreferredSize, "", py::arg("_width"), py::arg("_height"))
 .def("ResizeToPreferred", &BButton::ResizeToPreferred, "")
-.def("Invoke", &BButton::Invoke, "", py::arg("message")=NULL)
+.def("Invoke", &BButton::Invoke, "", py::arg("message")=py::none())
 .def("FrameMoved", &BButton::FrameMoved, "", py::arg("newPosition"))
 .def("FrameResized", &BButton::FrameResized, "", py::arg("newWidth"), py::arg("newHeight"))
 .def("MakeFocus", &BButton::MakeFocus, "", py::arg("focus")=true)
