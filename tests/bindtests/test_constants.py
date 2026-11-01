@@ -7,8 +7,7 @@
 # Ground truth is an auto-generated "emitter" C++ TU per module — same
 # non-Python #includes as the binding, same link libs as its .so per the
 # root Jamfile — so the COMPILER is the oracle, not a Python-side header
-# parser. Both sides of the diff run where the bindings were built; there
-# is no separate generation host.
+# parser. Both sides of the diff run where the bindings were built.
 #
 # The m.attr lines are scanned in the binding's source PREPROCESSED with
 # g++ -E (same includes as the build): #if resolved and macros expanded
@@ -205,8 +204,13 @@ def jam_search_source():
 
 
 def jam_extra_libs():
-    """Jamfile `LINKLIBS on <Mod>.so = $(LINKLIBS) -lX ...` -> {mod: [X, ...]}
-    (the base -lbe rides on $(LINKLIBS) and is added by the caller)."""
+    """Per-module link libs the emitter must reproduce. The Jamfile builds each
+    module's .so as `LINKLIBS on <Mod>.so = $(LINKLIBS) -lX ...` — the base -lbe
+    rides on $(LINKLIBS), and each module adds its own extras (-lmedia,
+    -ltranslation, -lmail, -ltracker, ...). The emitter is a stand-in for that
+    .so's build, so it must link the same extras to build under the same
+    conditions as the module it is the oracle for. -> {mod: [X, ...]} (the
+    extras only; the caller adds the base be)."""
     libs = {}
     for line in open(JAMFILE, errors="replace"):
         m = re.match(r"LINKLIBS on (\w+)\.so = (.+?);", line)
@@ -306,17 +310,14 @@ def main():
                                      ex.map(lambda m: build_emitter(m, mods[m], extra_libs),
                                             present)):
             if err is not None:
-                common.check("constants:%s" % mod,
-                             lambda e=err: (_ for _ in ()).throw(
-                                 AssertionError("emitter build failed: " + e)))
+                common.fail("constants:%s" % mod,
+                            "emitter build failed: " + err)
                 continue
             try:
                 ok[mod] = run_emitter(bin_p)
             except Exception as e:
-                common.check("constants:%s" % mod,
-                             lambda e=e: (_ for _ in ()).throw(
-                                 AssertionError("emitter run failed: %s: %s"
-                                                % (type(e).__name__, e))))
+                common.fail("constants:%s" % mod,
+                            "emitter run failed: %s: %s" % (type(e).__name__, e))
     names_by_mod = {m: list(mods[m]["consts"]) for m in ok}
 
     # the Python side: same TSS-aware strategy as before (chunk when the
@@ -360,9 +361,9 @@ def main():
                                    timeout=120)
                 line = [l for l in p.stdout.splitlines() if l.startswith("JSON ")]
             if not line:
-                common.check("constants:%s" % mod, lambda p=p: (_ for _ in ()).throw(
-                    AssertionError("import failed (solo+closure): "
-                                   + (p.stderr.strip().splitlines() or ["?"])[-1][:160])))
+                common.fail("constants:%s" % mod,
+                            "import failed (solo+closure): "
+                            + (p.stderr.strip().splitlines() or ["?"])[-1][:160])
                 continue
             py_vals[mod] = {n: (tc, v) for n, tc, v in json.loads(line[0][5:])}
 
@@ -371,12 +372,10 @@ def main():
             continue                     # already reported (import failed)
         bad = diff_module(mod, ok[mod], py_vals[mod], names_by_mod[mod])
         if bad:
-            common.check("constants:%s" % mod,
-                         lambda b=bad: (_ for _ in ()).throw(
-                             AssertionError("; ".join(b[:5]))))
+            common.fail("constants:%s" % mod, "; ".join(bad[:5]))
         else:
             common.check("constants:%s" % mod,
-                         lambda n=len(names_by_mod[mod]): "%d ok" % n)
+                         lambda: "%d ok" % len(names_by_mod[mod]))
 
     sys.exit(common.report("test_constants"))
 

@@ -14,6 +14,7 @@
 import importlib
 import json
 import os
+import re
 import subprocess
 import sys
 import types
@@ -69,6 +70,12 @@ class Absent(Exception):
     def __init__(self, name):
         self.name = name
         super().__init__(name)
+
+
+class Skip(Exception):
+    """raised from a check() body to record the row SKIP (e.g. it needs a live
+    resource unavailable headless); check() routes it to skip()."""
+    pass
 
 
 class _Absent:
@@ -202,29 +209,53 @@ def import_strategy(modules):
 
 
 def check(name, fn):
-    """Run one assertion group; record {test, status, detail}. A row that
-    touches a module that didn't build (an _Absent sentinel) raises Absent →
-    recorded ABSENT, so one unbuilt module doesn't take down the rest."""
+    """Run one assertion group; record {test, status, detail}. Status is
+    derived from the outcome of fn(): a return → PASS, a raised Skip → SKIP,
+    Absent (a row that touched a module that didn't build) → ABSENT,
+    AssertionError → FAIL, any other exception → ERROR — so one bad row doesn't
+    take down the rest."""
     try:
         detail = fn()
-        RESULTS.append({"test": name, "status": "PASS", "detail": detail or ""})
+    except Skip as e:
+        return skip(name, str(e))
     except Absent as e:
-        absent(name, "not built: %s" % e.name)
+        return absent(name, "not built: %s" % e.name)
     except AssertionError as e:
-        RESULTS.append({"test": name, "status": "FAIL", "detail": str(e)[:300]})
+        return fail(name, str(e))
     except BaseException as e:
-        RESULTS.append({"test": name, "status": "ERROR",
-                        "detail": "%s: %s" % (type(e).__name__, e)[:300]})
+        return error(name, "%s: %s" % (type(e).__name__, e))
+    RESULTS.append({"test": name, "status": "PASS", "detail": detail or ""})
 
 
 def skip(name, why):
     RESULTS.append({"test": name, "status": "SKIP", "detail": why})
 
 
+def fail(name, detail):
+    """Record a FAIL row directly — the absent()/skip() counterpart for FAIL,
+    for when the outcome is known without a check() body to run. (Keeps the
+    same [:300] bound check() applies to a failed body's message.)"""
+    RESULTS.append({"test": name, "status": "FAIL", "detail": str(detail)[:300]})
+
+
+def error(name, detail):
+    """Record an ERROR row directly — fail()'s counterpart for ERROR (an
+    unexpected exception, as opposed to an assertion failure)."""
+    RESULTS.append({"test": name, "status": "ERROR", "detail": str(detail)[:300]})
+
+
+# object-repr memory addresses (`<... object at 0x7f…>`) vary run to run but
+# carry no signal; normalize them so the report (and the baseline pinned from
+# it) is deterministic.
+_OBJADDR_RE = re.compile(r"object at 0x[0-9a-f]+")
+
+
 def report(suite):
     for r in RESULTS:
         r = dict(r)
-        r["detail"] = " ".join(str(r.get("detail", "")).split())  # single-line
+        d = str(r.get("detail", ""))
+        d = _OBJADDR_RE.sub("object at 0x…", d)
+        r["detail"] = " ".join(d.split())  # single-line
         print("JSON " + json.dumps({"suite": suite, **r}))
     c = lambda s: sum(1 for r in RESULTS if r["status"] == s)
     print("SUMMARY %s: %d pass, %d fail, %d error, %d absent, %d skip" %

@@ -18,6 +18,14 @@ for i, suite in enumerate(SUITES, 1):
     # progress on stderr (not the stdout report): the run takes a while,
     # especially test_constants (it builds one emitter per module).
     print("[%d/%d] %s" % (i, len(SUITES), suite), file=sys.stderr, flush=True)
+    # One fresh SUBPROCESS per suite, not import-and-call in this process —
+    # that isolation is the point (see common.py "Runtime awareness"): each
+    # suite imports binding modules that draw on the process-global TSS key
+    # pool, and a failed import poisons the process, so a subprocess gives
+    # every suite a clean pool and contains its crash/poisoning; cwd="/" keeps
+    # a local Be/ from shadowing the farm; and only a subprocess can be reaped
+    # on timeout (an in-process timeout can't kill a running fn). The JSON lines
+    # on its stdout are how that isolated child reports back to us.
     try:
         p = subprocess.run([sys.executable, os.path.join(HERE, suite + ".py")],
                            cwd="/", capture_output=True, text=True, timeout=900)

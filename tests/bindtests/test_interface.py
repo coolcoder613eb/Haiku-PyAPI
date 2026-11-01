@@ -16,28 +16,6 @@ import sys
 import common
 
 
-class SkipRow(Exception):
-    """raised by a guarded row when its object is not reachable headless"""
-
-
-def check(name, fn):
-    """common.check + SkipRow support (server-dependent functional rows)."""
-    try:
-        fn()
-    except SkipRow as e:
-        common.skip(name, str(e))
-    except common.Absent as e:
-        common.absent(name, "not built: %s" % e.name)
-    except AssertionError as e:
-        common.RESULTS.append({"test": name, "status": "FAIL",
-                               "detail": str(e)[:300]})
-    except BaseException as e:
-        common.RESULTS.append({"test": name, "status": "ERROR",
-                               "detail": ("%s: %s" % (type(e).__name__, e))[:300]})
-    else:
-        common.RESULTS.append({"test": name, "status": "PASS", "detail": ""})
-
-
 Be = common.load(common.closure("Errors", "InterfaceDefs", "ControlLook",
                                 "Font", "GraphicsDefs", "Bitmap", "View",
                                 "Screen", "AffineTransform", "Alert",
@@ -66,7 +44,7 @@ def t_const_no_truncation():
     # Was bound as the Python STRING "~0U" before the fix.
     assert isinstance(B_NO_TRUNCATION, int), repr(B_NO_TRUNCATION)
     assert B_NO_TRUNCATION == 0xFFFFFFFF, hex(B_NO_TRUNCATION)
-check("interface:Font.B_NO_TRUNCATION", t_const_no_truncation)
+common.check("interface:Font.B_NO_TRUNCATION", t_const_no_truncation)
 
 
 def t_const_cursor_ids():
@@ -76,7 +54,7 @@ def t_const_cursor_ids():
     assert B_RIGHT_ARROW == 0x1d, hex(B_RIGHT_ARROW)
     assert B_UP_ARROW == 0x1e, hex(B_UP_ARROW)
     assert B_DOWN_ARROW == 0x1f, hex(B_DOWN_ARROW)
-check("interface:InterfaceDefs.cursor_ids", t_const_cursor_ids)
+common.check("interface:InterfaceDefs.cursor_ids", t_const_cursor_ids)
 
 
 # EXAMPLE of a paired row for a binding fix (not active in the suite): the
@@ -92,7 +70,7 @@ check("interface:InterfaceDefs.cursor_ids", t_const_cursor_ids)
 #     assert B_CONTROL_LOOK_LEFT_ARROW == 0   # … RIGHT=1, UP=2, DOWN=3
 #     assert Be.BControlLookEnum.B_LEFT_ARROW == 0
 #     assert Be.BControlLookEnum.B_KNOB_LINES == 2
-# check("interface:ControlLook.nested_arrows", t_const_control_look_nested)
+# common.check("interface:ControlLook.nested_arrows", t_const_control_look_nested)
 
 
 # ------------------------------------------- removed-in-beta6 spec pins
@@ -100,7 +78,7 @@ def t_view_getfocus_removed():
     # beta6 View.h: no GetFocus (focus is MakeFocus/IsFocus only)
     assert not hasattr(BView, "GetFocus")
     assert hasattr(BView, "MakeFocus") and hasattr(BView, "IsFocus")
-check("interface:View.GetFocus-removed", t_view_getfocus_removed)
+common.check("interface:View.GetFocus-removed", t_view_getfocus_removed)
 
 
 def t_control_pulse_shape():
@@ -109,7 +87,7 @@ def t_control_pulse_shape():
     assert hasattr(BView, "Pulse") and hasattr(BControl, "Pulse")
     d = doc(BView, "Pulse")
     assert "-> None" in d, d
-check("interface:Control.Pulse-void", t_control_pulse_shape)
+common.check("interface:Control.Pulse-void", t_control_pulse_shape)
 
 
 def t_font_setto_removed():
@@ -117,7 +95,7 @@ def t_font_setto_removed():
     # SetFamilyAndStyle/SetSize
     assert not hasattr(BFont, "SetTo")
     assert hasattr(BFont, "SetSize") and hasattr(BFont, "SetFamilyAndStyle")
-check("interface:Font.SetTo-removed", t_font_setto_removed)
+common.check("interface:Font.SetTo-removed", t_font_setto_removed)
 
 
 def t_bitmap_init_getbits_removed():
@@ -125,7 +103,7 @@ def t_bitmap_init_getbits_removed():
     assert not hasattr(BBitmap, "Init")
     assert not hasattr(BBitmap, "GetBits")
     assert hasattr(BBitmap, "Bits") and hasattr(BBitmap, "LockBits")
-check("interface:Bitmap.Init-GetBits-removed", t_bitmap_init_getbits_removed)
+common.check("interface:Bitmap.Init-GetBits-removed", t_bitmap_init_getbits_removed)
 
 
 def t_listview_finditem_removed():
@@ -133,21 +111,21 @@ def t_listview_finditem_removed():
     assert not hasattr(BListView, "FindItem")
     assert not hasattr(BListView, "FindString")
     assert hasattr(BListView, "IndexOf")
-check("interface:ListView.FindItem-removed", t_listview_finditem_removed)
+common.check("interface:ListView.FindItem-removed", t_listview_finditem_removed)
 
 
 def t_tabview_currenttab_removed():
     # beta6 TabView.h: no CurrentTab — AddTab/TabAt/RemoveTab
     assert not hasattr(BTabView, "CurrentTab")
     assert hasattr(BTabView, "TabAt") and hasattr(BTabView, "AddTab")
-check("interface:TabView.CurrentTab-removed", t_tabview_currenttab_removed)
+common.check("interface:TabView.CurrentTab-removed", t_tabview_currenttab_removed)
 
 
 def t_deskbar_menubar_removed():
     # beta6 Deskbar.h: no MenuBar()
     assert not hasattr(BDeskbar, "MenuBar")
     assert hasattr(BDeskbar, "Location")
-check("interface:Deskbar.MenuBar-removed", t_deskbar_menubar_removed)
+common.check("interface:Deskbar.MenuBar-removed", t_deskbar_menubar_removed)
 
 
 def t_input_mappings_removed():
@@ -156,7 +134,7 @@ def t_input_mappings_removed():
     assert not hasattr(BInputDevice, "FindKeyboardMapping")
     assert not hasattr(BInputDevice, "FindButtonMapping")
     assert hasattr(BInputDevice, "Control")
-check("interface:Input.mappings-removed", t_input_mappings_removed)
+common.check("interface:Input.mappings-removed", t_input_mappings_removed)
 
 
 # ------------------------------------- out-param rebinds: shape (docstring)
@@ -170,7 +148,7 @@ def t_view_clip_to_picture_shape():
         raise AssertionError("no TypeError")
     except TypeError:
         pass
-check("interface:View.ClipToPicture-shape", t_view_clip_to_picture_shape)
+common.check("interface:View.ClipToPicture-shape", t_view_clip_to_picture_shape)
 
 
 def t_view_convert_value_returns():
@@ -183,21 +161,21 @@ def t_view_convert_value_returns():
         assert "BPoint" in d and "BRect" in d, (name, d)
         assert "BPoint*" not in d and "BRect*" not in d, (name, d)
         assert d.count("->") == 2, d  # both value overloads, no pointer form
-check("interface:View.Convert-value-return", t_view_convert_value_returns)
+common.check("interface:View.Convert-value-return", t_view_convert_value_returns)
 
 
 def t_view_get_clipping_region():
     # out BRegion* -> construct-and-return
     assert "-> BRegion" in doc(BView, "GetClippingRegion")
     assert "-> BRegion" in doc(BView, "ConstrainClippingRegion")
-check("interface:View.GetClippingRegion", t_view_get_clipping_region)
+common.check("interface:View.GetClippingRegion", t_view_get_clipping_region)
 
 
 def t_view_get_blending_mode():
     # two out enum-pointers (a write through them corrupted static data)
     d = doc(BView, "GetBlendingMode")
     assert "source_alpha" in d and "alpha_function" in d and "tuple" in d, d
-check("interface:View.GetBlendingMode", t_view_get_blending_mode)
+common.check("interface:View.GetBlendingMode", t_view_get_blending_mode)
 
 
 def t_view_ui_colors():
@@ -205,20 +183,20 @@ def t_view_ui_colors():
     for name in ("ViewUIColor", "HighUIColor", "LowUIColor"):
         d = doc(BView, name)
         assert "color_which" in d and "float" in d and "tuple" in d, (name, d)
-check("interface:View.UIColors-tint", t_view_ui_colors)
+common.check("interface:View.UIColors-tint", t_view_ui_colors)
 
 
 def t_view_draw_string():
     # in/out escapement_delta* -> internal buffer, delta returned
     d = doc(BView, "DrawString")
     assert "-> escapement_delta" in d, d
-check("interface:View.DrawString-delta", t_view_draw_string)
+common.check("interface:View.DrawString-delta", t_view_draw_string)
 
 
 def t_view_get_font_height():
     assert "-> BFont" in doc(BView, "GetFont")
     assert "-> font_height" in doc(BView, "GetFontHeight")
-check("interface:View.GetFont-GetFontHeight", t_view_get_font_height)
+common.check("interface:View.GetFont-GetFontHeight", t_view_get_font_height)
 
 
 def t_view_get_preferred_size():
@@ -229,13 +207,13 @@ def t_view_get_preferred_size():
         raise AssertionError("no TypeError")
     except TypeError:
         pass
-check("interface:View.GetPreferredSize", t_view_get_preferred_size)
+common.check("interface:View.GetPreferredSize", t_view_get_preferred_size)
 
 
 def t_view_get_height_for_width():
     d = doc(BView, "GetHeightForWidth")
     assert "tuple[float, float, float]" in d, d
-check("interface:View.GetHeightForWidth", t_view_get_height_for_width)
+common.check("interface:View.GetHeightForWidth", t_view_get_height_for_width)
 
 
 def t_controls_get_preferred_size_fleet():
@@ -244,7 +222,7 @@ def t_controls_get_preferred_size_fleet():
                 BTextControl, BTextView, BDragger, BListView):
         d = doc(cls, "GetPreferredSize")
         assert "tuple[float, float]" in d, (cls.__name__, d)
-check("interface:controls.GetPreferredSize-fleet",
+common.check("interface:controls.GetPreferredSize-fleet",
       t_controls_get_preferred_size_fleet)
 
 
@@ -252,7 +230,7 @@ def t_layouts_get_height_for_width_fleet():
     for cls in (BLayoutItem, BTwoDimensionalLayout, BCardLayout, BTextView):
         d = doc(cls, "GetHeightForWidth")
         assert "tuple[float, float, float]" in d, (cls.__name__, d)
-check("interface:layouts.GetHeightForWidth-fleet",
+common.check("interface:layouts.GetHeightForWidth-fleet",
       t_layouts_get_height_for_width_fleet)
 
 
@@ -267,12 +245,12 @@ def _screen():
         s = BScreen()
         frame = s.Frame()  # force a server round-trip
         if frame.right - frame.left <= 0:
-            raise SkipRow("no screen visible from this session")
+            raise common.Skip("no screen visible from this session")
         return s
-    except SkipRow:
+    except common.Skip:
         raise
     except BaseException:
-        raise SkipRow("no app_server connection")
+        raise common.Skip("no app_server connection")
 
 
 def t_screen_get_mode():
@@ -280,28 +258,28 @@ def t_screen_get_mode():
     mode, st = s.GetMode()
     assert st == B_OK, st
     assert mode.virtual_width > 0, mode.virtual_width
-check("interface:Screen.GetMode", t_screen_get_mode)
+common.check("interface:Screen.GetMode", t_screen_get_mode)
 
 
 def t_screen_get_device_info():
     s = _screen()
     info, st = s.GetDeviceInfo()
     assert st == B_OK, st
-check("interface:Screen.GetDeviceInfo", t_screen_get_device_info)
+common.check("interface:Screen.GetDeviceInfo", t_screen_get_device_info)
 
 
 def t_screen_get_monitor_info():
     s = _screen()
     info, st = s.GetMonitorInfo()
     assert st == B_OK, st
-check("interface:Screen.GetMonitorInfo", t_screen_get_monitor_info)
+common.check("interface:Screen.GetMonitorInfo", t_screen_get_monitor_info)
 
 
 def t_screen_get_timing_constraints():
     s = _screen()
     tc, st = s.GetTimingConstraints()
     assert st == B_OK, st
-check("interface:Screen.GetTimingConstraints", t_screen_get_timing_constraints)
+common.check("interface:Screen.GetTimingConstraints", t_screen_get_timing_constraints)
 
 
 def t_screen_get_brightness():
@@ -309,7 +287,7 @@ def t_screen_get_brightness():
     brightness, st = s.GetBrightness()
     assert st == B_OK, st
     assert isinstance(brightness, float)
-check("interface:Screen.GetBrightness", t_screen_get_brightness)
+common.check("interface:Screen.GetBrightness", t_screen_get_brightness)
 
 
 def t_screen_get_bitmap_frame():
@@ -326,7 +304,7 @@ def t_screen_get_bitmap_frame():
     bitmap2, st2 = s.GetBitmap(False, frame)
     assert st2 == B_OK, st2
     assert bitmap2.Bounds() == frame
-check("interface:Screen.GetBitmap", t_screen_get_bitmap_frame)
+common.check("interface:Screen.GetBitmap", t_screen_get_bitmap_frame)
 
 
 def t_screen_get_pixel_clock_limits():
@@ -336,7 +314,7 @@ def t_screen_get_pixel_clock_limits():
     low, high, st2 = s.GetPixelClockLimits(mode)
     assert st2 == B_OK, st2
     assert high >= low, (low, high)
-check("interface:Screen.GetPixelClockLimits", t_screen_get_pixel_clock_limits)
+common.check("interface:Screen.GetPixelClockLimits", t_screen_get_pixel_clock_limits)
 
 
 # ------------------------------------------------- Bitmap: functional
@@ -354,29 +332,29 @@ def t_bitmap_lock_bits():
     # out-param was unusable from Python (None -> value lost).
     b = _local_bitmap()
     if b is None:
-        raise SkipRow("BBitmap unavailable headless")
+        raise common.Skip("BBitmap unavailable headless")
     state, st = b.LockBits()
     assert st == B_OK, st
     b.UnlockBits()
-check("interface:Bitmap.LockBits", t_bitmap_lock_bits)
+common.check("interface:Bitmap.LockBits", t_bitmap_lock_bits)
 
 
 def t_bitmap_bits_bytes():
     b = _local_bitmap()
     if b is None:
-        raise SkipRow("BBitmap unavailable headless")
+        raise common.Skip("BBitmap unavailable headless")
     data = b.Bits()
     assert isinstance(data, (bytes, bytearray)) and len(data) > 0
-check("interface:Bitmap.Bits", t_bitmap_bits_bytes)
+common.check("interface:Bitmap.Bits", t_bitmap_bits_bytes)
 
 
 def t_bitmap_overlay_restrictions():
     b = _local_bitmap()
     if b is None:
-        raise SkipRow("BBitmap unavailable headless")
+        raise common.Skip("BBitmap unavailable headless")
     res, st = b.GetOverlayRestrictions()
     assert isinstance(res, Be.overlay_restrictions), type(res)
-check("interface:Bitmap.GetOverlayRestrictions", t_bitmap_overlay_restrictions)
+common.check("interface:Bitmap.GetOverlayRestrictions", t_bitmap_overlay_restrictions)
 
 
 # ------------------------------------------------- AffineTransform: functional
@@ -389,14 +367,14 @@ def t_affine_apply():
     assert (x, y) == (12.0, 22.0), (x, y)
     pts = t.Apply([BPoint(1.0, 1.0), BPoint(0.0, 0.0)])
     assert len(pts) == 2 and pts[0].x == 12.0 and pts[1].y == 20.0
-check("interface:AffineTransform.Apply", t_affine_apply)
+common.check("interface:AffineTransform.Apply", t_affine_apply)
 
 
 def t_affine_apply_inverse():
     t = BAffineTransform(2.0, 0.0, 0.0, 2.0, 10.0, 20.0)
     p = t.ApplyInverse(BPoint(12.0, 22.0))
     assert abs(p.x - 1.0) < 1e-9 and abs(p.y - 1.0) < 1e-9, (p.x, p.y)
-check("interface:AffineTransform.ApplyInverse", t_affine_apply_inverse)
+common.check("interface:AffineTransform.ApplyInverse", t_affine_apply_inverse)
 
 
 def t_affine_params():
@@ -416,7 +394,7 @@ def t_affine_params():
     import math
     ax, ay = t.GetScaleAbs()
     assert abs(ax - math.sqrt(2.0**2 + 0.5**2)) < 1e-9 and ay == 3.0, (ax, ay)
-check("interface:AffineTransform.Parameters", t_affine_params)
+common.check("interface:AffineTransform.Parameters", t_affine_params)
 
 
 # ------------------------------------------------- Font: functional (guarded)
@@ -432,10 +410,10 @@ def _font():
 def t_font_get_height():
     f = _font()
     if f is None:
-        raise SkipRow("font server unavailable")
+        raise common.Skip("font server unavailable")
     h = f.GetHeight()
     assert h.ascent > 0 or h.descent > 0, (h.ascent, h.descent)
-check("interface:Font.GetHeight", t_font_get_height)
+common.check("interface:Font.GetHeight", t_font_get_height)
 
 
 # NOTE (2026-10-26): glyph-level font queries (CountTuned/GetTunedInfo/
@@ -447,19 +425,19 @@ check("interface:Font.GetHeight", t_font_get_height)
 def t_font_get_tuned_info_shape():
     d = doc(BFont, "GetTunedInfo")
     assert "tuned_font_info" in d and "->" in d, d
-check("interface:Font.GetTunedInfo-shape", t_font_get_tuned_info_shape)
+common.check("interface:Font.GetTunedInfo-shape", t_font_get_tuned_info_shape)
 
 
 def t_font_truncate_string_shape():
     d = doc(BFont, "TruncateString")
     assert "-> str" in d, d
-check("interface:Font.TruncateString-shape", t_font_truncate_string_shape)
+common.check("interface:Font.TruncateString-shape", t_font_truncate_string_shape)
 
 
 def t_font_get_edges_shape():
     d = doc(BFont, "GetEdges")
     assert "-> list" in d, d
-check("interface:Font.GetEdges-shape", t_font_get_edges_shape)
+common.check("interface:Font.GetEdges-shape", t_font_get_edges_shape)
 
 
 def t_font_get_bounding_boxes_shape():
@@ -467,7 +445,7 @@ def t_font_get_bounding_boxes_shape():
     assert "list[Be.Rect.BRect]" in d, d
     d = doc(BFont, "GetBoundingBoxesAsString")
     assert "list[Be.Rect.BRect]" in d and "escapement_delta" in d, d
-check("interface:Font.GetBoundingBoxes-shape", t_font_get_bounding_boxes_shape)
+common.check("interface:Font.GetBoundingBoxes-shape", t_font_get_bounding_boxes_shape)
 
 
 # --------------------------------- the rest of the rebinds: shape (docstring)
@@ -475,7 +453,7 @@ def t_alert_add_button():
     d = doc(BAlert, "AddButton")
     assert "label" in d, d
     assert "= " in d, d  # key has a default (1-arg form)
-check("interface:Alert.AddButton", t_alert_add_button)
+common.check("interface:Alert.AddButton", t_alert_add_button)
 
 
 def t_slider_scrollbar_channel():
@@ -486,7 +464,7 @@ def t_slider_scrollbar_channel():
     assert "tuple[float, float]" in doc(BScrollBar, "GetRange")
     assert "tuple[float, float]" in doc(BScrollBar, "GetSteps")
     assert "tuple[int, int, int]" in doc(BChannelControl, "GetLimits")
-check("interface:Slider-ScrollBar-ChannelControl", t_slider_scrollbar_channel)
+common.check("interface:Slider-ScrollBar-ChannelControl", t_slider_scrollbar_channel)
 
 
 def t_textcontrol_textview():
@@ -500,7 +478,7 @@ def t_textcontrol_textview():
     assert "tuple[float, float, float, float]" in d, d
     d = doc(BTextView, "UndoState")
     assert "undo_state" in d and "bool" in d, d
-check("interface:TextControl-TextView", t_textcontrol_textview)
+common.check("interface:TextControl-TextView", t_textcontrol_textview)
 
 
 def t_printjob_menuitem_dragger():
@@ -511,7 +489,7 @@ def t_printjob_menuitem_dragger():
     assert "tuple" in d, d
     d = doc(BDragger, "DragBitmap")
     assert "BPoint" in d and "drawing_mode" in d and "tuple" in d, d
-check("interface:PrintJob-MenuItem-Dragger", t_printjob_menuitem_dragger)
+common.check("interface:PrintJob-MenuItem-Dragger", t_printjob_menuitem_dragger)
 
 
 def t_deskbar_rebinds():
@@ -519,7 +497,7 @@ def t_deskbar_rebinds():
     assert "deskbar_location" in d and "bool" in d, d
     assert "tuple" in doc(BDeskbar, "GetItemInfo")
     assert "tuple" in doc(BDeskbar, "AddItem")
-check("interface:Deskbar.rebinds", t_deskbar_rebinds)
+common.check("interface:Deskbar.rebinds", t_deskbar_rebinds)
 
 
 # --------------------------------------- modules not in the jam build list

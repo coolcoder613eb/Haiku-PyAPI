@@ -36,28 +36,6 @@ globals().update(common.bind_names(Be,
     "BSimpleMailAttachment"))
 
 
-class Skip(Exception):
-    pass
-
-
-def check_skip(name, fn):
-    """common.check + conditional skip (ctor/resource guards)."""
-    try:
-        fn()
-    except Skip as e:
-        common.skip(name, str(e)[:200])
-    except common.Absent as e:
-        common.absent(name, "not built: %s" % e.name)
-    except AssertionError as e:
-        common.check(name, lambda d=str(e)[:300]:
-                     (_ for _ in ()).throw(AssertionError(d)))
-    except BaseException as e:
-        common.check(name, lambda d="%s: %s" % (type(e).__name__, e)[:300]:
-                     (_ for _ in ()).throw(AssertionError(d)))
-    else:
-        common.check(name, lambda: "ok")
-
-
 # --- 1/2: B_CLIPBOARD_CHANGED must be a plain int 4cc -----------------------
 # beta6 os/app/Clipboard.h:20: enum { B_CLIPBOARD_CHANGED = 'CLCH' }
 def t_clipboard_changed_what_int():
@@ -66,7 +44,7 @@ def t_clipboard_changed_what_int():
     assert v == 0x434C4348, hex(v)
     m = BMessage(v)
     assert m.what == v, (hex(m.what), hex(v))
-check_skip("appmedia:clipboard.changed-what-int", t_clipboard_changed_what_int)
+common.check("appmedia:clipboard.changed-what-int", t_clipboard_changed_what_int)
 
 
 # --- 2: the enum-attr defect class, pinned across kits ----------------------
@@ -79,7 +57,7 @@ def t_what_codes_are_plain_ints():
         v = getattr(Be, name)
         assert isinstance(v, int) and not isinstance(v, bool) and v == want, \
             (name, repr(v)[:40], hex(want))
-check_skip("appmedia:enum-attr-shape", t_what_codes_are_plain_ints)
+common.check("appmedia:enum-attr-shape", t_what_codes_are_plain_ints)
 
 
 # --- 4: safe flatten/unflatten, exact (status, bytes) shape + NUL payload ---
@@ -102,7 +80,7 @@ def t_flatten_unflatten_exact_shape():
     assert st3 == B_OK and v == "persist me", (st3, repr(v)[:40])
     r4 = m2.FindData("blob", B_RAW_TYPE)
     assert "00" in repr(r4) and "ff" in repr(r4), repr(r4)[:60]
-check_skip("appmedia:message.flatten-exact-shape", t_flatten_unflatten_exact_shape)
+common.check("appmedia:message.flatten-exact-shape", t_flatten_unflatten_exact_shape)
 
 
 # --- 3: GetDecoderInfo(media_codec_info* out) -> (dict|None, status) --------
@@ -110,7 +88,7 @@ def t_mediadecoder_getdecoder_info():
     try:
         d = BMediaDecoder()
     except BaseException as e:
-        raise Skip("BMediaDecoder() ctor: %s" % e)
+        raise common.Skip("BMediaDecoder() ctor: %s" % e)
     r = d.GetDecoderInfo()
     assert isinstance(r, tuple) and len(r) == 2, repr(r)[:60]
     info, st = r
@@ -120,7 +98,7 @@ def t_mediadecoder_getdecoder_info():
             "pretty_name", "short_name", "id", "sub_id"}, info
     else:
         assert info is None, (info, st)
-check_skip("appmedia:mediadecoder.getdecoder-info", t_mediadecoder_getdecoder_info)
+common.check("appmedia:mediadecoder.getdecoder-info", t_mediadecoder_getdecoder_info)
 
 
 # --- 3: BEmailMessage::GetName(char*, int32) -> (name, status) --------------
@@ -132,13 +110,13 @@ def t_mailmessage_getname_tuple():
         m = BEmailMessage(None)
         m.SetFrom("Cognis Bot")
     except BaseException as e:
-        raise Skip("BEmailMessage: %s" % e)
+        raise common.Skip("BEmailMessage: %s" % e)
     r = m.GetName()
     assert isinstance(r, tuple) and len(r) == 2, repr(r)[:60]
     name, st = r
     assert isinstance(name, str), (name, st)
     assert isinstance(st, int) and not isinstance(st, bool), (name, st)
-check_skip("appmedia:mailmessage.getname-tuple", t_mailmessage_getname_tuple)
+common.check("appmedia:mailmessage.getname-tuple", t_mailmessage_getname_tuple)
 
 
 # --- 3: BMailAttachment::FileName(char*) -> (name, status), value pinned ----
@@ -147,12 +125,12 @@ def t_mailattachment_filename_tuple():
         a = BSimpleMailAttachment()
         a.SetFileName("report.pdf")
     except BaseException as e:
-        raise Skip("BSimpleMailAttachment: %s" % e)
+        raise common.Skip("BSimpleMailAttachment: %s" % e)
     r = a.FileName()
     assert isinstance(r, tuple) and len(r) == 2, repr(r)[:60]
     name, st = r
     assert st == B_OK and name == "report.pdf", (st, name)
-check_skip("appmedia:mailattachment.filename-tuple", t_mailattachment_filename_tuple)
+common.check("appmedia:mailattachment.filename-tuple", t_mailattachment_filename_tuple)
 
 
 # --- 3: BTimeCode::GetString(char*) -> str ----------------------------------
@@ -160,11 +138,11 @@ def t_timecode_getstring():
     try:
         tc = BTimeCode(0)
     except BaseException as e:
-        raise Skip("BTimeCode: %s" % e)
+        raise common.Skip("BTimeCode: %s" % e)
     s = tc.GetString()
     # beta6 default-timecode string form: "00h:00m:00s.00"
     assert isinstance(s, str) and re.match(r"^\d{1,2}h:\d{1,2}m:\d{1,2}s\.\d{1,2}$", s), repr(s)[:40]
-check_skip("appmedia:timecode.getstring", t_timecode_getstring)
+common.check("appmedia:timecode.getstring", t_timecode_getstring)
 
 
 sys.exit(common.report("test_appmedia"))
