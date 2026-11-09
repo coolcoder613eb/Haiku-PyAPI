@@ -7,7 +7,7 @@ how it works.
 
 Written and validated against Haiku R1 beta6. The constants sweep is
 **environment-adaptive** — its oracle is the C++ compiler building against
-*this* environment's headers, so it pins no values and needs no regeneration
+*this* environment's headers, so it pins no values
 (it works on any Haiku). The behavior rows do pin beta6-specific behavior —
 4cc `type_code`s (`B_INT32_TYPE='LONG'`), POSIX `O_*` open modes, removed APIs
 (pinned ABSENT so they are not rebound as ghosts), `ssize_t` attr-I/O returns,
@@ -38,9 +38,9 @@ The suite runs **where the bindings were built**. What you need in place:
   sweep compiles a per-module emitter against them.
 
 The **behavior rows** need only the `.so` farm; the **constants sweep**
-additionally needs the checkout + toolchain + headers. There is no separate
-generation host and nothing to regenerate — a new `m.attr` constant is swept on
-the next run. Defaults assume the standard layout; otherwise set the env vars
+additionally needs the checkout + toolchain + headers. A new `m.attr` constant
+is swept automatically on the next run. Defaults assume the standard layout;
+otherwise set the env vars
 (or a local `.env`) — full options under [Configuration](#configuration).
 
 The full sweep is **Haiku-bound** — the Python side imports the built `.so`s
@@ -62,8 +62,7 @@ expression the source binds it from.
 **Why the compiler is the oracle.** C++ and Python each evaluate the constant
 in their own environment, and the results are diffed: the binding's own
 expression is compiled against this environment's headers and compared to what
-the built module actually exposes. The compiler — not a Python-side header
-parser — is the source of truth, and there is nothing to regenerate by hand.
+the built module actually exposes. The compiler is the source of truth.
 
 **How it works**, per binding module:
 

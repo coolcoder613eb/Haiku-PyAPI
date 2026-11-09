@@ -6,8 +6,8 @@
 #
 # Ground truth is an auto-generated "emitter" C++ TU per module — same
 # non-Python #includes as the binding, same link libs as its .so per the
-# root Jamfile — so the COMPILER is the oracle, not a Python-side header
-# parser. Both sides of the diff run where the bindings were built.
+# root Jamfile — so the COMPILER is the oracle. Both sides of the diff run
+# where the bindings were built.
 #
 # The m.attr lines are scanned in the binding's source PREPROCESSED with
 # g++ -E (same includes as the build): #if resolved and macros expanded
