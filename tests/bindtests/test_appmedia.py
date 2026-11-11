@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# test_appmedia.py — regression rows for the 2026-10-26 app/media/mail fixes.
+# test_appmedia.py — regression rows for the app/media/mail kit bindings.
 # Each row pins the EXACT standard shape of a fixed method/constant and would
 # have FAILED against the pre-fix binding. Spec = beta6 C headers.
 #

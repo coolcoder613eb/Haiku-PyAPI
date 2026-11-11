@@ -16,11 +16,14 @@ be found in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
 The suite runs where the bindings were built. What you need, in place:
 
-- the built `.so` farm — `/boot/home/prefixrun/Be`
+- the built bindings (the `.so` module files) — `/boot/home/prefixrun/Be`
 - the repo checkout — two levels up from the suite (`<repo>/tests/bindtests`)
+- Python 3.14 (interpreter + its develop headers)
 - a C++ toolchain (`g++`) + the system develop headers — `/system/develop/headers`
 
-These are default paths — change them via a local `.env` file
+The Python, toolchain, and develop headers are part of a standard Haiku R1
+beta6 install — there's no separate install step. The paths above are
+defaults; override them via a local `.env` file
 ([Configuration](IMPLEMENTATION.md#configuration)).
 
 ## Quick start

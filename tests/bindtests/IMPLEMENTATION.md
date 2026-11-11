@@ -25,7 +25,7 @@ The framework (`common.py` / `child_constants.py` / `run_all.py` /
 
 The suite runs **where the bindings were built**. What you need in place:
 
-- **The built `.so` farm** (`BE_PKG_DIR`). `jam -s python_version=3.14` at the
+- **The built bindings** — the `.so` module files (`BE_PKG_DIR`). `jam -s python_version=3.14` at the
   repo root builds the bindings into `build/python3.14_release/`; the standard
   layout symlinks that at `/boot/home/prefixrun/Be`. **jam builds the bindings,
   not the suite** — the suite's own artifacts (`scratch/`, and the sweep's
@@ -37,7 +37,7 @@ The suite runs **where the bindings were built**. What you need in place:
   `BINDTESTS_SYSTEM_HDRS` = the installed `/system/develop/headers`) — the
   sweep compiles a per-module emitter against them.
 
-The **behavior rows** need only the `.so` farm; the **constants sweep**
+The **behavior rows** need only the built bindings; the **constants sweep**
 additionally needs the checkout + toolchain + headers. A new `m.attr` constant
 is swept automatically on the next run. Defaults assume the standard layout;
 otherwise set the env vars
@@ -46,7 +46,7 @@ otherwise set the env vars
 The full sweep is **Haiku-bound** — the Python side imports the built `.so`s
 and the emitters link the Haiku libs.
 
-**If it isn't set up:** a module's `.so` missing from the farm (not built) →
+**If it isn't set up:** a module whose `.so` wasn't built →
 its rows report `ABSENT` and the rest of the suite still runs (one unbuilt
 module doesn't take it down); but the constants sweep's own deps (the checkout
 / headers / toolchain) missing → it dies during setup before any `constants:*`
@@ -106,8 +106,8 @@ spec-level pins.
 | `test_constants.py` | the constants sweep (above): extract → emit → diff, one `constants:<Module>` row per module. |
 | `child_constants.py` | the sweep's Python side: dump each module's `(typeclass, value)` at runtime — one "chunk" child for the whole import-closure when the TSS pool fits, else fault-isolated solo→closure children per module (see Runtime awareness). |
 | `test_storage.py` `test_message.py` `test_support.py` `test_interface.py` `test_appmedia.py` | per-kit behavior rows: return conventions, tuple shapes, beta6 removals pinned ABSENT, the BQuery kernel grammar + index rules, headless-safe class smokes. |
-| `common.py` | loader (`.so` farm + selectmods closure), TSS pool measurement + import strategy, `check`/`fail`/`skip`/`absent`/`report` JSON-line protocol, scratch dir, env/`.env` config. |
-| `run_all.py` | runs every `test_*.py` in a fresh subprocess each (cwd=/ so no local `Be` package can shadow the farm), aggregates the JSON lines, exits nonzero on any FAIL/ERROR. |
+| `common.py` | loader (built-bindings dir + selectmods closure), TSS pool measurement + import strategy, `check`/`fail`/`skip`/`absent`/`report` JSON-line protocol, scratch dir, env/`.env` config. |
+| `run_all.py` | runs every `test_*.py` in a fresh subprocess each (cwd=/ so no local `Be` package can shadow the built bindings), aggregates the JSON lines, exits nonzero on any FAIL/ERROR. |
 | `selectmods.py` | static analysis of the bindings: the module dependency graph + stock import order, behind `common.closure()`; `--budget` checks a set against the TSS pool. |
 | `.env.example` | template for a local `.env` — copy + edit for a non-standard layout (see Configuration). |
 
@@ -146,7 +146,7 @@ always win over `.env`** (stdlib-only loader; no pip in the build env).
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `BE_PKG_DIR` | `/boot/home/prefixrun/Be` (else `/boot/home/Be`) | the `.so` farm the tests import (a symlink to the shared build dir) |
+| `BE_PKG_DIR` | `/boot/home/prefixrun/Be` (else `/boot/home/Be`) | the built bindings the tests import (a symlink to the shared build dir) |
 | `PYAPI_REPO` | the repo root — two levels up, since the suite sits in `<repo>/tests/bindtests` | checkout providing the bindings source + root Jamfile |
 | `PYAPI_BINDINGS` | `/boot/home/Haiku-PyAPI/bindings` | bindings source tree (selectmods' static dep analysis) |
 | `BINDTESTS_SYSTEM_HDRS` | `/system/develop/headers` | the headers the emitters compile against (a haiku checkout's `headers/` on a Linux box) |
